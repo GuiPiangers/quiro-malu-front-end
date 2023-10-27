@@ -3,7 +3,7 @@ import { Poppins } from 'next/font/google'
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600']
+  weight: ['200', '300', '400', '500', '600'],
 })
 
 export const metadata = {
@@ -18,9 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={`${poppins.className} bg-zinc-100`}>
-        {children}
-      </body>
+      <body className={`${poppins.className} bg-zinc-100`}>{children}</body>
     </html>
   )
 }
