@@ -36,10 +36,6 @@ export default function Register() {
     password: '',
   })
 
-  const [nameMessage, setNameMessage] = useState(undefined)
-  const [emailMessage, setEmailMessage] = useState(undefined)
-  const [passwordMessage, setPasswordMessage] = useState(undefined)
-
   const handleChangeValue = (
     e: ChangeEvent<HTMLInputElement>,
     field: 'name' | 'phone' | 'email' | 'password',
@@ -57,7 +53,6 @@ export default function Register() {
           type="text"
           value={fields.name}
           onChange={(e) => handleChangeValue(e, 'name')}
-          message={nameMessage}
         />
         <Input
           name="Celular"
@@ -79,7 +74,7 @@ export default function Register() {
         />
 
         <Button
-          color="primary"
+          color="edit"
           onClick={() => {
             createUser(fields)
           }}

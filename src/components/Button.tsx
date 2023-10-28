@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
 
-const button = tv({
+const buttonStyle = tv({
   base: 'py-1 flex items-center justify-center px-2 rounded transition',
   variants: {
     color: {
@@ -24,7 +24,7 @@ const button = tv({
 })
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof button>
+  VariantProps<typeof buttonStyle>
 
 export default function Button({
   children,
@@ -33,7 +33,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button className={button({ variant, color })} {...props}>
+    <button className={buttonStyle({ variant, color })} {...props}>
       {children}
     </button>
   )

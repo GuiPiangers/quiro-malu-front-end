@@ -1,41 +1,78 @@
 'use client'
 import { InputHTMLAttributes, ReactNode, useId, useState } from 'react'
+import { tv, VariantProps } from 'tailwind-variants'
 
+const inputStyle = tv({
+  slots: {
+    rootStyle: 'flex flex-col gap-1',
+    labelStyle: 'font-medium text-sm',
+    inputWrapperStyle: 'px-2 py-1 rounded border flex gap-1 bg-white',
+    inputFieldStyle:
+      'bg-transparent text-sm w-full focus:outline-none select-none',
+    messageStyle: 'text-xs',
+  },
+  variants: {
+    isFocus: {
+      true: {
+        inputWrapperStyle:
+          'ring-4 ring-indigo-100 outline outline-1 outline-indigo-400',
+      },
+    },
+    error: {
+      true: {
+        inputWrapperStyle:
+          'bg-red-50 outline outline-1 outline-red-600 text-red-600',
+        inputFieldStyle: 'placeholder:text-red-300',
+        messageStyle: 'text-red-600',
+      },
+    },
+  },
+  compoundVariants: [
+    {
+      isFocus: true,
+      error: true,
+      className: {
+        inputWrapperStyle: ' ring-red-50 bg-white text-black',
+        inputFieldStyle: 'placeholder:text-',
+      },
+    },
+  ],
+  defaultVariants: {
+    isFocus: false,
+    error: false,
+  },
+})
+type Variants = VariantProps<typeof inputStyle>
 type InputProps = {
   name?: string
   leftIcon?: ReactNode
   rightIcon?: ReactNode
-  message?: {
-    type: 'valid' | 'invalid'
-    text: string
-  }
-} & InputHTMLAttributes<HTMLInputElement>
+  error?: boolean
+  message?: string
+} & InputHTMLAttributes<HTMLInputElement> &
+  Omit<Variants, 'isFocus'>
 
 export default function Input({
   name,
   leftIcon,
   rightIcon,
   message,
+  error,
   ...props
 }: InputProps) {
-  const [isFocus, setIsFocus] = useState(false)
+  const [isFocus, setIsFocus] = useState<Variants['isFocus']>(false)
   const id = useId()
-  const validateColor = {
-    valid: 'green-600',
-    invalid: 'red-600',
-  }
+  const {
+    rootStyle,
+    inputWrapperStyle,
+    inputFieldStyle,
+    labelStyle,
+    messageStyle,
+  } = inputStyle({ isFocus, error })
 
   const ValidationMessage = () => {
-    if (message?.text) {
-      return (
-        <span
-          className={`text-sm ${
-            message?.type && 'text-' + validateColor[message.type]
-          }`}
-        >
-          {message?.text}
-        </span>
-      )
+    if (message) {
+      return <span className={messageStyle()}>{message}</span>
     }
   }
 
@@ -47,27 +84,25 @@ export default function Input({
   }
 
   return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="font-medium text-sm">
+    <div className={rootStyle()}>
+      <label htmlFor={id} className={labelStyle()}>
         {name}
       </label>
-      <div
-        className={`px-2 py-1 rounded border flex gap-1 bg-white 
-                ${isFocus && 'outline outline-2'} ${
-                  message?.type &&
-                  'outline outline-2 outline-' + validateColor[message.type]
-                }`}
-      >
+
+      <div className={inputWrapperStyle()}>
         {leftIcon || null}
+
         <input
           {...props}
           id={id}
-          className="bg-transparent text-sm w-full focus:outline-none select-none"
+          className={inputFieldStyle()}
           onFocus={handleFocusTrue}
           onBlur={handleFocusFalse}
         />
+
         {rightIcon || null}
       </div>
+
       {ValidationMessage()}
     </div>
   )
