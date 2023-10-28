@@ -7,19 +7,6 @@ import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
 
-async function loginUser(data: { email: string; password: string }) {
-  try {
-    const res = await fetch('http://localhost:8000/login', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    })
-    console.log(await res.json())
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
 export default function Login() {
   const [fields, setFields] = useState({
     email: '',
@@ -49,9 +36,7 @@ export default function Login() {
           onChange={(e) => handleChangeValue(e, 'password')}
         />
 
-        <Button onClick={() => loginUser(fields)} color="edit">
-          Entrar
-        </Button>
+        <Button color="edit">Entrar</Button>
         <p className="text-sm text-center">
           Ainda não possui uma conta?{' '}
           <Link className="text-blue-600 underline" href={'/register'}>

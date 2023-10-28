@@ -7,27 +7,6 @@ import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
 
-type UserData = {
-  name: string
-  email: string
-  phone: string
-  password: string
-}
-
-async function createUser(data: UserData) {
-  try {
-    const res = await fetch('http://localhost:8000/register', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    })
-    console.log(await res.json())
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
-
 export default function Register() {
   const [fields, setFields] = useState({
     name: '',
@@ -76,7 +55,7 @@ export default function Register() {
         <Button
           color="edit"
           onClick={() => {
-            createUser(fields)
+            return ''
           }}
         >
           Cadastrar
