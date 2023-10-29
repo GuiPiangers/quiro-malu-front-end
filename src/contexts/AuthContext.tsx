@@ -1,10 +1,11 @@
 'use client'
 
 import { ReactNode, createContext, useState, useEffect } from 'react'
-import { setCookie, parseCookies } from 'nookies'
+import { setCookie } from 'nookies'
 import { useRouter } from 'next/navigation'
 
-import { UserResponse, UserService } from '@/services/user/UserService'
+import { UserResponse } from '@/services/user/UserService'
+import { clientUserService } from '@/services/user/clientUserService'
 
 type SignInData = {
   email: string
@@ -19,16 +20,14 @@ type AuthContextType = {
 export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthContextProvider({ children }: { children: ReactNode }) {
-  const userService = new UserService()
   const [user, setUser] = useState<UserResponse['user'] | null>(null)
   const router = useRouter()
 
   const isAuthenticated = !!user
 
   useEffect(() => {
-    const { 'quiro-token': token } = parseCookies()
     const getUser = async () => {
-      const userResponse = await userService.get(token)
+      const userResponse = await clientUserService.get()
       if (userResponse) {
         const { name, email } = userResponse
         setUser({ name, email })
@@ -38,11 +37,10 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function singIn(data: SignInData) {
-    const userResponse = await userService.login(data)
+    const userResponse = await clientUserService.login(data)
     if (userResponse) {
       const { refreshToken, token, user: userData } = userResponse
 
-      console.log(token)
       setCookie(undefined, 'quiro-token', token, {
         maxAge: 60 * 10, // 10 min
       })

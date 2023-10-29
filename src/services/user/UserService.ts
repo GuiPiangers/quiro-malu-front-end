@@ -1,3 +1,5 @@
+import { api } from '../api/api'
+
 type UserDTO = {
   name: string
   email: string
@@ -20,6 +22,13 @@ export type UserResponse = {
 }
 
 export class UserService {
+  constructor(
+    private fetchData: <T>(
+      input: RequestInfo,
+      init?: RequestInit | undefined,
+    ) => Promise<T>,
+  ) {}
+
   async register(data: UserDTO) {
     try {
       await fetch('http://localhost:8000/register', {
@@ -34,30 +43,24 @@ export class UserService {
 
   async login(data: LoginData): Promise<UserResponse | void> {
     try {
-      const res = await fetch('http://localhost:8000/login', {
+      const res = await this.fetchData<UserResponse>('/login', {
         method: 'POST',
         body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
       })
-      const respData = await res.json()
-      return respData as UserResponse
+      return res
     } catch (err) {
       console.log(err)
     }
   }
 
-  async get(token: string): Promise<UserResponse['user'] | void> {
+  async get() {
     try {
-      const res = await fetch('http://localhost:8000/profile', {
+      const res = await this.fetchData<UserResponse['user']>('/profile', {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        cache: 'no-store',
       })
-      const respData = await res.json()
-      console.log(respData)
-      return respData as UserResponse['user']
+
+      return res
     } catch (err) {
       console.log(err)
     }
