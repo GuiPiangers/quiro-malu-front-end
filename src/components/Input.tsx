@@ -1,6 +1,7 @@
 'use client'
 import { InputHTMLAttributes, ReactNode, useId, useState } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
+import { PiWarningCircle } from 'react-icons/pi'
 
 const inputStyle = tv({
   slots: {
@@ -9,13 +10,13 @@ const inputStyle = tv({
     inputWrapperStyle: 'px-2 py-1 rounded border flex gap-1 bg-white',
     inputFieldStyle:
       'bg-transparent text-sm w-full focus:outline-none select-none',
-    messageStyle: 'text-xs',
+    messageStyle: 'text-xs flex items-start gap-1',
   },
   variants: {
     isFocus: {
       true: {
         inputWrapperStyle:
-          'ring-4 ring-indigo-100 outline outline-1 outline-indigo-400',
+          'ring-4 ring-blue-50 outline outline-1 outline-blue-500',
       },
     },
     error: {
@@ -72,7 +73,12 @@ export default function Input({
 
   const ValidationMessage = () => {
     if (message) {
-      return <span className={messageStyle()}>{message}</span>
+      return (
+        <div className={messageStyle()}>
+          {error && <PiWarningCircle size={16} />}
+          <span>{message}</span>
+        </div>
+      )
     }
   }
 

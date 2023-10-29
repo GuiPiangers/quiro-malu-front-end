@@ -5,9 +5,11 @@ import AuthForm from '../components/AuthForm'
 import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState, useContext } from 'react'
+import { AuthContext } from '@/contexts/AuthContext'
 
 export default function Login() {
+  const { singIn } = useContext(AuthContext)
   const [fields, setFields] = useState({
     email: '',
     password: '',
@@ -21,9 +23,13 @@ export default function Login() {
     setFields((data) => ({ ...data, [field]: value }))
   }
 
+  const handleSignIn = async () => {
+    await singIn(fields)
+  }
+
   return (
     <AuthForm title="Login">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 ">
         <Input
           name="Email"
           placeholder="exemplo@gmail.com"
@@ -36,7 +42,9 @@ export default function Login() {
           onChange={(e) => handleChangeValue(e, 'password')}
         />
 
-        <Button color="edit">Entrar</Button>
+        <Button color="edit" onClick={handleSignIn}>
+          Entrar
+        </Button>
         <p className="text-sm text-center">
           Ainda não possui uma conta?{' '}
           <Link className="text-blue-600 underline" href={'/register'}>
