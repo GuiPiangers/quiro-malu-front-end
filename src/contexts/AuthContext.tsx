@@ -40,12 +40,13 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     const userResponse = await clientUserService.login(data)
     if (userResponse) {
       const { refreshToken, token, user: userData } = userResponse
+      console.log(refreshToken)
 
       setCookie(undefined, 'quiro-token', token, {
         maxAge: 60 * 10, // 10 min
       })
       setCookie(undefined, 'quiro-refresh-token', refreshToken, {
-        maxAge: 60 * 60 * 24 * 15, // 15 dias
+        maxAge: 60 * 60 * 24 * 15, // 15 dias,
       })
 
       setUser(userData)
