@@ -12,7 +12,9 @@ export default function UserProfile() {
     <div>
       <p>{user?.name}</p>
       <p>{user?.email}</p>
-      <Button onClick={singOut}>Delete</Button>
+      <Button color="remove" onClick={singOut}>
+        Sair
+      </Button>
     </div>
   )
 }
