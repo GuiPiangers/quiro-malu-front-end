@@ -1,5 +1,3 @@
-import { api } from '../api/api'
-
 type UserDTO = {
   name: string
   email: string
@@ -48,6 +46,17 @@ export class UserService {
         body: JSON.stringify(data),
       })
       return res
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async logout(refreshTokenId: string): Promise<void> {
+    try {
+      await this.fetchData<UserResponse>('/logout', {
+        method: 'POST',
+        body: JSON.stringify({ refreshTokenId }),
+      })
     } catch (err) {
       console.log(err)
     }

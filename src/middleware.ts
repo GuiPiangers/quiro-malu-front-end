@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 export default async function middleware(request: NextRequest) {
   const token = request.cookies.get('quiro-token')?.value
   const refreshToken = request.cookies.get('quiro-refresh-token')?.value
-  const response = NextResponse.next()
-  response.cookies.set('isso', 'valor')
   const signURL = new URL('/login', request.url)
 
   if (!token && !refreshToken) {
@@ -22,7 +20,6 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(signURL)
     }
   }
-  return response
 }
 
 export const config = {

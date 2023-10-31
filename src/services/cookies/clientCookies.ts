@@ -1,8 +1,12 @@
-import { parseCookies, setCookie } from 'nookies'
+import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import { ICookies } from './ICookies'
 import { CookieSerializeOptions } from 'cookie'
 
 class ClientCookie implements ICookies {
+  delete(name: string): void {
+    destroyCookie(undefined, name)
+  }
+
   get(name: string): string | undefined {
     const cookie = parseCookies()[name]
     return cookie
@@ -13,8 +17,7 @@ class ClientCookie implements ICookies {
     value: string,
     options?: CookieSerializeOptions | undefined,
   ): void {
-    const cookie = setCookie(undefined, name, value, options)
-    console.log(cookie)
+    setCookie(undefined, name, value, options)
   }
 }
 
