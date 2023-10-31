@@ -27,21 +27,24 @@ export default function Register() {
     <AuthForm title="Registrar">
       <div className="flex flex-col gap-4">
         <Input
-          name="Nome"
+          name="name"
+          label="Nome"
           placeholder="Seu nome"
           type="text"
           value={fields.name}
           onChange={(e) => handleChangeValue(e, 'name')}
         />
         <Input
-          name="Celular"
+          name="phone"
+          label="Celular"
           placeholder="(51) 99999 9999"
           type="tel"
           value={fields.phone}
           onChange={(e) => handleChangeValue(e, 'phone')}
         />
         <Input
-          name="Email"
+          name="email"
+          label="Email"
           placeholder="exemplo@gmail.com"
           type="email"
           value={fields.email}

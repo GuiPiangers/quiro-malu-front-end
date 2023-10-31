@@ -7,4 +7,5 @@ export interface ICookies {
     value: string,
     options?: CookieSerializeOptions | undefined,
   ): void
+  delete(name: string): void
 }

@@ -17,7 +17,8 @@ export default function PasswordInput(
   return (
     <Input
       {...props}
-      name="Senha"
+      name="password"
+      label="Senha"
       placeholder="Senha251"
       type={isVisible ? 'text' : `password`}
       rightIcon={

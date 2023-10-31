@@ -7,7 +7,6 @@ import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState, useContext } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
-import { revalidatePath } from 'next/cache'
 
 export default function Login() {
   const { singIn } = useContext(AuthContext)
@@ -32,7 +31,8 @@ export default function Login() {
     <AuthForm title="Login">
       <div className="flex flex-col gap-4 ">
         <Input
-          name="Email"
+          name="email"
+          label="Email"
           placeholder="exemplo@gmail.com"
           type="email"
           value={fields.email}

@@ -45,7 +45,7 @@ const inputStyle = tv({
 })
 type Variants = VariantProps<typeof inputStyle>
 type InputProps = {
-  name?: string
+  label?: string
   leftIcon?: ReactNode
   rightIcon?: ReactNode
   error?: boolean
@@ -54,7 +54,7 @@ type InputProps = {
   Omit<Variants, 'isFocus'>
 
 export default function Input({
-  name,
+  label,
   leftIcon,
   rightIcon,
   message,
@@ -92,7 +92,7 @@ export default function Input({
   return (
     <div className={rootStyle()}>
       <label htmlFor={id} className={labelStyle()}>
-        {name}
+        {label}
       </label>
 
       <div className={inputWrapperStyle()}>

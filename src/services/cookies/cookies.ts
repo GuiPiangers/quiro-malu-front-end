@@ -14,10 +14,13 @@ class Cookie implements ICookies {
     name: string,
     value: string,
     options?: CookieSerializeOptions | undefined,
-  ): void {
+  ) {
+    return {}
+  }
+
+  delete(name: string) {
     const cookieStore = cookies()
-    const cookie = cookieStore.set(name, value, options)
-    console.log(cookie)
+    cookieStore.delete(name)
   }
 }
 

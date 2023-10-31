@@ -7,7 +7,7 @@ export default async function Home() {
 
   return (
     <main className="">
-      <Input name="Nome"></Input>
+      <Input label="Nome"></Input>
       <p>{profile ? profile.name : ''}</p>
       <UserProfile />
     </main>
