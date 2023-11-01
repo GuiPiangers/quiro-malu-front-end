@@ -13,5 +13,5 @@ export default function TableWrapper({ children, columns }: TableProps) {
   useEffect(() => {
     setColumns(columns)
   }, [columns, setColumns])
-  return <li className="list-none">{children}</li>
+  return <div className="list-none">{children}</div>
 }

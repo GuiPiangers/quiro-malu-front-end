@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, forwardRef } from 'react'
+
 import * as Accordion from '@radix-ui/react-accordion'
 import { tv } from 'tailwind-variants'
 
@@ -13,10 +14,13 @@ type ContentProps = {
   className?: string
 }
 
-export default function Content({ children, className }: ContentProps) {
+export const Content = forwardRef(function (
+  { children, className }: ContentProps,
+  ref,
+) {
   return (
     <Accordion.Content className="AccordionContent col-span-full w-full">
       <div className={Style({ className })}>{children}</div>
     </Accordion.Content>
   )
-}
+})

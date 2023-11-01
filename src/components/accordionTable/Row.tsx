@@ -1,6 +1,7 @@
+/* eslint-disable react/display-name */
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, forwardRef } from 'react'
 import * as Accordion from '@radix-ui/react-accordion'
 import { Table } from '../table'
 import { RxCaretDown } from 'react-icons/rx'
@@ -10,11 +11,14 @@ type RowProps = {
   className?: string
 }
 
-export default function Row({ children, className }: RowProps) {
+export const Row = forwardRef(function (
+  { children, className }: RowProps,
+  ref,
+) {
   return (
-    <Accordion.Header>
-      <Accordion.Trigger className="AccordionTrigger w-full">
-        <Table.Row className={className}>
+    <Accordion.Header asChild>
+      <Accordion.Trigger asChild ref={ref}>
+        <Table.Row className={`${className} AccordionTrigger w-full`}>
           {children}
           <RxCaretDown
             size={24}
@@ -24,4 +28,4 @@ export default function Row({ children, className }: RowProps) {
       </Accordion.Trigger>
     </Accordion.Header>
   )
-}
+})
