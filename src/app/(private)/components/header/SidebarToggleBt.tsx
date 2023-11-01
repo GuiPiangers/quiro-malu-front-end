@@ -1,10 +1,10 @@
 'use client'
 
-import useSideBarContext from '@/hooks/useSideBarContext'
+import useSidebarContext from '@/hooks/useSidebarContext'
 import { IoIosMenu } from 'react-icons/io'
 
-export default function SideBarToggleBt() {
-  const { toggle } = useSideBarContext()
+export default function SidebarToggleBt() {
+  const { toggle } = useSidebarContext()
   return (
     <button
       onClick={toggle}

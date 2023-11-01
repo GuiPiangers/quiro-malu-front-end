@@ -3,11 +3,47 @@
 @tailwind utilities;
 
 @layer utilities {
-
     .clip-circle {
-
         clip-path: circle();
+    }
+}
 
+.AccordionChevron {
+    transition: transform 300ms;
+}
+
+.AccordionTrigger[data-state='open'] .AccordionChevron {
+    transform: rotate(180deg);
+}
+
+.AccordionContent {
+    overflow: hidden;
+}
+
+.AccordionContent[data-state='open'] {
+    animation: slideDown 200ms;
+}
+
+.AccordionContent[data-state='closed'] {
+    animation: slideUp 200ms;
+}
+
+@keyframes slideDown {
+    from {
+        height: 0;
     }
 
+    to {
+        height: var(--radix-accordion-content-height);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        height: var(--radix-accordion-content-height);
+    }
+
+    to {
+        height: 0;
+    }
 }

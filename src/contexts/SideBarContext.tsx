@@ -1,23 +1,23 @@
 'use client'
 
-import { ReactNode, createContext, useState, useEffect } from 'react'
+import { ReactNode, createContext, useState } from 'react'
 
-type SideBarContextType = {
+type SidebarContextType = {
   collapsed: boolean
   toggle(): void
 }
 
-export const SideBarContext = createContext({} as SideBarContextType)
+export const SidebarContext = createContext({} as SidebarContextType)
 
-export function SideBarContextProvider({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false)
+export function SidebarContextProvider({ children }: { children: ReactNode }) {
+  const [collapsed, setCollapsed] = useState(true)
   const toggle = () => {
     setCollapsed((value) => !value)
   }
 
   return (
-    <SideBarContext.Provider value={{ collapsed, toggle }}>
+    <SidebarContext.Provider value={{ collapsed, toggle }}>
       {children}
-    </SideBarContext.Provider>
+    </SidebarContext.Provider>
   )
 }

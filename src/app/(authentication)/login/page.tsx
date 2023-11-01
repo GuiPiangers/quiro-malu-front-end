@@ -43,7 +43,7 @@ export default function Login() {
           onChange={(e) => handleChangeValue(e, 'password')}
         />
 
-        <Button color="edit" onClick={handleSignIn}>
+        <Button color="blue" onClick={handleSignIn}>
           Entrar
         </Button>
         <p className="text-center text-sm">

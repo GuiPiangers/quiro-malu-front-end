@@ -56,7 +56,7 @@ export default function Register() {
         />
 
         <Button
-          color="edit"
+          color="blue"
           onClick={() => {
             return ''
           }}
@@ -64,7 +64,7 @@ export default function Register() {
           Cadastrar
         </Button>
 
-        <p className="text-sm text-center">
+        <p className="text-center text-sm">
           Já possui uma conta?{' '}
           <Link className="text-blue-600 underline" href={'/login'}>
             Entrar

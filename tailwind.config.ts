@@ -20,11 +20,15 @@ const config: Config = {
       keyframes: {
         slideRight: {
           '0%': { transform: 'translate(-100%)' },
-          '50%': { transform: 'translate(0)' },
+          '100%': { transform: 'translate(0)' },
         },
-        slideLeft: {
-          '0%': { transform: 'translate(0)' },
-          '50%': { transform: 'translate(-100%)' },
+        fadeIn: {
+          '0%': { opacity: '0%' },
+          '100%': { opacity: '100%' },
+        },
+        fadeOut: {
+          '0%': { opacity: '100%' },
+          '100%': { opacity: '0%' },
         },
       },
     },

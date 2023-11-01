@@ -7,8 +7,8 @@ interface LayoutProps {
 
 export default function AuthenticationLayout({ children }: LayoutProps) {
   return (
-    <main className="grid w-screen h-screen place-items-center">
-      <div className="flex gap-8 flex-wrap items-center justify-center">
+    <main className="grid h-screen w-screen place-items-center">
+      <div className="flex flex-wrap items-center justify-center gap-8">
         <div className="flex flex-col items-center gap-2">
           <Logo.Root>
             <Logo.Image />

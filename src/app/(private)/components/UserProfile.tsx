@@ -10,7 +10,7 @@ export default function UserProfile() {
         src={imageProfile}
         width={64}
         height={64}
-        className="bg-white h-8 w-8 object-cover clip-circle"
+        className="clip-circle h-8 w-8 bg-white object-cover"
       />
     </div>
   )
