@@ -1,6 +1,7 @@
 import { AuthContextProvider } from '@/contexts/AuthContext'
 import './globals.css'
 import { Poppins } from 'next/font/google'
+import Header from '@/components/header/Header'
 
 const poppins = Poppins({
   subsets: ['latin'],

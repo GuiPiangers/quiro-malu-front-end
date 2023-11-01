@@ -1,8 +1,7 @@
 import Input from '@/components/Input'
+import { Logo } from '@/components/logo/'
 import UserProfile from '@/components/UserProfile'
 import { userService } from '@/services/user/serverUserService'
-import { NextResponse } from 'next/server'
-import { setCookie } from 'nookies'
 
 export default async function Home() {
   const profile = await userService.get()
@@ -12,6 +11,10 @@ export default async function Home() {
       <Input label="Nome"></Input>
       <p>{profile ? profile.name : ''}</p>
       <UserProfile />
+      <Logo.Root>
+        <Logo.Image className="h-14" />
+        <Logo.Text className="h-8" />
+      </Logo.Root>
     </main>
   )
 }

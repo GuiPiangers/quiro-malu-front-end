@@ -6,23 +6,23 @@ import { PiWarningCircle } from 'react-icons/pi'
 const inputStyle = tv({
   slots: {
     rootStyle: 'flex flex-col gap-1',
-    labelStyle: 'font-medium text-sm',
-    inputWrapperStyle: 'px-2 py-1 rounded border flex gap-1 bg-white',
+    labelStyle: 'text-sm font-medium',
+    inputWrapperStyle: 'flex gap-1 rounded border bg-white px-2 py-1',
     inputFieldStyle:
-      'bg-transparent text-sm w-full focus:outline-none select-none',
-    messageStyle: 'text-xs flex items-start gap-1',
+      'w-full select-none bg-transparent text-sm focus:outline-none',
+    messageStyle: 'flex items-start gap-1 text-xs',
   },
   variants: {
     isFocus: {
       true: {
         inputWrapperStyle:
-          'ring-4 ring-blue-50 outline outline-1 outline-blue-500',
+          'outline outline-1 outline-blue-500 ring-4 ring-blue-50',
       },
     },
     error: {
       true: {
         inputWrapperStyle:
-          'bg-red-50 outline outline-1 outline-red-600 text-red-600',
+          'bg-red-50 text-red-600 outline outline-1 outline-red-600',
         inputFieldStyle: 'placeholder:text-red-300',
         messageStyle: 'text-red-600',
       },
@@ -33,7 +33,7 @@ const inputStyle = tv({
       isFocus: true,
       error: true,
       className: {
-        inputWrapperStyle: ' ring-red-50 bg-white text-black',
+        inputWrapperStyle: ' bg-white text-black ring-red-50',
         inputFieldStyle: 'placeholder:text-',
       },
     },

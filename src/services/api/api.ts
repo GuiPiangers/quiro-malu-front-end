@@ -35,6 +35,7 @@ export async function api<T>(
       body: JSON.stringify({ refreshTokenId: refreshToken }),
     }).then((res) => res.json())
 
+    if (!newToken) throw new Error('Falha de autenticação')
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
     clientCookie.set('quiro-token', newToken, { maxAge: 60 * 10 })
 

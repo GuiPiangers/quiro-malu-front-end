@@ -42,15 +42,17 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     if (userResponse) {
       const { refreshToken, token, user: userData } = userResponse
 
-      clientCookie.set('quiro-token', token, {
-        maxAge: 60 * 10, // 10 min
-      })
-      clientCookie.set('quiro-refresh-token', refreshToken, {
-        maxAge: 60 * 60 * 24 * 15, // 15 dias,
-      })
+      if (token && refreshToken) {
+        clientCookie.set('quiro-token', token, {
+          maxAge: 60 * 10, // 10 min
+        })
+        clientCookie.set('quiro-refresh-token', refreshToken, {
+          maxAge: 60 * 60 * 24 * 15, // 15 dias,
+        })
 
-      setUser(userData)
-      router.push('/')
+        setUser(userData)
+        router.push('/')
+      }
     }
   }
   async function singOut() {

@@ -17,6 +17,16 @@ const config: Config = {
         main: '#8A48C7',
         'main-hover': '#7B3DB5',
       },
+      keyframes: {
+        slideRight: {
+          '0%': { transform: 'translate(-100%)' },
+          '50%': { transform: 'translate(0)' },
+        },
+        slideLeft: {
+          '0%': { transform: 'translate(0)' },
+          '50%': { transform: 'translate(-100%)' },
+        },
+      },
     },
   },
 }

@@ -1,20 +1,17 @@
-'use client'
+import Image from 'next/image'
 
-import { AuthContext } from '@/contexts/AuthContext'
-import { useContext } from 'react'
-import Button from './Button'
-import { clientUserService } from '@/services/user/clientUserService'
+const imageProfile = '/profile/profile1.svg'
 
 export default function UserProfile() {
-  const { user, singOut } = useContext(AuthContext)
-
   return (
-    <div>
-      <p>{user?.name}</p>
-      <p>{user?.email}</p>
-      <Button color="remove" onClick={singOut}>
-        Sair
-      </Button>
+    <div className="flex items-center gap-3">
+      <Image
+        alt="profile image"
+        src={imageProfile}
+        width={64}
+        height={64}
+        className="bg-white h-8 w-8 object-cover clip-circle"
+      />
     </div>
   )
 }
