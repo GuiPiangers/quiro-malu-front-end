@@ -1,17 +1,16 @@
 'use client'
 
 import * as Accordion from '@radix-ui/react-accordion'
-import { Table } from '../table'
 import { ReactNode } from 'react'
 
-type AccordionTableProps = {
+type RootProps = {
   children: ReactNode
 }
 
-export default function AccordionTableRoot({ children }: AccordionTableProps) {
+export default function Root({ children }: RootProps) {
   return (
     <Accordion.Root type="multiple">
-      <Table.Root>{children}</Table.Root>
+      <Accordion.Item value="valor">{children}</Accordion.Item>
     </Accordion.Root>
   )
 }

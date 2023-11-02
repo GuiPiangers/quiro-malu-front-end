@@ -1,9 +1,10 @@
-import useTableContext from '@/hooks/TableContext'
+'use client'
+
 import { HTMLAttributes, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 
 const TrowStyle = tv({
-  base: 'contents',
+  base: 'grid w-full items-center justify-items-start border-b px-2 py-1.5 hover:bg-zinc-100',
 })
 
 type TrowProps = {
@@ -13,16 +14,8 @@ type TrowProps = {
 
 export default function Trow({ children, className, ...props }: TrowProps) {
   return (
-    <div className="w-full">
-      <button
-        className={TrowStyle({ className })}
-        {...props}
-        style={{
-          gridTemplateColumns: templateColumns,
-        }}
-      >
-        {children}
-      </button>
-    </ul>
+    <button className={TrowStyle({ className })} {...props}>
+      {children}
+    </button>
   )
 }

@@ -1,10 +1,6 @@
 'use client'
 
 import { ReactNode } from 'react'
-<<<<<<< HEAD
-
-=======
->>>>>>> parent of c896be1 (fixing table components)
 import * as Accordion from '@radix-ui/react-accordion'
 import { tv } from 'tailwind-variants'
 
@@ -17,11 +13,7 @@ type ContentProps = {
   className?: string
 }
 
-<<<<<<< HEAD
-export const Content = function ({ children, className }: ContentProps) {
-=======
 export default function Content({ children, className }: ContentProps) {
->>>>>>> parent of c896be1 (fixing table components)
   return (
     <Accordion.Content className="AccordionContent col-span-full w-full">
       <div className={Style({ className })}>{children}</div>

@@ -10,19 +10,11 @@ type RowProps = {
   className?: string
 }
 
-<<<<<<< HEAD
-export const Row = function ({ children, className }: RowProps) {
-  return (
-    <Accordion.Header asChild>
-      <Accordion.Trigger asChild>
-        <Table.Row className={`${className} AccordionTrigger w-full`}>
-=======
 export default function Row({ children, className }: RowProps) {
   return (
-    <Accordion.Header>
-      <Accordion.Trigger className="AccordionTrigger w-full">
+    <Accordion.Header asChild>
+      <Accordion.Trigger className="AccordionTrigger w-full" asChild>
         <Table.Row className={className}>
->>>>>>> parent of c896be1 (fixing table components)
           {children}
           <RxCaretDown
             size={24}
