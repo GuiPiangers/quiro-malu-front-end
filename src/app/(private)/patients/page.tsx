@@ -1,5 +1,3 @@
-'use client'
-
 import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'

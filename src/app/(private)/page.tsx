@@ -17,9 +17,15 @@ export default async function Home() {
         <Logo.Image className="h-14" />
         <Logo.Text className="h-8" />
       </Logo.Root>
-      <Table.Root columns={['1fr', '1fr']}>
+      <Table.Root columns={['1fr', '1fr', '1fr']}>
         <Table.Row>
           <span>Isso aqui</span>
+          <span>Aquilo ali</span>
+          <span>Aquilo ali</span>
+        </Table.Row>
+        <Table.Row>
+          <span>Isso aqui</span>
+          <span>Aquilo ali</span>
           <span>Aquilo ali</span>
         </Table.Row>
       </Table.Root>

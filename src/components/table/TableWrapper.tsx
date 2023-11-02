@@ -9,6 +9,7 @@ type TableProps = {
 }
 
 export default function TableWrapper({ children, columns }: TableProps) {
+<<<<<<< HEAD
   const childrenValue = children?.valueOf() as any
   const childrenArray = childrenValue.children as Array<ReactNode>
   return (
@@ -24,4 +25,11 @@ export default function TableWrapper({ children, columns }: TableProps) {
       <AccordionDemo></AccordionDemo>
     </div>
   )
+=======
+  const { setColumns } = useTableContext()
+  useEffect(() => {
+    setColumns(columns)
+  }, [columns, setColumns])
+  return <li className="list-none">{children}</li>
+>>>>>>> parent of c896be1 (fixing table components)
 }
