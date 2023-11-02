@@ -25,13 +25,13 @@ export default function Home() {
             <AccordionTable.Content className="flex justify-between gap-2">
               <div className="space-y-1 text-sm">
                 <p>
-                  <strong>NOME:</strong> Henrique Santos
+                  <strong>Nome:</strong> Henrique Santos
                 </p>
                 <p>
-                  <strong>TELEFONE:</strong> (51) 99999 9999
+                  <strong>Telefone:</strong> (51) 99999 9999
                 </p>
                 <p>
-                  <strong>IDADE:</strong> 21
+                  <strong>Idade:</strong> 21
                 </p>
                 <p>
                   <strong>Cidade:</strong> Sapiranga
