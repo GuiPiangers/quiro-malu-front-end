@@ -2,9 +2,8 @@ import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
-import { Accordion } from '@/components/accordion'
 
-export default function Home() {
+export default function Patients() {
   return (
     <main className="w-full max-w-6xl">
       <Box>

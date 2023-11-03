@@ -4,6 +4,7 @@ import { CiCalendar, CiDollar, CiStethoscope, CiUser } from 'react-icons/ci'
 import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
 import useToggleContext from '@/hooks/useToggleContext'
+import { usePathname } from 'next/navigation'
 
 type SidebarProps = { className?: string }
 
@@ -16,7 +17,7 @@ export default function Sidebar({ className }: SidebarProps) {
       <div onClick={toggle} className={sideWrapperStyle()}></div>
       <nav className={SidebarStyle({ className })}>
         <li className="list-none space-y-1">
-          <NavItem active href="/patients">
+          <NavItem href="/scheduling">
             {<CiCalendar size={24} />}
             Agenda
           </NavItem>
@@ -24,11 +25,11 @@ export default function Sidebar({ className }: SidebarProps) {
             <CiUser size={24} />
             Pacientes
           </NavItem>
-          <NavItem href="/patients">
+          <NavItem href="/services">
             <CiStethoscope size={24} />
             Serviços
           </NavItem>
-          <NavItem href="/patients">
+          <NavItem href="/finance">
             <CiDollar size={24} />
             Financeiro
           </NavItem>
