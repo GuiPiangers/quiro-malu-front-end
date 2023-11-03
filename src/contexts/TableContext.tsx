@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useState, useCallback } from 'react'
 
 type TableContextType = {
   columns: Array<string>
@@ -11,9 +11,9 @@ export const TableContext = createContext({} as TableContextType)
 
 export function TableContextProvider({ children }: { children: ReactNode }) {
   const [columns, setColumnsState] = useState([''])
-  const setColumns = (value: Array<string>) => {
+  const setColumns = useCallback((value: Array<string>) => {
     setColumnsState(value)
-  }
+  }, [])
 
   return (
     <TableContext.Provider value={{ columns, setColumns }}>

@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 import TableRoot from './TableRoot'
 import Trow from './TRow'
 import THead from './THead'

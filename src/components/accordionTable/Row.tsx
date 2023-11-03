@@ -1,9 +1,9 @@
 'use client'
 
 import { ReactNode } from 'react'
-import * as Accordion from '@radix-ui/react-accordion'
-import { Table } from '../table'
 import { RxCaretDown } from 'react-icons/rx'
+import { Accordion } from '../accordion'
+import { TrowStyle } from '../table/TRow'
 
 type RowProps = {
   children: ReactNode
@@ -12,16 +12,12 @@ type RowProps = {
 
 export default function Row({ children, className }: RowProps) {
   return (
-    <Accordion.Header asChild>
-      <Accordion.Trigger className="AccordionTrigger w-full" asChild>
-        <Table.Row className={className}>
-          {children}
-          <RxCaretDown
-            size={24}
-            className="AccordionChevron flex h-full items-center justify-center"
-          />
-        </Table.Row>
-      </Accordion.Trigger>
-    </Accordion.Header>
+    <Accordion.Trigger className={TrowStyle({ className })}>
+      {children}
+      <RxCaretDown
+        size={24}
+        className="flex h-full items-center justify-center"
+      />
+    </Accordion.Trigger>
   )
 }

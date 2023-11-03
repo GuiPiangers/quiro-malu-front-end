@@ -1,6 +1,6 @@
 import Header from '@/app/(private)/components/header/Header'
 import Sidebar from '@/app/(private)/components/sidebar/Sidebar'
-import { SidebarContextProvider } from '@/contexts/SidebarContext'
+import { ToggleContextProvider } from '@/contexts/ToggleContext'
 import { ReactNode } from 'react'
 import SubHeader from './components/subHeader/SubHeader'
 
@@ -10,7 +10,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <SidebarContextProvider>
+    <ToggleContextProvider>
       <div className="grid h-screen grid-rows-[auto_1fr]">
         <Header className="" />
         <div className="flex h-full">
@@ -23,6 +23,6 @@ export default function Layout({ children }: LayoutProps) {
           </main>
         </div>
       </div>
-    </SidebarContextProvider>
+    </ToggleContextProvider>
   )
 }

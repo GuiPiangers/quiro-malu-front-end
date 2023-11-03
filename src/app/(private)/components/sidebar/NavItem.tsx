@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Style } from './Style'
 import { ReactNode } from 'react'
-import useSidebarContext from '@/hooks/useSidebarContext'
+import useToggleContext from '@/hooks/useToggleContext'
 
 type NavItemProps = {
   children: ReactNode
@@ -21,7 +21,7 @@ export function NavItem({
   className,
   ...props
 }: NavItemProps) {
-  const { collapsed } = useSidebarContext()
+  const { collapsed } = useToggleContext()
 
   const { navItemStyle } = Style({ active, collapsed, className })
   return (
