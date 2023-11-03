@@ -4,33 +4,31 @@ import { CiCalendar, CiDollar, CiStethoscope, CiUser } from 'react-icons/ci'
 import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
 import useToggleContext from '@/hooks/useToggleContext'
-import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 
 type SidebarProps = { className?: string }
 
 export default function Sidebar({ className }: SidebarProps) {
   const { collapsed, toggle } = useToggleContext()
-  const { SidebarStyle, sideWrapperStyle } = SidebarStyles({ collapsed })
+  const { SidebarStyle, sideWrapperStyle } = SidebarStyles({
+    collapsed,
+  })
 
   return (
     <>
       <div onClick={toggle} className={sideWrapperStyle()}></div>
       <nav className={SidebarStyle({ className })}>
         <li className="list-none space-y-1">
-          <NavItem href="/scheduling">
-            {<CiCalendar size={24} />}
+          <NavItem href="/scheduling" icon={CiCalendar}>
             Agenda
           </NavItem>
-          <NavItem href="/patients">
-            <CiUser size={24} />
+          <NavItem href="/patients" icon={CiUser}>
             Pacientes
           </NavItem>
-          <NavItem href="/services">
-            <CiStethoscope size={24} />
+          <NavItem href="/services" icon={CiStethoscope}>
             Serviços
           </NavItem>
-          <NavItem href="/finance">
-            <CiDollar size={24} />
+          <NavItem href="/finance" icon={CiDollar}>
             Financeiro
           </NavItem>
         </li>

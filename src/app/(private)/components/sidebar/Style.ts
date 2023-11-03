@@ -7,11 +7,13 @@ export const SidebarStyles = tv({
     SidebarStyle: 'z-10 h-full w-52 bg-white px-3 py-4 shadow',
     sideWrapperStyle:
       'fixed z-[5] hidden h-full w-full animate-[fadeIn_300ms] bg-black bg-opacity-20',
+    navIconStyle: 'stroke-current',
   },
   variants: {
     active: {
       true: {
-        navItemStyle: 'bg-zinc-200 hover:bg-zinc-100',
+        navItemStyle: 'bg-zinc-200 font-bold hover:bg-zinc-100',
+        navIconStyle: 'stroke-[0.5]',
       },
     },
     collapsed: {

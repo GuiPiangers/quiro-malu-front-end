@@ -13,8 +13,8 @@ type SignInData = {
 }
 type AuthContextType = {
   isAuthenticated: boolean
-  singIn(data: SignInData): void
-  singOut(): void
+  singIn(data: SignInData): Promise<void>
+  singOut(): Promise<void>
   user: UserResponse['user'] | null
 }
 
@@ -22,6 +22,7 @@ export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserResponse['user'] | null>(null)
+
   const router = useRouter()
 
   const isAuthenticated = !!user

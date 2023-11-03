@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { SidebarStyles } from './Style'
-import { ReactNode } from 'react'
+import { ElementType, ReactNode } from 'react'
 import useToggleContext from '@/hooks/useToggleContext'
 import { usePathname } from 'next/navigation'
 
 type NavItemProps = {
   children: ReactNode
+  icon?: ElementType
   className?: string
   href: string
   replace?: boolean
@@ -15,14 +16,30 @@ type NavItemProps = {
   prefetch?: boolean
 }
 
-export function NavItem({ children, className, href, ...props }: NavItemProps) {
+export function NavItem({
+  children,
+  className,
+  href,
+  icon: Icon,
+  ...props
+}: NavItemProps) {
   const { collapsed } = useToggleContext()
   const active = href === usePathname()
 
-  const { navItemStyle } = SidebarStyles({ active, collapsed, className })
+  const { navItemStyle, navIconStyle } = SidebarStyles({
+    active,
+    collapsed,
+    className,
+  })
   return (
     <ul>
-      <Link href={href} {...props} className={navItemStyle()}>
+      <Link
+        href={href}
+        {...props}
+        className={navItemStyle()}
+        data-active={active}
+      >
+        {Icon && <Icon size={24} className={navIconStyle()} />}
         {children}
       </Link>
     </ul>

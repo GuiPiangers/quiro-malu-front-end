@@ -6,10 +6,10 @@ import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState, useContext } from 'react'
-import useAuthContext from '@/hooks/useAtuhContext'
+import useAuthContext from '@/hooks/useAuthContext'
 
 export default function Login() {
-  const { singIn } = useAuthContext()
+  const { singIn, user } = useAuthContext()
   const [fields, setFields] = useState({
     email: '',
     password: '',
@@ -46,6 +46,7 @@ export default function Login() {
         <Button color="blue" onClick={handleSignIn}>
           Entrar
         </Button>
+        <p>{user?.name}</p>
         <p className="text-center text-sm">
           Ainda não possui uma conta?{' '}
           <Link className="text-blue-600 underline" href={'/register'}>

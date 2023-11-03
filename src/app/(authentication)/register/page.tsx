@@ -6,14 +6,23 @@ import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
+import useAuthContext from '@/hooks/useAuthContext'
+import { clientUserService } from '@/services/user/clientUserService'
 
 export default function Register() {
+  const { singIn } = useAuthContext()
+
   const [fields, setFields] = useState({
     name: '',
     phone: '',
     email: '',
     password: '',
   })
+
+  const handleOnSubmit = async () => {
+    await clientUserService.register(fields)
+    singIn({ email: fields.email, password: fields.password })
+  }
 
   const handleChangeValue = (
     e: ChangeEvent<HTMLInputElement>,
@@ -58,7 +67,7 @@ export default function Register() {
         <Button
           color="blue"
           onClick={() => {
-            return ''
+            handleOnSubmit()
           }}
         >
           Cadastrar
