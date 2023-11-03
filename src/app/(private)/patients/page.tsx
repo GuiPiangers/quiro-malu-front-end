@@ -13,71 +13,18 @@ export default function Home() {
           <Button color="green">Cadastrar</Button>
         </div>
 
-        <Accordion.Root>
-          <Accordion.Item>
-            <Accordion.Trigger>Trigger item</Accordion.Trigger>
-            <Accordion.Content>
-              <div className="space-y-1 text-sm">
-                <p>
-                  <strong>Nome:</strong> Henrique Santos
-                </p>
-                <p>
-                  <strong>Telefone:</strong> (51) 99999 9999
-                </p>
-                <p>
-                  <strong>Idade:</strong> 21
-                </p>
-                <p>
-                  <strong>Cidade:</strong> Sapiranga
-                </p>
-              </div>
-              <div className="flex w-28 flex-col gap-2">
-                <Button variant="outline" size="small">
-                  Contato
-                </Button>
-                <Button variant="outline" size="small">
-                  Agendar
-                </Button>
-              </div>
-            </Accordion.Content>
-          </Accordion.Item>
-          <Accordion.Item>
-            <Accordion.Trigger>
-              <span>Trigger item</span>
-              <span>Trigger item</span>
-            </Accordion.Trigger>
-            <Accordion.Content>
-              <div className="space-y-1 text-sm">
-                <p>
-                  <strong>Nome:</strong> Henrique Santos
-                </p>
-                <p>
-                  <strong>Telefone:</strong> (51) 99999 9999
-                </p>
-                <p>
-                  <strong>Idade:</strong> 21
-                </p>
-                <p>
-                  <strong>Cidade:</strong> Sapiranga
-                </p>
-              </div>
-              <div className="flex w-28 flex-col gap-2">
-                <Button variant="outline" size="small">
-                  Contato
-                </Button>
-                <Button variant="outline" size="small">
-                  Agendar
-                </Button>
-              </div>
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion.Root>
-
         <AccordionTable.Root>
           <AccordionTable.Item>
-            <AccordionTable.Row className="grid-cols-[1fr_1fr_80px_32px]">
-              <p>Henrique Santos</p>
-              <p>(51) 99999 9999</p>
+            <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
+              <AccordionTable.Cell>Henrique Santos</AccordionTable.Cell>
+              <AccordionTable.Cell>(51) 99999 9999</AccordionTable.Cell>
+              <Button
+                variant="outline"
+                size="small"
+                className="justify-self-stretch"
+              >
+                Fixa
+              </Button>
             </AccordionTable.Row>
             <AccordionTable.Content className="flex justify-between gap-2">
               <div className="space-y-1 text-sm">
@@ -95,15 +42,26 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex w-28 flex-col gap-2">
-                <div>Contato</div>
-                <div>Agendar</div>
+                <Button variant="outline" size="small">
+                  Contato
+                </Button>
+                <Button variant="outline" size="small">
+                  Agendar
+                </Button>
               </div>
             </AccordionTable.Content>
           </AccordionTable.Item>
           <AccordionTable.Item>
-            <AccordionTable.Row className="grid-cols-[1fr_1fr_80px_32px]">
-              <p>(51) 98989 9898</p>
-              <p>Guilherme Eduardo</p>
+            <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
+              <AccordionTable.Cell>(51) 98989 9898</AccordionTable.Cell>
+              <AccordionTable.Cell>Guilherme Eduardo</AccordionTable.Cell>
+              <Button
+                variant="outline"
+                size="small"
+                className="justify-self-stretch"
+              >
+                Fixa
+              </Button>
             </AccordionTable.Row>
             <AccordionTable.Content>Ac</AccordionTable.Content>
           </AccordionTable.Item>

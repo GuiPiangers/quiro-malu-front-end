@@ -17,12 +17,16 @@ export default async function Home() {
         <Logo.Text className="h-8" />
       </Logo.Root>
       <Table.Root>
-        <Table.Row className="grid-cols-3">
+        <Table.Row
+          columns={['1fr', '1fr', '1fr']}
+          className="grid-cols-3"
+          clickable
+        >
           <span>Isso aqui</span>
           <span>Aquilo ali</span>
           <span>Aquilo ali</span>
         </Table.Row>
-        <Table.Row className="grid-cols-3">
+        <Table.Row columns={['1fr', '1fr', '1fr']} className="grid-cols-3">
           <span>Isso aqui</span>
           <span>Aquilo ali</span>
           <span>Aquilo ali</span>

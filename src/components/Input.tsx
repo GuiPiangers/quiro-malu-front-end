@@ -1,9 +1,8 @@
-'use client'
-import { InputHTMLAttributes, ReactNode, useId, useState } from 'react'
+import { InputHTMLAttributes, ReactNode, useId } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
 import { PiWarningCircle } from 'react-icons/pi'
 
-const inputStyle = tv({
+const inputStyles = tv({
   slots: {
     rootStyle: 'flex flex-col gap-1',
     labelStyle: 'text-sm font-medium',
@@ -27,7 +26,7 @@ const inputStyle = tv({
     error: false,
   },
 })
-type Variants = VariantProps<typeof inputStyle>
+type Variants = VariantProps<typeof inputStyles>
 type InputProps = {
   label?: string
   leftIcon?: ReactNode
@@ -53,7 +52,7 @@ export default function Input({
     inputFieldStyle,
     labelStyle,
     messageStyle,
-  } = inputStyle({ error })
+  } = inputStyles({ error })
 
   const ValidationMessage = () => {
     if (message) {

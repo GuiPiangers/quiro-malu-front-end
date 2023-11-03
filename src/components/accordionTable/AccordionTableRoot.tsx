@@ -1,12 +1,16 @@
-'use client'
-
 import { Accordion } from '../accordion'
-import { ReactNode } from 'react'
+import { HTMLAttributes } from 'react'
+import { Table } from '../table'
 
-type AccordionTableProps = {
-  children: ReactNode
-}
+type AccordionTableProps = HTMLAttributes<HTMLDivElement>
 
-export default function AccordionTableRoot({ children }: AccordionTableProps) {
-  return <Accordion.Root>{children}</Accordion.Root>
+export default function AccordionTableRoot({
+  children,
+  ...props
+}: AccordionTableProps) {
+  return (
+    <Accordion.Root>
+      <Table.Root {...props}>{children}</Table.Root>
+    </Accordion.Root>
+  )
 }

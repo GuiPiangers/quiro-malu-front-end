@@ -17,6 +17,7 @@ export default function AccordionContent({
   const { active } = useToggleGroupContext()
   const { id } = useIdContext()
   const contentId = `acc-content${id}`
+  const headerId = `acc-header${id}`
   const isActive = active === contentId
 
   return (
@@ -24,6 +25,7 @@ export default function AccordionContent({
       {...props}
       className="grid grid-rows-[0fr] transition-all duration-300 aria-[hidden=true]:collapse aria-[hidden=false]:grid-rows-[1fr]"
       role="region"
+      aria-labelledby={headerId}
       id={contentId}
       aria-hidden={!isActive}
     >

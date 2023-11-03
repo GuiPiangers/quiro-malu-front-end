@@ -4,6 +4,7 @@ import useIdContext from '@/hooks/useIdContext'
 import useToggleGroupContext from '@/hooks/useToggleGroupContext'
 import { ReactNode, HTMLAttributes } from 'react'
 import { twMerge } from 'tailwind-merge'
+import AccordionHeader from './AccordionHeader'
 
 type AccordionTriggerProps = {
   children: ReactNode
@@ -18,22 +19,27 @@ export default function AccordionTrigger({
   const { setActive, active } = useToggleGroupContext()
   const { id } = useIdContext()
   const activeItemId = `acc-content${id}`
+  const triggerId = `acc-trigger${id}`
   const isActive = active === activeItemId
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      {...props}
-      className={twMerge('h-full w-full text-left', className)}
-      aria-expanded={isActive}
-      aria-controls={activeItemId}
-      onClick={() => setActive(activeItemId)}
-      onKeyDown={(e) => {
-        console.log(e.key)
-        if (e.key === ' ' || e.key === 'Enter') setActive(activeItemId)
-      }}
-    >
-      {children}
-    </div>
+    <AccordionHeader>
+      <div
+        role="button"
+        tabIndex={0}
+        {...props}
+        className={twMerge('group h-full w-full text-left', className)}
+        aria-expanded={isActive}
+        aria-controls={activeItemId}
+        onClick={() => {
+          setActive(activeItemId)
+        }}
+        id={triggerId}
+        onKeyDown={(e) => {
+          if (e.key === ' ' || e.key === 'Enter') setActive(activeItemId)
+        }}
+      >
+        {children}
+      </div>
+    </AccordionHeader>
   )
 }

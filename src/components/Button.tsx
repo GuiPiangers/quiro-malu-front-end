@@ -5,7 +5,7 @@ export const buttonStyle = tv({
   base: 'flex items-center justify-center gap-2 rounded px-4 py-1 transition',
   variants: {
     color: {
-      primary: 'border-main bg-main text-main hover:bg-main-hover',
+      primary: ' border-main bg-main text-main hover:bg-main-hover',
       blue: 'border-blue-600 bg-blue-600 text-blue-600 hover:bg-blue-700',
       green: 'border-green-600 bg-green-600 text-green-600 hover:bg-green-700',
       red: 'border-red-600 bg-red-600 text-red-600  hover:bg-red-700',

@@ -1,6 +1,5 @@
 'use client'
 
-import { IdContextProvider } from '@/contexts/IdContext'
 import { ToggleGroupContextProvider } from '@/contexts/ToggleGroupContext'
 import { HTMLAttributes, ReactNode } from 'react'
 
@@ -14,9 +13,7 @@ export default function AccordionRoot({
 }: AccordionRootProps) {
   return (
     <div {...props}>
-      <ToggleGroupContextProvider>
-        <IdContextProvider>{children}</IdContextProvider>
-      </ToggleGroupContextProvider>
+      <ToggleGroupContextProvider>{children}</ToggleGroupContextProvider>
     </div>
   )
 }

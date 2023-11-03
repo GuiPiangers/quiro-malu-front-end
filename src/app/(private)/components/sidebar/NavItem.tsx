@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Style } from './Style'
+import { SidebarStyles } from './Style'
 import { ReactNode } from 'react'
 import useToggleContext from '@/hooks/useToggleContext'
 
@@ -23,7 +23,7 @@ export function NavItem({
 }: NavItemProps) {
   const { collapsed } = useToggleContext()
 
-  const { navItemStyle } = Style({ active, collapsed, className })
+  const { navItemStyle } = SidebarStyles({ active, collapsed, className })
   return (
     <ul>
       <Link {...props} className={navItemStyle()}>

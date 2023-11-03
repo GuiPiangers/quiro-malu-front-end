@@ -1,7 +1,7 @@
 'use client'
 
 import { CiCalendar, CiDollar, CiStethoscope, CiUser } from 'react-icons/ci'
-import { Style } from './Style'
+import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
 import useToggleContext from '@/hooks/useToggleContext'
 
@@ -9,7 +9,7 @@ type SidebarProps = { className?: string }
 
 export default function Sidebar({ className }: SidebarProps) {
   const { collapsed, toggle } = useToggleContext()
-  const { SidebarStyle, sideWrapperStyle } = Style({ collapsed })
+  const { SidebarStyle, sideWrapperStyle } = SidebarStyles({ collapsed })
 
   return (
     <>
