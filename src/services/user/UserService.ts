@@ -1,11 +1,5 @@
+import { CreateUserData } from '@/app/(authentication)/register/page'
 import { SignInData } from '@/contexts/AuthContext'
-
-type UserDTO = {
-  name: string
-  email: string
-  phone: string
-  password: string
-}
 
 export type UserResponse = {
   token: string
@@ -24,7 +18,7 @@ export class UserService {
     ) => Promise<T>,
   ) {}
 
-  async register(data: UserDTO): Promise<UserDTO> {
+  async register(data: CreateUserData): Promise<CreateUserData> {
     const res = await fetch('http://localhost:8000/register', {
       method: 'POST',
       body: JSON.stringify(data),

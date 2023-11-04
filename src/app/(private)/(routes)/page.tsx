@@ -9,10 +9,10 @@ export default async function Home() {
 
   return (
     <section className="">
-      <Input.Root>
+      {/* <Input.Root>
         <Input.Label>Teste de input</Input.Label>
         <Input.Field placeholder="Digite algo..." />
-      </Input.Root>
+      </Input.Root> */}
 
       <p>{profile ? profile.name : ''}</p>
       <UserProfile />

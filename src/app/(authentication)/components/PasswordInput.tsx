@@ -1,11 +1,13 @@
 'use client'
 import { Input } from '@/components/input'
-import { InputHTMLAttributes, useState } from 'react'
+import { InputVariants } from '@/components/input/InputField'
+import { InputHTMLAttributes, useState, forwardRef } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
-export default function PasswordInput(
-  props: InputHTMLAttributes<HTMLInputElement>,
-) {
+const PasswordInput = (
+  { children, ...props }: InputHTMLAttributes<HTMLInputElement> & InputVariants,
+  ref: any,
+) => {
   const [isVisible, setIsVisible] = useState(false)
 
   const handleChangeVisible = () => {
@@ -22,9 +24,9 @@ export default function PasswordInput(
       <Input.Label>Senha</Input.Label>
       <Input.Field
         {...props}
-        name="password"
         placeholder="Senha251"
         type={isVisible ? 'text' : `password`}
+        ref={ref}
         rightIcon={
           <button
             disabled={props.disabled}
@@ -35,6 +37,9 @@ export default function PasswordInput(
           </button>
         }
       />
+      {children}
     </Input.Root>
   )
 }
+
+export default forwardRef(PasswordInput)

@@ -9,7 +9,7 @@ import useAuthContext from '@/hooks/useAuthContext'
 import { Input } from '@/components/input'
 
 export default function Login() {
-  const { singIn, user } = useAuthContext()
+  const { singIn } = useAuthContext()
   const [isLoading, setIsLoading] = useState(false)
   const [fields, setFields] = useState({
     email: '',
@@ -53,7 +53,6 @@ export default function Login() {
         <Button color="blue" onClick={handleSignIn} disabled={isLoading}>
           Entrar
         </Button>
-        <p>{user?.name}</p>
         <p className="text-center text-sm">
           Ainda não possui uma conta?{' '}
           <Link className="text-blue-600 underline" href={'/register'}>

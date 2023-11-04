@@ -1,28 +1,29 @@
 'use client'
 
-import { InputHTMLAttributes, ReactNode } from 'react'
+import { InputHTMLAttributes, ReactNode, forwardRef } from 'react'
 import { VariantProps } from 'tailwind-variants'
 import { inputStyles } from './Styles'
 import useIdContext from '@/hooks/useIdContext'
 
-type Variants = VariantProps<typeof inputStyles>
+export type InputVariants = VariantProps<typeof inputStyles>
 type InputFieldProps = {
   leftIcon?: ReactNode
   rightIcon?: ReactNode
 } & InputHTMLAttributes<HTMLInputElement> &
-  Variants
+  InputVariants
 
-export default function InputField({
-  className,
-  error,
-  disabled,
-  leftIcon,
-  type,
-  rightIcon,
-  ...props
-}: InputFieldProps) {
+export const InputField = (
+  {
+    className,
+    error,
+    disabled,
+    leftIcon,
+    rightIcon,
+    ...props
+  }: InputFieldProps,
+  ref: any,
+) => {
   const { id } = useIdContext()
-
   const { inputWrapperStyle, inputFieldStyle } = inputStyles({
     disabled,
     error,
@@ -31,8 +32,10 @@ export default function InputField({
   return (
     <div className={inputWrapperStyle({ className })}>
       {leftIcon || null}
-      <input id={id} {...props} className={inputFieldStyle()} />
+      <input id={id} ref={ref} {...props} className={inputFieldStyle()} />
       {rightIcon || null}
     </div>
   )
 }
+
+export default forwardRef(InputField)

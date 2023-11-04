@@ -10,10 +10,9 @@ export default function AuthForm({ children, title, ...props }: AuthFormProps) {
   return (
     <form
       {...props}
-      className="w-96 bg-white rounded-lg shadow p-4 flex flex-col gap-6 "
-      onSubmit={(e) => e.preventDefault()}
+      className="flex w-96 flex-col gap-6 rounded-lg bg-white p-4 shadow "
     >
-      <h1 className="text-2xl font-bold text-center">{title}</h1>
+      <h1 className="text-center text-2xl font-bold">{title}</h1>
       {children}
     </form>
   )

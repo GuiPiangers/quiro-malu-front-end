@@ -4,83 +4,130 @@ import AuthForm from '../components/AuthForm'
 import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
-import { ChangeEvent, useState } from 'react'
+
 import useAuthContext from '@/hooks/useAuthContext'
 import { clientUserService } from '@/services/user/clientUserService'
 import { Input } from '@/components/input'
+import { useForm, FormProvider } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const createUserSchema = z.object({
+  name: z
+    .string()
+    .min(3)
+    .max(120)
+    .refine((value) => value.split(' ').length > 1, {
+      message: 'Deve ser informado o nome completo (nome e sobrenome)',
+    })
+    .transform((name) => {
+      return name
+        .toLocaleLowerCase()
+        .trim()
+        .split(' ')
+        .map((word) => {
+          if (word.length <= 3 && word[word.length - 1] !== '.') return word
+          return word[0].toLocaleUpperCase().concat(word.substring(1))
+        })
+        .join(' ')
+    }),
+  email: z.string().email({
+    message: 'Formato de e-mail inválido',
+  }),
+  phone: z.string().regex(/^[(][0-9]{2}[)][ ][0-9]{5}[ ][0-9]{4}$/, {
+    message: 'Formato de telefone inválido - padrão (DDD) 99999 9999',
+  }),
+  password: z
+    .string()
+    .min(5, {
+      message: 'A senha precisa ter no mínimo 5 caracteres',
+    })
+    .refine((value) => value.match(/[A-Z]/), {
+      message: 'A senha deve conter pelo menos uma letra maiúscula',
+    })
+    .refine((value) => value.match(/[0-9!"#$%&'(.)*+,/:;<=>?@[\]^_`{|}~-]/), {
+      message: 'A senha deve conter pelo menos um número ou carácter especial',
+    }),
+})
+
+export type CreateUserData = z.infer<typeof createUserSchema>
 
 export default function Register() {
   const { singIn } = useAuthContext()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const [fields, setFields] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    password: '',
+  const createUserForm = useForm<CreateUserData>({
+    resolver: zodResolver(createUserSchema),
   })
 
-  const handleOnSubmit = async () => {
-    setIsLoading(true)
-    const user = await clientUserService.register(fields)
-    console.log(user)
-    if (
-      typeof user === 'object' &&
-      Object.hasOwn(user, 'email') &&
-      Object.hasOwn(user, 'password')
-    )
+  const createUser = async (data: CreateUserData) => {
+    const user = await clientUserService.register(data)
+    if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
       await singIn({ email: user.email, password: user.password })
-    setIsLoading(false)
   }
 
-  const handleChangeValue = (
-    e: ChangeEvent<HTMLInputElement>,
-    field: 'name' | 'phone' | 'email' | 'password',
-  ) => {
-    const value = e.target.value
-    setFields((data) => ({ ...data, [field]: value }))
-  }
+  const {
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    register,
+  } = createUserForm
+
+  console.log(errors)
 
   return (
-    <AuthForm title="Registrar">
+    <AuthForm title="Registrar" onSubmit={handleSubmit(createUser)}>
       <div className="flex flex-col gap-4">
         <Input.Root>
-          <Input.Label>Email</Input.Label>
+          <Input.Label>Nome</Input.Label>
           <Input.Field
+            error={!!errors.name}
+            {...register('name')}
             placeholder="João da Silva"
             type="text"
-            value={fields.email}
-            disabled={isLoading}
-            onChange={(e) => handleChangeValue(e, 'name')}
+            disabled={isSubmitting}
           />
+          {errors.name && (
+            <Input.Message error>{errors.name.message}</Input.Message>
+          )}
         </Input.Root>
+
         <Input.Root>
           <Input.Label>Telefone</Input.Label>
           <Input.Field
+            error={!!errors.phone}
+            {...register('phone')}
             placeholder="(51) 99999 9999"
-            disabled={isLoading}
+            disabled={isSubmitting}
             type="tel"
-            value={fields.phone}
-            onChange={(e) => handleChangeValue(e, 'phone')}
           />
+          {errors.phone && (
+            <Input.Message error>{errors.phone.message}</Input.Message>
+          )}
         </Input.Root>
+
         <Input.Root>
           <Input.Label>Email</Input.Label>
           <Input.Field
+            error={!!errors.email}
+            {...register('email')}
             placeholder="exemplo@gmail.com"
             type="email"
-            value={fields.email}
-            disabled={isLoading}
-            onChange={(e) => handleChangeValue(e, 'email')}
+            disabled={isSubmitting}
           />
+          {errors.email && (
+            <Input.Message error>{errors.email.message}</Input.Message>
+          )}
         </Input.Root>
-        <PasswordInput
-          disabled={isLoading}
-          value={fields.password}
-          onChange={(e) => handleChangeValue(e, 'password')}
-        />
 
-        <Button color="blue" disabled={isLoading} onClick={handleOnSubmit}>
+        <PasswordInput
+          {...register('password')}
+          error={!!errors.password}
+          disabled={isSubmitting}
+        >
+          {errors.password && (
+            <Input.Message error>{errors.password.message}</Input.Message>
+          )}
+        </PasswordInput>
+
+        <Button color="blue" disabled={isSubmitting}>
           Cadastrar
         </Button>
 

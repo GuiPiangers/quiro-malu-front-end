@@ -1,5 +1,5 @@
-import Input from './Input'
 import { IoIosSearch } from 'react-icons/io'
+import { Input } from './input'
 
 type SearchInputProps = {
   className?: string
@@ -7,11 +7,13 @@ type SearchInputProps = {
 
 export default function SearchInput({ className }: SearchInputProps) {
   return (
-    <Input
-      className={className}
-      placeholder="Pesquisar..."
-      autoComplete="off"
-      leftIcon={<IoIosSearch size={24} />}
-    />
+    <Input.Root>
+      <Input.Field
+        className={className}
+        placeholder="Pesquisar..."
+        autoComplete="off"
+        leftIcon={<IoIosSearch size={24} />}
+      ></Input.Field>
+    </Input.Root>
   )
 }

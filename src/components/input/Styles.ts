@@ -13,7 +13,7 @@ export const inputStyles = tv({
     error: {
       true: {
         inputWrapperStyle:
-          'bg-red-50 text-red-600 outline outline-1 outline-red-600 focus-within:bg-white focus-within:text-black focus-within:ring-red-50',
+          'bg-red-50 text-red-600 outline outline-1 outline-red-600 focus-within:bg-white focus-within:text-black focus-within:outline-red-600 focus-within:ring-red-50',
         inputFieldStyle: 'placeholder:text-red-300',
         messageStyle: 'text-red-600',
       },
