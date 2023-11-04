@@ -11,8 +11,9 @@ export const buttonStyle = tv({
       red: 'border-red-600 bg-red-600 text-red-600  hover:bg-red-700',
     },
     variant: {
-      solid: 'border-none text-white',
-      outline: 'border bg-transparent hover:text-white',
+      solid: 'border-none text-white disabled:bg-zinc-400 ',
+      outline:
+        'border bg-transparent hover:text-white disabled:border-zinc-300 disabled:bg-transparent disabled:text-zinc-400',
     },
     size: {
       small: 'px-2 text-xs font-medium',

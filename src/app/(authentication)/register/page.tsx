@@ -1,6 +1,5 @@
 'use client'
 
-import Input from '@/components/Input'
 import AuthForm from '../components/AuthForm'
 import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
@@ -8,9 +7,11 @@ import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
 import useAuthContext from '@/hooks/useAuthContext'
 import { clientUserService } from '@/services/user/clientUserService'
+import { Input } from '@/components/input'
 
 export default function Register() {
   const { singIn } = useAuthContext()
+  const [isLoading, setIsLoading] = useState(false)
 
   const [fields, setFields] = useState({
     name: '',
@@ -20,8 +21,16 @@ export default function Register() {
   })
 
   const handleOnSubmit = async () => {
-    await clientUserService.register(fields)
-    singIn({ email: fields.email, password: fields.password })
+    setIsLoading(true)
+    const user = await clientUserService.register(fields)
+    console.log(user)
+    if (
+      typeof user === 'object' &&
+      Object.hasOwn(user, 'email') &&
+      Object.hasOwn(user, 'password')
+    )
+      await singIn({ email: user.email, password: user.password })
+    setIsLoading(false)
   }
 
   const handleChangeValue = (
@@ -35,41 +44,43 @@ export default function Register() {
   return (
     <AuthForm title="Registrar">
       <div className="flex flex-col gap-4">
-        <Input
-          name="name"
-          label="Nome"
-          placeholder="Seu nome"
-          type="text"
-          value={fields.name}
-          onChange={(e) => handleChangeValue(e, 'name')}
-        />
-        <Input
-          name="phone"
-          label="Celular"
-          placeholder="(51) 99999 9999"
-          type="tel"
-          value={fields.phone}
-          onChange={(e) => handleChangeValue(e, 'phone')}
-        />
-        <Input
-          name="email"
-          label="Email"
-          placeholder="exemplo@gmail.com"
-          type="email"
-          value={fields.email}
-          onChange={(e) => handleChangeValue(e, 'email')}
-        />
+        <Input.Root>
+          <Input.Label>Email</Input.Label>
+          <Input.Field
+            placeholder="João da Silva"
+            type="text"
+            value={fields.email}
+            disabled={isLoading}
+            onChange={(e) => handleChangeValue(e, 'name')}
+          />
+        </Input.Root>
+        <Input.Root>
+          <Input.Label>Telefone</Input.Label>
+          <Input.Field
+            placeholder="(51) 99999 9999"
+            disabled={isLoading}
+            type="tel"
+            value={fields.phone}
+            onChange={(e) => handleChangeValue(e, 'phone')}
+          />
+        </Input.Root>
+        <Input.Root>
+          <Input.Label>Email</Input.Label>
+          <Input.Field
+            placeholder="exemplo@gmail.com"
+            type="email"
+            value={fields.email}
+            disabled={isLoading}
+            onChange={(e) => handleChangeValue(e, 'email')}
+          />
+        </Input.Root>
         <PasswordInput
+          disabled={isLoading}
           value={fields.password}
           onChange={(e) => handleChangeValue(e, 'password')}
         />
 
-        <Button
-          color="blue"
-          onClick={() => {
-            handleOnSubmit()
-          }}
-        >
+        <Button color="blue" disabled={isLoading} onClick={handleOnSubmit}>
           Cadastrar
         </Button>
 

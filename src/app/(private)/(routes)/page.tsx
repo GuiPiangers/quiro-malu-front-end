@@ -1,15 +1,19 @@
-import Input from '@/components/Input'
 import { Logo } from '@/components/logo'
 import UserProfile from '@/app/(private)/components/UserProfile'
 import { userService } from '@/services/user/serverUserService'
 import { Table } from '@/components/table'
+import { Input } from '@/components/input/index'
 
 export default async function Home() {
   const profile = await userService.get()
 
   return (
     <section className="">
-      <Input label="Nome"></Input>
+      <Input.Root>
+        <Input.Label>Teste de input</Input.Label>
+        <Input.Field placeholder="Digite algo..." />
+      </Input.Root>
+
       <p>{profile ? profile.name : ''}</p>
       <UserProfile />
       <Logo.Root>

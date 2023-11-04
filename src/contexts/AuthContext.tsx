@@ -7,9 +7,9 @@ import { UserResponse } from '@/services/user/UserService'
 import { clientUserService } from '@/services/user/clientUserService'
 import { clientCookie } from '@/services/cookies/clientCookies'
 
-type SignInData = {
-  email: string
-  password: string
+export type SignInData = {
+  email: string | null
+  password: string | null
 }
 type AuthContextType = {
   isAuthenticated: boolean

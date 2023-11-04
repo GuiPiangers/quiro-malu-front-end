@@ -1,12 +1,9 @@
+import { SignInData } from '@/contexts/AuthContext'
+
 type UserDTO = {
   name: string
   email: string
   phone: string
-  password: string
-}
-
-type LoginData = {
-  email: string
   password: string
 }
 
@@ -27,51 +24,35 @@ export class UserService {
     ) => Promise<T>,
   ) {}
 
-  async register(data: UserDTO) {
-    try {
-      await fetch('http://localhost:8000/register', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-      })
-    } catch (err: any) {
-      console.log(err.message)
-    }
+  async register(data: UserDTO): Promise<UserDTO> {
+    const res = await fetch('http://localhost:8000/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    })
+    return await res.json()
   }
 
-  async login(data: LoginData): Promise<UserResponse | void> {
-    try {
-      const res = await this.fetchData<UserResponse>('/login', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
-      return res
-    } catch (err) {
-      console.log(err)
-    }
+  async login(data: SignInData): Promise<UserResponse | void> {
+    const res = await this.fetchData<UserResponse>('/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+    return res
   }
 
   async logout(refreshTokenId: string): Promise<void> {
-    try {
-      await this.fetchData<UserResponse>('/logout', {
-        method: 'POST',
-        body: JSON.stringify({ refreshTokenId }),
-      })
-    } catch (err) {
-      console.log(err)
-    }
+    await this.fetchData<UserResponse>('/logout', {
+      method: 'POST',
+      body: JSON.stringify({ refreshTokenId }),
+    })
   }
 
   async get() {
-    try {
-      const res = await this.fetchData<UserResponse['user']>('/profile', {
-        method: 'GET',
-        cache: 'no-store',
-      })
-
-      return res
-    } catch (err) {
-      console.log(err)
-    }
+    const res = await this.fetchData<UserResponse['user']>('/profile', {
+      method: 'GET',
+      cache: 'no-store',
+    })
+    return res
   }
 }
