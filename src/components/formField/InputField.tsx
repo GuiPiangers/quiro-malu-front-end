@@ -11,7 +11,7 @@ import useIdContext from '@/hooks/useIdContext'
 export const inputStyles = tv({
   slots: {
     inputWrapperStyle:
-      'flex items-center justify-center rounded-lg bg-white text-sm font-normal leading-5 text-slate-900 shadow-md shadow-slate-100 outline outline-1 outline-slate-300 hover:bg-slate-50 hover:outline hover:outline-1 focus:border-purple-500 focus-visible:outline-0',
+      'flex items-center rounded-lg bg-white text-sm font-normal leading-5 text-slate-900 shadow-md shadow-slate-100 outline outline-1 outline-slate-300 hover:bg-slate-50 hover:outline hover:outline-1  ',
     inputFieldStyle: 'flex-grow rounded-md border-none px-3 py-2 outline-none',
   },
   variants: {
@@ -30,7 +30,7 @@ export const inputStyles = tv({
     },
     disabled: {
       true: {
-        inputWrapperStyle: 'pointer-events-none bg-zinc-100 text-zinc-400 ',
+        inputWrapperStyle: 'pointer-events-none bg-slate-100 text-slate-400 ',
         inputFieldStyle: 'placeholder-transparent',
       },
     },

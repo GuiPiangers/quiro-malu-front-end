@@ -18,7 +18,7 @@ export default function TableAccordionRow({
     <Accordion.Trigger tabIndex={-1}>
       <Table.Row
         columns={TableAccordionColumns}
-        className={twMerge('group-aria-expanded:bg-zinc-100', className)}
+        className={twMerge('group-aria-expanded:bg-slate-100', className)}
         clickable
         {...props}
       >

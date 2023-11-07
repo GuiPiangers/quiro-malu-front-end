@@ -2,8 +2,7 @@ import { Logo } from '@/components/logo'
 import UserProfile from '@/app/(private)/components/UserProfile'
 import { userService } from '@/services/user/serverUserService'
 import { Table } from '@/components/table'
-import { Input } from '@/components/input/index'
-import SelectField from '@/components/input/select/SelectField'
+import { Input } from '@/components/formField/index'
 
 export default async function Home() {
   const profile = await userService.get()
@@ -37,7 +36,6 @@ export default async function Home() {
           <span>Aquilo ali</span>
         </Table.Row>
       </Table.Root>
-      <SelectField placeholder="Selecione um item"></SelectField>
     </section>
   )
 }

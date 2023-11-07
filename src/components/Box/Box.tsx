@@ -7,7 +7,7 @@ export function Box({ children, className, asChild, ...props }: BoxProps) {
   return (
     <div
       {...props}
-      className={twMerge('rounded-lg bg-white p-4 shadow', className)}
+      className={twMerge('rounded-xl bg-white p-4 shadow', className)}
     >
       {children}
     </div>

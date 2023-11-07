@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants'
 
 export const inputStyles = tv({
   slots: {
-    rootStyle: 'flex flex-col gap-1',
+    rootStyle: 'flex w-full flex-col gap-1',
     labelStyle: 'text-sm font-medium',
     inputWrapperStyle:
       'box-border w-80 rounded-lg border border-solid border-slate-200 bg-white px-3 py-2 text-left font-sans text-sm text-slate-900 shadow-md shadow-slate-100 outline-0 transition-all hover:bg-slate-50',
@@ -27,7 +27,7 @@ export const inputStyles = tv({
     },
     disabled: {
       true: {
-        inputWrapperStyle: 'pointer-events-none bg-zinc-100 text-zinc-400 ',
+        inputWrapperStyle: 'pointer-events-none bg-slate-100 text-slate-400 ',
       },
     },
   },
@@ -36,7 +36,8 @@ export const inputStyles = tv({
       focus: true,
       error: true,
       className: {
-        inputWrapperStyle: 'bg-white text-black outline-red-600 ring-red-50 ',
+        inputWrapperStyle:
+          'bg-white text-slate-900 outline-red-600 ring-red-50 ',
       },
     },
   ],

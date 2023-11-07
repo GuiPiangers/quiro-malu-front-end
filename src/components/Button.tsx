@@ -3,7 +3,7 @@ import { tv, VariantProps } from 'tailwind-variants'
 import { Slot } from '@radix-ui/react-slot'
 
 export const buttonStyle = tv({
-  base: 'flex items-center justify-center gap-2 rounded px-6 py-2 text-sm transition',
+  base: 'flex items-center justify-center gap-2 rounded-lg px-6 py-2 text-sm transition',
   variants: {
     color: {
       primary: ' border-main bg-main text-main hover:bg-main-hover',
@@ -12,9 +12,9 @@ export const buttonStyle = tv({
       red: 'border-red-600 bg-red-600 text-red-600  hover:bg-red-700',
     },
     variant: {
-      solid: 'border-none text-white disabled:bg-zinc-400 ',
+      solid: 'border-none text-white disabled:bg-slate-400 ',
       outline:
-        'border bg-transparent hover:text-white disabled:border-zinc-300 disabled:bg-transparent disabled:text-zinc-400',
+        'border bg-transparent hover:text-white disabled:border-slate-300 disabled:bg-transparent disabled:text-slate-400',
     },
     size: {
       small: 'px-2 py-1 text-xs font-medium',

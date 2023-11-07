@@ -29,7 +29,7 @@ export const inputStyles = tv({
     },
     disabled: {
       true: {
-        inputWrapperStyle: 'pointer-events-none bg-zinc-100 text-zinc-400 ',
+        inputWrapperStyle: 'pointer-events-none bg-slate-100 text-slate-400 ',
         inputFieldStyle: 'placeholder-transparent',
       },
     },

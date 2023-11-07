@@ -6,7 +6,7 @@ import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState, useContext } from 'react'
 import useAuthContext from '@/hooks/useAuthContext'
-import { Input } from '@/components/input'
+import { Input } from '@/components/formField'
 
 export default function Login() {
   const { singIn } = useAuthContext()

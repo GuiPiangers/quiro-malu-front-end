@@ -1,5 +1,5 @@
 'use client'
-import { Input } from '@/components/input'
+import { Input } from '@/components/formField'
 
 import Phone from '@/utils/Phone'
 import { useState } from 'react'

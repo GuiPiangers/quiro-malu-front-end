@@ -9,7 +9,9 @@ import {
   SelectRootSlotProps,
 } from '@mui/base/Select'
 import { twMerge } from 'tailwind-merge'
-import { Option } from './Option'
+import { RxCaretDown } from 'react-icons/rx'
+import useIdContext from '@/hooks/useIdContext'
+import { inputStyles } from '../InputField'
 
 const Button = React.forwardRef(function Button<
   TValue extends {},
@@ -22,33 +24,27 @@ const Button = React.forwardRef(function Button<
   return (
     <button type="button" {...other} ref={ref}>
       {other.children}
-      {/* <UnfoldMoreRoundedIcon /> */}
+      <RxCaretDown
+        size={24}
+        className="transition duration-300 group-aria-expanded:rotate-180"
+      />
     </button>
   )
 })
 
-export default function UnstyledSelectBasic() {
-  return (
-    <div className={''}>
-      <Select defaultValue={10}>
-        <Option value={10}>Ten</Option>
-        <Option value={20}>Twenty</Option>
-        <Option value={30}>Thirty</Option>
-      </Select>
-    </div>
-  )
-}
-
 const resolveSlotProps = (fn: any, args: any) =>
   typeof fn === 'function' ? fn(args) : fn
 
-const Select = React.forwardRef(function CustomSelect<
+export const SelectField = React.forwardRef(function CustomSelect<
   TValue extends {},
   Multiple extends boolean,
 >(
-  props: SelectProps<TValue, Multiple>,
+  { error, ...props }: { error?: boolean } & SelectProps<TValue, Multiple>,
   ref: React.ForwardedRef<HTMLButtonElement>,
 ) {
+  const { id } = useIdContext()
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const { inputWrapperStyle } = inputStyles({ disabled: props.disabled, error })
   return (
     <BaseSelect
       ref={ref}
@@ -65,14 +61,16 @@ const Select = React.forwardRef(function CustomSelect<
           )
           return {
             ...resolvedSlotProps,
-            className: twMerge(
-              `text-sm box-border w-80 px-3 py-2 rounded-lg text-left bg-white border border-solid border-slate-200 text-slate-900 transition-all hover:bg-slate-50 outline-0 shadow-md shadow-slate-100 ${
-                ownerState.focusVisible
-                  ? 'focus-visible:ring-4 ring-purple-500/30 focus-visible:border-purple-500'
-                  : ''
-              } `,
-              resolvedSlotProps?.className,
-            ),
+            ref: triggerRef,
+            className: inputWrapperStyle({
+              focus: ownerState.focusVisible,
+              className: twMerge(
+                'w-full p-1.5 relative px-3 py-2 [&>svg]:text-base	[&>svg]:absolute [&>svg]:h-full [&>svg]:top-0 [&>svg]:right-2.5',
+                resolvedSlotProps?.className,
+              ),
+            }),
+
+            id: id || props.id,
           }
         },
         listbox: (ownerState) => {
@@ -83,9 +81,10 @@ const Select = React.forwardRef(function CustomSelect<
           return {
             ...resolvedSlotProps,
             className: twMerge(
-              `text-sm p-1.5 my-3 w-80 rounded-xl overflow-auto outline-0 bg-white border text-slate-900 `,
+              `text-sm p-1.5 my-3 rounded-xl overflow-auto bg-white border text-slate-900 `,
               resolvedSlotProps?.className,
             ),
+            style: { width: triggerRef.current?.offsetWidth },
           }
         },
         popper: (ownerState) => {

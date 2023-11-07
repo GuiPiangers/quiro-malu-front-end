@@ -1,6 +1,6 @@
 'use client'
-import { Input } from '@/components/input'
-import { InputVariants } from '@/components/input/InputField'
+import { Input } from '@/components/formField'
+import { InputVariants } from '@/components/formField/InputField'
 import { InputHTMLAttributes, useState, forwardRef } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 

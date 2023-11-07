@@ -7,12 +7,11 @@ import Button from '@/components/Button'
 
 import useAuthContext from '@/hooks/useAuthContext'
 import { clientUserService } from '@/services/user/clientUserService'
-import { Input } from '@/components/input'
+import { Input } from '@/components/formField'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
-import { Input as MuiInput } from '@/components/muiInput/Input'
 
 const createUserSchema = z.object({
   name: z
@@ -59,21 +58,18 @@ export default function Register() {
   const createUserForm = useForm<CreateUserData>({
     resolver: zodResolver(createUserSchema),
   })
-
   const createUser = async (data: CreateUserData) => {
     const user = await clientUserService.register(data)
     if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
       await singIn({ email: user.email, password: user.password })
   }
-
   const {
     handleSubmit,
     formState: { isSubmitting, errors },
     register,
     setValue,
+    control,
   } = createUserForm
-
-  console.log(errors)
 
   return (
     <AuthForm title="Registrar" onSubmit={handleSubmit(createUser)}>

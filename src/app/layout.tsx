@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={`${poppins.className} bg-zinc-100`}>
+      <body className={`${poppins.className} bg-slate-50`}>
         <AuthContextProvider>{children}</AuthContextProvider>
       </body>
     </html>
