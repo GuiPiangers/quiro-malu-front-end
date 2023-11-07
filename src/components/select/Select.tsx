@@ -66,7 +66,7 @@ const Select = React.forwardRef(function CustomSelect<
           return {
             ...resolvedSlotProps,
             className: twMerge(
-              `text-sm font-sans box-border w-80 px-3 py-2 rounded-lg text-left bg-white border border-solid border-slate-200 text-slate-900 transition-all hover:bg-slate-50 outline-0 shadow-md shadow-slate-100 ${
+              `text-sm box-border w-80 px-3 py-2 rounded-lg text-left bg-white border border-solid border-slate-200 text-slate-900 transition-all hover:bg-slate-50 outline-0 shadow-md shadow-slate-100 ${
                 ownerState.focusVisible
                   ? 'focus-visible:ring-4 ring-purple-500/30 focus-visible:border-purple-500'
                   : ''

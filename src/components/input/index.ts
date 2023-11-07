@@ -1,4 +1,4 @@
-import InputField from './InputField'
+import { InputField } from './InputField'
 import InputLabel from './InputLabel'
 import InputRoot from './InputRoot'
 import InputMessage from './InputMessage'

@@ -1,14 +1,11 @@
-import { Input } from '@/components/input'
+import { Input } from '@/components/muiInput/Input'
 import UnstyledSelectBasic from '@/components/select/Select'
 
 export default function Scheduling() {
   return (
-    <div>
+    <div className="space-y-2 bg-white p-4">
       <UnstyledSelectBasic></UnstyledSelectBasic>
-      <Input.Root>
-        <Input.Label>Input</Input.Label>
-        <Input.Field />
-      </Input.Root>
+      <Input></Input>
     </div>
   )
 }

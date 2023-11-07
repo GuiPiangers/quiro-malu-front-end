@@ -6,7 +6,6 @@ import { Input as BaseInput, InputProps } from '@mui/base/Input'
 import { twMerge } from 'tailwind-merge'
 
 import { tv } from 'tailwind-variants'
-import useIdContext from '@/hooks/useIdContext'
 
 export const inputStyles = tv({
   slots: {
@@ -53,14 +52,12 @@ export const inputStyles = tv({
 const resolveSlotProps = (fn: any, args: any) =>
   typeof fn === 'function' ? fn(args) : fn
 
-export const InputField = React.forwardRef<HTMLInputElement, InputProps>(
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
     const { inputFieldStyle, inputWrapperStyle } = inputStyles({
       disabled: props.disabled,
       error: props.error,
     })
-    const { id } = useIdContext()
-
     return (
       <BaseInput
         ref={ref}
@@ -91,7 +88,6 @@ export const InputField = React.forwardRef<HTMLInputElement, InputProps>(
               className: inputFieldStyle({
                 className: resolvedSlotProps?.className,
               }),
-              id: props.id || id,
             }
           },
         }}
