@@ -1,19 +1,31 @@
 'use client'
 
-import { InputHTMLAttributes, ReactNode, forwardRef } from 'react'
+import {
+  ChangeEvent,
+  InputHTMLAttributes,
+  ReactNode,
+  forwardRef,
+  useState,
+} from 'react'
 import { VariantProps } from 'tailwind-variants'
 import { inputStyles } from './Styles'
 import useIdContext from '@/hooks/useIdContext'
+import { Slot } from '@radix-ui/react-slot'
+import InputWrapper from './InputWrapper'
+import Phone from '@/utils/Phone'
+import Cpf from '@/utils/Cpf'
 
 export type InputVariants = VariantProps<typeof inputStyles>
-type InputFieldProps = {
+export type InputFieldProps = {
   leftIcon?: ReactNode
   rightIcon?: ReactNode
+  asChild?: boolean
 } & InputHTMLAttributes<HTMLInputElement> &
-  InputVariants
+  Omit<InputVariants, 'focus'>
 
 export const InputField = (
   {
+    asChild,
     className,
     error,
     disabled,
@@ -23,18 +35,33 @@ export const InputField = (
   }: InputFieldProps,
   ref: any,
 ) => {
+  const [focus, setFocus] = useState(false)
+  const [value, setValue] = useState('')
   const { id } = useIdContext()
   const { inputWrapperStyle, inputFieldStyle } = inputStyles({
     disabled,
     error,
+    focus,
   })
+  const Element = asChild ? Slot : 'input'
 
   return (
-    <div className={inputWrapperStyle({ className })}>
-      {leftIcon || null}
-      <input id={id} ref={ref} {...props} className={inputFieldStyle()} />
-      {rightIcon || null}
-    </div>
+    <InputWrapper
+      className={inputWrapperStyle({ className })}
+      error={error}
+      disabled={disabled}
+      leftIcon={leftIcon}
+      rightIcon={rightIcon}
+    >
+      <Element
+        id={id}
+        ref={ref}
+        {...props}
+        className={inputFieldStyle()}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+      />
+    </InputWrapper>
   )
 }
 

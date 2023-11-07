@@ -11,6 +11,7 @@ import { Input } from '@/components/input'
 import { useForm, FormProvider } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import Phone from '@/utils/Phone'
 
 const createUserSchema = z.object({
   name: z
@@ -68,6 +69,7 @@ export default function Register() {
     handleSubmit,
     formState: { isSubmitting, errors },
     register,
+    setValue,
   } = createUserForm
 
   console.log(errors)
@@ -97,6 +99,9 @@ export default function Register() {
             placeholder="(51) 99999 9999"
             disabled={isSubmitting}
             type="tel"
+            onChange={(e) => {
+              setValue('phone', Phone.format(e.target.value))
+            }}
           />
           {errors.phone && (
             <Input.Message error>{errors.phone.message}</Input.Message>

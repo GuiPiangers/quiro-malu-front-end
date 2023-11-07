@@ -2,6 +2,7 @@ import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
+import Link from 'next/link'
 
 export default function Patients() {
   return (
@@ -9,10 +10,12 @@ export default function Patients() {
       <Box>
         <div className="mb-6 grid grid-cols-[1fr_auto] items-center gap-8">
           <SearchInput className="text-base" />
-          <Button color="green">Cadastrar</Button>
+          <Button asChild color="green">
+            <Link href="/patients/create">Cadastrar</Link>
+          </Button>
         </div>
 
-        <AccordionTable.Root>
+        <AccordionTable.Root className="text-sm">
           <AccordionTable.Item>
             <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
               <AccordionTable.Cell>Henrique Santos</AccordionTable.Cell>

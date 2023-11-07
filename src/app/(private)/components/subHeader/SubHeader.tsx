@@ -7,6 +7,7 @@ const routes = [
   { name: 'Home', path: '/' },
   { name: 'Agenda', path: '/scheduling' },
   { name: 'Pacientes', path: '/patients' },
+  { name: 'Novo Paciente', path: '/patients/create' },
   { name: 'Serviços', path: '/services' },
   { name: 'Financeiro', path: '/finance' },
 ]

@@ -1,8 +1,9 @@
 import { ButtonHTMLAttributes } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
+import { Slot } from '@radix-ui/react-slot'
 
 export const buttonStyle = tv({
-  base: 'flex items-center justify-center gap-2 rounded px-4 py-1 transition',
+  base: 'flex items-center justify-center gap-2 rounded px-6 py-2 text-sm transition',
   variants: {
     color: {
       primary: ' border-main bg-main text-main hover:bg-main-hover',
@@ -16,7 +17,7 @@ export const buttonStyle = tv({
         'border bg-transparent hover:text-white disabled:border-zinc-300 disabled:bg-transparent disabled:text-zinc-400',
     },
     size: {
-      small: 'px-2 text-xs font-medium',
+      small: 'px-2 py-1 text-xs font-medium',
     },
   },
   defaultVariants: {
@@ -47,7 +48,9 @@ export const buttonStyle = tv({
   ],
 })
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+type ButtonProps = {
+  asChild?: boolean
+} & ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonStyle>
 
 export default function Button({
@@ -55,15 +58,17 @@ export default function Button({
   variant,
   color,
   className,
+  asChild,
   size,
   ...props
 }: ButtonProps) {
+  const Element = asChild ? Slot : 'button'
   return (
-    <button
+    <Element
       className={buttonStyle({ variant, size, color, className })}
       {...props}
     >
       {children}
-    </button>
+    </Element>
   )
 }

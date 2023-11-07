@@ -5,17 +5,24 @@ export const inputStyles = tv({
     rootStyle: 'flex flex-col gap-1',
     labelStyle: 'text-sm font-medium',
     inputWrapperStyle:
-      'flex gap-2 rounded border bg-white px-2 py-1 text-sm focus-within:outline focus-within:outline-1 focus-within:outline-blue-500 focus-within:ring-4 focus-within:ring-blue-50',
-    inputFieldStyle: 'w-full select-none bg-transparent focus:outline-none',
+      'box-border w-80 rounded-lg border border-solid border-slate-200 bg-white px-3 py-2 text-left font-sans text-sm text-slate-900 shadow-md shadow-slate-100 outline-0 transition-all hover:bg-slate-50',
+    inputFieldStyle:
+      'w-full select-none bg-transparent px-2 py-1 autofill:shadow-[0_0_0px_1000px_inset] autofill:shadow-white focus:outline-none',
     messageStyle: 'flex items-start gap-1 text-xs',
   },
   variants: {
     error: {
       true: {
-        inputWrapperStyle:
-          'bg-red-50 text-red-600 outline outline-1 outline-red-600 focus-within:bg-white focus-within:text-black focus-within:outline-red-600 focus-within:ring-red-50',
-        inputFieldStyle: 'placeholder:text-red-300',
+        inputWrapperStyle: 'bg-red-50 outline outline-1 outline-red-600 ',
+        inputFieldStyle:
+          'text-red-600 placeholder:text-red-300 autofill:shadow-[0_0_0px_1000px_inset] autofill:shadow-red-50 autofill:focus:shadow-white',
         messageStyle: 'text-red-600',
+      },
+    },
+    focus: {
+      true: {
+        inputWrapperStyle:
+          'outline outline-1 outline-blue-500 ring-4 ring-blue-100',
       },
     },
     disabled: {
@@ -24,6 +31,15 @@ export const inputStyles = tv({
       },
     },
   },
+  compoundVariants: [
+    {
+      focus: true,
+      error: true,
+      className: {
+        inputWrapperStyle: 'bg-white text-black outline-red-600 ring-red-50 ',
+      },
+    },
+  ],
   defaultVariants: {
     error: false,
   },

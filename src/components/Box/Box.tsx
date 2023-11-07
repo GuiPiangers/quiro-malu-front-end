@@ -1,9 +1,15 @@
-import { ReactNode } from 'react'
+import { HTMLAttributes } from 'react'
+import { twMerge } from 'tailwind-merge'
 
-type BoxProps = {
-  children: ReactNode
-}
+type BoxProps = { asChild?: boolean } & HTMLAttributes<HTMLDivElement>
 
-export function Box({ children }: BoxProps) {
-  return <div className="rounded-lg bg-white p-4 shadow">{children}</div>
+export function Box({ children, className, asChild, ...props }: BoxProps) {
+  return (
+    <div
+      {...props}
+      className={twMerge('rounded-lg bg-white p-4 shadow', className)}
+    >
+      {children}
+    </div>
+  )
 }

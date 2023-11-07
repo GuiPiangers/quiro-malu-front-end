@@ -27,6 +27,7 @@ const PasswordInput = (
         placeholder="Senha251"
         type={isVisible ? 'text' : `password`}
         ref={ref}
+        autoComplete="off"
         rightIcon={
           <button
             disabled={props.disabled}

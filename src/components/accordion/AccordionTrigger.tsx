@@ -27,13 +27,13 @@ export default function AccordionTrigger({
         role="button"
         tabIndex={0}
         {...props}
+        id={triggerId}
         className={twMerge('group h-full w-full text-left', className)}
         aria-expanded={isActive}
         aria-controls={activeItemId}
         onClick={() => {
           setActive(activeItemId)
         }}
-        id={triggerId}
         onKeyDown={(e) => {
           if (e.key === ' ' || e.key === 'Enter') setActive(activeItemId)
         }}
