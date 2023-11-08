@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 export default function Scheduling() {
   const [date, setDate] = useState('')
-  console.log(date)
+  console.log(new Intl.DateTimeFormat('en-US', {}))
   return (
     <div className="w-full space-y-2 bg-white p-4">
       <Input.Root>

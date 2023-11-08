@@ -40,7 +40,7 @@ const createPatientSchema = z.object({
   phone: z.string().regex(/^[(][0-9]{2}[)][ ][0-9]{5}[ ][0-9]{4}$/, {
     message: 'Formato de telefone inválido - padrão (DDD) 99999 9999',
   }),
-  // dateOfBirth: z.coerce.date().optional(),
+  dateOfBirth: z.string(),
   gender: z.string().optional(),
   cpf: z
     .string()
@@ -129,7 +129,7 @@ export default function PatientDataForm() {
           </Input.Root>
 
           <div className="grid gap-5 sm:grid-cols-2 ">
-            {/* <Input.Root>
+            <Input.Root>
               <Input.Label>Data de Nascimento</Input.Label>
               <Input.Field
                 type="date"
@@ -143,7 +143,7 @@ export default function PatientDataForm() {
                   {errors.dateOfBirth.message}
                 </Input.Message>
               )}
-            </Input.Root> */}
+            </Input.Root>
 
             <Input.Root>
               <Input.Label>Gênero</Input.Label>
