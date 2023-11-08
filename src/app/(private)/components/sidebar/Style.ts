@@ -2,11 +2,11 @@ import { tv } from 'tailwind-variants'
 
 export const SidebarStyles = tv({
   slots: {
-    navItemStyle:
-      'flex w-full items-center justify-start gap-4 rounded-md bg-white px-2 py-1.5 text-sm text-black transition hover:bg-slate-200',
-    SidebarStyle: 'z-10 h-full w-52 bg-white px-3 py-4 shadow',
     sideWrapperStyle:
       'fixed z-[5] hidden h-full w-full animate-[fadeIn_300ms] bg-black bg-opacity-20',
+    SidebarStyle: 'z-10 h-full w-60 bg-white px-3 py-4 shadow',
+    navItemStyle:
+      'flex w-full items-center justify-start gap-4 rounded-md bg-white px-2 py-1.5 text-sm text-black transition hover:bg-slate-200',
     navIconStyle: 'stroke-current',
   },
   variants: {

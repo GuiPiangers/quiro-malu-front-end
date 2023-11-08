@@ -12,10 +12,10 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <ToggleContextProvider>
       <div className="grid h-screen grid-rows-[auto_1fr]">
-        <Header className="" />
+        <Header />
         <div className="flex h-full">
           <Sidebar />
-          <main className="w-full">
+          <main className="h-full w-full">
             <SubHeader />
             <div className="flex w-full items-center justify-center px-4 py-6">
               {children}

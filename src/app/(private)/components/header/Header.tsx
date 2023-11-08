@@ -4,7 +4,7 @@ import { tv } from 'tailwind-variants'
 import SidebarToggleBt from './SidebarToggleBt'
 
 const HeaderStyle = tv({
-  base: 'flex w-screen justify-between gap-2 bg-main px-4 py-2',
+  base: 'flex w-full justify-between gap-2 bg-main px-4 py-2',
 })
 
 type HeaderProps = {
