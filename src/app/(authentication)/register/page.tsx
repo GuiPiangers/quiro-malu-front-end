@@ -68,7 +68,6 @@ export default function Register() {
     formState: { isSubmitting, errors },
     register,
     setValue,
-    control,
   } = createUserForm
 
   return (

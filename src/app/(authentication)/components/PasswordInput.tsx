@@ -5,7 +5,10 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { InputProps } from '@mui/base'
 
 const PasswordInput = (
-  { children, ...props }: InputHTMLAttributes<HTMLInputElement & InputProps>,
+  {
+    children,
+    ...props
+  }: { error?: boolean } & InputHTMLAttributes<HTMLInputElement & InputProps>,
   ref: any,
 ) => {
   const [isVisible, setIsVisible] = useState(false)
