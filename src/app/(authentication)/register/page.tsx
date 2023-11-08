@@ -55,20 +55,23 @@ export type CreateUserData = z.infer<typeof createUserSchema>
 
 export default function Register() {
   const { singIn } = useAuthContext()
+
   const createUserForm = useForm<CreateUserData>({
     resolver: zodResolver(createUserSchema),
   })
-  const createUser = async (data: CreateUserData) => {
-    const user = await clientUserService.register(data)
-    if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
-      await singIn({ email: user.email, password: user.password })
-  }
+
   const {
     handleSubmit,
     formState: { isSubmitting, errors },
     register,
     setValue,
   } = createUserForm
+
+  const createUser = async (data: CreateUserData) => {
+    const user = await clientUserService.register(data)
+    if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
+      await singIn({ email: user.email, password: user.password })
+  }
 
   return (
     <AuthForm title="Registrar" onSubmit={handleSubmit(createUser)}>
@@ -79,8 +82,8 @@ export default function Register() {
             error={!!errors.name}
             {...register('name')}
             placeholder="João da Silva"
-            type="text"
             disabled={isSubmitting}
+            type="text"
           />
           {errors.name && (
             <Input.Message error>{errors.name.message}</Input.Message>

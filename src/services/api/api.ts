@@ -36,6 +36,7 @@ export async function api<T>(
     }).then((res) => res.json())
 
     if (!newToken) throw new Error('Falha de autenticação')
+    console.log('chegou aqui')
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
     clientCookie.set('quiro-token', newToken, { maxAge: 60 * 10 })
 

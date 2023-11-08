@@ -1,13 +1,9 @@
 import { CreateUserData } from '@/app/(authentication)/register/page'
-
-export type StateDTO = {
-  name: string
-  acronym?: string
-}
+import { CreatePatientData } from '@/app/(private)/(routes)/patients/components/PatientDataForm'
 
 export type LocationDTO = {
   cep?: string | null
-  state?: StateDTO | null
+  state?: string | null
   city?: string | null
   neighborhood?: string | null
   address?: string | null
@@ -39,19 +35,17 @@ export class PatientService {
     ) => Promise<T>,
   ) {}
 
-  async create(data: CreateUserData) {
-    await this.fetchData('http://localhost:8000/patients', {
+  async create(data: CreatePatientData) {
+    await this.fetchData('/patients', {
       method: 'POST',
       body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
     })
   }
 
-  async update(data: CreateUserData) {
-    await this.fetchData<void>('http://localhost:8000/patients', {
+  async update(data: CreatePatientData) {
+    await this.fetchData<void>('/patients', {
       method: 'PATCH',
       body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
     })
   }
 
