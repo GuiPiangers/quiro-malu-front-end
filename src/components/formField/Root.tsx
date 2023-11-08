@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'react'
-import { inputStyles } from './Styles'
 import { IdContextProvider } from '@/contexts/IdContext'
+import { twMerge } from 'tailwind-merge'
 
 type InputRootProps = HTMLAttributes<HTMLDivElement>
 
@@ -9,9 +9,11 @@ export default function InputRoot({
   children,
   ...props
 }: InputRootProps) {
-  const { rootStyle } = inputStyles()
   return (
-    <div className={rootStyle({ className })} {...props}>
+    <div
+      className={twMerge('flex w-full flex-col gap-1', className)}
+      {...props}
+    >
       <IdContextProvider>{children}</IdContextProvider>
     </div>
   )

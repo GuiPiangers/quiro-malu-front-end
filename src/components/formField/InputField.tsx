@@ -66,6 +66,7 @@ export const InputField = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         {...props}
         className={twMerge(props.className)}
+        slots={{ root: 'div' }}
         slotProps={{
           ...props.slotProps,
           root: (ownerState) => {

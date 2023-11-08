@@ -1,10 +1,17 @@
 import { HTMLAttributes } from 'react'
-import { VariantProps } from 'tailwind-variants'
-import { inputStyles } from './Styles'
+import { VariantProps, tv } from 'tailwind-variants'
 
-type Variants = VariantProps<typeof inputStyles>
-type InputMessageProps = HTMLAttributes<HTMLInputElement> &
-  Omit<Variants, 'disabled'>
+const messageStyle = tv({
+  base: 'flex items-start gap-1 text-xs',
+  variants: {
+    error: {
+      true: 'text-red-600',
+    },
+  },
+})
+
+type Variants = VariantProps<typeof messageStyle>
+type InputMessageProps = HTMLAttributes<HTMLInputElement> & Variants
 
 export default function InputMessage({
   className,
@@ -12,12 +19,8 @@ export default function InputMessage({
   children,
   ...props
 }: InputMessageProps) {
-  const { messageStyle } = inputStyles({
-    error,
-  })
-
   return (
-    <span {...props} className={messageStyle({ className })}>
+    <span {...props} className={messageStyle({ error, className })}>
       {children}
     </span>
   )

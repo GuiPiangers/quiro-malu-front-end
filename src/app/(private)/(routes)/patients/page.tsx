@@ -3,8 +3,63 @@ import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
 import Link from 'next/link'
+import { patientService } from '@/services/patient/serverPatientService'
+import { cookies } from 'next/headers'
 
-export default function Patients() {
+export default async function Patients() {
+  const token = cookies().get('quiro-token')
+  const patients = await fetch('http://localhost:3000/patients', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  // const generateTable = () => {
+  //   patients.map((patient) => {
+  //     return (
+  //       <AccordionTable.Item>
+  //         <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
+  //           <AccordionTable.Cell>Henrique Santos</AccordionTable.Cell>
+  //           <AccordionTable.Cell>(51) 99999 9999</AccordionTable.Cell>
+  //           <Button
+  //             variant="outline"
+  //             size="small"
+  //             className="justify-self-stretch"
+  //           >
+  //             Fixa
+  //           </Button>
+  //         </AccordionTable.Row>
+  //         <AccordionTable.Content className="flex justify-between gap-2">
+  //           <div className="space-y-1 text-sm">
+  //             <p>
+  //               <strong>Nome:</strong> Henrique Santos
+  //             </p>
+  //             <p>
+  //               <strong>Telefone:</strong> (51) 99999 9999
+  //             </p>
+  //             <p>
+  //               <strong>Idade:</strong> 21
+  //             </p>
+  //             <p>
+  //               <strong>Cidade:</strong> Sapiranga
+  //             </p>
+  //           </div>
+  //           <div className="flex w-28 flex-col gap-2">
+  //             <Button variant="outline" size="small">
+  //               Contato
+  //             </Button>
+  //             <Button variant="outline" size="small">
+  //               Agendar
+  //             </Button>
+  //           </div>
+  //         </AccordionTable.Content>
+  //       </AccordionTable.Item>
+  //     )
+  //   })
+  // }
+
   return (
     <main className="w-full max-w-6xl">
       <Box>
@@ -16,43 +71,6 @@ export default function Patients() {
         </div>
 
         <AccordionTable.Root className="text-sm">
-          <AccordionTable.Item>
-            <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
-              <AccordionTable.Cell>Henrique Santos</AccordionTable.Cell>
-              <AccordionTable.Cell>(51) 99999 9999</AccordionTable.Cell>
-              <Button
-                variant="outline"
-                size="small"
-                className="justify-self-stretch"
-              >
-                Fixa
-              </Button>
-            </AccordionTable.Row>
-            <AccordionTable.Content className="flex justify-between gap-2">
-              <div className="space-y-1 text-sm">
-                <p>
-                  <strong>Nome:</strong> Henrique Santos
-                </p>
-                <p>
-                  <strong>Telefone:</strong> (51) 99999 9999
-                </p>
-                <p>
-                  <strong>Idade:</strong> 21
-                </p>
-                <p>
-                  <strong>Cidade:</strong> Sapiranga
-                </p>
-              </div>
-              <div className="flex w-28 flex-col gap-2">
-                <Button variant="outline" size="small">
-                  Contato
-                </Button>
-                <Button variant="outline" size="small">
-                  Agendar
-                </Button>
-              </div>
-            </AccordionTable.Content>
-          </AccordionTable.Item>
           <AccordionTable.Item>
             <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
               <AccordionTable.Cell>(51) 98989 9898</AccordionTable.Cell>

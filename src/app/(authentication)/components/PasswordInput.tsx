@@ -1,11 +1,11 @@
 'use client'
 import { Input } from '@/components/formField'
-import { InputVariants } from '@/components/formField/InputField'
 import { InputHTMLAttributes, useState, forwardRef } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+import { InputProps } from '@mui/base'
 
 const PasswordInput = (
-  { children, ...props }: InputHTMLAttributes<HTMLInputElement> & InputVariants,
+  { children, ...props }: InputHTMLAttributes<HTMLInputElement & InputProps>,
   ref: any,
 ) => {
   const [isVisible, setIsVisible] = useState(false)
@@ -28,8 +28,9 @@ const PasswordInput = (
         type={isVisible ? 'text' : `password`}
         ref={ref}
         autoComplete="off"
-        rightIcon={
+        endAdornment={
           <button
+            className="mr-3"
             disabled={props.disabled}
             type="button"
             onClick={handleChangeVisible}
