@@ -10,6 +10,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import Cpf from '@/utils/Cpf'
+import { useRouter } from 'next/navigation'
 
 const titleStyles = tv({
   base: 'mb-4 text-xl text-main',
@@ -63,6 +64,7 @@ const createPatientSchema = z.object({
 export type CreatePatientData = z.infer<typeof createPatientSchema>
 
 export default function PatientDataForm() {
+  const router = useRouter()
   const createPatientForm = useForm<CreatePatientData>({
     resolver: zodResolver(createPatientSchema),
   })
@@ -76,6 +78,8 @@ export default function PatientDataForm() {
 
   const createPatient = async (data: CreatePatientData) => {
     await clientPatientService.create(data)
+    router.push('/patients')
+    router.refresh()
   }
 
   return (

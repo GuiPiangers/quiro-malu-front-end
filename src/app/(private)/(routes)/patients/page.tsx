@@ -4,11 +4,9 @@ import SearchInput from '@/components/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
 import Link from 'next/link'
 import { patientService } from '@/services/patient/serverPatientService'
-import { cookies } from 'next/headers'
 
 export default async function Patients() {
   const patients = await patientService.list()
-
   const generateTable = () => {
     return patients.map((patient) => {
       return (
@@ -17,11 +15,12 @@ export default async function Patients() {
             <AccordionTable.Cell>{patient.name}</AccordionTable.Cell>
             <AccordionTable.Cell>{patient.phone}</AccordionTable.Cell>
             <Button
+              asChild
               variant="outline"
               size="small"
               className="justify-self-stretch"
             >
-              Fixa
+              <Link href={`/patients/${patient.id}`}>Fixa</Link>
             </Button>
           </AccordionTable.Row>
           <AccordionTable.Content className="flex justify-between gap-2">

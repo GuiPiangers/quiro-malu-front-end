@@ -1,18 +1,19 @@
 'use client'
 
 import { ReactNode, createContext, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import { UserResponse } from '@/services/user/UserService'
 import { clientUserService } from '@/services/user/clientUserService'
 import { clientCookie } from '@/services/cookies/clientCookies'
+import { checkIsPublicRoute } from '@/utils/checkIsPublicRoute'
+import { APP_ROUTES } from '@/constants/app-routes'
 
 export type SignInData = {
   email: string | null
   password: string | null
 }
 type AuthContextType = {
-  isAuthenticated: boolean
   singIn(data: SignInData): Promise<void>
   singOut(): Promise<void>
   user: UserResponse['user'] | null
@@ -24,8 +25,6 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserResponse['user'] | null>(null)
 
   const router = useRouter()
-
-  const isAuthenticated = !!user
 
   useEffect(() => {
     const getUser = async () => {
@@ -67,7 +66,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, singIn, user, singOut }}>
+    <AuthContext.Provider value={{ singIn, user, singOut }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,4 +1,3 @@
-import { CreateUserData } from '@/app/(authentication)/register/page'
 import { CreatePatientData } from '@/app/(private)/(routes)/patients/components/PatientDataForm'
 
 export type LocationDTO = {
