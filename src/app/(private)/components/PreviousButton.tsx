@@ -8,9 +8,10 @@ export default function PreviousButton() {
   const router = useRouter()
   return (
     <Button
+      size="small"
       variant="outline"
       onClick={router.back}
-      className="gap-1 px-4 py-1 text-sm"
+      className="gap-1 text-sm"
     >
       <RxArrowLeft size={16} />
       Voltar

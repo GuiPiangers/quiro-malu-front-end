@@ -2,7 +2,11 @@
 'use client'
 
 import * as React from 'react'
-import { Input as BaseInput, InputProps } from '@mui/base/Input'
+import {
+  Input as BaseInput,
+  InputProps,
+  MultiLineInputProps,
+} from '@mui/base/Input'
 import { twMerge } from 'tailwind-merge'
 
 import { tv } from 'tailwind-variants'
@@ -55,6 +59,14 @@ export const inputStyles = tv({
 const resolveSlotProps = (fn: any, args: any) =>
   typeof fn === 'function' ? fn(args) : fn
 
+const TextArea = React.forwardRef(function TextArea<TValue extends object>(
+  props: React.HTMLAttributes<HTMLTextAreaElement> & MultiLineInputProps,
+  ref: React.ForwardedRef<HTMLTextAreaElement>,
+) {
+  const { ownerState, ...other } = props as any
+  return <TextareaAutosize {...other} ref={ref}></TextareaAutosize>
+})
+
 export const InputField = React.forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
     const { inputFieldStyle, inputWrapperStyle } = inputStyles({
@@ -68,7 +80,7 @@ export const InputField = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         {...props}
         className={twMerge(props.className)}
-        slots={{ root: 'div', textarea: TextareaAutosize }}
+        slots={{ root: 'div', textarea: TextArea }}
         slotProps={{
           ...props.slotProps,
           root: (ownerState) => {

@@ -17,7 +17,7 @@ export const buttonStyle = tv({
         'border bg-transparent hover:text-white disabled:border-slate-300 disabled:bg-transparent disabled:text-slate-400',
     },
     size: {
-      small: 'px-2 py-1 text-xs font-medium',
+      small: 'rounded-md px-2 py-1 text-xs font-medium',
     },
   },
   defaultVariants: {
