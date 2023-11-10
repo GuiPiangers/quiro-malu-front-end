@@ -16,6 +16,7 @@ export type PatientResponse = {
   gender?: 'masculino' | 'feminino' | null
   cpf?: string | null
   location?: LocationDTO | null
+  createAt?: string
 }
 export type PatientsListResponse = [
   {
