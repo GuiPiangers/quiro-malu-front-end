@@ -4,6 +4,7 @@ import SearchInput from '@/components/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
 import Link from 'next/link'
 import { patientService } from '@/services/patient/serverPatientService'
+import Age from '@/utils/Age'
 
 export default async function Patients() {
   const patients = await patientService.list()
@@ -31,9 +32,12 @@ export default async function Patients() {
               <p>
                 <strong>Telefone:</strong> {patient.phone}
               </p>
-              <p>
-                <strong>Idade:</strong> {patient.dateOfBirth}
-              </p>
+              {patient.dateOfBirth && (
+                <p>
+                  <strong>Idade:</strong>{' '}
+                  {`${Age.discover(patient.dateOfBirth)} anos`}
+                </p>
+              )}
             </div>
             <div className="flex w-28 flex-col gap-2">
               <Button variant="outline" size="small">

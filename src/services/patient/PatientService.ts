@@ -41,7 +41,8 @@ export class PatientService {
     })
   }
 
-  async update(data: CreatePatientData) {
+  async update(data: PatientResponse) {
+    console.log(data)
     await this.fetchData<void>('/patients', {
       method: 'PATCH',
       body: JSON.stringify(data),

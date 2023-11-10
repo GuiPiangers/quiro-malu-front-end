@@ -7,12 +7,14 @@ import { twMerge } from 'tailwind-merge'
 
 import { tv } from 'tailwind-variants'
 import useIdContext from '@/hooks/useIdContext'
+import { TextareaAutosize } from '@mui/base'
 
 export const inputStyles = tv({
   slots: {
     inputWrapperStyle:
-      'flex items-center rounded-lg bg-white text-sm font-normal leading-5 text-slate-900 shadow-md shadow-slate-100 outline outline-1 outline-slate-300 hover:bg-slate-50 hover:outline hover:outline-1  ',
-    inputFieldStyle: 'flex-grow rounded-md border-none px-3 py-2 outline-none',
+      'flex items-center rounded-lg bg-white text-sm font-normal leading-5 text-slate-900 shadow-md shadow-slate-100 outline outline-1  outline-slate-300 hover:bg-slate-50 hover:outline hover:outline-1  ',
+    inputFieldStyle:
+      'flex-grow rounded-md border-none px-3 py-2 outline-none after:block after:text-black ',
   },
   variants: {
     error: {
@@ -66,7 +68,7 @@ export const InputField = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         {...props}
         className={twMerge(props.className)}
-        slots={{ root: 'div' }}
+        slots={{ root: 'div', textarea: TextareaAutosize }}
         slotProps={{
           ...props.slotProps,
           root: (ownerState) => {

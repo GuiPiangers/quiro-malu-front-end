@@ -1,10 +1,9 @@
-import { Box } from '@/components/Box/Box'
-import PatientDataForm from '../components/PatientDataForm'
+import CreatePatientForm from '../components/CreatePatientForm'
 
 export default function CreatePatient() {
   return (
     <section className="w-full">
-      <PatientDataForm />
+      <CreatePatientForm />
     </section>
   )
 }

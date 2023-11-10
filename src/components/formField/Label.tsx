@@ -2,17 +2,31 @@
 
 import { HTMLAttributes } from 'react'
 import useIdContext from '@/hooks/useIdContext'
-import { twMerge } from 'tailwind-merge'
+import { VariantProps, tv } from 'tailwind-variants'
 
-type InputLabelProps = HTMLAttributes<HTMLLabelElement>
+const labelStyle = tv({
+  base: 'text-sm font-medium',
+  variants: {
+    required: {
+      true: 'after:text-red-600 after:content-["*"]',
+    },
+  },
+})
 
-export default function InputLabel({ className, ...props }: InputLabelProps) {
+type InputLabelProps = HTMLAttributes<HTMLLabelElement> &
+  VariantProps<typeof labelStyle>
+
+export default function InputLabel({
+  className,
+  required,
+  ...props
+}: InputLabelProps) {
   const { id } = useIdContext()
 
   return (
     <label
       htmlFor={id}
-      className={twMerge('text-sm font-medium', className)}
+      className={labelStyle({ required, className })}
       {...props}
     />
   )
