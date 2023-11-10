@@ -16,8 +16,8 @@ import Phone from '@/utils/Phone'
 const createUserSchema = z.object({
   name: z
     .string()
-    .min(3)
-    .max(120)
+    .min(3, { message: 'O nome deve conter no mínimo 3 caracteres' })
+    .max(120, { message: 'O nome deve conter no máximo 120 caracteres' })
     .refine((value) => value.split(' ').length > 1, {
       message: 'Deve ser informado o nome completo (nome e sobrenome)',
     })

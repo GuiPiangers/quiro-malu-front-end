@@ -22,6 +22,9 @@ export default async function Layout({ children, params }: LayoutProps) {
           <div className="flex justify-between">
             <div className="flex flex-col gap-1">
               <span className="font-bold">{patientData.name}</span>
+              <span className="text-xs">{`Registrado em ${new Intl.DateTimeFormat(
+                'pt-BR',
+              ).format(new Date(patientData.createAt!))}`}</span>
               <span className="text-xs">{patientData.phone}</span>
               {patientData.dateOfBirth && (
                 <span className="text-xs">
@@ -29,9 +32,6 @@ export default async function Layout({ children, params }: LayoutProps) {
                   {patientData.gender && ' - ' + patientData.gender}
                 </span>
               )}
-              <span className="font-bold">{`Registrado em ${new Intl.DateTimeFormat(
-                'pt-BR',
-              ).format(new Date(patientData.createAt!))}`}</span>
             </div>
             <div className="flex flex-col gap-2">
               <Button variant="outline" size="small">

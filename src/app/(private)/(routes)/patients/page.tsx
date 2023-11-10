@@ -5,52 +5,67 @@ import { AccordionTable } from '@/components/accordionTable'
 import Link from 'next/link'
 import { patientService } from '@/services/patient/serverPatientService'
 import Age from '@/utils/Age'
+import NoDataFound from '@/components/NoDataFound'
 
 export default async function Patients() {
   const patients = await patientService.list()
   const generateTable = () => {
-    return patients.map((patient) => {
-      return (
-        <AccordionTable.Item key={patient.id}>
-          <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
-            <AccordionTable.Cell>{patient.name}</AccordionTable.Cell>
-            <AccordionTable.Cell>{patient.phone}</AccordionTable.Cell>
-            <Button
-              asChild
-              variant="outline"
-              size="small"
-              className="justify-self-stretch"
-            >
-              <Link href={`/patients/${patient.id}`}>Fixa</Link>
-            </Button>
-          </AccordionTable.Row>
-          <AccordionTable.Content className="flex justify-between gap-2">
-            <div className="space-y-1 text-sm">
-              <p>
-                <strong>Nome:</strong> {patient.name}
-              </p>
-              <p>
-                <strong>Telefone:</strong> {patient.phone}
-              </p>
-              {patient.dateOfBirth && (
+    if (patients.length > 0) {
+      return patients.map((patient) => {
+        return (
+          <AccordionTable.Item key={patient.id}>
+            <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
+              <AccordionTable.Cell>{patient.name}</AccordionTable.Cell>
+              <AccordionTable.Cell>{patient.phone}</AccordionTable.Cell>
+              <Button
+                asChild
+                variant="outline"
+                size="small"
+                className="justify-self-stretch"
+              >
+                <Link href={`/patients/${patient.id}`}>Fixa</Link>
+              </Button>
+            </AccordionTable.Row>
+            <AccordionTable.Content className="flex justify-between gap-2">
+              <div className="space-y-1 text-sm">
                 <p>
-                  <strong>Idade:</strong>{' '}
-                  {`${Age.discover(patient.dateOfBirth)} anos`}
+                  <strong>Nome:</strong> {patient.name}
                 </p>
-              )}
-            </div>
-            <div className="flex w-28 flex-col gap-2">
-              <Button variant="outline" size="small">
-                Contato
-              </Button>
-              <Button variant="outline" size="small">
-                Agendar
-              </Button>
-            </div>
-          </AccordionTable.Content>
-        </AccordionTable.Item>
-      )
-    })
+                <p>
+                  <strong>Telefone:</strong> {patient.phone}
+                </p>
+                {patient.dateOfBirth && (
+                  <p>
+                    <strong>Idade:</strong>{' '}
+                    {`${Age.discover(patient.dateOfBirth)} anos`}
+                  </p>
+                )}
+              </div>
+              <div className="flex w-28 flex-col gap-2">
+                <Button variant="outline" size="small">
+                  Contato
+                </Button>
+                <Button variant="outline" size="small">
+                  Agendar
+                </Button>
+              </div>
+            </AccordionTable.Content>
+          </AccordionTable.Item>
+        )
+      })
+    }
+    return (
+      <NoDataFound
+        message={
+          <div className="items center flex flex-col gap-4">
+            <span>Nenhum paciente encontrado</span>
+            <Button asChild size="small" variant="outline" color="green">
+              <Link href="/patients/create">Cadastrar paciente</Link>
+            </Button>
+          </div>
+        }
+      />
+    )
   }
 
   return (
