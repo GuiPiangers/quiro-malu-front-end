@@ -63,4 +63,12 @@ export class PatientService {
     })
     return res
   }
+
+  async delete(id: string) {
+    const res = await this.fetchData<PatientsListResponse>('/patients', {
+      method: 'DELETE',
+      body: JSON.stringify({ id }),
+    })
+    return res
+  }
 }

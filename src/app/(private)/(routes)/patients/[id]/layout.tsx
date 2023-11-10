@@ -4,6 +4,7 @@ import { Nav } from '@/components/navigation'
 import { patientService } from '@/services/patient/serverPatientService'
 import Age from '@/utils/Age'
 import { ReactNode } from 'react'
+import DeletePatientButton, { DeletePatientModal } from './DeletePatientButton'
 
 type LayoutProps = {
   children: ReactNode
@@ -40,9 +41,7 @@ export default async function Layout({ children, params }: LayoutProps) {
               <Button variant="outline" size="small">
                 Agendar horário
               </Button>
-              <Button variant="outline" size="small" color="red">
-                Excluir
-              </Button>
+              <DeletePatientModal id={patientData.id!} />
             </div>
           </div>
         </section>
