@@ -7,8 +7,10 @@ import {
   forwardRef,
   useState,
   createContext,
+  useImperativeHandle,
 } from 'react'
 import { Modal as BaseModal } from '@mui/base/Modal'
+import { twMerge } from 'tailwind-merge'
 
 type ModalContextType = {
   open: boolean
@@ -16,40 +18,57 @@ type ModalContextType = {
   handleClose(): void
 }
 
-type Modal = {
+type ModalProps = {
   children: ReactNode
-  trigger: ReactNode
+  className?: string
+}
+
+export type ModalHandles = {
+  openModal(): void
+  closeModal(): void
+  isOpen: boolean
 }
 
 export const ModalContext = createContext({} as ModalContextType)
 
-export default function Modal({ children, trigger }: Modal) {
+export default forwardRef<ModalHandles, ModalProps>(function Modal(
+  { children, className },
+  ref,
+) {
   const [open, setOpen] = useState(false)
-  const handleOpen = () => {
-    console.log('abrido')
-    setOpen(true)
-  }
+
+  const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
+  useImperativeHandle(ref, () => {
+    return { openModal: handleOpen, closeModal: handleClose, isOpen: open }
+  })
+
   return (
-    <ModalContext.Provider value={{ open, handleOpen, handleClose }}>
-      {trigger}
-      <BaseModal
-        aria-labelledby="unstyled-modal-title"
-        aria-describedby="unstyled-modal-description"
-        open={open}
-        onClose={handleClose}
-        slots={{ backdrop: Backdrop }}
-      >
-        <div className="h-96 w-96 bg-slate-600">{children}</div>
-      </BaseModal>
-    </ModalContext.Provider>
+    <BaseModal
+      aria-labelledby="unstyled-modal-title"
+      aria-describedby="unstyled-modal-description"
+      open={open}
+      onClose={handleClose}
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      slots={{ backdrop: Backdrop }}
+    >
+      <div className={twMerge('rounded-lg bg-white p-4', className)}>
+        {children}
+      </div>
+    </BaseModal>
   )
-}
+})
 
 const Backdrop = forwardRef(
   (props: HTMLAttributes<HTMLDivElement> & { open: boolean }, ref: any) => {
     const { open, className, ...other } = props
-    return <div className={'bg-black bg-opacity-50'} ref={ref} {...other} />
+    return (
+      <div
+        className={'fixed inset-0 -z-10 bg-black bg-opacity-50 '}
+        ref={ref}
+        {...other}
+      />
+    )
   },
 )

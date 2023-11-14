@@ -4,7 +4,7 @@ import { Nav } from '@/components/navigation'
 import { patientService } from '@/services/patient/serverPatientService'
 import Age from '@/utils/Age'
 import { ReactNode } from 'react'
-import DeletePatientButton, { DeletePatientModal } from './DeletePatientButton'
+import { DeletePatientModal } from './DeletePatientButton'
 
 type LayoutProps = {
   children: ReactNode
