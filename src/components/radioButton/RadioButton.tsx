@@ -1,18 +1,23 @@
 'use client'
 
-import { useId, useState } from 'react'
+import { InputHTMLAttributes, useId, useState } from 'react'
 
 type RadioButtonProps = {
   label?: string
   name?: string
-}
+} & InputHTMLAttributes<HTMLInputElement>
 
-export default function RadioButton({ label, name }: RadioButtonProps) {
+export default function RadioButton({
+  label,
+  name,
+  ...props
+}: RadioButtonProps) {
   const id = useId()
 
   return (
     <div className="flex">
       <input
+        {...props}
         name={name}
         id={id}
         type="radio"

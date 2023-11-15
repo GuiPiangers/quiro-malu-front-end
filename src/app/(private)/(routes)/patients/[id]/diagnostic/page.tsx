@@ -1,21 +1,10 @@
-import { Input } from '@/components/formField'
-import Form from '../../components/Form'
-import { sectionStyles } from '../../components/Styles'
+import { ParamsType } from '../page'
+import { patientService } from '@/services/patient/serverPatientService'
+import DiagnosticForm from './DiagnosticForm'
 
-export default function Diagnostic() {
-  return (
-    <Form>
-      <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
-        <Input.Root>
-          <Input.Label>Diagnóstico</Input.Label>
-          <Input.Field multiline minRows={4} />
-        </Input.Root>
+export default async function Diagnostic({ params }: { params: ParamsType }) {
+  const id = params.id
+  const patientData = await patientService.getDiagnostic(id)
 
-        <Input.Root>
-          <Input.Label>Plano de tratamento</Input.Label>
-          <Input.Field multiline minRows={4} />
-        </Input.Root>
-      </section>
-    </Form>
-  )
+  return <DiagnosticForm formData={patientData} />
 }

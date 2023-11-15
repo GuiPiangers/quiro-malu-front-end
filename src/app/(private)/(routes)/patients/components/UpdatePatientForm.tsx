@@ -5,11 +5,13 @@ import PatientDataForm from '../components/PatientDataForm'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { useRouter } from 'next/navigation'
 
+type UpdatePatientFormProps = {
+  formData: PatientResponse
+}
+
 export default function UpdatePatientForm({
   formData,
-}: {
-  formData: PatientResponse
-}) {
+}: UpdatePatientFormProps) {
   const router = useRouter()
 
   const updatePatient = async (data: PatientResponse) => {
