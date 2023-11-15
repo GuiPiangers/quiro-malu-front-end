@@ -93,6 +93,7 @@ const createPatientSchema = z.object({
 })
 
 export type CreatePatientData = z.infer<typeof createPatientSchema>
+
 type PatientDataForm = {
   action(data: CreatePatientData | PatientResponse): void
   data?: PatientResponse
