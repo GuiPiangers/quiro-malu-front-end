@@ -10,14 +10,18 @@ export default function CreatePatientForm() {
   const router = useRouter()
 
   const createPatient = async (data: CreatePatientData) => {
-    await clientPatientService.create(data)
+    const res = await clientPatientService.create(data)
+    return res
+  }
+
+  const afterValidate = () => {
     router.push('/patients')
     router.refresh()
   }
 
   return (
     <section className="w-full">
-      <PatientDataForm action={createPatient} />
+      <PatientDataForm action={createPatient} afterValidate={afterValidate} />
     </section>
   )
 }

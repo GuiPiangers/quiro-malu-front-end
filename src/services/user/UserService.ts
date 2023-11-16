@@ -1,5 +1,6 @@
 import { CreateUserData } from '@/app/(authentication)/register/page'
 import { SignInData } from '@/contexts/AuthContext'
+import { responseError } from '../api/api'
 
 export type UserResponse = {
   token: string
@@ -15,10 +16,12 @@ export class UserService {
     private fetchData: <T>(
       input: RequestInfo,
       init?: RequestInit | undefined,
-    ) => Promise<T>,
+    ) => Promise<T & responseError>,
   ) {}
 
-  async register(data: CreateUserData): Promise<CreateUserData> {
+  async register(
+    data: CreateUserData,
+  ): Promise<CreateUserData & responseError> {
     const res = await fetch('http://localhost:8000/register', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -27,7 +30,7 @@ export class UserService {
     return await res.json()
   }
 
-  async login(data: SignInData): Promise<UserResponse | void> {
+  async login(data: SignInData): Promise<UserResponse & responseError> {
     const res = await this.fetchData<UserResponse>('/login', {
       method: 'POST',
       body: JSON.stringify(data),

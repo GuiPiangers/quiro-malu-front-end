@@ -11,7 +11,7 @@ import {
 import { twMerge } from 'tailwind-merge'
 import { RxCaretDown } from 'react-icons/rx'
 import useIdContext from '@/hooks/useIdContext'
-import { inputStyles } from '../InputField'
+import { inputStyles, inputVariantProps } from '../InputField'
 
 const Button = React.forwardRef(function Button<
   TValue extends {},
@@ -39,12 +39,20 @@ export const SelectField = React.forwardRef(function CustomSelect<
   TValue extends {},
   Multiple extends boolean,
 >(
-  { error, ...props }: { error?: boolean } & SelectProps<TValue, Multiple>,
+  {
+    notSave,
+    error,
+    ...props
+  }: SelectProps<TValue, Multiple> & inputVariantProps,
   ref: React.ForwardedRef<HTMLButtonElement>,
 ) {
   const { id } = useIdContext()
   const triggerRef = React.useRef<HTMLButtonElement>(null)
-  const { inputWrapperStyle } = inputStyles({ disabled: props.disabled, error })
+  const { inputWrapperStyle } = inputStyles({
+    disabled: props.disabled,
+    error,
+    notSave,
+  })
   return (
     <BaseSelect
       ref={ref}

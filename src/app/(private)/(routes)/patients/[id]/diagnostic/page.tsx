@@ -4,7 +4,8 @@ import DiagnosticForm from './DiagnosticForm'
 
 export default async function Diagnostic({ params }: { params: ParamsType }) {
   const id = params.id
-  const patientData = await patientService.getDiagnostic(id)
+  const { patientId: _, ...patientData } =
+    await patientService.getDiagnostic(id)
 
-  return <DiagnosticForm formData={patientData} />
+  return <DiagnosticForm formData={{ patientId: id, ...patientData }} />
 }

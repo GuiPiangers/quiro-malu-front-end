@@ -22,6 +22,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
+    "react-transition-group": "^4.4.5",
     "tailwind-merge": "^2.0.0",
     "tailwind-variants": "^0.1.17",
     "zod": "^3.22.4"
@@ -32,6 +33,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-transition-group": "^4.4.9",
     "autoprefixer": "^10",
     "eslint": "^8.52.0",
     "eslint-config-next": "14.0.0",

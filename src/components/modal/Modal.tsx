@@ -6,17 +6,10 @@ import {
   ReactNode,
   forwardRef,
   useState,
-  createContext,
   useImperativeHandle,
 } from 'react'
 import { Modal as BaseModal } from '@mui/base/Modal'
 import { twMerge } from 'tailwind-merge'
-
-type ModalContextType = {
-  open: boolean
-  handleOpen(): void
-  handleClose(): void
-}
 
 type ModalProps = {
   children: ReactNode
@@ -28,8 +21,6 @@ export type ModalHandles = {
   closeModal(): void
   isOpen: boolean
 }
-
-export const ModalContext = createContext({} as ModalContextType)
 
 export default forwardRef<ModalHandles, ModalProps>(function Modal(
   { children, className },

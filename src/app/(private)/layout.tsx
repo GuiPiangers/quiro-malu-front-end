@@ -3,6 +3,7 @@ import Sidebar from '@/app/(private)/components/sidebar/Sidebar'
 import { ToggleContextProvider } from '@/contexts/ToggleContext'
 import { ReactNode } from 'react'
 import SubHeader from './components/subHeader/SubHeader'
+import Snackbar from '@/components/snackbar/Snackbar'
 
 interface LayoutProps {
   children: ReactNode
@@ -18,7 +19,7 @@ export default function Layout({ children }: LayoutProps) {
           <main className="h-full w-full">
             <SubHeader />
             <div className="flex w-full items-center justify-center px-4 py-6">
-              {children}
+              <Snackbar>{children}</Snackbar>
             </div>
           </main>
         </div>

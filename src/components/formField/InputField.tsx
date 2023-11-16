@@ -9,7 +9,7 @@ import {
 } from '@mui/base/Input'
 import { twMerge } from 'tailwind-merge'
 
-import { tv } from 'tailwind-variants'
+import { VariantProps, tv } from 'tailwind-variants'
 import useIdContext from '@/hooks/useIdContext'
 import { TextareaAutosize } from '@mui/base'
 
@@ -21,6 +21,11 @@ export const inputStyles = tv({
       'flex-grow rounded-md border-none px-3 py-2 outline-none after:block after:text-black ',
   },
   variants: {
+    notSave: {
+      true: {
+        inputWrapperStyle: 'outline-blue-500 ',
+      },
+    },
     error: {
       true: {
         inputWrapperStyle:
@@ -56,61 +61,67 @@ export const inputStyles = tv({
   },
 })
 
+export type inputVariantProps = VariantProps<typeof inputStyles>
+
 const resolveSlotProps = (fn: any, args: any) =>
   typeof fn === 'function' ? fn(args) : fn
 
-const TextArea = React.forwardRef(function TextArea<TValue extends object>(
-  props: React.HTMLAttributes<HTMLTextAreaElement> & MultiLineInputProps,
+const TextArea = React.forwardRef(function TextArea(
+  props: React.HTMLAttributes<HTMLTextAreaElement> &
+    MultiLineInputProps &
+    inputVariantProps,
   ref: React.ForwardedRef<HTMLTextAreaElement>,
 ) {
   const { ownerState, ...other } = props as any
   return <TextareaAutosize {...other} ref={ref}></TextareaAutosize>
 })
 
-export const InputField = React.forwardRef<HTMLInputElement, InputProps>(
-  (props, ref) => {
-    const { inputFieldStyle, inputWrapperStyle } = inputStyles({
-      disabled: props.disabled,
-      error: props.error,
-    })
-    const { id } = useIdContext()
+export const InputField = React.forwardRef<
+  HTMLInputElement,
+  InputProps & inputVariantProps
+>(({ notSave, ...props }, ref) => {
+  const { inputFieldStyle, inputWrapperStyle } = inputStyles({
+    disabled: props.disabled,
+    error: props.error,
+    notSave,
+  })
+  const { id } = useIdContext()
 
-    return (
-      <BaseInput
-        ref={ref}
-        {...props}
-        className={twMerge(props.className)}
-        slots={{ root: 'div', textarea: TextArea }}
-        slotProps={{
-          ...props.slotProps,
-          root: (ownerState) => {
-            const resolvedSlotProps = resolveSlotProps(
-              props.slotProps?.input,
-              ownerState,
-            )
-            return {
-              ...resolvedSlotProps,
-              className: inputWrapperStyle({
-                className: resolvedSlotProps?.className,
-                focus: ownerState.focused,
-              }),
-            }
-          },
-          input: (ownerState) => {
-            const resolvedSlotProps = resolveSlotProps(
-              props.slotProps?.input,
-              ownerState,
-            )
-            return {
-              ...resolvedSlotProps,
-              className: inputFieldStyle({
-                className: resolvedSlotProps?.className,
-              }),
-              id: props.id || id,
-            }
-          },
-        }}
-      />
-    )
-  },
-)
+  return (
+    <BaseInput
+      ref={ref}
+      {...props}
+      className={twMerge(props.className)}
+      slots={{ root: 'div', textarea: TextArea }}
+      slotProps={{
+        ...props.slotProps,
+        root: (ownerState) => {
+          const resolvedSlotProps = resolveSlotProps(
+            props.slotProps?.input,
+            ownerState,
+          )
+          return {
+            ...resolvedSlotProps,
+            className: inputWrapperStyle({
+              className: resolvedSlotProps?.className,
+              focus: ownerState.focused,
+            }),
+          }
+        },
+        input: (ownerState) => {
+          const resolvedSlotProps = resolveSlotProps(
+            props.slotProps?.input,
+            ownerState,
+          )
+          return {
+            ...resolvedSlotProps,
+            className: inputFieldStyle({
+              className: resolvedSlotProps?.className,
+            }),
+            id: props.id || id,
+          }
+        },
+      }}
+    />
+  )
+})

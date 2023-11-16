@@ -12,12 +12,8 @@ type UpdatePatientFormProps = {
 export default function UpdatePatientForm({
   formData,
 }: UpdatePatientFormProps) {
-  const router = useRouter()
-
   const updatePatient = async (data: PatientResponse) => {
-    await clientPatientService.update({ id: formData.id, ...data })
-    router.push('/patients')
-    router.refresh()
+    return await clientPatientService.update({ id: formData.id, ...data })
   }
 
   return (

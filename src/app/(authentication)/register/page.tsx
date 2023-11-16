@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 
 const createUserSchema = z.object({
   name: z
@@ -55,6 +56,7 @@ export type CreateUserData = z.infer<typeof createUserSchema>
 
 export default function Register() {
   const { singIn } = useAuthContext()
+  const { handleMessage } = useSnackbarContext()
 
   const createUserForm = useForm<CreateUserData>({
     resolver: zodResolver(createUserSchema),
@@ -65,12 +67,33 @@ export default function Register() {
     formState: { isSubmitting, errors },
     register,
     setValue,
+    setError,
   } = createUserForm
 
   const createUser = async (data: CreateUserData) => {
     const user = await clientUserService.register(data)
-    if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
-      await singIn({ email: user.email, password: user.password })
+    if (user.type) {
+      setError(
+        user.type as
+          | 'name'
+          | 'email'
+          | 'phone'
+          | 'password'
+          | 'root'
+          | `root.${string}`,
+        { message: user.message },
+      )
+    } else {
+      if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
+        await singIn({ email: user.email, password: user.password })
+      else {
+        handleMessage({
+          title: 'Erro!',
+          description: user.message,
+          type: 'error',
+        })
+      }
+    }
   }
 
   return (

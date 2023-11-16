@@ -1,13 +1,11 @@
 'use client'
 
 import { ReactNode, createContext, useState, useEffect } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 import { UserResponse } from '@/services/user/UserService'
 import { clientUserService } from '@/services/user/clientUserService'
 import { clientCookie } from '@/services/cookies/clientCookies'
-import { checkIsPublicRoute } from '@/utils/checkIsPublicRoute'
-import { APP_ROUTES } from '@/constants/app-routes'
 
 export type SignInData = {
   email: string | null

@@ -4,7 +4,8 @@ import AnamnesisForm from './AnamnesisForm'
 
 export default async function Anamnesis({ params }: { params: ParamsType }) {
   const id = params.id
-  const patientData = await patientService.getAnamnesis(id)
+  const { patientId: _, ...anamnesisData } =
+    await patientService.getAnamnesis(id)
 
-  return <AnamnesisForm formData={patientData} />
+  return <AnamnesisForm formData={{ patientId: id, ...anamnesisData }} />
 }

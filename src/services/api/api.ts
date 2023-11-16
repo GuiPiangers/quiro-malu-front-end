@@ -16,11 +16,17 @@ const request = async (
   return data
 }
 
+export type responseError = {
+  message: string
+  statusCode: number
+  type: string
+}
+
 export async function api<T>(
   input: RequestInfo,
   init?: RequestInit | undefined,
   cookieService?: ICookies,
-): Promise<T> {
+): Promise<T & responseError> {
   const baseURL = 'http://localhost:8000'
   const cookieMethod = cookieService || clientCookie
 
@@ -36,7 +42,6 @@ export async function api<T>(
     }).then((res) => res.json())
 
     if (!newToken) throw new Error('Falha de autenticação')
-    console.log('chegou aqui')
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
     clientCookie.set('quiro-token', newToken, { maxAge: 60 * 10 })
 

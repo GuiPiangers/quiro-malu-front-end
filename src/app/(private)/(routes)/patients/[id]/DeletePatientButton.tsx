@@ -1,6 +1,7 @@
 'use client'
 import Button from '@/components/Button'
-import Modal, { ModalContext, ModalHandles } from '@/components/modal/Modal'
+import Modal, { ModalHandles } from '@/components/modal/Modal'
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { useRouter } from 'next/navigation'
 import { useCallback, useContext, useRef } from 'react'
@@ -8,6 +9,8 @@ import { useCallback, useContext, useRef } from 'react'
 type DeletePatientButtonProps = { id: string }
 
 export function DeletePatientModal({ id }: DeletePatientButtonProps) {
+  const { handleMessage } = useSnackbarContext()
+
   const router = useRouter()
   const modalHandle = useRef<ModalHandles>(null)
 
@@ -19,6 +22,10 @@ export function DeletePatientModal({ id }: DeletePatientButtonProps) {
     handleClose()
     router.push('/patients')
     router.refresh()
+    handleMessage({
+      title: 'Paciente deletado com sucesso!',
+      type: 'success',
+    })
   }, [id])
 
   return (

@@ -1,4 +1,5 @@
 import { CreatePatientData } from '@/app/(private)/(routes)/patients/components/PatientDataForm'
+import { responseError } from '../api/api'
 
 export type LocationDTO = {
   cep?: string | null
@@ -27,19 +28,20 @@ export type PatientsListResponse = [
   },
 ]
 export type AnamnesisResponse = {
-  patientId: string
-  mainProblem: string
-  currentIllness: string
-  history: string
-  familiarHistory: string
-  activities: string
-  smoke: string
-  useMedicine: string
-  medicines: string
-  underwentSurgery: string
-  surgeries: string
+  patientId?: string
+  mainProblem?: string
+  currentIllness?: string
+  history?: string
+  familiarHistory?: string
+  activities?: string
+  smoke?: string | null
+  useMedicine?: string | null
+  medicines?: string
+  underwentSurgery?: string | null
+  surgeries?: string
 }
 export type DiagnosticResponse = {
+  patientId: string
   diagnostic: string
   treatmentPlan: string
 }
@@ -49,22 +51,25 @@ export class PatientService {
     private fetchData: <T>(
       input: RequestInfo,
       init?: RequestInit | undefined,
-    ) => Promise<T>,
+    ) => Promise<T & responseError>,
   ) {}
 
   async create(data: CreatePatientData) {
-    await this.fetchData('/patients', {
+    const res = await this.fetchData<PatientResponse>('/patients', {
       method: 'POST',
       body: JSON.stringify(data),
     })
+
+    return res
   }
 
   async update(data: PatientResponse) {
-    console.log(data)
-    await this.fetchData<void>('/patients', {
+    const res = await this.fetchData<PatientResponse>('/patients', {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
+
+    return res
   }
 
   async get(id: string) {
@@ -85,11 +90,12 @@ export class PatientService {
   }
 
   async setAnamnesis(data: AnamnesisResponse) {
-    console.log(data)
-    await this.fetchData<void>('/patients/anamnesis', {
+    const res = await this.fetchData<void>('/patients/anamnesis', {
       method: 'PUT',
       body: JSON.stringify(data),
     })
+
+    return res
   }
 
   async getDiagnostic(id: string) {
@@ -103,11 +109,12 @@ export class PatientService {
   }
 
   async setDiagnostic(data: DiagnosticResponse) {
-    console.log(data)
-    await this.fetchData<void>('/patients/diagnostic', {
+    const res = await this.fetchData<void>('/patients/diagnostic', {
       method: 'PUT',
       body: JSON.stringify(data),
     })
+
+    return res
   }
 
   async list() {

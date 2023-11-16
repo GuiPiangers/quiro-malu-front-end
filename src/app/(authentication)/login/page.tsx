@@ -4,12 +4,13 @@ import AuthForm from '../components/AuthForm'
 import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
-import { ChangeEvent, useState, useContext } from 'react'
+import { ChangeEvent, useState } from 'react'
 import useAuthContext from '@/hooks/useAuthContext'
 import { Input } from '@/components/formField'
 
 export default function Login() {
   const { singIn } = useAuthContext()
+
   const [isLoading, setIsLoading] = useState(false)
   const [fields, setFields] = useState({
     email: '',
@@ -40,7 +41,9 @@ export default function Login() {
             type="email"
             value={fields.email}
             disabled={isLoading}
-            onChange={(e) => handleChangeValue(e, 'email')}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handleChangeValue(e, 'email')
+            }
           />
         </Input.Root>
 

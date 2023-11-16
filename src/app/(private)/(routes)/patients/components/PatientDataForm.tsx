@@ -9,6 +9,9 @@ import Cpf from '@/utils/Cpf'
 import { PatientResponse } from '@/services/patient/PatientService'
 import Form from './Form'
 import { sectionStyles, titleStyles } from './Styles'
+import { responseError } from '@/services/api/api'
+import { useState } from 'react'
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
@@ -22,7 +25,7 @@ const validateRegex = (value: string, pattern: RegExp) => {
   return true
 }
 
-const createPatientSchema = z.object({
+export const createPatientSchema = z.object({
   name: z
     .string()
     .min(3, { message: 'O nome deve conter no mínimo 3 caracteres' })
@@ -95,36 +98,102 @@ const createPatientSchema = z.object({
 export type CreatePatientData = z.infer<typeof createPatientSchema>
 
 type PatientDataForm = {
-  action(data: CreatePatientData | PatientResponse): void
+  action(
+    data: CreatePatientData | PatientResponse,
+  ): Promise<PatientResponse & responseError>
+  afterValidate?(): void
   data?: PatientResponse
 }
 
-export default function PatientDataForm({ action, data }: PatientDataForm) {
+export default function PatientDataForm({
+  action,
+  afterValidate,
+  data,
+}: PatientDataForm) {
+  const { handleMessage } = useSnackbarContext()
+
+  const [phoneNotSave, setPhoneNotSave] = useState(false)
+  const [cpfNotSave, setCpfNotSave] = useState(false)
+  const [genderNotSave, setGenderNotSave] = useState(false)
+  const [cepNotSave, setCepNotSave] = useState(false)
+
   const createPatientForm = useForm<CreatePatientData>({
     resolver: zodResolver(createPatientSchema),
   })
 
   const {
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, dirtyFields },
     register,
     setValue,
+    setError,
+    reset,
   } = createPatientForm
+
+  const resetForm = (data: CreatePatientData) => {
+    reset({ ...data })
+    setCepNotSave(false)
+    setCpfNotSave(false)
+    setPhoneNotSave(false)
+    setGenderNotSave(false)
+  }
+
+  const handleAction = async (data: CreatePatientData) => {
+    const res = await action(data)
+    if (res.type) {
+      setError(
+        res.type as
+          | 'name'
+          | 'phone'
+          | 'dateOfBirth'
+          | 'gender'
+          | 'cpf'
+          | 'location'
+          | 'root'
+          | `root.${string}`
+          | 'location.cep'
+          | 'location.state'
+          | 'location.city'
+          | 'location.neighborhood'
+          | 'location.address',
+        { message: res.message },
+      )
+    } else {
+      if (res.statusCode) {
+        handleMessage({
+          title: 'Erro!',
+          description: res.message,
+          type: 'error',
+        })
+      } else {
+        resetForm(data)
+        if (afterValidate) afterValidate()
+        handleMessage({
+          title: 'Paciente salvo com sucesso!',
+          type: 'success',
+        })
+      }
+    }
+  }
+
   return (
-    <Form onSubmit={handleSubmit(action)}>
+    <Form onSubmit={handleSubmit(handleAction)}>
       <section aria-labelledby="personal-data" className={sectionStyles()}>
         <h2 id="personal-data" className={titleStyles()}>
           Dados pessoais
         </h2>
 
         <Input.Root>
-          <Input.Label required>Nome</Input.Label>
+          <Input.Label required notSave={dirtyFields.name}>
+            Nome
+          </Input.Label>
           <Input.Field
             autoComplete="off"
             error={!!errors.name}
             {...register('name')}
             disabled={isSubmitting}
             defaultValue={data?.name}
+            notSave={dirtyFields.name}
           />
           {errors.name && (
             <Input.Message error>{errors.name.message}</Input.Message>
@@ -132,15 +201,21 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
         </Input.Root>
 
         <Input.Root>
-          <Input.Label required>Telefone</Input.Label>
+          <Input.Label required notSave={phoneNotSave}>
+            Telefone
+          </Input.Label>
           <Input.Field
             type="tel"
             autoComplete="off"
             error={!!errors.phone}
             {...register('phone')}
             disabled={isSubmitting}
-            onChange={(e) => setValue('phone', Phone.format(e.target.value))}
+            onChange={(e) => {
+              setValue('phone', Phone.format(e.target.value))
+              setPhoneNotSave(true)
+            }}
             defaultValue={data?.phone}
+            notSave={phoneNotSave}
           />
           {errors.phone && (
             <Input.Message error>{errors.phone.message}</Input.Message>
@@ -148,14 +223,18 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
         </Input.Root>
 
         <Input.Root>
-          <Input.Label>CPF</Input.Label>
+          <Input.Label notSave={cpfNotSave}>CPF</Input.Label>
           <Input.Field
             autoComplete="off"
             error={!!errors.cpf}
             {...register('cpf')}
             disabled={isSubmitting}
-            onChange={(e) => setValue('cpf', Cpf.format(e.target.value))}
+            onChange={(e) => {
+              setValue('cpf', Cpf.format(e.target.value))
+              setCpfNotSave(true)
+            }}
             defaultValue={data?.cpf}
+            notSave={cpfNotSave}
           />
           {errors.cpf && (
             <Input.Message error>{errors.cpf.message}</Input.Message>
@@ -164,7 +243,9 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
 
         <div className="grid gap-5 sm:grid-cols-2 ">
           <Input.Root>
-            <Input.Label>Data de Nascimento</Input.Label>
+            <Input.Label notSave={dirtyFields.dateOfBirth}>
+              Data de Nascimento
+            </Input.Label>
             <Input.Field
               type="date"
               autoComplete="off"
@@ -172,6 +253,7 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
               {...register('dateOfBirth')}
               disabled={isSubmitting}
               defaultValue={data?.dateOfBirth?.substring(0, 10)}
+              notSave={dirtyFields.dateOfBirth}
             />
             {errors.dateOfBirth && (
               <Input.Message error>{errors.dateOfBirth.message}</Input.Message>
@@ -179,13 +261,17 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
           </Input.Root>
 
           <Input.Root>
-            <Input.Label>Gênero</Input.Label>
+            <Input.Label notSave={genderNotSave}>Gênero</Input.Label>
             <Input.Select
               {...register('gender')}
-              onChange={(_, newValue) => setValue('gender', newValue as string)}
+              onChange={(_, newValue) => {
+                setValue('gender', newValue as string)
+                setGenderNotSave(true)
+              }}
               disabled={isSubmitting}
               error={!!errors.gender}
               defaultValue={data?.gender}
+              notSave={genderNotSave}
             >
               <Input.Option value="Masculino">Masculino</Input.Option>
               <Input.Option value="Feminino">Feminino</Input.Option>
@@ -200,12 +286,14 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
       <section className={sectionStyles()}>
         <h2 className={titleStyles()}>Endereço</h2>
         <Input.Root>
-          <Input.Label>CEP</Input.Label>
+          <Input.Label notSave={cepNotSave}>CEP</Input.Label>
           <Input.Field
             error={!!errors.location?.cep}
             {...register('location.cep')}
             disabled={isSubmitting}
             defaultValue={data?.location?.cep}
+            notSave={cepNotSave}
+            onChange={(e) => setCepNotSave(true)}
           />
           {errors.location?.cep && (
             <Input.Message error>{errors.location?.cep.message}</Input.Message>
@@ -213,12 +301,15 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
         </Input.Root>
         <div className="grid gap-5 md:grid-cols-2 ">
           <Input.Root>
-            <Input.Label>Estado</Input.Label>
+            <Input.Label notSave={dirtyFields.location?.state}>
+              Estado
+            </Input.Label>
             <Input.Field
               error={!!errors.location?.state}
               {...register('location.state')}
               disabled={isSubmitting}
               defaultValue={data?.location?.state}
+              notSave={dirtyFields.location?.state}
             />
             {errors.location?.state && (
               <Input.Message error>
@@ -228,12 +319,15 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
           </Input.Root>
 
           <Input.Root>
-            <Input.Label>Cidade</Input.Label>
+            <Input.Label notSave={dirtyFields.location?.city}>
+              Cidade
+            </Input.Label>
             <Input.Field
               error={!!errors.location?.city}
               {...register('location.city')}
               disabled={isSubmitting}
               defaultValue={data?.location?.city}
+              notSave={dirtyFields.location?.city}
             />
             {errors.location?.city && (
               <Input.Message error>
@@ -243,12 +337,15 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
           </Input.Root>
 
           <Input.Root>
-            <Input.Label>Bairro</Input.Label>
+            <Input.Label notSave={dirtyFields.location?.neighborhood}>
+              Bairro
+            </Input.Label>
             <Input.Field
               error={!!errors.location?.neighborhood}
               {...register('location.neighborhood')}
               disabled={isSubmitting}
               defaultValue={data?.location?.neighborhood}
+              notSave={dirtyFields.location?.neighborhood}
             />
             {errors.location?.neighborhood && (
               <Input.Message error>
@@ -258,12 +355,15 @@ export default function PatientDataForm({ action, data }: PatientDataForm) {
           </Input.Root>
 
           <Input.Root>
-            <Input.Label>Endereço</Input.Label>
+            <Input.Label notSave={dirtyFields.location?.address}>
+              Endereço
+            </Input.Label>
             <Input.Field
               error={!!errors.location?.address}
               {...register('location.address')}
               disabled={isSubmitting}
               defaultValue={data?.location?.address}
+              notSave={dirtyFields.location?.address}
             />
             {errors.location?.address && (
               <Input.Message error>

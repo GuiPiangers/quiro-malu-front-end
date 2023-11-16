@@ -1,6 +1,6 @@
 'use client'
 
-import { HTMLAttributes } from 'react'
+import { LabelHTMLAttributes } from 'react'
 import useIdContext from '@/hooks/useIdContext'
 import { VariantProps, tv } from 'tailwind-variants'
 
@@ -13,21 +13,32 @@ const labelStyle = tv({
   },
 })
 
-type InputLabelProps = HTMLAttributes<HTMLLabelElement> &
+type InputLabelProps = {
+  notSave?: boolean
+} & LabelHTMLAttributes<HTMLLabelElement> &
   VariantProps<typeof labelStyle>
 
 export default function InputLabel({
   className,
   required,
+  notSave,
+  htmlFor,
   ...props
 }: InputLabelProps) {
   const { id } = useIdContext()
 
   return (
-    <label
-      htmlFor={id}
-      className={labelStyle({ required, className })}
-      {...props}
-    />
+    <div className="flex items-center">
+      <label
+        htmlFor={htmlFor || id}
+        className={labelStyle({ required, className })}
+        {...props}
+      />
+      {notSave && (
+        <div className="mb-1 ml-3 rounded bg-blue-100 p-1 text-xs">
+          Não salvo
+        </div>
+      )}
+    </div>
   )
 }
