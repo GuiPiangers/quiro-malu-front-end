@@ -159,7 +159,7 @@ export default function PatientDataForm({
         { message: res.message },
       )
     } else {
-      if (res.statusCode) {
+      if (res.error) {
         handleMessage({
           title: 'Erro!',
           description: res.message,

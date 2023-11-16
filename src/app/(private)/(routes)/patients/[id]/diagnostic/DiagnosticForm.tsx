@@ -37,7 +37,7 @@ export default function DiagnosticForm({
 
   const setDiagnostic = async (data: setDiagnosticData) => {
     const res = await clientPatientService.setDiagnostic({ patientId, ...data })
-    if (res.statusCode) {
+    if (res.error) {
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })

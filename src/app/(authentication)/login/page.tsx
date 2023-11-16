@@ -7,9 +7,11 @@ import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
 import useAuthContext from '@/hooks/useAuthContext'
 import { Input } from '@/components/formField'
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 
 export default function Login() {
   const { singIn } = useAuthContext()
+  const { handleMessage } = useSnackbarContext()
 
   const [isLoading, setIsLoading] = useState(false)
   const [fields, setFields] = useState({
@@ -27,8 +29,11 @@ export default function Login() {
 
   const handleSignIn = async () => {
     setIsLoading(true)
-    await singIn(fields)
+    const res = await singIn(fields)
     setIsLoading(false)
+    if (res) {
+      handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
+    }
   }
 
   return (

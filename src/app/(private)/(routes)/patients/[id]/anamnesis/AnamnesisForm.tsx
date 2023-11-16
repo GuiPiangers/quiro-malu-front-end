@@ -58,7 +58,7 @@ export default function AnamnesisForm({
   } = setAnamnesisForm
   const setAnamnesis = async (data: setAnamnesisData) => {
     const res = await clientPatientService.setAnamnesis({ patientId, ...data })
-    if (res.statusCode) {
+    if (res.error) {
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })

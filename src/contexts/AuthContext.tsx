@@ -6,13 +6,15 @@ import { useRouter } from 'next/navigation'
 import { UserResponse } from '@/services/user/UserService'
 import { clientUserService } from '@/services/user/clientUserService'
 import { clientCookie } from '@/services/cookies/clientCookies'
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import { responseError } from '@/services/api/api'
 
 export type SignInData = {
   email: string | null
   password: string | null
 }
 type AuthContextType = {
-  singIn(data: SignInData): Promise<void>
+  singIn(data: SignInData): Promise<(UserResponse & responseError) | undefined>
   singOut(): Promise<void>
   user: UserResponse['user'] | null
 }
@@ -38,18 +40,22 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   async function singIn(data: SignInData) {
     const userResponse = await clientUserService.login(data)
     if (userResponse) {
-      const { refreshToken, token, user: userData } = userResponse
+      if (!userResponse.error) {
+        const { refreshToken, token, user: userData } = userResponse
 
-      if (token && refreshToken) {
-        clientCookie.set('quiro-token', token, {
-          maxAge: 60 * 10, // 10 min
-        })
-        clientCookie.set('quiro-refresh-token', refreshToken, {
-          maxAge: 60 * 60 * 24 * 15, // 15 dias,
-        })
+        if (token && refreshToken) {
+          clientCookie.set('quiro-token', token, {
+            maxAge: 60 * 10, // 10 min
+          })
+          clientCookie.set('quiro-refresh-token', refreshToken, {
+            maxAge: 60 * 60 * 24 * 15, // 15 dias,
+          })
 
-        setUser(userData)
-        router.push('/')
+          setUser(userData)
+          router.push('/')
+        }
+      } else {
+        return userResponse
       }
     }
   }

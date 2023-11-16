@@ -20,6 +20,7 @@ export type responseError = {
   message: string
   statusCode: number
   type: string
+  error: boolean
 }
 
 export async function api<T>(
