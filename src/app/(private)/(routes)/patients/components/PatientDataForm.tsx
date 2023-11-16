@@ -141,23 +141,23 @@ export default function PatientDataForm({
   const handleAction = async (data: CreatePatientData) => {
     const res = await action(data)
     if (res.type) {
-      setError(
-        res.type as
-          | 'name'
-          | 'phone'
-          | 'dateOfBirth'
-          | 'gender'
-          | 'cpf'
-          | 'location'
-          | 'root'
-          | `root.${string}`
-          | 'location.cep'
-          | 'location.state'
-          | 'location.city'
-          | 'location.neighborhood'
-          | 'location.address',
-        { message: res.message },
-      )
+      if (res.type === 'date') {
+        setError('dateOfBirth', { message: res.message })
+      } else
+        setError(
+          res.type as
+            | 'name'
+            | 'phone'
+            | 'gender'
+            | 'cpf'
+            | 'location'
+            | 'location.cep'
+            | 'location.state'
+            | 'location.city'
+            | 'location.neighborhood'
+            | 'location.address',
+          { message: res.message },
+        )
     } else {
       if (res.error) {
         handleMessage({
