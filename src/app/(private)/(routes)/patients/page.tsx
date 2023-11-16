@@ -69,7 +69,7 @@ export default async function Patients() {
   }
 
   return (
-    <main className="w-full max-w-6xl">
+    <main className="w-full max-w-screen-lg">
       <Box>
         <div className="mb-6 grid grid-cols-[1fr_auto] items-center gap-8">
           <SearchInput className="text-base" />

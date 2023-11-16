@@ -45,6 +45,16 @@ export type DiagnosticResponse = {
   diagnostic: string
   treatmentPlan: string
 }
+export type ProgressResponse = {
+  id: string
+  patientId: string
+  service: string
+  actualProblem: string
+  procedures: string
+  date: string
+  createAt?: string
+  updateAt?: string
+}
 
 export class PatientService {
   constructor(
@@ -114,6 +124,35 @@ export class PatientService {
       body: JSON.stringify(data),
     })
 
+    return res
+  }
+
+  async setProgress(data: ProgressResponse) {
+    const res = await this.fetchData<void>('/patients/progress', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+
+    return res
+  }
+
+  async getProgress({ patientId, id }: { patientId: string; id: string }) {
+    const res = await this.fetchData<ProgressResponse>(
+      `/patients/progress/${patientId}/${id}`,
+      {
+        method: 'GET',
+      },
+    )
+    return res
+  }
+
+  async listProgress({ patientId }: { patientId: string }) {
+    const res = await this.fetchData<ProgressResponse[]>(
+      `/patients/progress/${patientId}`,
+      {
+        method: 'GET',
+      },
+    )
     return res
   }
 
