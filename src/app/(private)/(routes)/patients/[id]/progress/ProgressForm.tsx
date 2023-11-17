@@ -14,8 +14,8 @@ import { useCallback } from 'react'
 const setProgressSchema = z.object({
   actualProblem: z.string(),
   procedures: z.string(),
-  service: z.string(),
-  date: z.string(),
+  service: z.string().min(1, { message: 'Campo obrigatório' }),
+  date: z.string().min(1, { message: 'Campo obrigatório' }),
 })
 
 export type setProgressData = z.infer<typeof setProgressSchema>
@@ -71,11 +71,15 @@ export default function ProgressForm({
     <Form onSubmit={handleSubmit(setProgress)}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
-          <Input.Label notSave={dirtyFields.date}>Data</Input.Label>
+          <Input.Label required notSave={dirtyFields.date}>
+            Data
+          </Input.Label>
           <Input.Field
+            autoComplete="off"
             disabled={isSubmitting}
             type="datetime-local"
             defaultValue={date || now()}
+            error={!!errors.date}
             {...register('date')}
             notSave={dirtyFields.date}
           />
@@ -85,11 +89,15 @@ export default function ProgressForm({
         </Input.Root>
 
         <Input.Root>
-          <Input.Label notSave={dirtyFields.procedures}>Serviço</Input.Label>
+          <Input.Label required notSave={dirtyFields.procedures}>
+            Serviço
+          </Input.Label>
           <Input.Field
+            autoComplete="off"
             disabled={isSubmitting}
             defaultValue={service}
             {...register('service')}
+            error={!!errors.service}
             notSave={dirtyFields.service}
           />
           {errors.service && (
@@ -102,10 +110,12 @@ export default function ProgressForm({
             Problema atual
           </Input.Label>
           <Input.Field
+            autoComplete="off"
             multiline
             minRows={4}
             disabled={isSubmitting}
             defaultValue={actualProblem}
+            error={!!errors.actualProblem}
             {...register('actualProblem')}
             notSave={dirtyFields.actualProblem}
           />
@@ -119,10 +129,12 @@ export default function ProgressForm({
             Procedimentos
           </Input.Label>
           <Input.Field
+            autoComplete="off"
             multiline
             minRows={4}
             disabled={isSubmitting}
             defaultValue={procedures}
+            error={!!errors.procedures}
             {...register('procedures')}
             notSave={dirtyFields.procedures}
           />
