@@ -41,7 +41,7 @@ export default forwardRef<ModalHandles, ModalProps>(function Modal(
       aria-describedby="unstyled-modal-description"
       open={open}
       onClose={handleClose}
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-40 flex items-center justify-center"
       slots={{ backdrop: Backdrop }}
     >
       <div className={twMerge('rounded-lg bg-white p-4', className)}>

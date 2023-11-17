@@ -4,6 +4,7 @@ import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'
 import Link from 'next/link'
+import ProgressModal from './ProgressModal'
 
 export default async function Progress({ params }: { params: ParamsType }) {
   const patientId = params.id
@@ -41,17 +42,15 @@ export default async function Progress({ params }: { params: ParamsType }) {
                 >
                   Excluir
                 </Button>
-                <Button
-                  asChild
-                  size="small"
-                  variant="outline"
+                <ProgressModal
                   color="blue"
-                  className="w-20"
+                  variant="outline"
+                  size="small"
+                  id={progress.id}
+                  patientId={patientId}
                 >
-                  <Link href={`/patients/${patientId}/progress/${progress.id}`}>
-                    Ver
-                  </Link>
-                </Button>
+                  Ver
+                </ProgressModal>
               </div>
             </Box>
           ))}
@@ -64,9 +63,9 @@ export default async function Progress({ params }: { params: ParamsType }) {
     <div className="w-full max-w-screen-lg space-y-4">
       <Box className="flex gap-8 rounded-2xl">
         <SearchInput className="text-base" />
-        <Button asChild color="green">
-          <Link href="/patients/create">Cadastrar</Link>
-        </Button>
+        <ProgressModal patientId={patientId} color="green">
+          Adicionar
+        </ProgressModal>
       </Box>
       {generateProgress()}
     </div>

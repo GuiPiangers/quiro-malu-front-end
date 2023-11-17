@@ -132,7 +132,6 @@ export class PatientService {
       method: 'PUT',
       body: JSON.stringify(data),
     })
-
     return res
   }
 

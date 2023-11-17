@@ -1,9 +1,6 @@
 import { patientService } from '@/services/patient/serverPatientService'
-import { ParamsType } from '../../page'
 import { Box } from '@/components/Box/Box'
-import Button from '@/components/Button'
-import SearchInput from '@/components/SearchInput'
-import Link from 'next/link'
+import ProgressForm from '../ProgressForm'
 
 type ProgressParams = {
   id: string
@@ -11,17 +8,22 @@ type ProgressParams = {
 }
 
 export default async function Progress({ params }: { params: ProgressParams }) {
-  const { id: patientId, progressId } = params
-  const progress = await patientService.getProgress({
-    id: progressId,
-    patientId,
-  })
+  const { actualProblem, date, procedures, service, id } =
+    await patientService.getProgress({
+      id: params.progressId,
+      patientId: params.id,
+    })
 
   return (
-    <div className="w-full max-w-screen-lg space-y-4">
-      <Box className="flex gap-8 rounded-2xl">
-        <p>{progress.service}</p>
-      </Box>
-    </div>
+    <ProgressForm
+      formData={{
+        actualProblem,
+        date,
+        procedures,
+        service,
+        id,
+        patientId: params.id,
+      }}
+    />
   )
 }

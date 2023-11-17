@@ -29,7 +29,7 @@ const SnackbarStyles = tv({
     SnackbarTitle: 'mr-2 font-medium',
     SnackbarDescription: 'font-normal text-slate-800 ',
     SnackbarIcon: '',
-    SnackbarClose: 'shrink-0	cursor-pointer rounded p-0.5 hover:bg-slate-50 ',
+    SnackbarClose: 'cursor-pointer rounded p-0.5 hover:bg-slate-50 ',
   },
   variants: {
     type: {
