@@ -7,6 +7,7 @@ import { clientPatientService } from '@/services/patient/clientPatientService'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { CgClose } from 'react-icons/cg'
+import { useRouter } from 'next/navigation'
 
 type ProgressModalProps = {
   id?: string
@@ -25,14 +26,20 @@ export default function ProgressModal({
     ProgressResponse | undefined
   >()
 
+  const router = useRouter()
+  const modalRef = useRef<ModalHandles>(null)
+
   const getProgress = useCallback(async () => {
     return await clientPatientService.getProgress({ id: id!, patientId })
   }, [id, patientId])
 
-  const modalRef = useRef<ModalHandles>(null)
-
   const handleOpen = () => modalRef.current?.openModal()
   const handleClose = () => modalRef.current?.closeModal()
+
+  const afterSave = () => {
+    router.refresh()
+    handleClose()
+  }
 
   useEffect(() => {
     getProgress().then(
@@ -65,7 +72,7 @@ export default function ProgressModal({
         </div>
         <ProgressForm
           formData={{ ...progressData, patientId }}
-          afterValidation={handleClose}
+          afterValidation={afterSave}
         />
       </Modal>
     </>

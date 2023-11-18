@@ -1,10 +1,11 @@
 'use client'
 import Button from '@/components/Button'
-import Modal, { ModalHandles } from '@/components/modal/Modal'
+import ConfirmationModal from '@/components/modal/ConfirmationModal'
+import { ModalHandles } from '@/components/modal/Modal'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { useRouter } from 'next/navigation'
-import { useCallback, useContext, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 type DeletePatientButtonProps = { id: string }
 
@@ -33,31 +34,14 @@ export function DeletePatientModal({ id }: DeletePatientButtonProps) {
       <Button variant="outline" size="small" color="red" onClick={handleOpen}>
         Excluir
       </Button>
-      <Modal
+      <ConfirmationModal
+        title="Excluir paciente?"
+        buttonText="Excluir"
+        buttonConfig={{ color: 'red' }}
+        description="Após excluir o paciente, a ação não poderá ser revertida"
+        action={deletePatient}
         ref={modalHandle}
-        className="flex max-w-sm flex-col items-center justify-center gap-2 p-8"
-      >
-        <h1 className="text-xl font-bold">Excluir paciente?</h1>
-
-        <p className="text-sm">
-          Após excluir o paciente, a ação não poderá ser revertida
-        </p>
-
-        <div className="mt-4 flex w-full justify-stretch gap-2">
-          <Button
-            color="black"
-            variant="outline"
-            className="w-full"
-            onClick={handleClose}
-          >
-            Cancelar
-          </Button>
-
-          <Button className="w-full" color="red" onClick={deletePatient}>
-            Excluir
-          </Button>
-        </div>
-      </Modal>
+      />
     </>
   )
 }

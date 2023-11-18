@@ -10,7 +10,7 @@ export const buttonStyle = tv({
       blue: 'border-blue-600 bg-blue-600 text-blue-600 hover:bg-blue-700',
       green: 'border-green-600 bg-green-600 text-green-600 hover:bg-green-700',
       red: 'border-red-600 bg-red-600 text-red-600  hover:bg-red-700',
-      black: 'border-zinc-800 bg-zinc-800 text-black  hover:bg-zinc-900',
+      black: 'border-slate-800 bg-slate-800 text-black  hover:bg-slate-900',
     },
     variant: {
       solid: 'border-none text-white disabled:bg-slate-400 ',
@@ -49,7 +49,7 @@ export const buttonStyle = tv({
     {
       variant: 'outline',
       color: 'black',
-      className: 'hover:bg-zinc-100 hover:text-black',
+      className: 'hover:bg-slate-100 hover:text-black',
     },
   ],
 })
