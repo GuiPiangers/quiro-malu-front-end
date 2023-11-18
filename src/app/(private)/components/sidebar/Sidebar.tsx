@@ -4,7 +4,6 @@ import { CiCalendar, CiDollar, CiStethoscope, CiUser } from 'react-icons/ci'
 import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
 import useToggleContext from '@/hooks/useToggleContext'
-import { useState } from 'react'
 
 type SidebarProps = { className?: string }
 

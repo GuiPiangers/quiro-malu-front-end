@@ -7,7 +7,12 @@ import { patientService } from '@/services/patient/serverPatientService'
 import DateTime from '@/utils/Date'
 import NoDataFound from '@/components/NoDataFound'
 
-export default async function Patients() {
+export default async function Patients({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined }
+}) {
+  const page = searchParams.page || '1'
   const patients = await patientService.list()
   const generateTable = () => {
     if (patients.length > 0) {
@@ -71,6 +76,7 @@ export default async function Patients() {
   return (
     <main className="w-full max-w-screen-lg">
       <Box>
+        <p>{page}</p>
         <div className="mb-6 grid grid-cols-[1fr_auto] items-center gap-8">
           <SearchInput className="text-base" />
           <Button asChild color="green">
@@ -81,6 +87,8 @@ export default async function Patients() {
         <AccordionTable.Root className="text-sm">
           {generateTable()}
         </AccordionTable.Root>
+
+        <Link href={`?page=${+page + 1}`}></Link>
       </Box>
     </main>
   )
