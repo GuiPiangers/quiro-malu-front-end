@@ -10,6 +10,7 @@ import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import { useCallback } from 'react'
+import DateTime from '@/utils/Date'
 
 const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -61,12 +62,6 @@ export default function ProgressForm({
     }
   }
 
-  const now = useCallback(() => {
-    const dateValue = new Date().toISOString().substring(0, 10)
-    const timeValue = new Date().toTimeString().substring(0, 5)
-    return `${dateValue}T${timeValue}`
-  }, [])
-
   return (
     <Form onSubmit={handleSubmit(setProgress)}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
@@ -78,7 +73,7 @@ export default function ProgressForm({
             autoComplete="off"
             disabled={isSubmitting}
             type="datetime-local"
-            defaultValue={date || now()}
+            defaultValue={DateTime.getIsoDateTime(date || new Date())}
             error={!!errors.date}
             {...register('date')}
             notSave={dirtyFields.date}

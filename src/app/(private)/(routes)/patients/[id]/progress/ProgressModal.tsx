@@ -10,28 +10,18 @@ import { CgClose } from 'react-icons/cg'
 import { useRouter } from 'next/navigation'
 
 type ProgressModalProps = {
-  id?: string
-  patientId: string
   className?: string
   children?: ReactNode
+  progressData: Partial<ProgressResponse>
 } & ButtonPropsVariants
 
 export default function ProgressModal({
-  id,
-  patientId,
   children,
+  progressData,
   ...props
 }: ProgressModalProps) {
-  const [progressData, setProgressData] = useState<
-    ProgressResponse | undefined
-  >()
-
   const router = useRouter()
   const modalRef = useRef<ModalHandles>(null)
-
-  const getProgress = useCallback(async () => {
-    return await clientPatientService.getProgress({ id: id!, patientId })
-  }, [id, patientId])
 
   const handleOpen = () => modalRef.current?.openModal()
   const handleClose = () => modalRef.current?.closeModal()
@@ -40,21 +30,6 @@ export default function ProgressModal({
     router.refresh()
     handleClose()
   }
-
-  useEffect(() => {
-    getProgress().then(
-      ({ actualProblem, date, id, patientId, procedures, service }) => {
-        setProgressData({
-          actualProblem,
-          date,
-          id,
-          patientId,
-          procedures,
-          service,
-        })
-      },
-    )
-  }, [getProgress])
 
   return (
     <>
@@ -70,10 +45,7 @@ export default function ProgressModal({
             className="cursor-pointer rounded p-0.5 hover:bg-slate-100 "
           />
         </div>
-        <ProgressForm
-          formData={{ ...progressData, patientId }}
-          afterValidation={afterSave}
-        />
+        <ProgressForm formData={progressData} afterValidation={afterSave} />
       </Modal>
     </>
   )

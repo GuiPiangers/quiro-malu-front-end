@@ -4,7 +4,7 @@ import SearchInput from '@/components/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
 import Link from 'next/link'
 import { patientService } from '@/services/patient/serverPatientService'
-import Age from '@/utils/Age'
+import DateTime from '@/utils/Date'
 import NoDataFound from '@/components/NoDataFound'
 
 export default async function Patients() {
@@ -37,7 +37,7 @@ export default async function Patients() {
                 {patient.dateOfBirth && (
                   <p>
                     <strong>Idade:</strong>{' '}
-                    {`${Age.discover(patient.dateOfBirth)} anos`}
+                    {`${DateTime.calcAge(patient.dateOfBirth)} anos`}
                   </p>
                 )}
               </div>

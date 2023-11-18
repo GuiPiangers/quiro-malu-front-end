@@ -163,9 +163,17 @@ export class PatientService {
   }
 
   async delete(id: string) {
-    const res = await this.fetchData<PatientsListResponse>('/patients', {
+    const res = await this.fetchData<void>('/patients', {
       method: 'DELETE',
       body: JSON.stringify({ id }),
+    })
+    return res
+  }
+
+  async deleteProgress({ id, patientId }: { id: string; patientId: string }) {
+    const res = await this.fetchData<void>('/patients/progress', {
+      method: 'DELETE',
+      body: JSON.stringify({ id, patientId }),
     })
     return res
   }

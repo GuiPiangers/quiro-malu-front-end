@@ -3,8 +3,9 @@ import { ParamsType } from '../page'
 import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'
-import Link from 'next/link'
 import ProgressModal from './ProgressModal'
+import DateTime from '@/utils/Date'
+import DeleteProgress from './DeleteProgress'
 
 export default async function Progress({ params }: { params: ParamsType }) {
   const patientId = params.id
@@ -20,9 +21,7 @@ export default async function Progress({ params }: { params: ParamsType }) {
               <div className="flex flex-col gap-2">
                 <div className="absolute left-0.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-main"></div>
                 <h4 className="text-xl font-bold text-main">
-                  {new Intl.DateTimeFormat('pt-BR').format(
-                    new Date(progress.date),
-                  )}
+                  {DateTime.getLocaleDate(progress.date)}
                 </h4>
                 <div>
                   <h4 className="font-bold text-main">Serviços</h4>
@@ -34,20 +33,12 @@ export default async function Progress({ params }: { params: ParamsType }) {
                 </div>
               </div>
               <div className="grid place-content-end gap-3 sm:grid-cols-2">
-                <Button
-                  size="small"
-                  variant="outline"
-                  color="red"
-                  className="w-20"
-                >
-                  Excluir
-                </Button>
+                <DeleteProgress id={progress.id} patientId={patientId} />
                 <ProgressModal
                   color="blue"
                   variant="outline"
                   size="small"
-                  id={progress.id}
-                  patientId={patientId}
+                  progressData={progress}
                 >
                   Ver
                 </ProgressModal>
@@ -63,7 +54,7 @@ export default async function Progress({ params }: { params: ParamsType }) {
     <div className="w-full max-w-screen-lg space-y-4">
       <Box className="flex gap-8 rounded-2xl">
         <SearchInput className="text-base" />
-        <ProgressModal patientId={patientId} color="green">
+        <ProgressModal progressData={{ patientId }} color="green">
           Adicionar
         </ProgressModal>
       </Box>

@@ -2,9 +2,9 @@ import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import { Nav } from '@/components/navigation'
 import { patientService } from '@/services/patient/serverPatientService'
-import Age from '@/utils/Age'
+import DateTime from '@/utils/Date'
 import { ReactNode } from 'react'
-import { DeletePatientModal } from './DeletePatientButton'
+import { DeletePatientModal } from './DeletePatient'
 
 type LayoutProps = {
   children: ReactNode
@@ -23,13 +23,13 @@ export default async function Layout({ children, params }: LayoutProps) {
           <div className="flex justify-between">
             <div className="flex flex-col gap-1">
               <span className="font-bold">{patientData.name}</span>
-              <span className="text-xs">{`Registrado em ${new Intl.DateTimeFormat(
-                'pt-BR',
-              ).format(new Date(patientData.createAt!))}`}</span>
+              <span className="text-xs">{`Registrado em ${DateTime.getLocaleDate(
+                patientData.createAt!,
+              )}`}</span>
               <span className="text-xs">{patientData.phone}</span>
               {patientData.dateOfBirth && (
                 <span className="text-xs">
-                  {Age.discover(patientData.dateOfBirth) + ' anos'}
+                  {DateTime.calcAge(patientData.dateOfBirth) + ' anos'}
                   {patientData.gender && ' - ' + patientData.gender}
                 </span>
               )}

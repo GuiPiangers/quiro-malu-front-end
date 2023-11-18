@@ -7,9 +7,9 @@ import { clientPatientService } from '@/services/patient/clientPatientService'
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef } from 'react'
 
-type DeletePatientButtonProps = { id: string }
+type DeletePatientProps = { id: string }
 
-export function DeletePatientModal({ id }: DeletePatientButtonProps) {
+export function DeletePatientModal({ id }: DeletePatientProps) {
   const { handleMessage } = useSnackbarContext()
 
   const router = useRouter()
@@ -27,7 +27,7 @@ export function DeletePatientModal({ id }: DeletePatientButtonProps) {
       title: 'Paciente deletado com sucesso!',
       type: 'success',
     })
-  }, [id])
+  }, [handleMessage, id, router])
 
   return (
     <>

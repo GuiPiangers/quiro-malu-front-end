@@ -2,7 +2,7 @@
 
 import useIdContext from '@/hooks/useIdContext'
 import useToggleGroupContext from '@/hooks/useToggleGroupContext'
-import { ReactNode, HTMLAttributes } from 'react'
+import { ReactNode, HTMLAttributes, useRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 import AccordionHeader from './AccordionHeader'
 
@@ -18,9 +18,11 @@ export default function AccordionTrigger({
 }: AccordionTriggerProps) {
   const { setActive, active } = useToggleGroupContext()
   const { id } = useIdContext()
+
   const activeItemId = `acc-content${id}`
   const triggerId = `acc-trigger${id}`
   const isActive = active === activeItemId
+
   return (
     <AccordionHeader>
       <div
@@ -31,7 +33,7 @@ export default function AccordionTrigger({
         className={twMerge('group h-full w-full text-left', className)}
         aria-expanded={isActive}
         aria-controls={activeItemId}
-        onClick={() => {
+        onClick={(e) => {
           setActive(activeItemId)
         }}
         onKeyDown={(e) => {

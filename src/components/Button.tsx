@@ -1,4 +1,6 @@
-import { ButtonHTMLAttributes } from 'react'
+'use client'
+
+import { ButtonHTMLAttributes, MouseEvent } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
 import { Slot } from '@radix-ui/react-slot'
 
@@ -68,11 +70,16 @@ export default function Button({
   className,
   asChild,
   size,
+  onClick,
   ...props
 }: ButtonProps) {
   const Element = asChild ? Slot : 'button'
   return (
     <Element
+      onClick={(e) => {
+        e.stopPropagation()
+        if (onClick) onClick(e as any)
+      }}
       className={buttonStyle({ variant, size, color, className })}
       {...props}
     >
