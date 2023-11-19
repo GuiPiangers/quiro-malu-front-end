@@ -6,20 +6,23 @@ import Link from 'next/link'
 import { patientService } from '@/services/patient/serverPatientService'
 import DateTime from '@/utils/Date'
 import NoDataFound from '@/components/NoDataFound'
+import Pagination from '@/components/pagination/Pagination'
 
 export default async function Patients({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined }
 }) {
-  const page = searchParams.page || '1'
+  const page =
+    searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
+
   const { patients, total, limit } = await patientService.list({ page })
 
-  console.log(Math.ceil(total / limit))
   const nextPage = () => {
     if (+page * limit < total) return +page + 1
     return page
   }
+
   const prevPage = () => {
     if (+page > 1) return +page - 1
     return 1
@@ -102,6 +105,9 @@ export default async function Patients({
         <Link href={`?page=${nextPage()}`}>Proximo</Link>
         <Link href={`?page=${prevPage()}`}>prev</Link>
       </Box>
+      <div className="mt-4 grid place-items-center">
+        <Pagination limit={limit} page={+page} total={total} route="?page=" />
+      </div>
     </main>
   )
 }
