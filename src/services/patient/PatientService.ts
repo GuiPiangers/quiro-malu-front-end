@@ -19,14 +19,18 @@ export type PatientResponse = {
   location?: LocationDTO | null
   createAt?: string
 }
-export type PatientsListResponse = [
-  {
-    id?: string
-    name: string
-    phone: string
-    dateOfBirth?: string | null
-  },
-]
+export type PatientsListResponse = {
+  patients: [
+    {
+      id?: string
+      name: string
+      phone: string
+      dateOfBirth?: string | null
+    },
+  ]
+  total: number
+  limit: number
+}
 export type AnamnesisResponse = {
   patientId?: string
   mainProblem?: string
@@ -155,10 +159,13 @@ export class PatientService {
     return res
   }
 
-  async list() {
-    const res = await this.fetchData<PatientsListResponse>('/patients', {
-      method: 'GET',
-    })
+  async list({ page }: { page?: string } = { page: '1' }) {
+    const res = await this.fetchData<PatientsListResponse>(
+      `/patients?page=${page}`,
+      {
+        method: 'GET',
+      },
+    )
     return res
   }
 

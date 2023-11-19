@@ -13,7 +13,18 @@ export default async function Patients({
   searchParams: { [key: string]: string | undefined }
 }) {
   const page = searchParams.page || '1'
-  const patients = await patientService.list()
+  const { patients, total, limit } = await patientService.list({ page })
+
+  console.log(Math.ceil(total / limit))
+  const nextPage = () => {
+    if (+page * limit < total) return +page + 1
+    return page
+  }
+  const prevPage = () => {
+    if (+page > 1) return +page - 1
+    return 1
+  }
+
   const generateTable = () => {
     if (patients.length > 0) {
       return patients.map((patient) => {
@@ -88,7 +99,8 @@ export default async function Patients({
           {generateTable()}
         </AccordionTable.Root>
 
-        <Link href={`?page=${+page + 1}`}></Link>
+        <Link href={`?page=${nextPage()}`}>Proximo</Link>
+        <Link href={`?page=${prevPage()}`}>prev</Link>
       </Box>
     </main>
   )
