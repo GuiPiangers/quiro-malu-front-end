@@ -6,17 +6,29 @@ import SearchInput from '@/components/SearchInput'
 import ProgressModal from './ProgressModal'
 import DateTime from '@/utils/Date'
 import DeleteProgress from './DeleteProgress'
+import Pagination from '@/components/pagination/Pagination'
 
-export default async function Progress({ params }: { params: ParamsType }) {
+export default async function Progress({
+  params,
+  searchParams,
+}: {
+  params: ParamsType
+  searchParams: { [key: string]: string | undefined }
+}) {
   const patientId = params.id
-  const progressList = await patientService.listProgress({ patientId })
+  const page =
+    searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
+  const { progress, total, limit } = await patientService.listProgress({
+    patientId,
+    page,
+  })
 
   const generateProgress = () => {
     return (
       <div className="relative flex w-full gap-5">
         <div className="w-1 rounded-full bg-purple-200"></div>
         <div className="w-full space-y-4">
-          {progressList.map((progress) => (
+          {progress.map((progress) => (
             <Box key={progress.id} className="flex justify-between gap-4">
               <div className="flex flex-col gap-2">
                 <div className="absolute left-0.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-main"></div>
@@ -59,6 +71,9 @@ export default async function Progress({ params }: { params: ParamsType }) {
         </ProgressModal>
       </Box>
       {generateProgress()}
+      <div className="grid place-items-center pt-4">
+        <Pagination limit={limit} page={+page} total={total} route="?page=" />
+      </div>
     </div>
   )
 }

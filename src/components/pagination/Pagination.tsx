@@ -1,5 +1,6 @@
 'use client'
 
+import useWindowSize from '@/hooks/useWindowSize'
 import { useRouter } from 'next/navigation'
 
 type PaginationProps = {
@@ -40,6 +41,7 @@ export default function Pagination({
   const qtdPages = Math.ceil(total / limit)
   const lastPage = page === qtdPages
   const firstPage = page === 1
+  const { windowWidth } = useWindowSize()
 
   const navigate = (page: number) => {
     router.push(`${route}${page}`)
@@ -53,12 +55,27 @@ export default function Pagination({
   }
 
   const generatePaginationItems = () => {
-    const arrayNumbers = Array.from({ length: 25 }, (_, i) => i + 1)
+    const isSmScreen = windowWidth <= 640
+    const totalVisibleNumbers = isSmScreen ? 5 : 10
+
+    const arrayNumbers = Array.from({ length: qtdPages }, (_, i) => i + 1)
     const pagNumbers = arrayNumbers.filter((number, index) => {
       if (index === 0) return true
-      if (number < page && !(number >= arrayNumbers.length - 8)) return false
-      if (arrayNumbers.length - 10 >= page && page + 9 > number) return true
-      if (number >= arrayNumbers.length - 10 && page + 9 > number) return true
+      if (
+        number < page &&
+        !(number >= arrayNumbers.length - totalVisibleNumbers - 2)
+      )
+        return false
+      if (
+        arrayNumbers.length - totalVisibleNumbers - 1 >= page &&
+        page + totalVisibleNumbers - 1 > number
+      )
+        return true
+      if (
+        number >= arrayNumbers.length - totalVisibleNumbers - 1 &&
+        page + totalVisibleNumbers - 1 > number
+      )
+        return true
       return false
     })
     return pagNumbers.map((number, index) => {

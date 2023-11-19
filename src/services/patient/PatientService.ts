@@ -59,6 +59,11 @@ export type ProgressResponse = {
   createAt?: string
   updateAt?: string
 }
+export type ProgressListResponse = {
+  progress: ProgressResponse[]
+  total: number
+  limit: number
+}
 
 export class PatientService {
   constructor(
@@ -149,9 +154,15 @@ export class PatientService {
     return res
   }
 
-  async listProgress({ patientId }: { patientId: string }) {
-    const res = await this.fetchData<ProgressResponse[]>(
-      `/patients/progress/${patientId}`,
+  async listProgress({
+    patientId,
+    page = '1',
+  }: {
+    patientId: string
+    page?: string
+  }) {
+    const res = await this.fetchData<ProgressListResponse>(
+      `/patients/progress/${patientId}?page=${page}`,
       {
         method: 'GET',
       },
@@ -159,7 +170,7 @@ export class PatientService {
     return res
   }
 
-  async list({ page }: { page?: string } = { page: '1' }) {
+  async list({ page = '1' }: { page?: string }) {
     const res = await this.fetchData<PatientsListResponse>(
       `/patients?page=${page}`,
       {

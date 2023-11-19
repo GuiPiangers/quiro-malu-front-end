@@ -18,16 +18,6 @@ export default async function Patients({
 
   const { patients, total, limit } = await patientService.list({ page })
 
-  const nextPage = () => {
-    if (+page * limit < total) return +page + 1
-    return page
-  }
-
-  const prevPage = () => {
-    if (+page > 1) return +page - 1
-    return 1
-  }
-
   const generateTable = () => {
     if (patients.length > 0) {
       return patients.map((patient) => {
@@ -90,7 +80,6 @@ export default async function Patients({
   return (
     <main className="w-full max-w-screen-lg">
       <Box>
-        <p>{page}</p>
         <div className="mb-6 grid grid-cols-[1fr_auto] items-center gap-8">
           <SearchInput className="text-base" />
           <Button asChild color="green">
@@ -101,9 +90,6 @@ export default async function Patients({
         <AccordionTable.Root className="text-sm">
           {generateTable()}
         </AccordionTable.Root>
-
-        <Link href={`?page=${nextPage()}`}>Proximo</Link>
-        <Link href={`?page=${prevPage()}`}>prev</Link>
       </Box>
       <div className="mt-4 grid place-items-center">
         <Pagination limit={limit} page={+page} total={total} route="?page=" />
