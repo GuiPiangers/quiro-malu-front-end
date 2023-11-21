@@ -7,6 +7,7 @@ import ProgressModal from './ProgressModal'
 import DateTime from '@/utils/Date'
 import DeleteProgress from './DeleteProgress'
 import Pagination from '@/components/pagination/Pagination'
+import NoDataFound from '@/components/NoDataFound'
 
 export default async function Progress({
   params,
@@ -70,9 +71,28 @@ export default async function Progress({
           Adicionar
         </ProgressModal>
       </Box>
-      {generateProgress()}
+      {progress.length > 0 ? (
+        generateProgress()
+      ) : (
+        <NoDataFound
+          message={
+            <div className="mt-2">
+              <span>Nenhuma evolução registrada</span>
+              <ProgressModal
+                progressData={{ patientId }}
+                size="small"
+                className="mt-4 w-full"
+                variant="outline"
+                color="green"
+              >
+                Registrar evolução
+              </ProgressModal>
+            </div>
+          }
+        />
+      )}
       <div className="grid place-items-center pt-4">
-        <Pagination limit={limit} page={+page} total={total} route="?page=" />
+        <Pagination limit={limit} page={+page} total={total} />
       </div>
     </div>
   )

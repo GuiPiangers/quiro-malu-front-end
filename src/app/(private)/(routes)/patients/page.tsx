@@ -66,7 +66,7 @@ export default async function Patients({
     return (
       <NoDataFound
         message={
-          <div className="items center flex flex-col gap-4">
+          <div className="items center mt-4 flex flex-col gap-2">
             <span>Nenhum paciente encontrado</span>
             <Button asChild size="small" variant="outline" color="green">
               <Link href="/patients/create">Cadastrar paciente</Link>
@@ -92,7 +92,7 @@ export default async function Patients({
         </AccordionTable.Root>
       </Box>
       <div className="mt-4 grid place-items-center">
-        <Pagination limit={limit} page={+page} total={total} route="?page=" />
+        <Pagination limit={limit} page={+page} total={total} />
       </div>
     </main>
   )

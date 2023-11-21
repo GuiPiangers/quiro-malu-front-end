@@ -13,14 +13,11 @@ export default function NoDataFound({ message, className }: NoDataFoundProps) {
       <Image
         className={className}
         src={noDataFoundImage}
-        width={640}
-        height={473}
+        width={280}
+        height={300}
         alt="Nenhum resultado encontrado"
       />
       {message}
-      <a className="mt-4 text-xs text-blue-600" href="http://www.freepik.com">
-        Designed by stories / Freepik
-      </a>
     </div>
   )
 }

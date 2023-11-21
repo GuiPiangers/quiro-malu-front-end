@@ -7,7 +7,6 @@ type PaginationProps = {
   page: number
   limit: number
   total: number
-  route: string
 }
 
 const PaginationItem = ({
@@ -31,12 +30,7 @@ const PaginationItem = ({
   )
 }
 
-export default function Pagination({
-  page,
-  limit,
-  total,
-  route,
-}: PaginationProps) {
+export default function Pagination({ page, limit, total }: PaginationProps) {
   const router = useRouter()
   const qtdPages = Math.ceil(total / limit)
   const lastPage = page === qtdPages
@@ -44,7 +38,7 @@ export default function Pagination({
   const { windowWidth } = useWindowSize()
 
   const navigate = (page: number) => {
-    router.push(`${route}${page}`)
+    router.push(`?page=${page}`)
   }
 
   const next = () => {
