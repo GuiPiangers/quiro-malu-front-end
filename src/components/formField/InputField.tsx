@@ -18,7 +18,7 @@ export const inputStyles = tv({
     inputWrapperStyle:
       'flex items-center rounded-lg bg-white text-sm font-normal leading-5 text-slate-900 shadow-md shadow-slate-100 outline outline-1  outline-slate-300 hover:bg-slate-50 hover:outline hover:outline-1  ',
     inputFieldStyle:
-      'flex-grow rounded-md border-none px-3 py-2 outline-none after:block after:text-black ',
+      'flex-grow rounded-md border-none bg-transparent px-3 py-2 outline-none after:block after:text-black ',
   },
   variants: {
     notSave: {
@@ -31,7 +31,7 @@ export const inputStyles = tv({
         inputWrapperStyle:
           'bg-red-50 outline outline-1 outline-red-600 hover:bg-white',
         inputFieldStyle:
-          'text-red-600 placeholder:text-red-300 autofill:shadow-[0_0_0px_1000px_inset] autofill:shadow-red-50 autofill:focus:shadow-white',
+          ' text-red-600 placeholder:text-red-300 autofill:shadow-[0_0_0px_1000px_inset] autofill:shadow-red-50 autofill:focus:shadow-white',
       },
     },
     focus: {

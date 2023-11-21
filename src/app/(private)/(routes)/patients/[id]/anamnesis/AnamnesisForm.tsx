@@ -2,8 +2,8 @@
 
 import { Input } from '@/components/formField'
 import RadioButton from '@/components/radioButton/RadioButton'
-import Form from '../../components/Form'
-import { sectionStyles } from '../../components/Styles'
+import Form from '../../../../../../components/form/Form'
+import { sectionStyles } from '../../../../../../components/form/Styles'
 import { AnamnesisResponse } from '@/services/patient/PatientService'
 import { useState } from 'react'
 import { z } from 'zod'

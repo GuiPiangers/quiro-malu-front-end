@@ -1,15 +1,14 @@
 'use client'
 
 import { Input } from '@/components/formField'
-import Form from '../../components/Form'
-import { sectionStyles } from '../../components/Styles'
+import Form, { FormProps } from '../../../../../../components/form/Form'
+import { sectionStyles } from '../../../../../../components/form/Styles'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { ProgressResponse } from '@/services/patient/PatientService'
-import { useCallback } from 'react'
 import DateTime from '@/utils/Date'
 
 const setProgressSchema = z.object({
@@ -24,11 +23,12 @@ export type setProgressData = z.infer<typeof setProgressSchema>
 type ProgressFormProps = {
   formData: Partial<ProgressResponse>
   afterValidation?(): void
-}
+} & FormProps
 
 export default function ProgressForm({
   formData,
   afterValidation,
+  ...formProps
 }: ProgressFormProps) {
   const { patientId, actualProblem, date, procedures, service, id } = formData
 
@@ -63,7 +63,7 @@ export default function ProgressForm({
   }
 
   return (
-    <Form onSubmit={handleSubmit(setProgress)}>
+    <Form onSubmit={handleSubmit(setProgress)} {...formProps}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
@@ -84,7 +84,7 @@ export default function ProgressForm({
         </Input.Root>
 
         <Input.Root>
-          <Input.Label required notSave={dirtyFields.procedures}>
+          <Input.Label required notSave={dirtyFields.service}>
             Serviço
           </Input.Label>
           <Input.Field

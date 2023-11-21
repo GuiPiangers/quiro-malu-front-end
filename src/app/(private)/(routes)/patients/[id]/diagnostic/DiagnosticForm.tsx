@@ -1,8 +1,8 @@
 'use client'
 
 import { Input } from '@/components/formField'
-import Form from '../../components/Form'
-import { sectionStyles } from '../../components/Styles'
+import Form from '../../../../../../components/form/Form'
+import { sectionStyles } from '../../../../../../components/form/Styles'
 import { DiagnosticResponse } from '@/services/patient/PatientService'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
