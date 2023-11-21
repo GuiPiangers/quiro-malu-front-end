@@ -36,6 +36,7 @@ export default function CreateServiceModal() {
       <Modal ref={modalRef} className="m-4 w-full max-w-md p-0">
         <HeaderForm handleClose={closeModal} title="Novo serviço" />
         <ServiceForm
+          buttons={<Button color="green">Salvar</Button>}
           className="shadow-none"
           action={createService}
           afterValidation={afterSubmit}

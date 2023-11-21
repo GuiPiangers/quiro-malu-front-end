@@ -22,7 +22,7 @@ const setServiceSchema = z.object({
     .refine((value) => +value > 0, {
       message: 'A o valor precisa ser um número positivo',
     }),
-  duration: z.coerce.number(),
+  duration: z.coerce.number().optional(),
 })
 
 export type setServiceData = z.infer<typeof setServiceSchema>
@@ -44,7 +44,7 @@ type TimeAction = {
   setValue: UseFormSetValue<{
     name: string
     value: string
-    duration: number
+    duration?: number
   }>
 } & (
   | { type: 'incHour' }
@@ -119,7 +119,9 @@ export default function ServiceForm({
 }: ServiceFormProps) {
   const { name, id, duration, value } = formData || {}
   const { handleMessage } = useSnackbarContext()
-  const [otherDuration, setOtherDuration] = useState(false)
+  const [otherDuration, setOtherDuration] = useState(
+    duration !== 60 * 60 && duration !== 30 * 60,
+  )
   const [time, dispatch] = useReducer(reducer, {
     hours: duration ? Math.floor(duration / (60 * 60)) : 0,
     minutes: duration ? (duration % (60 * 60)) / 60 : 0,
@@ -163,7 +165,11 @@ export default function ServiceForm({
   } = setServiceForm
 
   const setService = async (data: setServiceData) => {
-    const res = await action({ id, ...data })
+    const res = await action({
+      id,
+      duration: data.duration || time.hours * 60 * 60 + time.minutes * 60,
+      ...data,
+    })
     if (res.error) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
@@ -236,7 +242,7 @@ export default function ServiceForm({
               <>
                 <div className="grid h-full grid-flow-col flex-col gap-x-1">
                   <Input.Field
-                    className="row-span-2 w-12"
+                    className="row-span-2 w-12 max-w-[48px]"
                     autoComplete="off"
                     slotProps={{ input: { className: 'w-full pr-0' } }}
                     endAdornment={<span className="pr-2">h</span>}
@@ -255,9 +261,11 @@ export default function ServiceForm({
 
                 <div className="grid h-full grid-flow-col flex-col gap-x-1">
                   <Input.Field
-                    className="row-span-2 w-16"
+                    className="row-span-2 w-16 max-w-[64px]"
                     autoComplete="off"
-                    slotProps={{ input: { className: 'w-full pr-0' } }}
+                    slotProps={{
+                      input: { className: 'w-full pr-0' },
+                    }}
                     endAdornment={<span className="pr-2">min</span>}
                     onChange={changeMinute}
                     value={time.minutes}

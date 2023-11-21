@@ -1,7 +1,7 @@
 export default class DateTime {
   static getIsoDate(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
-    return dateValue.toISOString().substring(0, 10)
+    return dateValue.toLocaleDateString().split('/').reverse().join('-')
   }
 
   static getIsoDateTime(date: Date | string) {
@@ -10,7 +10,7 @@ export default class DateTime {
 
   static getTime(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
-    return dateValue.toTimeString().substring(0, 5)
+    return dateValue.toLocaleTimeString().substring(0, 5)
   }
 
   static getLocaleDate(date: Date | string) {
