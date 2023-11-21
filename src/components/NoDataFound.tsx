@@ -7,7 +7,7 @@ type NoDataFoundProps = {
 }
 
 export default function NoDataFound({ message, className }: NoDataFoundProps) {
-  const noDataFoundImage = '/no-data/no-data-found.png'
+  const noDataFoundImage = '/no-data/noContent.svg'
   return (
     <div className="flex flex-col items-center justify-center">
       <Image

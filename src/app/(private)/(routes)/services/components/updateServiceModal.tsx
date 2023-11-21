@@ -10,12 +10,14 @@ import HeaderForm from '@/components/form/HeaderForm'
 import { useRouter } from 'next/navigation'
 import { Table } from '@/components/table'
 import Button from '@/components/Button'
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 
 export default function UpdateServiceModal({
   service,
 }: {
   service: ServiceResponse
 }) {
+  const { handleMessage } = useSnackbarContext()
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
 
@@ -31,6 +33,17 @@ export default function UpdateServiceModal({
     data: ServiceResponse,
   ): Promise<ServiceResponse & responseError> => {
     return await clientService.update(data)
+  }
+  const deleteService = async () => {
+    const res = await clientService.delete(service.id!)
+
+    if (res.error) {
+      handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
+    } else {
+      closeModal()
+      router.refresh()
+      handleMessage({ title: 'Serviço deletado com sucesso!', type: 'success' })
+    }
   }
 
   const toHoursAndMinutes = (value: number) => {
@@ -67,7 +80,7 @@ export default function UpdateServiceModal({
               <Button color="green" type="submit">
                 Salvar
               </Button>
-              <Button type="button" color="red">
+              <Button type="button" color="red" onClick={deleteService}>
                 Excluir
               </Button>
             </>
