@@ -33,15 +33,15 @@ export default async function Progress({
             <Box key={progress.id} className="flex justify-between gap-4">
               <div className="flex flex-col gap-2">
                 <div className="absolute left-0.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-main"></div>
-                <h4 className="text-xl font-bold text-main">
+                <h4 className="text-xl font-semibold text-main">
                   {DateTime.getLocaleDate(progress.date)}
                 </h4>
                 <div>
-                  <h4 className="font-bold text-main">Serviços</h4>
+                  <h4 className="font-semibold text-main">Serviços</h4>
                   <p className="text-sm">{progress.service}</p>
                 </div>
                 <div>
-                  <h4 className="font-bold text-main">Procedimentos</h4>
+                  <h4 className="font-semibold text-main">Procedimentos</h4>
                   <p className="text-sm">{progress.procedures}</p>
                 </div>
               </div>

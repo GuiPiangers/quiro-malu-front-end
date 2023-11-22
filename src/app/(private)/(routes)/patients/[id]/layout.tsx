@@ -22,7 +22,7 @@ export default async function Layout({ children, params }: LayoutProps) {
         <section aria-label="Dados do paciente">
           <div className="flex justify-between">
             <div className="flex flex-col gap-1">
-              <span className="font-bold">{patientData.name}</span>
+              <span className="font-semibold">{patientData.name}</span>
               <span className="text-xs">{`Registrado em ${DateTime.getLocaleDate(
                 patientData.createAt!,
               )}`}</span>

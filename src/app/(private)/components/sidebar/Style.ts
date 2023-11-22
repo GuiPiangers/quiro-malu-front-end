@@ -13,7 +13,7 @@ export const SidebarStyles = tv({
   variants: {
     active: {
       true: {
-        navItemStyle: 'bg-slate-200 font-bold hover:bg-slate-100',
+        navItemStyle: 'bg-slate-200 font-semibold hover:bg-slate-100',
         navIconStyle: 'stroke-[0.5]',
       },
     },

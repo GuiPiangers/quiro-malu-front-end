@@ -9,7 +9,7 @@ export const navStyles = tv({
   variants: {
     active: {
       true: {
-        NavItemStyles: 'bg-main font-bold text-white hover:bg-main-hover',
+        NavItemStyles: 'bg-main font-semibold text-white hover:bg-main-hover',
       },
     },
   },

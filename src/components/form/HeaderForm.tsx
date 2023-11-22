@@ -19,7 +19,7 @@ export default function HeaderForm({
         className,
       )}
     >
-      <h2 className="text-xl font-bold text-main">{title}</h2>
+      <h2 className="text-xl font-semibold text-main">{title}</h2>
       <CgClose
         size={22}
         onClick={handleClose}

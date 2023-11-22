@@ -2,6 +2,7 @@
 
 import useWindowSize from '@/hooks/useWindowSize'
 import { useRouter } from 'next/navigation'
+import { RxCaretDown, RxCaretLeft, RxCaretRight } from 'react-icons/rx'
 
 type PaginationProps = {
   page: number
@@ -88,24 +89,30 @@ export default function Pagination({ page, limit, total }: PaginationProps) {
   }
 
   return (
-    <div className=" flex gap-1">
-      <button
-        type="button"
-        disabled={firstPage}
-        onClick={prev}
-        className="h-8 w-8 rounded-md bg-white shadow hover:bg-slate-100 disabled:bg-slate-50 disabled:text-slate-400"
-      >
-        {'<'}
-      </button>
-      {generatePaginationItems()}
-      <button
-        type="button"
-        disabled={lastPage}
-        onClick={next}
-        className="h-8 w-8 rounded-md bg-white shadow hover:bg-slate-100 disabled:bg-slate-50 disabled:text-slate-400"
-      >
-        {'>'}
-      </button>
-    </div>
+    <>
+      {qtdPages > 1 && (
+        <div className=" flex gap-1">
+          <button
+            type="button"
+            disabled={firstPage}
+            onClick={prev}
+            className="grid h-8 w-8 place-items-center rounded-md bg-white shadow hover:bg-slate-100 disabled:bg-slate-50 disabled:text-slate-400"
+          >
+            <RxCaretLeft size={24} />
+          </button>
+
+          {generatePaginationItems()}
+
+          <button
+            type="button"
+            disabled={lastPage}
+            onClick={next}
+            className="grid h-8 w-8 place-items-center rounded-md bg-white shadow hover:bg-slate-100 disabled:bg-slate-50 disabled:text-slate-400"
+          >
+            <RxCaretRight size={24} />
+          </button>
+        </div>
+      )}
+    </>
   )
 }

@@ -10,6 +10,9 @@ import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import DateTime from '@/utils/Date'
+import { useEffect, useState } from 'react'
+import { clientService } from '@/services/service/clientService'
+import { ServiceResponse } from '@/services/service/Service'
 
 const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -31,6 +34,11 @@ export default function ProgressForm({
   ...formProps
 }: ProgressFormProps) {
   const { patientId, actualProblem, date, procedures, service, id } = formData
+  const [services, setServices] = useState<ServiceResponse[]>()
+
+  useEffect(() => {
+    clientService.list({}).then((res) => setServices(res.services))
+  }, [])
 
   const { handleMessage } = useSnackbarContext()
   const setProgressForm = useForm<ProgressResponse>({
@@ -42,6 +50,7 @@ export default function ProgressForm({
     formState: { isSubmitting, errors, dirtyFields },
     register,
     reset,
+    setValue,
   } = setProgressForm
 
   const setProgress = async (data: setProgressData) => {
@@ -87,14 +96,21 @@ export default function ProgressForm({
           <Input.Label required notSave={dirtyFields.service}>
             Serviço
           </Input.Label>
-          <Input.Field
-            autoComplete="off"
+          <Input.Select
+            {...register('service')}
             disabled={isSubmitting}
             defaultValue={service}
-            {...register('service')}
             error={!!errors.service}
-            notSave={dirtyFields.service}
-          />
+            slotProps={{ popper: { className: 'z-40' } }}
+            onChange={(_, newValue) => setValue('service', newValue as string)}
+          >
+            {services?.map((service) => (
+              <Input.Option key={service.id} value={service.name}>
+                {service.name}
+              </Input.Option>
+            ))}
+          </Input.Select>
+
           {errors.service && (
             <Input.Message error>{errors.service.message}</Input.Message>
           )}

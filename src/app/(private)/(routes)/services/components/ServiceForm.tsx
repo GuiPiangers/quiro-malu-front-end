@@ -291,6 +291,10 @@ export default function ServiceForm({
               </Button>
             )}
           </div>
+
+          {errors.duration && (
+            <Input.Message error>{errors.duration.message}</Input.Message>
+          )}
         </Input.Root>
 
         <Input.Root>

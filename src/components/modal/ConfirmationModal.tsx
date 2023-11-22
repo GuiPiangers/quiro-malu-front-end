@@ -32,7 +32,7 @@ export default forwardRef<ModalRef, ConfirmationModalProps>(
         ref={modalHandle}
         className="flex max-w-sm flex-col items-center justify-center gap-2 p-8"
       >
-        <h1 className="text-xl font-bold">{title}</h1>
+        <h1 className="text-xl font-semibold">{title}</h1>
 
         <p className="text-sm">{description}</p>
 
