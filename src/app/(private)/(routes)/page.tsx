@@ -3,9 +3,25 @@ import UserProfile from '@/app/(private)/components/UserProfile'
 import { userService } from '@/services/user/serverUserService'
 import { Table } from '@/components/table'
 import { Input } from '@/components/formField/index'
+import { GenerateWorkHours } from '@/utils/GenerateDays'
 
 export default async function Home() {
   const profile = await userService.get()
+
+  const day1 = new GenerateWorkHours({
+    schedulingDuration: 60,
+    workSchedules: [
+      { start: '07:00', end: '11:00' },
+      { start: '10:00', end: '19:00' },
+    ],
+  })
+
+  console.log(
+    day1.generate([
+      { date: '2023-11-24T14:00', duration: 5200 },
+      { date: '2023-11-24T08:00', duration: 5200 },
+    ]),
+  )
 
   return (
     <section className="">
