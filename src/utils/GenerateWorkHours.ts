@@ -35,28 +35,21 @@ export class GenerateWorkHours {
     data: Array<{ date: string; duration: number; [key: string]: any }>,
   ) {
     const allTimes = new Map<string, string | object>()
+    const newArray = [...this.workHours, ...data]
+      .filter((value) => {
+        return !data.some((scheduling) => {
+          const startTime = DateTime.getTime(new Date(scheduling.date))
+          const end = new Date(scheduling.date)
+          end.setSeconds(scheduling.duration)
+          const endTime = DateTime.getTime(end)
 
-    this.workHours.forEach((hour) => {
-      data.forEach((value) => {
-        const startTime = DateTime.getTime(new Date(value.date))
-        const end = new Date(value.date)
-        end.setSeconds(value.duration)
-        const endTime = DateTime.getTime(end)
-
-        // console.log(
-        //   hour,
-        //   startTime,
-        //   endTime,
-        //   startTime <= hour && hour < endTime,
-        // )
-
-        if (this.workHours.some((v) => startTime <= v && v < endTime)) {
-          if (!allTimes.has(value.date)) console.log(true)
-          allTimes.set(DateTime.getTime(value.date), value)
-        } else {
-          if (!allTimes.has(hour)) allTimes.set(hour, { date: hour })
-        }
+          return startTime <= value && value < endTime
+        })
       })
+      .sort()
+    newArray.forEach((item) => {
+      if (typeof item === 'string') allTimes.set(item, item)
+      else allTimes.set(DateTime.getTime(item.date), item)
     })
 
     return Array.from(allTimes).sort()
