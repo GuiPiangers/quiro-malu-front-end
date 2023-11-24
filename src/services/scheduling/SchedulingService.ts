@@ -49,9 +49,9 @@ export class Scheduling {
     return res
   }
 
-  async list({ patientId, page = '1' }: { patientId: string; page?: string }) {
+  async list({ date, page = '1' }: { date: string; page?: string }) {
     const res = await this.fetchData<SchedulingListResponse>(
-      `/Schedules/${patientId}?page=${page}`,
+      `/Schedules?page=${page}&date=${date}`,
       {
         method: 'GET',
       },
