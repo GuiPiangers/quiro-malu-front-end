@@ -8,7 +8,7 @@ export type SchedulingResponse = {
   date: string
 }
 export type SchedulingListResponse = {
-  schedules: SchedulingResponse[]
+  schedules: (SchedulingResponse & { patient: string; phone: string })[]
   total: number
   limit: number
 }

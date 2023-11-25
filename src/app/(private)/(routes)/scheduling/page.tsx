@@ -3,12 +3,21 @@ import Button from '@/components/Button'
 import NoDataFound from '@/components/NoDataFound'
 import { AccordionTable } from '@/components/accordionTable'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
+import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 import Link from 'next/link'
 
 export default async function Scheduling() {
   const { schedules } = await schedulingService.list({ date: '2023-12-22' })
 
-  console.log(schedules)
+  console.log(
+    new GenerateWorkHours({
+      schedulingDuration: 30,
+      workSchedules: [
+        { start: '07:00', end: '11:00' },
+        { start: '13:00', end: '19:00' },
+      ],
+    }).generate(schedules),
+  )
 
   const generateTable = () => {
     if (schedules.length > 0) {
@@ -30,7 +39,7 @@ export default async function Scheduling() {
             <AccordionTable.Content className="flex justify-between gap-2">
               <div className="space-y-1 text-sm">
                 <p>
-                  <strong>Nome:</strong> {scheduling.patientId}
+                  <strong>Nome:</strong> {scheduling.patient}
                 </p>
                 <p>
                   <strong>Telefone:</strong> {scheduling.service}
