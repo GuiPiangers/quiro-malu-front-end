@@ -1,16 +1,26 @@
 import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import { AccordionTable } from '@/components/accordionTable'
+import Calendar from '@/components/calendar/Calendar'
 import { Table } from '@/components/table'
 import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
+import DateTime from '@/utils/Date'
 import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 import { Time } from '@/utils/Time'
 import Link from 'next/link'
+import Navigate from './Navigate'
+import { RxCaretDown } from 'react-icons/rx'
 
-export default async function Scheduling() {
-  const { schedules } = await schedulingService.list({ date: '2023-12-22' })
-
+export default async function Scheduling({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined }
+}) {
+  const date = searchParams.date
+    ? searchParams.date
+    : DateTime.getIsoDate(new Date())
+  const { schedules } = await schedulingService.list({ date })
   const table = new GenerateWorkHours({
     schedulingDuration: 30,
     workSchedules: [
@@ -20,6 +30,15 @@ export default async function Scheduling() {
   }).generate<SchedulingResponse & { patient: string; phone: string }>(
     schedules,
   )
+
+  const incDate = (number: number) =>
+    `?date=${DateTime.getIsoDate(
+      new Date(
+        +date.substring(0, 4),
+        +date.substring(5, 7) - 1,
+        +date.substring(8, 10) + number,
+      ),
+    )}`
 
   const generateTable = () => {
     return table.map((item) => {
@@ -63,7 +82,7 @@ export default async function Scheduling() {
                 <p>
                   <strong>Duração:</strong> {durationString}
                 </p>
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-2 pt-2 ">
                   <Button
                     variant="outline"
                     size="small"
@@ -114,9 +133,37 @@ export default async function Scheduling() {
   }
 
   return (
-    <div className="w-full max-w-screen-lg">
-      <Box>
+    <div className="grid w-full max-w-screen-xl grid-cols-[1fr_320px] gap-4">
+      <Box className="">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex gap-1">
+            <Navigate route={incDate(-1)}>
+              <RxCaretDown
+                size={24}
+                className="rotate-90 cursor-pointer rounded text-main hover:bg-slate-100"
+              />
+            </Navigate>
+            <span className="text-lg font-semibold text-main">
+              {new Date(
+                +date.substring(0, 4),
+                +date.substring(5, 7) - 1,
+                +date.substring(8, 10),
+              ).toLocaleDateString()}
+            </span>
+            <Navigate route={incDate(1)}>
+              <RxCaretDown
+                size={24}
+                className="-rotate-90 cursor-pointer rounded text-main hover:bg-slate-100"
+              />
+            </Navigate>
+          </div>
+
+          <Button color="green">Agendar</Button>
+        </div>
         <AccordionTable.Root>{generateTable()}</AccordionTable.Root>
+      </Box>
+      <Box className="w-full place-self-start">
+        <Calendar />
       </Box>
     </div>
   )
