@@ -31,10 +31,8 @@ export class GenerateWorkHours {
     this.workHours = Array.from(times.values())
   }
 
-  generate(
-    data: Array<{ date: string; duration: number; [key: string]: any }>,
-  ) {
-    const allTimes = new Map<string, string | object>()
+  generate<T>(data: Array<{ date: string; duration: number } & T>) {
+    const allTimes = new Map<string, null | T>()
     const newArray = [...this.workHours, ...data]
       .filter((value) => {
         return !data.some((scheduling) => {
@@ -48,7 +46,7 @@ export class GenerateWorkHours {
       })
       .sort()
     newArray.forEach((item) => {
-      if (typeof item === 'string') allTimes.set(item, item)
+      if (typeof item === 'string') allTimes.set(item, null)
       else allTimes.set(DateTime.getTime(item.date), item)
     })
 

@@ -2,6 +2,10 @@ import { Box } from '@/components/Box/Box'
 import Button from '@/components/Button'
 import NoDataFound from '@/components/NoDataFound'
 import { AccordionTable } from '@/components/accordionTable'
+import {
+  SchedulingListResponse,
+  SchedulingResponse,
+} from '@/services/scheduling/SchedulingService'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
 import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 import Link from 'next/link'
@@ -9,19 +13,22 @@ import Link from 'next/link'
 export default async function Scheduling() {
   const { schedules } = await schedulingService.list({ date: '2023-12-22' })
 
-  console.log(
-    new GenerateWorkHours({
-      schedulingDuration: 30,
-      workSchedules: [
-        { start: '07:00', end: '11:00' },
-        { start: '13:00', end: '19:00' },
-      ],
-    }).generate(schedules),
+  const table = new GenerateWorkHours({
+    schedulingDuration: 30,
+    workSchedules: [
+      { start: '07:00', end: '11:00' },
+      { start: '13:00', end: '19:00' },
+    ],
+  }).generate<SchedulingResponse & { patient: string; phone: string }>(
+    schedules,
   )
 
+  console.log(table)
+
   const generateTable = () => {
-    if (schedules.length > 0) {
-      return schedules.map((scheduling) => {
+    return table.map((item) => {
+      const [hour, scheduling] = item
+      if (scheduling) {
         return (
           <AccordionTable.Item key={scheduling.id}>
             <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
@@ -59,20 +66,15 @@ export default async function Scheduling() {
             </AccordionTable.Content>
           </AccordionTable.Item>
         )
-      })
-    }
-    return (
-      <NoDataFound
-        message={
-          <div className="items center mt-4 flex flex-col gap-2">
-            <span>Nenhum paciente encontrado</span>
-            <Button asChild size="small" variant="outline" color="green">
-              <Link href="/patients/create">Cadastrar paciente</Link>
-            </Button>
-          </div>
-        }
-      />
-    )
+      }
+      return (
+        <AccordionTable.Item key={hour}>
+          <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
+            <AccordionTable.Cell>{hour}</AccordionTable.Cell>
+          </AccordionTable.Row>
+        </AccordionTable.Item>
+      )
+    })
   }
 
   return (
