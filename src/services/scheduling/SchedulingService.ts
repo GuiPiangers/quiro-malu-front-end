@@ -5,6 +5,7 @@ export type SchedulingResponse = {
   patientId: string
   service: string
   duration: number
+  status: string
   date: string
 }
 export type SchedulingListResponse = {

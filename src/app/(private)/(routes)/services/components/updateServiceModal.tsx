@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { Table } from '@/components/table'
 import Button from '@/components/Button'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import { Time } from '@/utils/Time'
 
 export default function UpdateServiceModal({
   service,
@@ -46,15 +47,6 @@ export default function UpdateServiceModal({
     }
   }
 
-  const toHoursAndMinutes = (value: number) => {
-    const hours = Math.floor(value / (60 * 60))
-    const minutes = (value % (60 * 60)) / 60
-
-    if (hours <= 0 && minutes <= 0) return '-'
-
-    return `${hours}h ${minutes}min`
-  }
-
   return (
     <>
       <Table.Row clickable columns={['2fr', '2fr', '1fr']} onClick={openModal}>
@@ -65,7 +57,9 @@ export default function UpdateServiceModal({
             currency: 'BRL',
           }).format(service.value) || '-'}
         </Table.Cell>
-        <Table.Cell>{toHoursAndMinutes(service.duration)}</Table.Cell>
+        <Table.Cell>
+          {new Time(service.duration).getHoursAndMinutes()}
+        </Table.Cell>
       </Table.Row>
 
       <Modal ref={modalRef} className="m-4 w-full max-w-md p-0">

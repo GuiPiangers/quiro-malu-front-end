@@ -13,6 +13,7 @@ import { Currency } from '@/utils/Currency'
 import Button from '@/components/Button'
 import { IoChevronUp } from 'react-icons/io5'
 import { ChangeEvent, useReducer, useState } from 'react'
+import { Time } from '@/utils/Time'
 
 const setServiceSchema = z.object({
   name: z.string().min(1, 'Campo obrigatório'),
@@ -60,7 +61,10 @@ const reducer = (state: timeState, action: TimeAction) => {
     case 'incHour':
       action.setValue(
         'duration',
-        (state.hours + 1) * 60 * 60 + state.minutes * 60,
+        Time.hoursAndMinutesToSec({
+          hours: state.hours + 1,
+          minutes: state.minutes,
+        }),
       )
       return {
         ...state,
@@ -69,14 +73,23 @@ const reducer = (state: timeState, action: TimeAction) => {
     case 'decHour':
       action.setValue(
         'duration',
-        (state.hours - 1) * 60 * 60 + state.minutes * 60,
+        Time.hoursAndMinutesToSec({
+          hours: state.hours - 1,
+          minutes: state.minutes,
+        }),
       )
       return {
         ...state,
         hours: state.hours - 1,
       }
     case 'changeHour':
-      action.setValue('duration', action.value * 60 * 60 + state.minutes * 60)
+      action.setValue(
+        'duration',
+        Time.hoursAndMinutesToSec({
+          hours: state.hours + 1,
+          minutes: state.minutes,
+        }),
+      )
       return {
         ...state,
         hours: action.value,
@@ -85,7 +98,10 @@ const reducer = (state: timeState, action: TimeAction) => {
     case 'incMinute':
       action.setValue(
         'duration',
-        state.hours * 60 * 60 + (state.minutes + 1) * 60,
+        Time.hoursAndMinutesToSec({
+          hours: state.hours,
+          minutes: state.minutes + 1,
+        }),
       )
       return {
         ...state,
@@ -94,14 +110,23 @@ const reducer = (state: timeState, action: TimeAction) => {
     case 'decMinute':
       action.setValue(
         'duration',
-        state.hours * 60 * 60 + (state.minutes - 1) * 60,
+        Time.hoursAndMinutesToSec({
+          hours: state.hours,
+          minutes: state.minutes - 1,
+        }),
       )
       return {
         ...state,
         minutes: state.minutes - 1,
       }
     case 'changeMinute':
-      action.setValue('duration', state.hours * 60 * 60 + action.value * 60)
+      action.setValue(
+        'duration',
+        Time.hoursAndMinutesToSec({
+          hours: state.hours,
+          minutes: action.value,
+        }),
+      )
       return {
         ...state,
         minutes: action.value,
@@ -122,9 +147,10 @@ export default function ServiceForm({
   const [otherDuration, setOtherDuration] = useState(
     duration !== 60 * 60 && duration !== 30 * 60,
   )
+  const newTime = new Time(duration)
   const [time, dispatch] = useReducer(reducer, {
-    hours: duration ? Math.floor(duration / (60 * 60)) : 0,
-    minutes: duration ? (duration % (60 * 60)) / 60 : 0,
+    hours: newTime.hours,
+    minutes: newTime.minutes,
   })
   const onlyNumber = (value: string) => {
     return value.replace(/\D/g, '')
