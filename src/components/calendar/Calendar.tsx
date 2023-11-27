@@ -35,8 +35,7 @@ export default function Calendar() {
       +selectedDate.substring(5, 7) - 1,
       +selectedDate.substring(8, 10),
     )
-    if (newSelectedDate.getMonth() !== date.getMonth())
-      setDate(new Date(newSelectedDate))
+    setDate(new Date(newSelectedDate))
   }, [selectedDate])
 
   useEffect(() => {
@@ -110,6 +109,9 @@ export default function Calendar() {
           <CalendarItem
             key={day.getTime()}
             date={day}
+            setDate={setDate}
+            focusDate={date}
+            focused={date.toLocaleDateString() === day.toLocaleDateString()}
             selected={selectedDate === DateTime.getIsoDate(day)}
             handleOnClick={() => changeDate(day)}
           >

@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactNode } from 'react'
+import DateTime from '@/utils/Date'
+import { Dispatch, ReactNode, SetStateAction, useEffect, useRef } from 'react'
 import { VariantProps, tv } from 'tailwind-variants'
 
 const calendarItemStyle = tv({
@@ -19,6 +20,12 @@ const calendarItemStyle = tv({
     today: {
       true: {
         calendarItemBody: 'bg-blue-100',
+      },
+    },
+    focused: {
+      true: {
+        calendarRoot:
+          'focus:z-[2] focus:outline focus:outline-1 focus:outline-blue-500 focus:ring-2 focus:ring-blue-200',
       },
     },
     disable: {
@@ -40,14 +47,18 @@ type CalendarItemProps = {
   date: Date
   children?: ReactNode
   className?: string
+  focusDate?: Date
+  setDate?: Dispatch<SetStateAction<Date>>
   handleOnClick?(): void
 } & Omit<VariantProps<typeof calendarItemStyle>, 'today'>
 
 export default function CalendarItem({
   date,
   children,
-  className,
   handleOnClick,
+  setDate,
+  focusDate,
+  focused,
   disable,
   selected,
 }: CalendarItemProps) {
@@ -55,13 +66,51 @@ export default function CalendarItem({
     calendarItemStyle({
       selected,
       disable,
+      focused,
       today: date.toLocaleDateString() === new Date().toLocaleDateString(),
     })
+
+  const itemRef = useRef<HTMLButtonElement>(null)
+
+  const changeDate = (number: number) => {
+    const nextDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate() + number,
+    )
+    if (setDate !== undefined) setDate(nextDate)
+  }
+
+  useEffect(() => {
+    if (focusDate) {
+      if (DateTime.getIsoDate(date) === DateTime.getIsoDate(focusDate))
+        itemRef.current?.focus()
+    }
+  }, [date, focusDate])
   return (
     <button
+      ref={itemRef}
       className={calendarRoot()}
-      tabIndex={-1}
+      tabIndex={focused ? 0 : -1}
       onClick={handleOnClick || undefined}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault()
+          changeDate(1)
+        }
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault()
+          changeDate(-1)
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault()
+          changeDate(-7)
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault()
+          changeDate(7)
+        }
+      }}
     >
       <div className={calendarItemHead()}>{date.getDate()}</div>
       <div className={calendarItemBody()}>{children}</div>
