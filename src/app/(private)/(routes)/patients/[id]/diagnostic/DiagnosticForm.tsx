@@ -1,6 +1,6 @@
 'use client'
 
-import { Input } from '@/components/formField'
+import { Input } from '@/components/input'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
 import { DiagnosticResponse } from '@/services/patient/PatientService'

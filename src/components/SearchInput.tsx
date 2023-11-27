@@ -1,5 +1,5 @@
 import { IoIosSearch } from 'react-icons/io'
-import { Input } from './formField'
+import { Input } from './input'
 
 type SearchInputProps = {
   className?: string

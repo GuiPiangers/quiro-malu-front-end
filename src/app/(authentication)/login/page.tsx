@@ -6,7 +6,7 @@ import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
 import useAuthContext from '@/hooks/useAuthContext'
-import { Input } from '@/components/formField'
+import { Input } from '@/components/input'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 
 export default function Login() {

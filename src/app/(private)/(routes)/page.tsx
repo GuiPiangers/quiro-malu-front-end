@@ -2,7 +2,7 @@ import { Logo } from '@/components/logo'
 import UserProfile from '@/app/(private)/components/UserProfile'
 import { userService } from '@/services/user/serverUserService'
 import { Table } from '@/components/table'
-import { Input } from '@/components/formField/index'
+import { Input } from '@/components/input/index'
 import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 
 export default async function Home() {

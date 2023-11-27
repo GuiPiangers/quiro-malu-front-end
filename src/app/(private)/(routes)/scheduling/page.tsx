@@ -11,6 +11,7 @@ import { Time } from '@/utils/Time'
 import Link from 'next/link'
 import Navigate from './Navigate'
 import { RxCaretDown } from 'react-icons/rx'
+import CreateSchedulingModal from './CreateShedulingModal'
 
 export default async function Scheduling({
   searchParams,
@@ -162,7 +163,7 @@ export default async function Scheduling({
             </Navigate>
           </div>
 
-          <Button color="green">Agendar</Button>
+          <CreateSchedulingModal>Agendar</CreateSchedulingModal>
         </div>
         <AccordionTable.Root>{generateTable()}</AccordionTable.Root>
       </Box>

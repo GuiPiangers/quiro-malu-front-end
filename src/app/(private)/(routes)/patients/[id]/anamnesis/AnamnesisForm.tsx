@@ -1,6 +1,6 @@
 'use client'
 
-import { Input } from '@/components/formField'
+import { Input } from '@/components/input'
 import RadioButton from '@/components/radioButton/RadioButton'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'

@@ -1,6 +1,6 @@
 'use client'
 
-import { Input } from '@/components/formField'
+import { Input } from '@/components/input'
 import Form, { FormProps } from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
 import { z } from 'zod'

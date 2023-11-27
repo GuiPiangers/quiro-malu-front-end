@@ -1,5 +1,5 @@
 'use client'
-import { Input } from '@/components/formField'
+import { Input } from '@/components/input'
 
 import Phone from '@/utils/Phone'
 import { useForm } from 'react-hook-form'

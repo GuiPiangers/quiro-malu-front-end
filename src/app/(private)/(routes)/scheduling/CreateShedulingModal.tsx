@@ -2,15 +2,15 @@
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
-import ServiceForm from './ServiceForm'
-import { clientService } from '@/services/service/clientService'
-import { ServiceResponse } from '@/services/service/Service'
+import SchedulingForm from './SchedulingForm'
+import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
 import Button, { ButtonPropsVariants } from '@/components/Button'
+import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 
-export default function CreateServiceModal({
+export default function CreateSchedulingModal({
   color,
   children,
   ...props
@@ -26,10 +26,10 @@ export default function CreateServiceModal({
     router.refresh()
   }
 
-  const createService = async (
-    data: ServiceResponse,
-  ): Promise<ServiceResponse & responseError> => {
-    return await clientService.create(data)
+  const createScheduling = async (
+    data: SchedulingResponse,
+  ): Promise<SchedulingResponse & responseError> => {
+    return await clientSchedulingService.create(data)
   }
 
   return (
@@ -39,10 +39,10 @@ export default function CreateServiceModal({
       </Button>
       <Modal ref={modalRef} className="m-4 w-full max-w-md p-0">
         <HeaderForm handleClose={closeModal} title="Novo serviço" />
-        <ServiceForm
+        <SchedulingForm
           buttons={<Button color="green">Salvar</Button>}
           className="shadow-none"
-          action={createService}
+          action={createScheduling}
           afterValidation={afterSubmit}
         />
       </Modal>
