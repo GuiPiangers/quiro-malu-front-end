@@ -5,7 +5,7 @@ import { Option as BaseOption, OptionProps } from '@mui/base/Option'
 import { forwardRef } from 'react'
 import { tv } from 'tailwind-variants'
 
-const OptionStyle = tv({
+export const OptionStyle = tv({
   base: 'cursor-default list-none rounded-lg p-2',
   variants: {
     disabled: {
@@ -18,6 +18,11 @@ const OptionStyle = tv({
     selected: {
       true: 'bg-purple-100 text-purple-950 hover:bg-purple-200',
     },
+  },
+  defaultVariants: {
+    disabled: false,
+    highlighted: false,
+    selected: false,
   },
 })
 

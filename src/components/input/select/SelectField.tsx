@@ -12,6 +12,11 @@ import { twMerge } from 'tailwind-merge'
 import { RxCaretDown } from 'react-icons/rx'
 import useIdContext from '@/hooks/useIdContext'
 import { inputStyles, inputVariantProps } from '../InputField'
+import { tv } from 'tailwind-variants'
+
+export const listBoxStyle = tv({
+  base: 'my-3 overflow-auto rounded-xl border bg-white p-1.5 text-sm text-slate-900 ',
+})
 
 const Button = React.forwardRef(function Button<
   TValue extends {},
@@ -88,10 +93,9 @@ export const SelectField = React.forwardRef(function CustomSelect<
           )
           return {
             ...resolvedSlotProps,
-            className: twMerge(
-              `text-sm p-1.5 my-3 rounded-xl overflow-auto bg-white border text-slate-900 `,
-              resolvedSlotProps?.className,
-            ),
+            className: listBoxStyle({
+              className: resolvedSlotProps?.className,
+            }),
             style: { width: triggerRef.current?.offsetWidth },
           }
         },

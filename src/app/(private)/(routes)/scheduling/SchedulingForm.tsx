@@ -12,6 +12,7 @@ import { responseError } from '@/services/api/api'
 import { Currency } from '@/utils/Currency'
 
 import Duration from '@/app/(private)/components/Duration'
+import Autocomplete from '@/components/input/Autocomplete'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, 'Campo obrigatório'),
@@ -94,16 +95,16 @@ export default function SchedulingForm({
           <Input.Label required notSave={dirtyFields.service}>
             Serviço
           </Input.Label>
-          <Input.Field
-            autoComplete="off"
+          <Input.Autocomplete
+            {...register('service')}
+            freeSolo
             disabled={isSubmitting}
             defaultValue={service}
-            {...register('service')}
             error={!!errors.service}
-            notSave={dirtyFields.service}
-            onChange={(e) =>
-              setValue('service', Currency.format(e.target.value))
-            }
+            options={[
+              { id: 'op1', label: 'opção 1' },
+              { id: 'op2', label: 'opção 2' },
+            ]}
           />
           {errors.service && (
             <Input.Message error>{errors.service.message}</Input.Message>
@@ -117,6 +118,40 @@ export default function SchedulingForm({
           }}
           errors={errors?.duration?.message}
         />
+
+        <Input.Root>
+          <Input.Label required notSave={dirtyFields.date}>
+            Paciente
+          </Input.Label>
+          <Input.Field
+            autoComplete="off"
+            disabled={isSubmitting}
+            defaultValue={date}
+            error={!!errors.date}
+            {...register('date')}
+            notSave={dirtyFields.date}
+          />
+          {errors.date && (
+            <Input.Message error>{errors.date.message}</Input.Message>
+          )}
+        </Input.Root>
+
+        <Input.Root>
+          <Input.Label required notSave={dirtyFields.date}>
+            Telefone
+          </Input.Label>
+          <Input.Field
+            autoComplete="off"
+            disabled={isSubmitting}
+            defaultValue={date}
+            error={!!errors.date}
+            {...register('date')}
+            notSave={dirtyFields.date}
+          />
+          {errors.date && (
+            <Input.Message error>{errors.date.message}</Input.Message>
+          )}
+        </Input.Root>
       </section>
     </Form>
   )

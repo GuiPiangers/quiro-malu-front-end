@@ -92,7 +92,6 @@ export default function ServiceForm({
             <Input.Message error>{errors.name.message}</Input.Message>
           )}
         </Input.Root>
-
         <Duration
           duration={duration}
           setValue={(value: number) => {
