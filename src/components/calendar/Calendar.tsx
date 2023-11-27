@@ -6,10 +6,20 @@ import { RxCaretDown } from 'react-icons/rx'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Button from '../Button'
 import DateTime from '@/utils/Date'
+import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
+import { responseError } from '@/services/api/api'
 
 export default function Calendar() {
   const router = useRouter()
   const [date, setDate] = useState(new Date())
+  const [qdtSchedules, setQtdSchedules] = useState<
+    | ({
+        date: string
+        qtd: number
+      }[] &
+        responseError)
+    | []
+  >([])
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   const selectedDate =
     useSearchParams().get('date') || DateTime.getIsoDate(new Date())
@@ -28,6 +38,17 @@ export default function Calendar() {
     if (newSelectedDate.getMonth() !== date.getMonth())
       setDate(new Date(newSelectedDate))
   }, [selectedDate])
+
+  useEffect(() => {
+    clientSchedulingService
+      .getQtdSchedulesByDay({
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+      })
+      .then((data) => {
+        if (!data.error) setQtdSchedules(data)
+      })
+  }, [date])
 
   const changeDate = (date: Date) => {
     router.replace(`?date=${DateTime.getIsoDate(date)}`)
@@ -81,14 +102,25 @@ export default function Calendar() {
           handleOnClick={() => changeDate(day)}
         />
       ))}
-      {daysInTheMonth().map((day) => (
-        <CalendarItem
-          key={day.getTime()}
-          date={day}
-          selected={selectedDate === DateTime.getIsoDate(day)}
-          handleOnClick={() => changeDate(day)}
-        />
-      ))}
+      {daysInTheMonth().map((day) => {
+        const appointedDay = qdtSchedules.find((scheduling) => {
+          return scheduling.date === DateTime.getIsoDate(day)
+        })
+        return (
+          <CalendarItem
+            key={day.getTime()}
+            date={day}
+            selected={selectedDate === DateTime.getIsoDate(day)}
+            handleOnClick={() => changeDate(day)}
+          >
+            {appointedDay && (
+              <div className="grid h-5 w-5 place-items-center rounded-full bg-purple-800 text-white">
+                {appointedDay.qtd}
+              </div>
+            )}
+          </CalendarItem>
+        )
+      })}
     </div>
   )
 

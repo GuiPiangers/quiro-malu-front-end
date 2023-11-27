@@ -27,15 +27,7 @@ export default async function Scheduling({
     +date.substring(8, 10),
   )
 
-  const [{ schedules }, qdtSchedules] = await Promise.all([
-    schedulingService.list({ date }),
-    schedulingService.getQtdSchedulesByDay({
-      year: newDate.getFullYear(),
-      month: newDate.getMonth() + 1,
-    }),
-  ])
-
-  console.log(qdtSchedules)
+  const { schedules } = await schedulingService.list({ date })
 
   const table = new GenerateWorkHours({
     schedulingDuration: 30,

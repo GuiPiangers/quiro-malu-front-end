@@ -16,8 +16,6 @@ export default async function Home() {
     ],
   })
 
-  console.log(day1.generate([]))
-
   return (
     <section className="">
       {/* <Input.Root>
