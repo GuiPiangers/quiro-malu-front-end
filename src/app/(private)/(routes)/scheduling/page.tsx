@@ -20,7 +20,23 @@ export default async function Scheduling({
   const date = searchParams.date
     ? searchParams.date
     : DateTime.getIsoDate(new Date())
-  const { schedules } = await schedulingService.list({ date })
+
+  const newDate = new Date(
+    +date.substring(0, 4),
+    +date.substring(5, 7) - 1,
+    +date.substring(8, 10),
+  )
+
+  const [{ schedules }, qdtSchedules] = await Promise.all([
+    schedulingService.list({ date }),
+    schedulingService.getQtdSchedulesByDay({
+      year: newDate.getFullYear(),
+      month: newDate.getMonth() + 1,
+    }),
+  ])
+
+  console.log(qdtSchedules)
+
   const table = new GenerateWorkHours({
     schedulingDuration: 30,
     workSchedules: [
@@ -144,11 +160,7 @@ export default async function Scheduling({
               />
             </Navigate>
             <span className="text-lg font-semibold text-main">
-              {new Date(
-                +date.substring(0, 4),
-                +date.substring(5, 7) - 1,
-                +date.substring(8, 10),
-              ).toLocaleDateString()}
+              {newDate.toLocaleDateString()}
             </span>
             <Navigate route={incDate(1)}>
               <RxCaretDown

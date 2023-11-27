@@ -60,6 +60,16 @@ export class Scheduling {
     return res
   }
 
+  async getQtdSchedulesByDay({ month, year }: { month: number; year: number }) {
+    const res = await this.fetchData<{ date: string; qtd: number }[]>(
+      `/Schedules/qtd?month=${month}&year=${year}`,
+      {
+        method: 'GET',
+      },
+    )
+    return res
+  }
+
   async delete({ id, patientId }: { patientId: string; id: string }) {
     const res = await this.fetchData<void>('/schedules', {
       method: 'DELETE',
