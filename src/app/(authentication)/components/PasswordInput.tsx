@@ -4,13 +4,10 @@ import { InputHTMLAttributes, useState, forwardRef } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { InputProps } from '@mui/base'
 
-const PasswordInput = (
-  {
-    children,
-    ...props
-  }: { error?: boolean } & InputHTMLAttributes<HTMLInputElement & InputProps>,
-  ref: any,
-) => {
+export default forwardRef<
+  HTMLInputElement,
+  { error?: boolean } & InputHTMLAttributes<HTMLInputElement & InputProps>
+>(function PasswordInput({ children, ...props }, ref) {
   const [isVisible, setIsVisible] = useState(false)
 
   const handleChangeVisible = () => {
@@ -45,6 +42,4 @@ const PasswordInput = (
       {children}
     </Input.Root>
   )
-}
-
-export default forwardRef(PasswordInput)
+})

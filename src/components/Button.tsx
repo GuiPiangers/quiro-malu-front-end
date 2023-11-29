@@ -76,9 +76,9 @@ export default function Button({
   const Element = asChild ? Slot : 'button'
   return (
     <Element
-      onClick={(e) => {
+      onClick={(e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
-        if (onClick) onClick(e as any)
+        if (onClick) onClick(e)
       }}
       className={buttonStyle({ variant, size, color, className })}
       {...props}

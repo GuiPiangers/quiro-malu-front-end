@@ -104,9 +104,9 @@ export default function SchedulingForm({
             Serviço
           </Input.Label>
           <Input.Select
-            onChange={(e, newValue: any) => {
+            onChange={(e, newValue) => {
               setSelectedService(newValue as ServiceResponse)
-              setValue('service', newValue.name)
+              setValue('service', (newValue as ServiceResponse).name)
             }}
             slotProps={{
               popper: { className: 'z-40' },

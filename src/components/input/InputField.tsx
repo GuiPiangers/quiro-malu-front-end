@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 'use client'
 
-import * as React from 'react'
+import { TextareaHTMLAttributes, forwardRef } from 'react'
 import {
   Input as BaseInput,
   InputProps,
@@ -66,17 +66,17 @@ export type inputVariantProps = VariantProps<typeof inputStyles>
 const resolveSlotProps = (fn: any, args: any) =>
   typeof fn === 'function' ? fn(args) : fn
 
-const TextArea = React.forwardRef(function TextArea(
-  props: React.HTMLAttributes<HTMLTextAreaElement> &
+const TextArea = forwardRef<
+  HTMLTextAreaElement,
+  TextareaHTMLAttributes<HTMLTextAreaElement> &
     MultiLineInputProps &
-    inputVariantProps,
-  ref: React.ForwardedRef<HTMLTextAreaElement>,
-) {
-  const { ownerState, ...other } = props as any
-  return <TextareaAutosize {...other} ref={ref}></TextareaAutosize>
+    inputVariantProps & { ownerState: any }
+>(function TextArea(props, ref) {
+  const { ownerState, ...other } = props
+  return <TextareaAutosize {...other} ref={ref} />
 })
 
-export const InputField = React.forwardRef<
+export const InputField = forwardRef<
   HTMLInputElement,
   InputProps & inputVariantProps
 >(({ notSave, ...props }, ref) => {
