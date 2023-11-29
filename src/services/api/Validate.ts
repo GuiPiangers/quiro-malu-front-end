@@ -7,7 +7,7 @@ export class Validate {
   }
 
   static isOk<T>(data: T | responseError): data is T {
-    if (!(data as responseError).error) return false
+    if ((data as responseError).error) return false
     return true
   }
 }

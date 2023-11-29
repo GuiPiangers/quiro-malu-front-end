@@ -170,12 +170,19 @@ export class PatientService extends ServiceApi {
 
   async list({
     page = '1',
+    search,
+    orderBy,
   }: {
     page?: string
-    orderBy?: { field: string; orientation: string }
+    search?: { [key: string]: string }
+    orderBy?: [{ field: string; orientation: string }]
   }) {
+    const searchValue = JSON.stringify(search)
+    const orderValue = JSON.stringify(orderBy)
     const res = await this.fetchData<PatientsListResponse>(
-      `/patients?page=${page}`,
+      `/patients?page=${page}&search=${searchValue}&orderBy=${
+        orderValue || null
+      }`,
       {
         method: 'GET',
       },

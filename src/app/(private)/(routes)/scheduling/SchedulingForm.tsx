@@ -15,6 +15,8 @@ import { useEffect, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
+import { clientPatientService } from '@/services/patient/clientPatientService'
+import { PatientResponse } from '@/services/patient/PatientService'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, 'Campo obrigatório'),
@@ -43,6 +45,8 @@ export default function SchedulingForm({
   const { service, id, duration, date, patientId, status } = formData || {}
   const { handleMessage } = useSnackbarContext()
   const [services, setServices] = useState<ServiceResponse[]>()
+  const [patients, setPatients] = useState<PatientResponse[]>()
+  const [patientSearch, setPatientSearch] = useState('')
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
   useEffect(() => {
@@ -50,6 +54,16 @@ export default function SchedulingForm({
       .list({ page: '1' })
       .then((data) => Validate.isOk(data) && setServices(data.services))
   }, [])
+
+  useEffect(() => {
+    clientPatientService
+      .list({
+        search: { name: patientSearch },
+      })
+      .then((data) => {
+        Validate.isOk(data) && setPatients(data.patients)
+      })
+  }, [patientSearch])
 
   const setSchedulingForm = useForm<setSchedulingData>({
     resolver: zodResolver(setSchedulingSchema),
@@ -146,10 +160,16 @@ export default function SchedulingForm({
             freeSolo
             disabled={isSubmitting}
             error={!!errors.patientId}
-            options={[
-              { id: 'op1', label: 'opção 1' },
-              { id: 'op2', label: 'opção 2' },
-            ]}
+            onInputChange={(e, value) => setPatientSearch(value)}
+            options={
+              patients
+                ? patients?.map((patient) => ({
+                    id: patient.id!,
+                    label: patient.name,
+                    ...patient,
+                  }))
+                : [{ label: 'nada', id: 'nada' }]
+            }
           />
           {errors.patientId && (
             <Input.Message error>{errors.patientId.message}</Input.Message>
