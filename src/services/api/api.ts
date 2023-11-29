@@ -27,7 +27,7 @@ export async function api<T>(
   input: RequestInfo,
   init?: RequestInit | undefined,
   cookieService?: ICookies,
-): Promise<T & responseError> {
+): Promise<T | responseError> {
   const baseURL = 'http://localhost:8000'
   const cookieMethod = cookieService || clientCookie
 

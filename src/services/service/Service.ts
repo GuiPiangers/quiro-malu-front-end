@@ -1,3 +1,4 @@
+import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 import { responseError } from '../api/api'
 
 export type ServiceResponse = {
@@ -12,13 +13,10 @@ export type ServiceListResponse = {
   limit: number
 }
 
-export class Service {
-  constructor(
-    private fetchData: <T>(
-      input: RequestInfo,
-      init?: RequestInit | undefined,
-    ) => Promise<T & responseError>,
-  ) {}
+export class Service extends ServiceApi {
+  constructor(fetchData: ServiceApiFetchData) {
+    super(fetchData)
+  }
 
   async create(data: ServiceResponse) {
     const res = await this.fetchData<ServiceResponse>('/services', {

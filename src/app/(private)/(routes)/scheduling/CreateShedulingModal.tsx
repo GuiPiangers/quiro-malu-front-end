@@ -28,7 +28,7 @@ export default function CreateSchedulingModal({
 
   const createScheduling = async (
     data: SchedulingResponse,
-  ): Promise<SchedulingResponse & responseError> => {
+  ): Promise<SchedulingResponse | responseError> => {
     return await clientSchedulingService.create(data)
   }
 

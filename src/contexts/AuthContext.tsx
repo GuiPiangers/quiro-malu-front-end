@@ -6,15 +6,15 @@ import { useRouter } from 'next/navigation'
 import { UserResponse } from '@/services/user/UserService'
 import { clientUserService } from '@/services/user/clientUserService'
 import { clientCookie } from '@/services/cookies/clientCookies'
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { responseError } from '@/services/api/api'
+import { Validate } from '@/services/api/Validate'
 
 export type SignInData = {
   email: string | null
   password: string | null
 }
 type AuthContextType = {
-  singIn(data: SignInData): Promise<(UserResponse & responseError) | undefined>
+  singIn(data: SignInData): Promise<(UserResponse | responseError) | undefined>
   singOut(): Promise<void>
   user: UserResponse['user'] | null
 }
@@ -29,7 +29,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const getUser = async () => {
       const userResponse = await clientUserService.get()
-      if (userResponse) {
+      if (Validate.isOk(userResponse)) {
         const { name, email } = userResponse
         setUser({ name, email })
       }
@@ -40,7 +40,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   async function singIn(data: SignInData) {
     const userResponse = await clientUserService.login(data)
     if (userResponse) {
-      if (!userResponse.error) {
+      if (Validate.isOk(userResponse)) {
         const { refreshToken, token, user: userData } = userResponse
 
         if (token && refreshToken) {

@@ -28,7 +28,7 @@ export default function CreateServiceModal({
 
   const createService = async (
     data: ServiceResponse,
-  ): Promise<ServiceResponse & responseError> => {
+  ): Promise<ServiceResponse | responseError> => {
     return await clientService.create(data)
   }
 

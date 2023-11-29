@@ -1,21 +1,8 @@
 import { Logo } from '@/components/logo'
 import UserProfile from '@/app/(private)/components/UserProfile'
-import { userService } from '@/services/user/serverUserService'
 import { Table } from '@/components/table'
-import { Input } from '@/components/input/index'
-import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 
 export default async function Home() {
-  const profile = await userService.get()
-
-  const day1 = new GenerateWorkHours({
-    schedulingDuration: 60,
-    workSchedules: [
-      { start: '07:00', end: '11:00' },
-      { start: '10:00', end: '19:00' },
-    ],
-  })
-
   return (
     <section className="">
       {/* <Input.Root>
@@ -23,7 +10,6 @@ export default async function Home() {
         <Input.Field placeholder="Digite algo..." />
       </Input.Root> */}
 
-      <p>{profile ? profile.name : ''}</p>
       <UserProfile />
       <Logo.Root>
         <Logo.Image className="h-14" />

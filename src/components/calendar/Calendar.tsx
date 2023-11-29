@@ -7,17 +7,16 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Button from '../Button'
 import DateTime from '@/utils/Date'
 import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
-import { responseError } from '@/services/api/api'
+import { Validate } from '@/services/api/Validate'
 
 export default function Calendar() {
   const router = useRouter()
   const [date, setDate] = useState(new Date())
   const [qdtSchedules, setQtdSchedules] = useState<
-    | ({
+    | {
         date: string
         qtd: number
-      }[] &
-        responseError)
+      }[]
     | []
   >([])
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
@@ -45,7 +44,7 @@ export default function Calendar() {
         month: date.getMonth() + 1,
       })
       .then((data) => {
-        if (!data.error) setQtdSchedules(data)
+        if (Validate.isOk(data)) setQtdSchedules(data)
       })
   }, [date])
 

@@ -12,9 +12,10 @@ import {
   sectionStyles,
   titleStyles,
 } from '../../../../../components/form/Styles'
-import { responseError } from '@/services/api/api'
 import { useState } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import { Validate } from '@/services/api/Validate'
+import { responseError } from '@/services/api/api'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
@@ -103,7 +104,7 @@ export type CreatePatientData = z.infer<typeof createPatientSchema>
 type PatientDataForm = {
   action(
     data: CreatePatientData | PatientResponse,
-  ): Promise<PatientResponse & responseError>
+  ): Promise<PatientResponse | responseError>
   afterValidate?(): void
   data?: PatientResponse
 }
@@ -143,7 +144,7 @@ export default function PatientDataForm({
 
   const handleAction = async (data: CreatePatientData) => {
     const res = await action(data)
-    if (res.type) {
+    if (Validate.isError(res)) {
       if (res.type === 'date') {
         setError('dateOfBirth', { message: res.message })
       } else
@@ -162,7 +163,7 @@ export default function PatientDataForm({
           { message: res.message },
         )
     } else {
-      if (res.error) {
+      if (Validate.isError(res)) {
         handleMessage({
           title: 'Erro!',
           description: res.message,

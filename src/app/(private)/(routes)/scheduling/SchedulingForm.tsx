@@ -14,6 +14,7 @@ import Duration from '@/app/(private)/components/Duration'
 import { useEffect, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
+import { Validate } from '@/services/api/Validate'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, 'Campo obrigatório'),
@@ -28,7 +29,7 @@ export type setSchedulingData = z.infer<typeof setSchedulingSchema>
 type SchedulingFormProps = {
   action(
     data: SchedulingResponse | setSchedulingData,
-  ): Promise<SchedulingResponse & responseError>
+  ): Promise<SchedulingResponse | responseError>
   formData?: Partial<SchedulingResponse>
   afterValidation?(): void
 } & FormProps
@@ -45,7 +46,9 @@ export default function SchedulingForm({
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
   useEffect(() => {
-    clientService.list({ page: '1' }).then((data) => setServices(data.services))
+    clientService
+      .list({ page: '1' })
+      .then((data) => Validate.isOk(data) && setServices(data.services))
   }, [])
 
   const setSchedulingForm = useForm<setSchedulingData>({
@@ -66,7 +69,7 @@ export default function SchedulingForm({
       duration: data.duration || duration,
       ...data,
     })
-    if (res.error) {
+    if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })

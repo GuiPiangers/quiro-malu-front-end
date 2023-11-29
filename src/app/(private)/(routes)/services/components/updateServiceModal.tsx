@@ -12,6 +12,7 @@ import { Table } from '@/components/table'
 import Button from '@/components/Button'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Time } from '@/utils/Time'
+import { Validate } from '@/services/api/Validate'
 
 export default function UpdateServiceModal({
   service,
@@ -32,13 +33,13 @@ export default function UpdateServiceModal({
 
   const createService = async (
     data: ServiceResponse,
-  ): Promise<ServiceResponse & responseError> => {
+  ): Promise<ServiceResponse | responseError> => {
     return await clientService.update(data)
   }
   const deleteService = async () => {
     const res = await clientService.delete(service.id!)
 
-    if (res.error) {
+    if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       closeModal()

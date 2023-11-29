@@ -1,5 +1,6 @@
 import { CreatePatientData } from '@/app/(private)/(routes)/patients/components/PatientDataForm'
 import { responseError } from '../api/api'
+import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 
 export type LocationDTO = {
   cep?: string | null
@@ -65,13 +66,10 @@ export type ProgressListResponse = {
   limit: number
 }
 
-export class PatientService {
-  constructor(
-    private fetchData: <T>(
-      input: RequestInfo,
-      init?: RequestInit | undefined,
-    ) => Promise<T & responseError>,
-  ) {}
+export class PatientService extends ServiceApi {
+  constructor(fetchData: ServiceApiFetchData) {
+    super(fetchData)
+  }
 
   async create(data: CreatePatientData) {
     const res = await this.fetchData<PatientResponse>('/patients', {
@@ -170,7 +168,12 @@ export class PatientService {
     return res
   }
 
-  async list({ page = '1' }: { page?: string }) {
+  async list({
+    page = '1',
+  }: {
+    page?: string
+    orderBy?: { field: string; orientation: string }
+  }) {
     const res = await this.fetchData<PatientsListResponse>(
       `/patients?page=${page}`,
       {

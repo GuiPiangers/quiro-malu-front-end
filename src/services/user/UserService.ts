@@ -1,6 +1,7 @@
 import { CreateUserData } from '@/app/(authentication)/register/page'
 import { SignInData } from '@/contexts/AuthContext'
 import { responseError } from '../api/api'
+import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 
 export type UserResponse = {
   token: string
@@ -11,17 +12,12 @@ export type UserResponse = {
   }
 }
 
-export class UserService {
-  constructor(
-    private fetchData: <T>(
-      input: RequestInfo,
-      init?: RequestInit | undefined,
-    ) => Promise<T & responseError>,
-  ) {}
+export class UserService extends ServiceApi {
+  constructor(fetchData: ServiceApiFetchData) {
+    super(fetchData)
+  }
 
-  async register(
-    data: CreateUserData,
-  ): Promise<CreateUserData & responseError> {
+  async register(data: CreateUserData) {
     const res = await fetch('http://localhost:8000/register', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -30,7 +26,7 @@ export class UserService {
     return await res.json()
   }
 
-  async login(data: SignInData): Promise<UserResponse & responseError> {
+  async login(data: SignInData) {
     const res = await this.fetchData<UserResponse>('/login', {
       method: 'POST',
       body: JSON.stringify(data),

@@ -12,6 +12,7 @@ import { responseError } from '@/services/api/api'
 import { Currency } from '@/utils/Currency'
 
 import Duration from '@/app/(private)/components/Duration'
+import { Validate } from '@/services/api/Validate'
 
 const setServiceSchema = z.object({
   name: z.string().min(1, 'Campo obrigatório'),
@@ -29,7 +30,7 @@ export type setServiceData = z.infer<typeof setServiceSchema>
 type ServiceFormProps = {
   action(
     data: ServiceResponse | setServiceData,
-  ): Promise<ServiceResponse & responseError>
+  ): Promise<ServiceResponse | responseError>
   formData?: Partial<ServiceResponse>
   afterValidation?(): void
 } & FormProps
@@ -61,7 +62,7 @@ export default function ServiceForm({
       duration: data.duration || duration,
       ...data,
     })
-    if (res.error) {
+    if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })
