@@ -15,7 +15,7 @@ import { inputStyles, inputVariantProps } from '../InputField'
 import { tv } from 'tailwind-variants'
 
 export const listBoxStyle = tv({
-  base: 'my-3 overflow-auto rounded-xl border bg-white p-1.5 text-sm text-slate-900 ',
+  base: 'my-3 max-h-60 overflow-auto rounded-xl border bg-white p-1.5 text-sm text-slate-900 ',
 })
 
 const Button = React.forwardRef(function Button<

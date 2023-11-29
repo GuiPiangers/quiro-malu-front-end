@@ -26,18 +26,19 @@ export const OptionStyle = tv({
   },
 })
 
-export const Option = forwardRef<HTMLLIElement, OptionProps<number | string>>(
-  (props, ref) => {
-    return (
-      <BaseOption
-        ref={ref}
-        {...props}
-        slotProps={{
-          root: ({ selected, highlighted, disabled }) => ({
-            className: OptionStyle({ selected, highlighted, disabled }),
-          }),
-        }}
-      />
-    )
-  },
-)
+export const Option = forwardRef<
+  HTMLLIElement,
+  OptionProps<number | string | object>
+>((props, ref) => {
+  return (
+    <BaseOption
+      ref={ref}
+      {...props}
+      slotProps={{
+        root: ({ selected, highlighted, disabled }) => ({
+          className: OptionStyle({ selected, highlighted, disabled }),
+        }),
+      }}
+    />
+  )
+})

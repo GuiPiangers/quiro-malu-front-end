@@ -1,5 +1,7 @@
+'use client'
+
 import { Time } from '@/utils/Time'
-import { ChangeEvent, useReducer, useState } from 'react'
+import { ChangeEvent, useEffect, useReducer, useState } from 'react'
 import { Input } from '@/components/input'
 import Button from '@/components/Button'
 import { IoChevronUp } from 'react-icons/io5'
@@ -138,6 +140,21 @@ export default function Duration({
       value: +onlyNumber(e.target.value),
       setValue,
     })
+
+  useEffect(() => {
+    const newDuration = new Time(duration)
+    dispatch({
+      type: 'changeHour',
+      value: newDuration.hours,
+      setValue,
+    })
+    dispatch({
+      type: 'changeMinute',
+      value: newDuration.minutes,
+      setValue,
+    })
+    setOtherDuration(duration !== 60 * 60 && duration !== 30 * 60)
+  }, [duration, setValue])
 
   return (
     <Input.Root>
