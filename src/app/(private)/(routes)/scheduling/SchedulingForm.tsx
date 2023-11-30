@@ -11,12 +11,15 @@ import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
 import { responseError } from '@/services/api/api'
 
 import Duration from '@/app/(private)/components/Duration'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { clientPatientService } from '@/services/patient/clientPatientService'
-import { PatientResponse } from '@/services/patient/PatientService'
+import {
+  PatientResponse,
+  PatientsListResponse,
+} from '@/services/patient/PatientService'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, 'Campo obrigatório'),
@@ -45,8 +48,10 @@ export default function SchedulingForm({
   const { service, id, duration, date, patientId, status } = formData || {}
   const { handleMessage } = useSnackbarContext()
   const [services, setServices] = useState<ServiceResponse[]>()
-  const [patients, setPatients] = useState<PatientResponse[]>()
+  const [patients, setPatients] = useState<PatientsListResponse>()
   const [patientSearch, setPatientSearch] = useState('')
+  const [patientPage, setPatientPage] = useState(1)
+  const [loading, setLoading] = useState(true)
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
   useEffect(() => {
@@ -61,13 +66,35 @@ export default function SchedulingForm({
         search: { name: patientSearch },
       })
       .then((data) => {
-        Validate.isOk(data) && setPatients(data.patients)
+        Validate.isOk(data) && setPatients(data)
       })
   }, [patientSearch])
 
   const setSchedulingForm = useForm<setSchedulingData>({
     resolver: zodResolver(setSchedulingSchema),
   })
+
+  const loadMorePatients = () => {
+    setPatientPage((value) => value + 1)
+
+    clientPatientService
+      .list({
+        page: `${patientPage}`,
+        search: { name: patientSearch },
+      })
+      .then((data) => {
+        if (Validate.isOk(data) && !data.isLastPage) {
+          setPatients((value) => {
+            if (value && value.patients)
+              return {
+                total: data.total,
+                limit: data.limit,
+                patients: [...value.patients, ...data.patients],
+              }
+          })
+        }
+      })
+  }
 
   const {
     handleSubmit,
@@ -161,9 +188,10 @@ export default function SchedulingForm({
             disabled={isSubmitting}
             error={!!errors.patientId}
             onInputChange={(e, value) => setPatientSearch(value)}
+            onLastOptionView={loadMorePatients}
             options={
               patients
-                ? patients?.map((patient) => ({
+                ? patients?.patients.map((patient) => ({
                     id: patient.id!,
                     label: patient.name,
                     ...patient,

@@ -18,7 +18,7 @@ export default function DeleteProgress({ id, patientId }: DeleteProgressProps) {
   const handleOpen = () => modalHandle.current?.openModal()
   const handleClose = () => modalHandle.current?.closeModal()
 
-  const deletePatient = useCallback(async () => {
+  const deletePatient = async () => {
     await clientPatientService.deleteProgress({ id, patientId })
     handleClose()
     router.refresh()
@@ -26,7 +26,7 @@ export default function DeleteProgress({ id, patientId }: DeleteProgressProps) {
       title: 'Evolução excluída com sucesso!',
       type: 'success',
     })
-  }, [handleMessage, id, patientId, router])
+  }
 
   return (
     <>

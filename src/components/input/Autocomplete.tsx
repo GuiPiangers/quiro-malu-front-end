@@ -1,6 +1,6 @@
 'use client'
 
-import { ForwardedRef, forwardRef, useRef, useState } from 'react'
+import { ForwardedRef, forwardRef, useCallback, useRef, useState } from 'react'
 import {
   useAutocomplete,
   UseAutocompleteProps,
@@ -21,7 +21,7 @@ export default forwardRef(function Autocomplete(
     boolean,
     boolean
   > &
-    inputVariantProps,
+    inputVariantProps & { onLastOptionView?(): void },
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [highlightOption, setHighlightOption] = useState<undefined | string>()
@@ -32,6 +32,7 @@ export default forwardRef(function Autocomplete(
     readOnly = false,
     error,
     notSave,
+    onLastOptionView,
     ...other
   } = props
 
@@ -62,6 +63,18 @@ export default forwardRef(function Autocomplete(
   const hasClearIcon = !disableClearable && !disabled && dirty && !readOnly
 
   const rootRef = useForkRef(ref, setAnchorEl)
+
+  const observer = useRef<IntersectionObserver>()
+  const lastOptionElementRef = useCallback((node: HTMLLIElement) => {
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && onLastOptionView) {
+        onLastOptionView()
+      }
+    })
+    if (node) observer.current.observe(node)
+  }, [])
+
   const { inputWrapperStyle, inputFieldStyle } = inputStyles({
     focus: focused,
     error,
@@ -120,7 +133,21 @@ export default forwardRef(function Autocomplete(
               >
             ).map((option, index) => {
               const optionProps = getOptionProps({ option, index })
-
+              if (groupedOptions.length === index + 1) {
+                return (
+                  <li
+                    {...optionProps}
+                    key={option.id}
+                    ref={lastOptionElementRef}
+                    className={OptionStyle({
+                      selected: optionProps['aria-selected'] === true,
+                      highlighted: highlightOption === option.id,
+                    })}
+                  >
+                    {option.label}
+                  </li>
+                )
+              }
               return (
                 <li
                   {...optionProps}

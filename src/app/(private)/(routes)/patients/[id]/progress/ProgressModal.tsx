@@ -2,7 +2,7 @@
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import ProgressForm from './ProgressForm'
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useRef, useState } from 'react'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import Button, { ButtonPropsVariants } from '@/components/Button'

@@ -7,6 +7,7 @@ import { patientService } from '@/services/patient/serverPatientService'
 import DateTime from '@/utils/Date'
 import NoDataFound from '@/components/NoDataFound'
 import Pagination from '@/components/pagination/Pagination'
+import { Validate } from '@/services/api/Validate'
 
 export default async function Patients({
   searchParams,
@@ -16,11 +17,11 @@ export default async function Patients({
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
 
-  const { patients, total, limit } = await patientService.list({ page })
+  const patientData = await patientService.list({ page })
 
   const generateTable = () => {
-    if (patients.length > 0) {
-      return patients.map((patient) => {
+    if (Validate.isOk(patientData) && patientData.patients.length > 0) {
+      return patientData.patients.map((patient) => {
         return (
           <AccordionTable.Item key={patient.id}>
             <AccordionTable.Row columns={['1fr', '1fr', '80px']}>
@@ -92,7 +93,13 @@ export default async function Patients({
         </AccordionTable.Root>
       </Box>
       <div className="mt-4 grid place-items-center">
-        <Pagination limit={limit} page={+page} total={total} />
+        {Validate.isOk(patientData) && (
+          <Pagination
+            limit={patientData.limit}
+            page={+page}
+            total={patientData.total}
+          />
+        )}
       </div>
     </main>
   )

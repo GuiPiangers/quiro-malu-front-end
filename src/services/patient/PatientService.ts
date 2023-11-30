@@ -31,6 +31,7 @@ export type PatientsListResponse = {
   ]
   total: number
   limit: number
+  isLastPage: boolean
 }
 export type AnamnesisResponse = {
   patientId?: string
@@ -177,12 +178,10 @@ export class PatientService extends ServiceApi {
     search?: { [key: string]: string }
     orderBy?: [{ field: string; orientation: string }]
   }) {
-    const searchValue = JSON.stringify(search)
-    const orderValue = JSON.stringify(orderBy)
+    const searchValue = JSON.stringify(search) || null
+    const orderValue = JSON.stringify(orderBy) || null
     const res = await this.fetchData<PatientsListResponse>(
-      `/patients?page=${page}&search=${searchValue}&orderBy=${
-        orderValue || null
-      }`,
+      `/patients?page=${page}&search=${searchValue}&orderBy=${orderValue}`,
       {
         method: 'GET',
       },
