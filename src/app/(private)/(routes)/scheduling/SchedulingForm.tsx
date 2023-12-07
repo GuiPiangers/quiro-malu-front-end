@@ -79,18 +79,23 @@ export default function SchedulingForm({
 
     clientPatientService
       .list({
-        page: `${patientPage}`,
+        page: `${patientPage + 1}`,
         search: { name: patientSearch },
       })
       .then((data) => {
-        if (Validate.isOk(data) && !data.isLastPage) {
+        if (
+          Validate.isOk(data) &&
+          patients &&
+          !(Math.ceil(patients.total / patients?.limit) === patientPage)
+        ) {
           setPatients((value) => {
-            if (value && value.patients)
+            if (value && value.patients) {
               return {
                 total: data.total,
                 limit: data.limit,
-                patients: [...value.patients, ...data.patients],
+                patients: [...data.patients, ...value.patients],
               }
+            }
           })
         }
       })

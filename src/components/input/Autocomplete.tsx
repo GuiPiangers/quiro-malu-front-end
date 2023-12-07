@@ -21,10 +21,13 @@ export default forwardRef(function Autocomplete(
     boolean,
     boolean
   > &
-    inputVariantProps & { onLastOptionView?(): void },
+    inputVariantProps & {
+      onLastOptionView(): void
+    },
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [highlightOption, setHighlightOption] = useState<undefined | string>()
+  const [limitCount, setLimitCount] = useState(1)
 
   const {
     disableClearable = false,
@@ -65,15 +68,20 @@ export default forwardRef(function Autocomplete(
   const rootRef = useForkRef(ref, setAnchorEl)
 
   const observer = useRef<IntersectionObserver>()
-  const lastOptionElementRef = useCallback((node: HTMLLIElement) => {
-    if (observer.current) observer.current.disconnect()
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && onLastOptionView) {
-        onLastOptionView()
-      }
-    })
-    if (node) observer.current.observe(node)
-  }, [])
+  const lastOptionElementRef = useCallback(
+    (node: HTMLLIElement) => {
+      if (observer.current) observer.current.disconnect()
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && onLastOptionView) {
+          if (onLastOptionView) {
+            onLastOptionView()
+          }
+        }
+      })
+      if (node) observer.current.observe(node)
+    },
+    [onLastOptionView],
+  )
 
   const { inputWrapperStyle, inputFieldStyle } = inputStyles({
     focus: focused,

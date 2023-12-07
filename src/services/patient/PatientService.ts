@@ -21,17 +21,14 @@ export type PatientResponse = {
   createAt?: string
 }
 export type PatientsListResponse = {
-  patients: [
-    {
-      id?: string
-      name: string
-      phone: string
-      dateOfBirth?: string | null
-    },
-  ]
+  patients: Array<{
+    id?: string
+    name: string
+    phone: string
+    dateOfBirth?: string | null
+  }>
   total: number
   limit: number
-  isLastPage: boolean
 }
 export type AnamnesisResponse = {
   patientId?: string
