@@ -13,6 +13,7 @@ import DateTime from '@/utils/Date'
 import { useEffect, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
+import { Validate } from '@/services/api/Validate'
 
 const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -37,7 +38,9 @@ export default function ProgressForm({
   const [services, setServices] = useState<ServiceResponse[]>()
 
   useEffect(() => {
-    clientService.list({}).then((res) => setServices(res.services))
+    clientService
+      .list({})
+      .then((res) => Validate.isOk(res) && setServices(res.services))
   }, [])
 
   const { handleMessage } = useSnackbarContext()
@@ -59,7 +62,7 @@ export default function ProgressForm({
       patientId: patientId!,
       ...data,
     })
-    if (res.error) {
+    if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })

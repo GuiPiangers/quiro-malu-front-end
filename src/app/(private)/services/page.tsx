@@ -1,5 +1,5 @@
 import { Box } from '@/components/box/Box'
-import SearchInput from '@/components/SearchInput'
+import SearchInput from '@/components/input/SearchInput'
 import { Table } from '@/components/table'
 import { service } from '@/services/service/serverService'
 import CreateServiceModal from './components/CreateServiceModal'

@@ -1,6 +1,6 @@
 import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
-import SearchInput from '@/components/SearchInput'
+import SearchInput from '@/components/input/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
 import Link from 'next/link'
 import { patientService } from '@/services/patient/serverPatientService'

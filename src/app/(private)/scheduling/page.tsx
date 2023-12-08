@@ -9,9 +9,10 @@ import DateTime from '@/utils/Date'
 import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 import { Time } from '@/utils/Time'
 import Link from 'next/link'
-import Navigate from './Navigate'
+import RouteReplace from '../../../components/RouteReplace'
 import { RxCaretDown } from 'react-icons/rx'
-import CreateSchedulingModal from './CreateShedulingModal'
+import CreateSchedulingModal from './components/CreateSchedulingModal'
+import { Validate } from '@/services/api/Validate'
 
 export default async function Scheduling({
   searchParams,
@@ -28,7 +29,7 @@ export default async function Scheduling({
     +date.substring(8, 10),
   )
 
-  const { schedules } = await schedulingService.list({ date })
+  const schedulesResp = await schedulingService.list({ date })
 
   const table = new GenerateWorkHours({
     schedulingDuration: 30,
@@ -37,7 +38,7 @@ export default async function Scheduling({
       { start: '13:00', end: '19:00' },
     ],
   }).generate<SchedulingResponse & { patient: string; phone: string }>(
-    schedules,
+    Validate.isOk(schedulesResp) ? schedulesResp.schedules : [],
   )
 
   const incDate = (number: number) =>
@@ -146,21 +147,21 @@ export default async function Scheduling({
       <Box className="">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex gap-1">
-            <Navigate route={incDate(-1)}>
+            <RouteReplace route={incDate(-1)}>
               <RxCaretDown
                 size={24}
                 className="rotate-90 cursor-pointer rounded text-main hover:bg-slate-100"
               />
-            </Navigate>
+            </RouteReplace>
             <span className="text-lg font-semibold text-main">
               {newDate.toLocaleDateString()}
             </span>
-            <Navigate route={incDate(1)}>
+            <RouteReplace route={incDate(1)}>
               <RxCaretDown
                 size={24}
                 className="-rotate-90 cursor-pointer rounded text-main hover:bg-slate-100"
               />
-            </Navigate>
+            </RouteReplace>
           </div>
 
           <CreateSchedulingModal>Agendar</CreateSchedulingModal>

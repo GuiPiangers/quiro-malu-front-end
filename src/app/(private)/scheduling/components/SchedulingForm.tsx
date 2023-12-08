@@ -16,10 +16,7 @@ import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { clientPatientService } from '@/services/patient/clientPatientService'
-import {
-  PatientResponse,
-  PatientsListResponse,
-} from '@/services/patient/PatientService'
+import { PatientsListResponse } from '@/services/patient/PatientService'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, 'Campo obrigatório'),
