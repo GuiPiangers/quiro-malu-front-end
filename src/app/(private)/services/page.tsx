@@ -1,4 +1,4 @@
-import { Box } from '@/components/Box/Box'
+import { Box } from '@/components/box/Box'
 import SearchInput from '@/components/SearchInput'
 import { Table } from '@/components/table'
 import { service } from '@/services/service/serverService'

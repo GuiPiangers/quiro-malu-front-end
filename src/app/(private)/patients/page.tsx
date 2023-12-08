@@ -1,4 +1,4 @@
-import { Box } from '@/components/Box/Box'
+import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'

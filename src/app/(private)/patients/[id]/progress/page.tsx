@@ -1,6 +1,6 @@
 import { patientService } from '@/services/patient/serverPatientService'
 import { ParamsType } from '../page'
-import { Box } from '@/components/Box/Box'
+import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import SearchInput from '@/components/SearchInput'
 import ProgressModal from './ProgressModal'

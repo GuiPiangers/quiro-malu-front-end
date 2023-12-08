@@ -2,7 +2,7 @@
 
 import { FormHTMLAttributes, ReactNode } from 'react'
 
-import { Box } from '@/components/Box/Box'
+import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import { twMerge } from 'tailwind-merge'
 
