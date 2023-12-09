@@ -1,13 +1,13 @@
 import { patientService } from '@/services/patient/serverPatientService'
 import { ParamsType } from '../page'
 import { Box } from '@/components/box/Box'
-import Button from '@/components/Button'
 import SearchInput from '@/components/input/SearchInput'
-import ProgressModal from './ProgressModal'
+import ProgressModal from './components/ProgressModal'
 import DateTime from '@/utils/Date'
-import DeleteProgress from './DeleteProgress'
+import DeleteProgress from './components/DeleteProgress'
 import Pagination from '@/components/pagination/Pagination'
 import NoDataFound from '@/components/NoDataFound'
+import { Validate } from '@/services/api/Validate'
 
 export default async function Progress({
   params,
@@ -19,17 +19,19 @@ export default async function Progress({
   const patientId = params.id
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
-  const { progress, total, limit } = await patientService.listProgress({
-    patientId,
-    page,
-  })
+  const patientData = await patientService
+    .listProgress({
+      patientId,
+      page,
+    })
+    .then((res) => (Validate.isOk(res) ? res : undefined))
 
   const generateProgress = () => {
     return (
       <div className="relative flex w-full gap-5">
         <div className="w-1 rounded-full bg-purple-200"></div>
         <div className="w-full space-y-4">
-          {progress.map((progress) => (
+          {patientData?.progress.map((progress) => (
             <Box key={progress.id} className="flex justify-between gap-4">
               <div className="flex flex-col gap-2">
                 <div className="absolute left-0.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-main"></div>
@@ -71,7 +73,7 @@ export default async function Progress({
           Adicionar
         </ProgressModal>
       </Box>
-      {progress.length > 0 ? (
+      {patientData && patientData.progress.length > 0 ? (
         generateProgress()
       ) : (
         <NoDataFound
@@ -92,7 +94,11 @@ export default async function Progress({
         />
       )}
       <div className="grid place-items-center pt-4">
-        <Pagination limit={limit} page={+page} total={total} />
+        <Pagination
+          limit={patientData?.limit || 0}
+          page={+page}
+          total={patientData?.total || 0}
+        />
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { CreatePatientData } from '@/app/(private)/(routes)/patients/components/PatientDataForm'
+import { CreatePatientData } from '@/app/(private)/patients/components/PatientDataForm'
 import { responseError } from '../api/api'
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 

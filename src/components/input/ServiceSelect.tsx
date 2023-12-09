@@ -7,7 +7,7 @@ import { Validate } from '@/services/api/Validate'
 import { clientService } from '@/services/service/clientService'
 
 export default forwardRef(function ServiceSelect(
-  props: SelectProps<object, boolean> & inputVariantProps,
+  props: SelectProps<object | string, boolean> & inputVariantProps,
   ref: ForwardedRef<HTMLButtonElement>,
 ) {
   const [services, setServices] = useState<ServiceResponse[]>()
@@ -19,22 +19,19 @@ export default forwardRef(function ServiceSelect(
   }, [])
 
   return (
-    <>
-      <Input.Label>Serviço</Input.Label>
-      <Input.Select
-        ref={ref}
-        {...props}
-        slotProps={{
-          popper: { className: 'z-40' },
-        }}
-      >
-        {services &&
-          services.map((service) => (
-            <Input.Option key={service.id} value={service}>
-              {service.name}
-            </Input.Option>
-          ))}
-      </Input.Select>
-    </>
+    <Input.Select
+      ref={ref}
+      {...props}
+      slotProps={{
+        popper: { className: 'z-40' },
+      }}
+    >
+      {services &&
+        services.map((service) => (
+          <Input.Option key={service.id} value={service}>
+            {service.name}
+          </Input.Option>
+        ))}
+    </Input.Select>
   )
 })

@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
+import { useRouter } from 'next/navigation'
 
 const setProgressSchema = z.object({
   actualProblem: z.string(),

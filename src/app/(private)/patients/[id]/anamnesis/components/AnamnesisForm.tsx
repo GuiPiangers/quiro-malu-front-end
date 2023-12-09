@@ -11,6 +11,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import { Validate } from '@/services/api/Validate'
+import { useRouter } from 'next/navigation'
 
 const setAnamnesisSchema = z.object({
   activities: z.string().optional(),
@@ -45,6 +47,7 @@ export default function AnamnesisForm({
   },
 }: AnamnesisFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
+  const router = useRouter()
 
   const setAnamnesisForm = useForm<AnamnesisResponse>({
     resolver: zodResolver(setAnamnesisSchema),
@@ -58,10 +61,11 @@ export default function AnamnesisForm({
   } = setAnamnesisForm
   const setAnamnesis = async (data: setAnamnesisData) => {
     const res = await clientPatientService.setAnamnesis({ patientId, ...data })
-    if (res.error) {
+    if (Validate.isError(res)) {
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })
+      router.refresh()
       handleOpen({ title: 'Anamnese salva com sucesso!', type: 'success' })
     }
   }

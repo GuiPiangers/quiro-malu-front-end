@@ -9,6 +9,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import { Validate } from '@/services/api/Validate'
+import { useRouter } from 'next/navigation'
 
 const setDiagnosticSchema = z.object({
   diagnostic: z.string(),
@@ -17,13 +19,13 @@ const setDiagnosticSchema = z.object({
 
 export type setDiagnosticData = z.infer<typeof setDiagnosticSchema>
 
-type DiagnosticFormProps = { formData: DiagnosticResponse }
+type DiagnosticFormProps = { formData: Partial<DiagnosticResponse> }
 
 export default function DiagnosticForm({
   formData: { diagnostic, treatmentPlan, patientId },
 }: DiagnosticFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
-
+  const router = useRouter()
   const setDiagnosticForm = useForm<DiagnosticResponse>({
     resolver: zodResolver(setDiagnosticSchema),
   })
@@ -36,11 +38,15 @@ export default function DiagnosticForm({
   } = setDiagnosticForm
 
   const setDiagnostic = async (data: setDiagnosticData) => {
-    const res = await clientPatientService.setDiagnostic({ patientId, ...data })
-    if (res.error) {
+    const res = await clientPatientService.setDiagnostic({
+      patientId: patientId!,
+      ...data,
+    })
+    if (Validate.isError(res)) {
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })
+      router.refresh()
       handleOpen({ title: 'Diagnóstico salvo com sucesso!', type: 'success' })
     }
   }

@@ -12,13 +12,18 @@ type UpdatePatientFormProps = {
 export default function UpdatePatientForm({
   formData,
 }: UpdatePatientFormProps) {
+  const router = useRouter()
   const updatePatient = async (data: PatientResponse) => {
     return await clientPatientService.update({ id: formData.id, ...data })
   }
 
   return (
     <section className="w-full">
-      <PatientDataForm action={updatePatient} data={formData} />
+      <PatientDataForm
+        action={updatePatient}
+        data={formData}
+        afterValidate={router.refresh}
+      />
     </section>
   )
 }

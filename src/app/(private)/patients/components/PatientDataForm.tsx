@@ -7,11 +7,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Cpf from '@/utils/Cpf'
 import { PatientResponse } from '@/services/patient/PatientService'
-import Form from '../../../../../components/form/Form'
-import {
-  sectionStyles,
-  titleStyles,
-} from '../../../../../components/form/Styles'
+import Form from '@/components/form/Form'
+import { sectionStyles, titleStyles } from '@/components/form/Styles'
 import { useState } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
