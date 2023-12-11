@@ -10,20 +10,24 @@ import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
 import { responseError } from '@/services/api/api'
 
-import Duration from '@/app/(private)/components/Duration'
-import { useCallback, useEffect, useState } from 'react'
+import Duration, { DurationRef } from '@/app/(private)/components/Duration'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { clientPatientService } from '@/services/patient/clientPatientService'
-import { PatientsListResponse } from '@/services/patient/PatientService'
+import {
+  PatientResponse,
+  PatientsListResponse,
+} from '@/services/patient/PatientService'
+import Phone from '@/utils/Phone'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, 'Campo obrigatório'),
   service: z.string(),
   duration: z.coerce.number().optional(),
-  status: z.string(),
-  patientId: z.string(),
+  status: z.string().optional(),
+  patientId: z.string().optional(),
 })
 
 export type setSchedulingData = z.infer<typeof setSchedulingSchema>
@@ -44,18 +48,31 @@ export default function SchedulingForm({
 }: SchedulingFormProps) {
   const { service, id, duration, date, patientId, status } = formData || {}
   const { handleMessage } = useSnackbarContext()
+
   const [services, setServices] = useState<ServiceResponse[]>()
+  const [selectedService, setSelectedService] = useState<ServiceResponse>()
+
   const [patients, setPatients] = useState<PatientsListResponse>()
+  const [selectedPatient, setSelectedPatient] =
+    useState<PatientResponse | null>(null)
   const [patientSearch, setPatientSearch] = useState('')
   const [patientPage, setPatientPage] = useState(1)
-  const [loading, setLoading] = useState(true)
-  const [selectedService, setSelectedService] = useState<ServiceResponse>()
+  const [phone, setPhone] = useState('')
 
   useEffect(() => {
     clientService
       .list({ page: '1' })
       .then((data) => Validate.isOk(data) && setServices(data.services))
-  }, [])
+    Promise.all([
+      clientService.list({ page: '1' }),
+      patientId && clientPatientService.get(patientId),
+    ]).then(([serviceData, patientData]) => {
+      Validate.isOk(serviceData) && setServices(serviceData.services)
+      patientData &&
+        Validate.isOk(patientData) &&
+        setSelectedPatient(patientData)
+    })
+  }, [patientId])
 
   useEffect(() => {
     clientPatientService
@@ -107,9 +124,17 @@ export default function SchedulingForm({
   } = setSchedulingForm
 
   const setScheduling = async (data: setSchedulingData) => {
+    const patient = selectedPatient
+      ? selectedPatient?.id
+      : await clientPatientService
+          .create({ name: patientSearch, phone })
+          .then((res) => (Validate.isOk(res) ? res.id : undefined))
+
     const res = await action({
       id,
+      patientId: patient,
       duration: data.duration || duration,
+      status,
       ...data,
     })
     if (Validate.isError(res)) {
@@ -190,6 +215,10 @@ export default function SchedulingForm({
             disabled={isSubmitting}
             error={!!errors.patientId}
             onInputChange={(e, value) => setPatientSearch(value)}
+            onChange={(e, value) => {
+              setPhone(value ? (value as unknown as PatientResponse).phone : '')
+              setSelectedPatient(value as unknown as PatientResponse)
+            }}
             onLastOptionView={loadMorePatients}
             options={
               patients
@@ -208,10 +237,12 @@ export default function SchedulingForm({
 
         <Input.Root>
           <Input.Label required>Telefone</Input.Label>
-          <Input.Field autoComplete="off" />
-          {errors.date && (
-            <Input.Message error>{errors.date.message}</Input.Message>
-          )}
+          <Input.Field
+            autoComplete="off"
+            disabled={!!selectedPatient}
+            onChange={(e) => setPhone(Phone.format(e.target.value))}
+            value={phone}
+          />
         </Input.Root>
       </section>
     </Form>

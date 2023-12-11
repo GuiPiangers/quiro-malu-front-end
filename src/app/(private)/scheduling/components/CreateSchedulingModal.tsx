@@ -13,8 +13,14 @@ import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 export default function CreateSchedulingModal({
   color,
   children,
+  formData,
   ...props
-}: { className?: string; children?: ReactNode } & ButtonPropsVariants) {
+}: {
+  className?: string
+  children?: ReactNode
+  asChild?: boolean
+  formData?: Partial<SchedulingResponse>
+} & ButtonPropsVariants) {
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
 
@@ -40,7 +46,7 @@ export default function CreateSchedulingModal({
       <Modal ref={modalRef} className="m-4 w-full max-w-md p-0">
         <HeaderForm handleClose={closeModal} title="Novo serviço" />
         <SchedulingForm
-          buttons={<Button color="green">Salvar</Button>}
+          formData={{ status: 'Agendado', ...formData }}
           className="shadow-none"
           action={createScheduling}
           afterValidation={afterSubmit}

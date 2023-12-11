@@ -48,12 +48,14 @@ export const createPatientSchema = z.object({
   phone: z.string().regex(/^[(][0-9]{2}[)][ ][0-9]{5}[ ][0-9]{4}$/, {
     message: 'Formato de telefone inválido - padrão (DDD) 99999 9999',
   }),
-  dateOfBirth: z.string(),
+  dateOfBirth: z.string().optional(),
   gender: z.string().optional(),
   cpf: z
     .string()
+    .optional()
     .refine(
-      (value) => validateRegex(value, /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/),
+      (value) =>
+        value && validateRegex(value, /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/),
       { message: 'CPF fora do padrão esperado' },
     ),
   location: z

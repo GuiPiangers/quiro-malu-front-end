@@ -75,7 +75,12 @@ export default function UpdateServiceModal({
               <Button color="green" type="submit">
                 Salvar
               </Button>
-              <Button type="button" color="red" onClick={deleteService}>
+              <Button
+                type="button"
+                variant="outline"
+                color="red"
+                onClick={deleteService}
+              >
                 Excluir
               </Button>
             </>

@@ -30,6 +30,12 @@ export default async function Scheduling({
   )
 
   const schedulesResp = await schedulingService.list({ date })
+  const qdtSchedules = await schedulingService
+    .getQtdSchedulesByDay({
+      month: newDate.getMonth() + 1,
+      year: newDate.getFullYear(),
+    })
+    .then((res) => (Validate.isOk(res) ? res : undefined))
 
   const table = new GenerateWorkHours({
     schedulingDuration: 30,
@@ -127,17 +133,18 @@ export default async function Scheduling({
         )
       }
       return (
-        <Table.Row
-          clickable
+        <CreateSchedulingModal
           key={hour}
-          columns={['auto', '1fr']}
-          className="group"
+          className="contents text-black"
+          formData={{ date: `${date}T${hour}` }}
         >
-          <Table.Cell>{hour}</Table.Cell>
-          <Table.Cell className="pointer-events-none w-full rounded border border-slate-300 text-center text-slate-400 opacity-0 group-hover:opacity-100">
-            Novo Agendamento
-          </Table.Cell>
-        </Table.Row>
+          <Table.Row clickable columns={['auto', '1fr']} className="group">
+            <Table.Cell>{hour}</Table.Cell>
+            <Table.Cell className="pointer-events-none w-full rounded border border-slate-300 text-center text-slate-400 opacity-0 group-hover:opacity-100">
+              Novo Agendamento
+            </Table.Cell>
+          </Table.Row>
+        </CreateSchedulingModal>
       )
     })
   }
@@ -169,7 +176,7 @@ export default async function Scheduling({
         <AccordionTable.Root>{generateTable()}</AccordionTable.Root>
       </Box>
       <Box className="w-full place-self-start">
-        <Calendar />
+        <Calendar appointments={qdtSchedules} />
       </Box>
     </div>
   )

@@ -9,16 +9,18 @@ import DateTime from '@/utils/Date'
 import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 import { Validate } from '@/services/api/Validate'
 
-export default function Calendar() {
-  const router = useRouter()
-  const [date, setDate] = useState(new Date())
-  const [qdtSchedules, setQtdSchedules] = useState<
+type CalendarProps = {
+  appointments?:
     | {
         date: string
         qtd: number
       }[]
     | []
-  >([])
+}
+export default function Calendar({ appointments = [] }: CalendarProps) {
+  const router = useRouter()
+  const [date, setDate] = useState(new Date())
+
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   const selectedDate =
     useSearchParams().get('date') || DateTime.getIsoDate(new Date())
@@ -36,17 +38,6 @@ export default function Calendar() {
     )
     setDate(new Date(newSelectedDate))
   }, [selectedDate])
-
-  useEffect(() => {
-    clientSchedulingService
-      .getQtdSchedulesByDay({
-        year: date.getFullYear(),
-        month: date.getMonth() + 1,
-      })
-      .then((data) => {
-        if (Validate.isOk(data)) setQtdSchedules(data)
-      })
-  }, [date])
 
   const changeDate = (date: Date) => {
     router.replace(`?date=${DateTime.getIsoDate(date)}`)
@@ -101,7 +92,7 @@ export default function Calendar() {
         />
       ))}
       {daysInTheMonth().map((day) => {
-        const appointedDay = qdtSchedules.find((scheduling) => {
+        const appointedDay = appointments.find((scheduling) => {
           return scheduling.date === DateTime.getIsoDate(day)
         })
         return (
