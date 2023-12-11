@@ -10,8 +10,8 @@ import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
 import { responseError } from '@/services/api/api'
 
-import Duration, { DurationRef } from '@/app/(private)/components/Duration'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import Duration from '@/app/(private)/components/Duration'
+import { useEffect, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
@@ -46,7 +46,14 @@ export default function SchedulingForm({
   action,
   ...formProps
 }: SchedulingFormProps) {
-  const { service, id, duration, date, patientId, status } = formData || {}
+  const {
+    service,
+    id,
+    duration: durationService,
+    date,
+    patientId,
+    status,
+  } = formData || {}
   const { handleMessage } = useSnackbarContext()
 
   const [services, setServices] = useState<ServiceResponse[]>()
@@ -58,6 +65,7 @@ export default function SchedulingForm({
   const [patientSearch, setPatientSearch] = useState('')
   const [patientPage, setPatientPage] = useState(1)
   const [phone, setPhone] = useState('')
+  const [duration, setDuration] = useState(durationService || 0)
 
   useEffect(() => {
     clientService
@@ -82,6 +90,7 @@ export default function SchedulingForm({
       .then((data) => {
         Validate.isOk(data) && setPatients(data)
       })
+    setPatientPage(1)
   }, [patientSearch])
 
   const setSchedulingForm = useForm<setSchedulingData>({
@@ -89,19 +98,17 @@ export default function SchedulingForm({
   })
 
   const loadMorePatients = () => {
-    setPatientPage((value) => value + 1)
-
+    if (patients && Math.ceil(patients.total / patients?.limit) === patientPage)
+      return undefined
     clientPatientService
       .list({
         page: `${patientPage + 1}`,
         search: { name: patientSearch },
       })
       .then((data) => {
-        if (
-          Validate.isOk(data) &&
-          patients &&
-          !(Math.ceil(patients.total / patients?.limit) === patientPage)
-        ) {
+        if (Validate.isOk(data)) {
+          setPatientPage((value) => value + 1)
+
           setPatients((value) => {
             if (value && value.patients) {
               return {
@@ -177,6 +184,7 @@ export default function SchedulingForm({
           <Input.Select
             onChange={(e, newValue) => {
               setSelectedService(newValue as ServiceResponse)
+              setDuration((newValue as ServiceResponse).duration)
               setValue('service', (newValue as ServiceResponse).name)
             }}
             slotProps={{
@@ -199,8 +207,9 @@ export default function SchedulingForm({
         </Input.Root>
 
         <Duration
-          duration={selectedService?.duration}
+          duration={duration}
           setValue={(value: number) => {
+            setDuration(value)
             setValue('duration', value)
           }}
           errors={errors?.duration?.message}
@@ -214,6 +223,10 @@ export default function SchedulingForm({
             freeSolo
             disabled={isSubmitting}
             error={!!errors.patientId}
+            condition={
+              patients &&
+              Math.ceil(patients.total / patients?.limit) <= patientPage
+            }
             onInputChange={(e, value) => setPatientSearch(value)}
             onChange={(e, value) => {
               setPhone(value ? (value as unknown as PatientResponse).phone : '')

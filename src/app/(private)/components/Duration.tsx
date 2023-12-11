@@ -1,16 +1,7 @@
 'use client'
 
 import { Time } from '@/utils/Time'
-import {
-  ChangeEvent,
-  Dispatch,
-  forwardRef,
-  memo,
-  useEffect,
-  useImperativeHandle,
-  useReducer,
-  useState,
-} from 'react'
+import { ChangeEvent, useEffect, useMemo, useReducer, useState } from 'react'
 import { Input } from '@/components/input'
 import Button from '@/components/Button'
 import { IoChevronUp } from 'react-icons/io5'
@@ -111,19 +102,15 @@ type DurationProps = {
   setValue(value: number): void
   errors?: string
 }
-export type DurationRef = {
-  duration: number
-  setDuration: Dispatch<TimeAction>
-}
 
-export default forwardRef<DurationRef, DurationProps>(function Duration(
-  { duration, errors, setValue },
-  ref,
-) {
-  const newTime = new Time(duration)
+export default function Duration({
+  duration,
+  errors,
+  setValue,
+}: DurationProps) {
   const [time, dispatch] = useReducer(reducer, {
-    hours: newTime.hours,
-    minutes: newTime.minutes,
+    hours: duration ? Math.floor(duration / (60 * 60)) : 0,
+    minutes: duration ? (duration % (60 * 60)) / 60 : 0,
   })
   const [otherDuration, setOtherDuration] = useState(
     duration !== 60 * 60 && duration !== 30 * 60,
@@ -168,18 +155,6 @@ export default forwardRef<DurationRef, DurationProps>(function Duration(
     })
     setOtherDuration(duration !== 60 * 60 && duration !== 30 * 60)
   }, [duration, setValue])
-  console.log(time)
-
-  useImperativeHandle(ref, () => {
-    return {
-      duration: Time.hoursAndMinutesToSec({
-        hours: time.hours,
-        minutes: time.minutes,
-      }),
-      setDuration: dispatch,
-    }
-  })
-
   return (
     <Input.Root>
       <Input.Label
@@ -293,4 +268,4 @@ export default forwardRef<DurationRef, DurationProps>(function Duration(
       {errors && <Input.Message error>{errors}</Input.Message>}
     </Input.Root>
   )
-})
+}

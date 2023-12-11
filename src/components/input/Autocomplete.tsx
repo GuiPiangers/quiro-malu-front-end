@@ -23,6 +23,7 @@ export default forwardRef(function Autocomplete(
   > &
     inputVariantProps & {
       onLastOptionView(): void
+      condition?: boolean
     },
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -36,6 +37,7 @@ export default forwardRef(function Autocomplete(
     error,
     notSave,
     onLastOptionView,
+    condition,
     ...other
   } = props
 
@@ -71,8 +73,9 @@ export default forwardRef(function Autocomplete(
   const lastOptionElementRef = useCallback(
     (node: HTMLLIElement) => {
       if (observer.current) observer.current.disconnect()
+      if (condition) return
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && onLastOptionView) {
+        if (entries[0].isIntersecting) {
           if (onLastOptionView) {
             onLastOptionView()
           }
@@ -80,7 +83,7 @@ export default forwardRef(function Autocomplete(
       })
       if (node) observer.current.observe(node)
     },
-    [onLastOptionView],
+    [onLastOptionView, condition],
   )
 
   const { inputWrapperStyle, inputFieldStyle } = inputStyles({
