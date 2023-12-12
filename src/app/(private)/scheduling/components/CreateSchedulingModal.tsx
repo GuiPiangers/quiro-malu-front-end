@@ -34,9 +34,10 @@ export default function CreateSchedulingModal({
     router.refresh()
   }
 
-  const createScheduling = async (
+  const formAction = async (
     data: SchedulingResponse,
   ): Promise<SchedulingResponse | responseError> => {
+    if (formData?.id) return await clientSchedulingService.update(data)
     return await clientSchedulingService.create(data)
   }
 
@@ -50,7 +51,7 @@ export default function CreateSchedulingModal({
         <SchedulingForm
           formData={{ status: 'Agendado', ...formData }}
           className="shadow-none"
-          action={createScheduling}
+          action={formAction}
           afterValidation={afterSubmit}
         />
       </Modal>

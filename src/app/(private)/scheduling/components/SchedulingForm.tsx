@@ -86,11 +86,11 @@ export default function SchedulingForm({
     ]).then(([serviceData, patientData]) => {
       if (Validate.isOk(serviceData)) {
         setServices(serviceData.services)
-        setSelectedService(
-          serviceData.services.find(
-            (serviceData) => serviceData.name === service,
-          ),
+        const selectedService = serviceData.services.find(
+          (serviceData) => serviceData.name === service,
         )
+        setSelectedService(selectedService)
+        selectedService && setValue('service', selectedService.name)
       }
       patientData &&
         Validate.isOk(patientData) &&
@@ -159,6 +159,16 @@ export default function SchedulingForm({
       duration: data.duration || duration,
       status,
       ...data,
+    })
+    console.log({
+      res,
+      data: {
+        id,
+        patientId: patient,
+        duration: data.duration || duration,
+        status,
+        ...data,
+      },
     })
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })

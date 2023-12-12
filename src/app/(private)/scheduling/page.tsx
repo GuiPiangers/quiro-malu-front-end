@@ -63,7 +63,6 @@ export default async function Scheduling({
         const durationString = new Time(
           scheduling.duration,
         ).getHoursAndMinutes()
-        console.log(scheduling)
         const status =
           scheduling.status === 'Agendado' &&
           scheduling.date < new Date().toISOString()
