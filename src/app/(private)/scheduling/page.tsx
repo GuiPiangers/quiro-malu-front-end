@@ -106,7 +106,7 @@ export default async function Scheduling({
                     className="w-20"
                     formData={{
                       ...scheduling,
-                      duration: scheduling.duration,
+                      patientPhone: scheduling.phone,
                     }}
                   >
                     Editar

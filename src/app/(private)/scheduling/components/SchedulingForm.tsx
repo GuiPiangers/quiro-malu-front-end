@@ -73,6 +73,10 @@ export default function SchedulingForm({
   const [duration, setDuration] = useState(durationService || 0)
 
   useEffect(() => {
+    patientPhone && setPhone(patientPhone)
+  }, [patientPhone])
+
+  useEffect(() => {
     clientService
       .list({ page: '1' })
       .then((data) => Validate.isOk(data) && setServices(data.services))
@@ -80,12 +84,19 @@ export default function SchedulingForm({
       clientService.list({ page: '1' }),
       patientId && clientPatientService.get(patientId),
     ]).then(([serviceData, patientData]) => {
-      Validate.isOk(serviceData) && setServices(serviceData.services)
+      if (Validate.isOk(serviceData)) {
+        setServices(serviceData.services)
+        setSelectedService(
+          serviceData.services.find(
+            (serviceData) => serviceData.name === service,
+          ),
+        )
+      }
       patientData &&
         Validate.isOk(patientData) &&
         setSelectedPatient(patientData)
     })
-  }, [patientId])
+  }, [patientId, service])
 
   useEffect(() => {
     clientPatientService
@@ -171,8 +182,8 @@ export default function SchedulingForm({
           <Input.Field
             type="datetime-local"
             autoComplete="off"
-            disabled={isSubmitting}
             defaultValue={date ? DateTime.getIsoDateTime(date) : ''}
+            disabled={isSubmitting}
             error={!!errors.date}
             {...register('date')}
             notSave={dirtyFields.date}
@@ -187,6 +198,7 @@ export default function SchedulingForm({
             Serviço
           </Input.Label>
           <Input.Select
+            value={selectedService}
             onChange={(e, newValue) => {
               if (!newValue) return
               setSelectedService(newValue as ServiceResponse)
