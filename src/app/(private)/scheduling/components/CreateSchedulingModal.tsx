@@ -19,7 +19,7 @@ export default function CreateSchedulingModal({
   className?: string
   children?: ReactNode
   asChild?: boolean
-  formData?: Partial<SchedulingResponse>
+  formData?: Partial<SchedulingResponse & { patient: string }>
 } & ButtonPropsVariants) {
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()

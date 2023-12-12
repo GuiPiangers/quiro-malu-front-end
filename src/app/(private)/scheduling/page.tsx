@@ -63,7 +63,7 @@ export default async function Scheduling({
         const durationString = new Time(
           scheduling.duration,
         ).getHoursAndMinutes()
-
+        console.log(scheduling)
         const status =
           scheduling.status === 'Agendado' &&
           scheduling.date < new Date().toISOString()
@@ -99,14 +99,18 @@ export default async function Scheduling({
                   <strong>Duração:</strong> {durationString}
                 </p>
                 <div className="flex gap-2 pt-2 ">
-                  <Button
+                  <CreateSchedulingModal
                     variant="outline"
                     size="small"
                     color="blue"
                     className="w-20"
+                    formData={{
+                      ...scheduling,
+                      duration: scheduling.duration,
+                    }}
                   >
                     Editar
-                  </Button>
+                  </CreateSchedulingModal>
                   <Button
                     variant="outline"
                     size="small"

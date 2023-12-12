@@ -21,6 +21,7 @@ import {
   PatientsListResponse,
 } from '@/services/patient/PatientService'
 import Phone from '@/utils/Phone'
+import DateTime from '@/utils/Date'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, 'Campo obrigatório'),
@@ -36,7 +37,9 @@ type SchedulingFormProps = {
   action(
     data: SchedulingResponse | setSchedulingData,
   ): Promise<SchedulingResponse | responseError>
-  formData?: Partial<SchedulingResponse>
+  formData?: Partial<
+    SchedulingResponse & { patient: string; patientPhone: string }
+  >
   afterValidation?(): void
 } & FormProps
 
@@ -52,6 +55,8 @@ export default function SchedulingForm({
     duration: durationService,
     date,
     patientId,
+    patient,
+    patientPhone,
     status,
   } = formData || {}
   const { handleMessage } = useSnackbarContext()
@@ -167,7 +172,7 @@ export default function SchedulingForm({
             type="datetime-local"
             autoComplete="off"
             disabled={isSubmitting}
-            defaultValue={date}
+            defaultValue={date ? DateTime.getIsoDateTime(date) : ''}
             error={!!errors.date}
             {...register('date')}
             notSave={dirtyFields.date}
@@ -183,6 +188,7 @@ export default function SchedulingForm({
           </Input.Label>
           <Input.Select
             onChange={(e, newValue) => {
+              if (!newValue) return
               setSelectedService(newValue as ServiceResponse)
               setDuration((newValue as ServiceResponse).duration)
               setValue('service', (newValue as ServiceResponse).name)
@@ -231,6 +237,10 @@ export default function SchedulingForm({
             onChange={(e, value) => {
               setPhone(value ? (value as unknown as PatientResponse).phone : '')
               setSelectedPatient(value as unknown as PatientResponse)
+            }}
+            defaultValue={{
+              label: patient || '',
+              id: patientId || '',
             }}
             onLastOptionView={loadMorePatients}
             options={

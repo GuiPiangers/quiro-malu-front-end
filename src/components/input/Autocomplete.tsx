@@ -60,6 +60,7 @@ export default forwardRef(function Autocomplete(
       setHighlightOption(option?.id)
     },
     isOptionEqualToValue(option, value) {
+      console.log({ option: option.id, value: value.id })
       return option.id === value.id
     },
     componentName: 'BaseAutocompleteIntroduction',
