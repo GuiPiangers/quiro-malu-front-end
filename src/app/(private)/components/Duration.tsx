@@ -220,6 +220,7 @@ export default function Duration({
                 slotProps={{ input: { className: 'w-full pr-0' } }}
                 endAdornment={<span className="pr-2">h</span>}
                 onChange={changeHour}
+                inputMode="numeric"
                 value={time.hours}
               />
               <IoChevronUp
@@ -239,6 +240,7 @@ export default function Duration({
                 slotProps={{
                   input: { className: 'w-full pr-0' },
                 }}
+                inputMode="numeric"
                 endAdornment={<span className="pr-2">min</span>}
                 onChange={changeMinute}
                 value={time.minutes}

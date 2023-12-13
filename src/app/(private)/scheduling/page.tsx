@@ -13,6 +13,7 @@ import RouteReplace from '../../../components/RouteReplace'
 import { RxCaretDown } from 'react-icons/rx'
 import CreateSchedulingModal from './components/CreateSchedulingModal'
 import { Validate } from '@/services/api/Validate'
+import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 
 export default async function Scheduling({
   searchParams,
@@ -179,7 +180,7 @@ export default async function Scheduling({
         <AccordionTable.Root>{generateTable()}</AccordionTable.Root>
       </Box>
       <Box className="w-full place-self-start">
-        <Calendar appointments={qdtSchedules} />
+        <SchedulingCalendar />
       </Box>
     </div>
   )

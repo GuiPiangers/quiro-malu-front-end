@@ -147,20 +147,7 @@ export default function PatientDataForm({
       if (res.type === 'date') {
         setError('dateOfBirth', { message: res.message })
       } else
-        setError(
-          res.type as
-            | 'name'
-            | 'phone'
-            | 'gender'
-            | 'cpf'
-            | 'location'
-            | 'location.cep'
-            | 'location.state'
-            | 'location.city'
-            | 'location.neighborhood'
-            | 'location.address',
-          { message: res.message },
-        )
+        setError(res.type as keyof CreatePatientData, { message: res.message })
     } else {
       if (Validate.isError(res)) {
         handleMessage({
@@ -236,6 +223,7 @@ export default function PatientDataForm({
               setValue('cpf', Cpf.format(e.target.value))
               setCpfNotSave(true)
             }}
+            inputMode="numeric"
             defaultValue={data?.cpf}
             notSave={cpfNotSave}
           />
@@ -297,6 +285,7 @@ export default function PatientDataForm({
             defaultValue={data?.location?.cep}
             notSave={cepNotSave}
             onChange={(e) => setCepNotSave(true)}
+            inputMode="numeric"
           />
           {errors.location?.cep && (
             <Input.Message error>{errors.location?.cep.message}</Input.Message>

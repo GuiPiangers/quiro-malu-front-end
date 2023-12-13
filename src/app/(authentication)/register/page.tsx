@@ -73,16 +73,7 @@ export default function Register() {
   const createUser = async (data: CreateUserData) => {
     const user = await clientUserService.register(data)
     if (user.type) {
-      setError(
-        user.type as
-          | 'name'
-          | 'email'
-          | 'phone'
-          | 'password'
-          | 'root'
-          | `root.${string}`,
-        { message: user.message },
-      )
+      setError(user.type as keyof CreateUserData, { message: user.message })
     } else {
       if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
         await singIn({ email: user.email, password: user.password })
@@ -121,6 +112,7 @@ export default function Register() {
             placeholder="(51) 99999 9999"
             disabled={isSubmitting}
             type="tel"
+            inputMode="tel"
             onChange={(e) => {
               setValue('phone', Phone.format(e.target.value))
             }}

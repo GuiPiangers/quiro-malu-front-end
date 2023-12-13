@@ -8,18 +8,29 @@ import Button from '../Button'
 import DateTime from '@/utils/Date'
 import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 import { Validate } from '@/services/api/Validate'
+import { responseError } from '@/services/api/api'
+
+type appointments = {
+  date: string
+  qtd: number
+}
 
 type CalendarProps = {
-  appointments?:
-    | {
-        date: string
-        qtd: number
-      }[]
-    | []
+  getAppointments?({
+    month,
+    year,
+  }: {
+    month: number
+    year: number
+  }): Promise<appointments[] | responseError>
 }
-export default function Calendar({ appointments = [] }: CalendarProps) {
+
+export default function Calendar({
+  getAppointments: getMonthAppointments,
+}: CalendarProps) {
   const router = useRouter()
   const [date, setDate] = useState(new Date())
+  const [appointments, setAppointments] = useState<appointments[]>([])
 
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
   const selectedDate =
@@ -95,6 +106,7 @@ export default function Calendar({ appointments = [] }: CalendarProps) {
         const appointedDay = appointments.find((scheduling) => {
           return scheduling.date === DateTime.getIsoDate(day)
         })
+
         return (
           <CalendarItem
             key={day.getTime()}
@@ -115,6 +127,13 @@ export default function Calendar({ appointments = [] }: CalendarProps) {
       })}
     </div>
   )
+
+  useEffect(() => {
+    getMonthAppointments &&
+      getMonthAppointments({ month: month + 1, year }).then((res) => {
+        Validate.isOk(res) && setAppointments(res)
+      })
+  }, [getMonthAppointments, month, year])
 
   return (
     <>
