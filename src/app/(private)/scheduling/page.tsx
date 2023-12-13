@@ -14,6 +14,7 @@ import { RxCaretDown } from 'react-icons/rx'
 import CreateSchedulingModal from './components/CreateSchedulingModal'
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
+import DeleteSchedulingButton from './components/DeleteSchedulingButton'
 
 export default async function Scheduling({
   searchParams,
@@ -111,14 +112,7 @@ export default async function Scheduling({
                   >
                     Editar
                   </CreateSchedulingModal>
-                  <Button
-                    variant="outline"
-                    size="small"
-                    color="red"
-                    className="w-20"
-                  >
-                    Excluir
-                  </Button>
+                  <DeleteSchedulingButton id={scheduling.id!} />
                 </div>
               </div>
               <div className="flex flex-col gap-2">

@@ -38,13 +38,10 @@ export class Scheduling extends ServiceApi {
     return res
   }
 
-  async get({ id, patientId }: { patientId: string; id: string }) {
-    const res = await this.fetchData<SchedulingResponse>(
-      `/schedules/${patientId}/${id}`,
-      {
-        method: 'GET',
-      },
-    )
+  async get({ id }: { id: string }) {
+    const res = await this.fetchData<SchedulingResponse>(`/schedules/${id}`, {
+      method: 'GET',
+    })
     return res
   }
 
@@ -68,10 +65,10 @@ export class Scheduling extends ServiceApi {
     return res
   }
 
-  async delete({ id, patientId }: { patientId: string; id: string }) {
+  async delete({ id }: { id: string }) {
     const res = await this.fetchData<void>('/schedules', {
       method: 'DELETE',
-      body: JSON.stringify({ id, patientId }),
+      body: JSON.stringify({ id }),
     })
     return res
   }
