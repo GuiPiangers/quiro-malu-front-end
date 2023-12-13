@@ -162,7 +162,10 @@ export default function Calendar({
           variant="outline"
           size="small"
           className="px-4"
-          onClick={() => changeDate(new Date())}
+          onClick={() => {
+            changeDate(new Date())
+            setDate(new Date())
+          }}
         >
           Hoje
         </Button>
