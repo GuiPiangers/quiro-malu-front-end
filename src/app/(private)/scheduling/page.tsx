@@ -116,7 +116,13 @@ export default async function Scheduling({
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <Button size="small">Realizar atendimento</Button>
+                <Button asChild size="small">
+                  <Link
+                    href={`scheduling/${scheduling.id}/${scheduling.patientId}/patientData`}
+                  >
+                    Fixa do paciente
+                  </Link>
+                </Button>
                 <Button variant="outline" size="small">
                   Entrar em Contato
                 </Button>
