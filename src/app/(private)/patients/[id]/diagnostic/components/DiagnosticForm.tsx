@@ -19,10 +19,14 @@ const setDiagnosticSchema = z.object({
 
 export type setDiagnosticData = z.infer<typeof setDiagnosticSchema>
 
-type DiagnosticFormProps = { formData: Partial<DiagnosticResponse> }
+type DiagnosticFormProps = {
+  formData: Partial<DiagnosticResponse>
+  afterValidate?(): void
+}
 
 export default function DiagnosticForm({
   formData: { diagnostic, treatmentPlan, patientId },
+  afterValidate,
 }: DiagnosticFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
   const router = useRouter()
@@ -46,8 +50,12 @@ export default function DiagnosticForm({
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })
-      router.refresh()
-      handleOpen({ title: 'Diagnóstico salvo com sucesso!', type: 'success' })
+      if (afterValidate) {
+        afterValidate()
+      } else {
+        router.refresh()
+        handleOpen({ title: 'Diagnóstico salvo com sucesso!', type: 'success' })
+      }
     }
   }
 

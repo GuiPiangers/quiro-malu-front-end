@@ -29,7 +29,10 @@ const setAnamnesisSchema = z.object({
 
 export type setAnamnesisData = z.infer<typeof setAnamnesisSchema>
 
-type AnamnesisFormProps = { formData: AnamnesisResponse }
+export type AnamnesisFormProps = {
+  formData: AnamnesisResponse
+  afterValidate?(): void
+}
 
 export default function AnamnesisForm({
   formData: {
@@ -45,6 +48,7 @@ export default function AnamnesisForm({
     underwentSurgery,
     useMedicine,
   },
+  afterValidate,
 }: AnamnesisFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
   const router = useRouter()
@@ -65,8 +69,13 @@ export default function AnamnesisForm({
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       reset({ ...data })
-      router.refresh()
-      handleOpen({ title: 'Anamnese salva com sucesso!', type: 'success' })
+
+      if (afterValidate) {
+        afterValidate()
+      } else {
+        router.refresh()
+        handleOpen({ title: 'Anamnese salva com sucesso!', type: 'success' })
+      }
     }
   }
 
