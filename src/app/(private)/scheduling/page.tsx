@@ -120,7 +120,7 @@ export default async function Scheduling({
                   <Link
                     href={`scheduling/${scheduling.id}/${scheduling.patientId}/patientData`}
                   >
-                    Fixa do paciente
+                    Realizar atendimento
                   </Link>
                 </Button>
                 <Button variant="outline" size="small">

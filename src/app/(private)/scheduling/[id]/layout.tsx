@@ -6,5 +6,5 @@ export default function layoutScheduling({
 }: {
   children: ReactNode
 }) {
-  return <div>{children}</div>
+  return <>{children}</>
 }

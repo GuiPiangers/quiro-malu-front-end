@@ -5,7 +5,7 @@ import RadioButton from '@/components/radioButton/RadioButton'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
 import { AnamnesisResponse } from '@/services/patient/PatientService'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -32,6 +32,8 @@ export type setAnamnesisData = z.infer<typeof setAnamnesisSchema>
 export type AnamnesisFormProps = {
   formData: AnamnesisResponse
   afterValidate?(): void
+  buttons?: ReactNode
+  btWrapperClassName?: string
 }
 
 export default function AnamnesisForm({
@@ -48,6 +50,8 @@ export default function AnamnesisForm({
     underwentSurgery,
     useMedicine,
   },
+  buttons,
+  btWrapperClassName,
   afterValidate,
 }: AnamnesisFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
@@ -87,7 +91,11 @@ export default function AnamnesisForm({
   )
 
   return (
-    <Form onSubmit={handleSubmit(setAnamnesis)}>
+    <Form
+      onSubmit={handleSubmit(setAnamnesis)}
+      buttons={buttons}
+      btWrapperClassName={btWrapperClassName}
+    >
       <section aria-label="Anamnese do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label notSave={dirtyFields.mainProblem}>

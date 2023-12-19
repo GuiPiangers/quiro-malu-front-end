@@ -1,5 +1,6 @@
 'use client'
 
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import PatientDataForm, {
   CreatePatientData,
 } from '../components/PatientDataForm'
@@ -13,10 +14,15 @@ export default function CreatePatientForm() {
     const res = await clientPatientService.create(data)
     return res
   }
+  const { handleMessage } = useSnackbarContext()
 
   const afterValidate = () => {
     router.push('/patients')
     router.refresh()
+    handleMessage({
+      title: 'Paciente salvo com sucesso!',
+      type: 'success',
+    })
   }
 
   return (

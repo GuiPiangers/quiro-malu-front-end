@@ -9,7 +9,7 @@ import Cpf from '@/utils/Cpf'
 import { PatientResponse } from '@/services/patient/PatientService'
 import Form from '@/components/form/Form'
 import { sectionStyles, titleStyles } from '@/components/form/Styles'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
@@ -105,12 +105,16 @@ type PatientDataForm = {
     data: CreatePatientData | PatientResponse,
   ): Promise<PatientResponse | responseError>
   afterValidate?(): void
+  buttons?: ReactNode
+  btWrapperClassName?: string
   data?: PatientResponse
 }
 
 export default function PatientDataForm({
   action,
   afterValidate,
+  buttons,
+  btWrapperClassName,
   data,
 }: PatientDataForm) {
   const { handleMessage } = useSnackbarContext()
@@ -158,16 +162,16 @@ export default function PatientDataForm({
       } else {
         resetForm(data)
         if (afterValidate) afterValidate()
-        handleMessage({
-          title: 'Paciente salvo com sucesso!',
-          type: 'success',
-        })
       }
     }
   }
 
   return (
-    <Form onSubmit={handleSubmit(handleAction)}>
+    <Form
+      onSubmit={handleSubmit(handleAction)}
+      buttons={buttons}
+      btWrapperClassName={btWrapperClassName}
+    >
       <section aria-labelledby="personal-data" className={sectionStyles()}>
         <h2 id="personal-data" className={titleStyles()}>
           Dados pessoais

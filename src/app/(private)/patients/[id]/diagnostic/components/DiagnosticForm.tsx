@@ -11,6 +11,7 @@ import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
 import { useRouter } from 'next/navigation'
+import { ReactNode } from 'react'
 
 const setDiagnosticSchema = z.object({
   diagnostic: z.string(),
@@ -22,11 +23,15 @@ export type setDiagnosticData = z.infer<typeof setDiagnosticSchema>
 type DiagnosticFormProps = {
   formData: Partial<DiagnosticResponse>
   afterValidate?(): void
+  buttons?: ReactNode
+  btWrapperClassName?: string
 }
 
 export default function DiagnosticForm({
   formData: { diagnostic, treatmentPlan, patientId },
   afterValidate,
+  btWrapperClassName,
+  buttons,
 }: DiagnosticFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
   const router = useRouter()
@@ -60,7 +65,11 @@ export default function DiagnosticForm({
   }
 
   return (
-    <Form onSubmit={handleSubmit(setDiagnostic)}>
+    <Form
+      onSubmit={handleSubmit(setDiagnostic)}
+      buttons={buttons}
+      btWrapperClassName={btWrapperClassName}
+    >
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label notSave={dirtyFields.diagnostic}>

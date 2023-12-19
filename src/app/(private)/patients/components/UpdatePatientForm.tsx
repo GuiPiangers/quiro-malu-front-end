@@ -4,6 +4,7 @@ import { PatientResponse } from '@/services/patient/PatientService'
 import PatientDataForm from '../components/PatientDataForm'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { useRouter } from 'next/navigation'
+import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 
 type UpdatePatientFormProps = {
   formData: PatientResponse
@@ -16,13 +17,22 @@ export default function UpdatePatientForm({
   const updatePatient = async (data: PatientResponse) => {
     return await clientPatientService.update({ id: formData.id, ...data })
   }
+  const { handleMessage } = useSnackbarContext()
+
+  const afterValidate = () => {
+    router.refresh()
+    handleMessage({
+      title: 'Paciente salvo com sucesso!',
+      type: 'success',
+    })
+  }
 
   return (
     <section className="w-full">
       <PatientDataForm
         action={updatePatient}
         data={formData}
-        afterValidate={router.refresh}
+        afterValidate={afterValidate}
       />
     </section>
   )
