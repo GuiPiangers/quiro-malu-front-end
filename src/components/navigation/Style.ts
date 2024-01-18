@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants'
+import { VariantProps, tv } from 'tailwind-variants'
 
 export const navStyles = tv({
   slots: {
@@ -9,8 +9,27 @@ export const navStyles = tv({
   variants: {
     active: {
       true: {
-        NavItemStyles: 'bg-main font-semibold text-white hover:bg-main-hover',
+        NavItemStyles: 'font-semibold  ',
       },
     },
+    variants: {
+      underline: '',
+      solid: '',
+    },
   },
+  compoundVariants: [
+    {
+      active: true,
+      variants: 'underline',
+      className: { NavItemStyles: 'border-b-2 border-main text-main' },
+    },
+    {
+      active: true,
+      variants: 'solid',
+      className: { NavItemStyles: 'bg-main text-white hover:bg-main-hover' },
+    },
+  ],
+  defaultVariants: { variants: 'solid' },
 })
+
+export type NavPropsVariants = VariantProps<typeof navStyles>

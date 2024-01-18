@@ -2,18 +2,23 @@
 
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import { navStyles } from './Style'
+import { NavPropsVariants, navStyles } from './Style'
 import { usePathname } from 'next/navigation'
 
 type NavItemProps = {
   href: string
   children: ReactNode
   className?: string
-}
+} & NavPropsVariants
 
-export default function NavItem({ href, className, children }: NavItemProps) {
+export default function NavItem({
+  href,
+  className,
+  children,
+  variants,
+}: NavItemProps) {
   const active = usePathname() === href
-  const { NavItemStyles } = navStyles({ active })
+  const { NavItemStyles } = navStyles({ active, variants })
 
   return (
     <li>

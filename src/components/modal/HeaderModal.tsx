@@ -15,11 +15,11 @@ export default function HeaderForm({
   return (
     <div
       className={twMerge(
-        'flex items-center justify-between border-b p-4',
+        'flex items-center justify-between border-b p-4 text-xl font-semibold text-main',
         className,
       )}
     >
-      <h2 className="text-xl font-semibold text-main">{title}</h2>
+      <h2 className="">{title}</h2>
       <CgClose
         size={22}
         onClick={handleClose}
