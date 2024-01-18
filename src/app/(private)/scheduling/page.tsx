@@ -15,6 +15,7 @@ import CreateSchedulingModal from './components/CreateSchedulingModal'
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import DeleteSchedulingButton from './components/DeleteSchedulingButton'
+import RealizeScheduling from './components/RealizeScheduling'
 
 export default async function Scheduling({
   searchParams,
@@ -116,20 +117,17 @@ export default async function Scheduling({
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <Button asChild size="small">
-                  <Link
-                    href={`scheduling/${scheduling.id}/${scheduling.patientId}/patientData`}
-                  >
-                    Realizar atendimento
-                  </Link>
-                </Button>
+                <RealizeScheduling
+                  size="small"
+                  patientId={scheduling.patientId}
+                >
+                  Realizar consulta
+                </RealizeScheduling>
                 <Button variant="outline" size="small">
-                  Entrar em Contato
+                  Contato
                 </Button>
                 <Button asChild variant="outline" size="small">
-                  <Link href={`/patients/${scheduling.patientId}`}>
-                    Fixa do paciente
-                  </Link>
+                  <Link href={`/patients/${scheduling.patientId}`}>Fixa</Link>
                 </Button>
               </div>
             </AccordionTable.Content>
