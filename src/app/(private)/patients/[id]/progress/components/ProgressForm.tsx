@@ -15,6 +15,7 @@ import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { useRouter } from 'next/navigation'
+import { responseError } from '@/services/api/api'
 
 const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -27,11 +28,13 @@ export type setProgressData = z.infer<typeof setProgressSchema>
 
 type ProgressFormProps = {
   formData: Partial<ProgressResponse>
+  formAction(data: ProgressResponse): void | Promise<responseError | void>
   afterValidation?(): void
 } & FormProps
 
 export default function ProgressForm({
   formData,
+  formAction,
   afterValidation,
   ...formProps
 }: ProgressFormProps) {
@@ -58,7 +61,7 @@ export default function ProgressForm({
   } = setProgressForm
 
   const setProgress = async (data: setProgressData) => {
-    const res = await clientPatientService.setProgress({
+    const res = await formAction({
       id: id!,
       patientId: patientId!,
       ...data,

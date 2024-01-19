@@ -15,7 +15,7 @@ import CreateSchedulingModal from './components/CreateSchedulingModal'
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import DeleteSchedulingButton from './components/DeleteSchedulingButton'
-import RealizeScheduling from './components/RealizeScheduling'
+import RealizeScheduling from './(realizeScheduling)/components/RealizeScheduling'
 
 export default async function Scheduling({
   searchParams,

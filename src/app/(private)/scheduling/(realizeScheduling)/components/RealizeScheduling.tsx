@@ -1,13 +1,14 @@
 'use client'
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
-import ProgressForm from '../../patients/[id]/progress/components/ProgressForm'
+import ProgressForm from '../../../patients/[id]/progress/components/ProgressForm'
 import { ReactNode, useRef, useState } from 'react'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { useRouter } from 'next/navigation'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
+import ProgressFormScheduling from '../ProgressFormScheduling'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -20,7 +21,6 @@ export default function RealizeScheduling({
   patientId,
   ...props
 }: RealizeSchedulingProps) {
-  const router = useRouter()
   const modalRef = useRef<ModalHandles>(null)
   const [pageStage, setPageStage] = useState<'progress' | 'payment'>('progress')
 
@@ -29,29 +29,10 @@ export default function RealizeScheduling({
 
   const { NavItemStyles } = navStyles({ variants: 'underline' })
 
-  const afterSave = () => {
-    router.refresh()
-    handleClose()
-  }
-
   const form = () => {
     switch (pageStage) {
       case 'progress':
-        return (
-          <ProgressForm
-            formData={{ patientId }}
-            afterValidation={afterSave}
-            className="shadow-none"
-            btWrapperClassName="flex-row-reverse w-full"
-            buttons={
-              <>
-                <Button type="submit" color="green">
-                  Avançar
-                </Button>
-              </>
-            }
-          />
-        )
+        return <ProgressFormScheduling patientId={patientId} />
 
       case 'payment':
         return <div></div>

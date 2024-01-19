@@ -32,6 +32,10 @@ export default function ProgressModal({
     handleClose()
   }
 
+  const formAction = async (data: ProgressResponse) => {
+    return clientPatientService.setProgress(data)
+  }
+
   return (
     <>
       <Button {...props} onClick={handleOpen}>
@@ -43,6 +47,7 @@ export default function ProgressModal({
       >
         <HeaderForm title="Evolução" handleClose={handleClose} />
         <ProgressForm
+          formAction={formAction}
           formData={progressData}
           afterValidation={afterSave}
           className="shadow-none"
