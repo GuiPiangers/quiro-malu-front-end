@@ -6,7 +6,7 @@ import Button, { ButtonPropsVariants } from '@/components/Button'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
-import ProgressFormScheduling from '../ProgressFormScheduling'
+import ProgressFormScheduling from './ProgressFormScheduling'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -117,7 +117,7 @@ export default function RealizeScheduling({
   const form = () => {
     switch (pageStage) {
       case 'progress':
-        return <ProgressFormScheduling patientId={patientId} />
+        return <ProgressFormScheduling formData={{patientId}}/>
 
       case 'payment':
         return <div></div>

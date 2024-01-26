@@ -1,8 +1,8 @@
 'use client'
 
 import { Input } from '@/components/input'
-import Form, { FormProps } from '../../../../../../components/form/Form'
-import { sectionStyles } from '../../../../../../components/form/Styles'
+import Form, {FormProps} from '@/components/form/Form'
+import { sectionStyles } from '@/components/form/Styles' 
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -14,6 +14,7 @@ import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
+import Button from '@/components/Button'
 
 export const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -26,13 +27,11 @@ export type setProgressData = z.infer<typeof setProgressSchema>
 
 type ProgressFormProps = {
   formData: Partial<ProgressResponse>
-  formAction(data: ProgressResponse): void | Promise<responseError | void>
   afterValidation?(): void
 } & FormProps
 
 export default function ProgressForm({
   formData,
-  formAction,
   afterValidation,
   ...formProps
 }: ProgressFormProps) {
@@ -59,21 +58,12 @@ export default function ProgressForm({
   } = setProgressForm
 
   const setProgress = async (data: setProgressData) => {
-    const res = await formAction({
-      id: id!,
-      patientId: patientId!,
-      ...data,
-    })
-    if (Validate.isError(res)) {
-      handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
-    } else {
       reset({ ...data })
       if (afterValidation) afterValidation()
       handleMessage({
         title: 'Diagnóstico salvo com sucesso!',
         type: 'success',
       })
-    }
   }
 
   return (
@@ -158,6 +148,9 @@ export default function ProgressForm({
             <Input.Message error>{errors.procedures.message}</Input.Message>
           )}
         </Input.Root>
+        <Button variant='outline' size='small' className='h-8'>Clique aqui</Button>
+        <Button variant='outline' size='small' className='h-8'>Clique aqui</Button>
+        <Button variant='outline' size='small' className='h-8'>Clique aqui</Button>
       </section>
     </Form>
   )
