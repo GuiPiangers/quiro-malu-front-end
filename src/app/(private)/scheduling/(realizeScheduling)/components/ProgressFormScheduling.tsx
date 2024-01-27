@@ -15,13 +15,9 @@ import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import Button from '@/components/Button'
+import { setProgressSchema } from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
+import Link from 'next/link'
 
-export const setProgressSchema = z.object({
-  actualProblem: z.string(),
-  procedures: z.string(),
-  service: z.string().min(1, { message: 'Campo obrigatório' }),
-  date: z.string().min(1, { message: 'Campo obrigatório' }),
-})
 
 export type setProgressData = z.infer<typeof setProgressSchema>
 
@@ -60,15 +56,12 @@ export default function ProgressForm({
   const setProgress = async (data: setProgressData) => {
       reset({ ...data })
       if (afterValidation) afterValidation()
-      handleMessage({
-        title: 'Diagnóstico salvo com sucesso!',
-        type: 'success',
-      })
+ 
   }
 
   return (
-    <Form onSubmit={handleSubmit(setProgress)} {...formProps}>
-      <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
+    <Form onSubmit={handleSubmit(setProgress)} {...formProps} className='shadow-none'>
+      <section aria-label="Diagnóstico do paciente" className={sectionStyles({class: 'overflow-auto '})}>
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data
@@ -148,9 +141,7 @@ export default function ProgressForm({
             <Input.Message error>{errors.procedures.message}</Input.Message>
           )}
         </Input.Root>
-        <Button variant='outline' size='small' className='h-8'>Clique aqui</Button>
-        <Button variant='outline' size='small' className='h-8'>Clique aqui</Button>
-        <Button variant='outline' size='small' className='h-8'>Clique aqui</Button>
+
       </section>
     </Form>
   )

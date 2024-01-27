@@ -70,7 +70,7 @@ export default function ProgressForm({
       reset({ ...data })
       if (afterValidation) afterValidation()
       handleMessage({
-        title: 'Diagnóstico salvo com sucesso!',
+        title: 'Evolução salva com sucesso!',
         type: 'success',
       })
     }
@@ -78,7 +78,7 @@ export default function ProgressForm({
 
   return (
     <Form onSubmit={handleSubmit(setProgress)} {...formProps}>
-      <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
+      <section aria-label="Evolução do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data
