@@ -9,14 +9,12 @@ import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import DateTime from '@/utils/Date'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { clientService } from '@/services/service/clientService'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
-import { responseError } from '@/services/api/api'
 import Button from '@/components/Button'
 import { setProgressSchema } from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
-import Link from 'next/link'
 
 
 export type setProgressData = z.infer<typeof setProgressSchema>
@@ -24,21 +22,22 @@ export type setProgressData = z.infer<typeof setProgressSchema>
 type ProgressFormProps = {
   formData: Partial<ProgressResponse>
   afterValidation?(): void
+  handleFormState: Dispatch<SetStateAction<{
+    progress: {};
+    payment: {};
+}>>
 } & FormProps
 
 export default function ProgressForm({
   formData,
+  handleFormState,
   afterValidation,
   ...formProps
 }: ProgressFormProps) {
   const { patientId, actualProblem, date, procedures, service, id } = formData
   const [services, setServices] = useState<ServiceResponse[]>()
 
-  useEffect(() => {
-    clientService
-      .list({})
-      .then((res) => Validate.isOk(res) && setServices(res.services))
-  }, [])
+
 
   const { handleMessage } = useSnackbarContext()
   const setProgressForm = useForm<ProgressResponse>({
@@ -55,12 +54,30 @@ export default function ProgressForm({
 
   const setProgress = async (data: setProgressData) => {
       reset({ ...data })
+      handleFormState(value => ({...value, progress: data, }))
       if (afterValidation) afterValidation()
  
   }
+  useEffect(() => {
+    clientService
+      .list({})
+      .then((res) => Validate.isOk(res) && setServices(res.services))
+    
+    setValue('service', formData.service || '')
+  }, [])
 
   return (
-    <Form onSubmit={handleSubmit(setProgress)} {...formProps} className='shadow-none'>
+    <Form 
+      {...formProps} 
+      onSubmit={handleSubmit(setProgress)} 
+      className='shadow-none' 
+      btWrapperClassName='flex-row-reverse justify-between'
+      buttons={
+        <>
+          <Button color='green'>Avançar</Button>
+        </>
+      }
+    >
       <section aria-label="Diagnóstico do paciente" className={sectionStyles({class: 'overflow-auto '})}>
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>

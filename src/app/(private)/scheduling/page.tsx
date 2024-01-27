@@ -119,6 +119,8 @@ export default async function Scheduling({
               <div className="flex flex-col gap-2">
                 <RealizeScheduling
                   size="small"
+                  date={scheduling.date}
+                  service={scheduling.service }
                   patientId={scheduling.patientId}
                 >
                   Realizar consulta
