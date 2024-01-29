@@ -7,20 +7,23 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
-import { ProgressResponse } from '@/services/patient/PatientService'
-import DateTime from '@/utils/Date'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { clientService } from '@/services/service/clientService'
-import { ServiceResponse } from '@/services/service/Service'
-import { Validate } from '@/services/api/Validate'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 import Button from '@/components/Button'
-import { setProgressSchema } from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
+
+export const setPaymentSchema = z.object({
+  price: z.number(),
+  PaymentMethod: z.string(),
+})
+
+type PaymentResponse = {
+  price: number,
+  paymentMethod?: string
+}
+export type setPaymentData = z.infer<typeof setPaymentSchema>
 
 
-export type setProgressData = z.infer<typeof setProgressSchema>
-
-type ProgressFormProps = {
-  formData: Partial<ProgressResponse>
+type PaymentFormProps = {
+  formData: Partial<PaymentResponse>
   afterValidation?(): void
   handleFormState: Dispatch<SetStateAction<{
     progress: {};
@@ -28,20 +31,17 @@ type ProgressFormProps = {
 }>>
 } & FormProps
 
-export default function ProgressForm({
+export default function PaymentForm({
   formData,
   handleFormState,
   afterValidation,
   ...formProps
-}: ProgressFormProps) {
-  const { patientId, actualProblem, date, procedures, service, id } = formData
-  const [services, setServices] = useState<ServiceResponse[]>()
-
-
+}: PaymentFormProps) {
+  const { price, paymentMethod } = formData
 
   const { handleMessage } = useSnackbarContext()
-  const setProgressForm = useForm<ProgressResponse>({
-    resolver: zodResolver(setProgressSchema),
+  const setPaymentForm = useForm<PaymentResponse>({
+    resolver: zodResolver(setPaymentSchema),
   })
 
   const {
@@ -50,112 +50,70 @@ export default function ProgressForm({
     register,
     reset,
     setValue,
-  } = setProgressForm
+  } = setPaymentForm
 
-  const setProgress = async (data: setProgressData) => {
+  const setPayment = async (data: PaymentResponse) => {
       reset({ ...data })
-      handleFormState(value => ({...value, progress: data, }))
+      handleFormState(value => ({...value, payment: data, }))
       if (afterValidation) afterValidation()
  
   }
   useEffect(() => {
-    clientService
-      .list({})
-      .then((res) => Validate.isOk(res) && setServices(res.services))
-    
-    setValue('service', formData.service || '')
+    setValue('price', formData.price || 0)
   }, [])
 
   return (
     <Form 
       {...formProps} 
-      onSubmit={handleSubmit(setProgress)} 
+      onSubmit={handleSubmit(setPayment)} 
       className='shadow-none' 
       btWrapperClassName='flex-row-reverse justify-between'
       buttons={
         <>
-          <Button color='green'>Avançar</Button>
+          <Button color='green'>Finalizar</Button>
+          <Button color='black' variant='outline' type='button'>Voltar</Button>
         </>
       }
     >
       <section aria-label="Diagnóstico do paciente" className={sectionStyles({class: 'overflow-auto '})}>
-        <Input.Root>
-          <Input.Label required notSave={dirtyFields.date}>
-            Data
-          </Input.Label>
-          <Input.Field
-            autoComplete="off"
-            disabled={isSubmitting}
-            type="datetime-local"
-            defaultValue={DateTime.getIsoDateTime(date || new Date())}
-            error={!!errors.date}
-            {...register('date')}
-            notSave={dirtyFields.date}
-          />
-          {errors.date && (
-            <Input.Message error>{errors.date.message}</Input.Message>
-          )}
-        </Input.Root>
-
-        <Input.Root>
-          <Input.Label required notSave={dirtyFields.service}>
-            Serviço
-          </Input.Label>
-          <Input.Select
-            {...register('service')}
-            disabled={isSubmitting}
-            defaultValue={service}
-            error={!!errors.service}
-            slotProps={{ popper: { className: 'z-40' } }}
-            onChange={(_, newValue) => setValue('service', newValue as string)}
-          >
-            {services?.map((service) => (
-              <Input.Option key={service.id} value={service.name}>
-                {service.name}
-              </Input.Option>
-            ))}
-          </Input.Select>
-
-          {errors.service && (
-            <Input.Message error>{errors.service.message}</Input.Message>
-          )}
-        </Input.Root>
-
-        <Input.Root>
-          <Input.Label notSave={dirtyFields.actualProblem}>
+      <Input.Root>
+          <Input.Label notSave={dirtyFields.price}>
             Problema atual
           </Input.Label>
           <Input.Field
             autoComplete="off"
-            multiline
-            minRows={4}
             disabled={isSubmitting}
-            defaultValue={actualProblem}
-            error={!!errors.actualProblem}
-            {...register('actualProblem')}
-            notSave={dirtyFields.actualProblem}
+            defaultValue={price}
+            error={!!errors.price}
+            {...register('price')}
+            notSave={dirtyFields.price}
           />
-          {errors.actualProblem && (
-            <Input.Message error>{errors.actualProblem.message}</Input.Message>
+          {errors.price && (
+            <Input.Message error>{errors.price.message}</Input.Message>
           )}
         </Input.Root>
 
         <Input.Root>
-          <Input.Label notSave={dirtyFields.procedures}>
-            Procedimentos
+          <Input.Label notSave={dirtyFields.paymentMethod}>
+            Serviço
           </Input.Label>
-          <Input.Field
-            autoComplete="off"
-            multiline
-            minRows={4}
+          <Input.Select
+            {...register('paymentMethod')}
             disabled={isSubmitting}
-            defaultValue={procedures}
-            error={!!errors.procedures}
-            {...register('procedures')}
-            notSave={dirtyFields.procedures}
-          />
-          {errors.procedures && (
-            <Input.Message error>{errors.procedures.message}</Input.Message>
+            defaultValue={paymentMethod}
+            error={!!errors.paymentMethod}
+            slotProps={{ popper: { className: 'z-40' } }}
+            onChange={(_, newValue) => setValue('paymentMethod', newValue as string)}
+          >
+              <Input.Option value='Dinheiro'>Dinheiro</Input.Option>
+
+              <Input.Option value='Pix'>Pix</Input.Option>
+
+              <Input.Option value='Cartão'>Cartão</Input.Option>
+          </Input.Select>
+
+          {errors.paymentMethod && (
+            <Input.Message error>{errors.paymentMethod.message}</Input.Message>
           )}
         </Input.Root>
 

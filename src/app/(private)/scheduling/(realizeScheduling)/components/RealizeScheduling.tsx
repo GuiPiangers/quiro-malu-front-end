@@ -8,6 +8,7 @@ import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
 import ProgressFormScheduling from './ProgressFormScheduling'
 import Link from 'next/link'
+import PaymentForm from './PaymentForm'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -48,7 +49,7 @@ export default function RealizeScheduling({
         />
 
       case 'payment':
-        return <div></div>
+        return <PaymentForm handleFormState={setFormState} formData={{price: 120}}></PaymentForm>
       default:
         break
     }
