@@ -20,11 +20,11 @@ import { setProgressSchema } from '@/app/(private)/patients/[id]/progress/compon
 export type setProgressData = z.infer<typeof setProgressSchema>
 
 type ProgressFormProps = {
-  formData: Partial<ProgressResponse>
+  formData: ProgressResponse
   afterValidation?(): void
   handleFormState: Dispatch<SetStateAction<{
     progress: {};
-    payment: {};
+    payment: ProgressResponse;
 }>>
 } & FormProps
 

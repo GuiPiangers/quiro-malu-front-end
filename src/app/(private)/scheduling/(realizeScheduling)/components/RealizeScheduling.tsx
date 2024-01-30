@@ -9,6 +9,7 @@ import { navStyles } from '@/components/navigation/Style'
 import ProgressFormScheduling from './ProgressFormScheduling'
 import Link from 'next/link'
 import PaymentForm from './PaymentForm'
+import { ProgressResponse } from '@/services/patient/PatientService'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -29,8 +30,18 @@ export default function RealizeScheduling({
 }: RealizeSchedulingProps) {
   const modalRef = useRef<ModalHandles>(null)
   const [pageStage, setPageStage] = useState<'progress' | 'payment'>('progress')
-  const [formState, setFormState] = useState({
-    progress: {}, payment: {}
+  const [formState, setFormState] = useState<{
+    progress: ProgressResponse, 
+    payment: {}}
+  >({
+    progress: {
+      id: '',
+      patientId: '',
+      service: '',
+      actualProblem: '',
+      procedures: '',
+      date: ''
+    }, payment: {}
   })
 
   const handleOpen = () => modalRef.current?.openModal()
@@ -49,7 +60,7 @@ export default function RealizeScheduling({
         />
 
       case 'payment':
-        return <PaymentForm handleFormState={setFormState} formData={{price: 120}}></PaymentForm>
+        return <PaymentForm handleFormState={setFormState} formData={{price: 120}} formState={}></PaymentForm>
       default:
         break
     }

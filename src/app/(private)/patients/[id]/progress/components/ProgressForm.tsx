@@ -54,7 +54,6 @@ export default function ProgressForm({
     handleSubmit,
     formState: { isSubmitting, errors, dirtyFields },
     register,
-    reset,
     setValue,
   } = setProgressForm
 
@@ -67,7 +66,6 @@ export default function ProgressForm({
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
-      reset({ ...data })
       if (afterValidation) afterValidation()
       handleMessage({
         title: 'Evolução salva com sucesso!',

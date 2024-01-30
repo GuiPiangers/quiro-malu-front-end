@@ -9,6 +9,8 @@ import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import Button from '@/components/Button'
+import { clientPatientService } from '@/services/patient/clientPatientService'
+import { ProgressResponse } from '@/services/patient/PatientService'
 
 export const setPaymentSchema = z.object({
   price: z.number(),
@@ -24,6 +26,10 @@ export type setPaymentData = z.infer<typeof setPaymentSchema>
 
 type PaymentFormProps = {
   formData: Partial<PaymentResponse>
+  formState: {
+    progress: ProgressResponse, 
+    payment: {}
+  }
   afterValidation?(): void
   handleFormState: Dispatch<SetStateAction<{
     progress: {};
@@ -33,6 +39,7 @@ type PaymentFormProps = {
 
 export default function PaymentForm({
   formData,
+  formState,
   handleFormState,
   afterValidation,
   ...formProps
@@ -53,7 +60,7 @@ export default function PaymentForm({
   } = setPaymentForm
 
   const setPayment = async (data: PaymentResponse) => {
-      reset({ ...data })
+    const res = await clientPatientService.setProgress(formState.progress)
       handleFormState(value => ({...value, payment: data, }))
       if (afterValidation) afterValidation()
  
