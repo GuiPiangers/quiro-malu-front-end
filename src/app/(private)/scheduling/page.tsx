@@ -1,7 +1,6 @@
 import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import { AccordionTable } from '@/components/accordionTable'
-import Calendar from '@/components/calendar/Calendar'
 import { Table } from '@/components/table'
 import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
@@ -120,7 +119,7 @@ export default async function Scheduling({
                 <RealizeScheduling
                   size="small"
                   date={scheduling.date}
-                  service={scheduling.service }
+                  service={scheduling.service}
                   patientId={scheduling.patientId}
                 >
                   Realizar consulta

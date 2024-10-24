@@ -181,15 +181,11 @@ export default function SchedulingForm({
   }, [patientId, service, setService, setValue])
 
   useEffect(() => {
-    clientPatientService
-      .list({
-        search: { name: patientSearch },
-      })
-      .then((data) => {
-        Validate.isOk(data) && setPatients(data)
-      })
+    clientPatientService.list({}).then((data) => {
+      Validate.isOk(data) && setPatients(data)
+    })
     setPatientPage(1)
-  }, [patientSearch])
+  }, [])
 
   return (
     <Form onSubmit={handleSubmit(setScheduling)} {...formProps}>

@@ -19,8 +19,6 @@ type RealizeSchedulingProps = {
   service: string
 } & ButtonPropsVariants
 
-
-
 export default function RealizeScheduling({
   children,
   patientId,
@@ -31,17 +29,18 @@ export default function RealizeScheduling({
   const modalRef = useRef<ModalHandles>(null)
   const [pageStage, setPageStage] = useState<'progress' | 'payment'>('progress')
   const [formState, setFormState] = useState<{
-    progress: ProgressResponse, 
-    payment: {}}
-  >({
+    progress: ProgressResponse
+    payment: object
+  }>({
     progress: {
       id: '',
       patientId: '',
       service: '',
       actualProblem: '',
       procedures: '',
-      date: ''
-    }, payment: {}
+      date: '',
+    },
+    payment: {},
   })
 
   const handleOpen = () => modalRef.current?.openModal()
@@ -50,35 +49,22 @@ export default function RealizeScheduling({
 
   const { NavItemStyles } = navStyles({ variants: 'underline' })
 
-  const form = () => {
-    switch (pageStage) {
-      case 'progress':
-        return <ProgressFormScheduling
-          formData={{patientId, date, service}} 
-          handleFormState={setFormState}
-          afterValidation={()=>{setPageStage('payment')}}
-        />
-
-      case 'payment':
-        return <PaymentForm handleFormState={setFormState} formData={{price: 120}} formState={}></PaymentForm>
-      default:
-        break
-    }
-  }
-
   return (
     <>
       <Button {...props} onClick={handleOpen}>
         {children}
       </Button>
-      <Modal ref={modalRef} className="m-5 w-full max-w-screen-sm p-0 max-h-screen overflow-auto">
+      <Modal
+        ref={modalRef}
+        className="m-5 max-h-screen w-full max-w-screen-sm overflow-auto p-0"
+      >
         <HeaderForm
           title="Realizar Consulta"
           className="text-2xl"
           handleClose={handleClose}
         />
-        <Nav.root className="m-auto max-w-screen-lg justify-between items-center">
-          <div className='flex'>
+        <Nav.root className="m-auto max-w-screen-lg items-center justify-between">
+          <div className="flex">
             <button
               onClick={() => setPageStage('progress')}
               className={NavItemStyles({ active: pageStage === 'progress' })}
@@ -92,17 +78,20 @@ export default function RealizeScheduling({
               Pagamento
             </button>
           </div>
-          <div className=' flex gap-2 pr-4'>
-              <Button asChild variant='outline' size='small'>
-                <Link href={'/'} className='text-sm'>Fixa do paciente</Link>
-              </Button>
-              <Button asChild variant='outline' size='small'>
-              <Link href={'/'} className='text-sm'>Anamnese</Link>
-              </Button>
-            
-            </div>
+          <div className=" flex gap-2 pr-4">
+            <Button asChild variant="outline" size="small">
+              <Link href={'/'} className="text-sm">
+                Fixa do paciente
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="small">
+              <Link href={'/'} className="text-sm">
+                Anamnese
+              </Link>
+            </Button>
+          </div>
         </Nav.root>
-        {form()}
+        {/*  {form()} */}
       </Modal>
     </>
   )
