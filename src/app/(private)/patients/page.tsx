@@ -8,6 +8,7 @@ import DateTime from '@/utils/Date'
 import NoDataFound from '@/components/NoDataFound'
 import Pagination from '@/components/pagination/Pagination'
 import { Validate } from '@/services/api/Validate'
+import CreateSchedulingModal from '../scheduling/components/SchedulingModal'
 
 export default async function Patients({
   searchParams,
@@ -55,9 +56,13 @@ export default async function Patients({
                 <Button variant="outline" size="small">
                   Contato
                 </Button>
-                <Button variant="outline" size="small">
+                <CreateSchedulingModal
+                  color="primary"
+                  variant="outline"
+                  size="small"
+                >
                   Agendar
-                </Button>
+                </CreateSchedulingModal>
               </div>
             </AccordionTable.Content>
           </AccordionTable.Item>

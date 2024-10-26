@@ -47,7 +47,10 @@ export default function CreateSchedulingModal({
         {children}
       </Button>
       <Modal ref={modalRef} className="m-4 w-full max-w-md p-0">
-        <HeaderForm handleClose={closeModal} title="Novo serviço" />
+        <HeaderForm
+          handleClose={closeModal}
+          title={formData?.id ? 'Editar agendamento' : 'Novo agendamento'}
+        />
         <SchedulingForm
           formData={{ status: 'Agendado', ...formData }}
           className="shadow-none"

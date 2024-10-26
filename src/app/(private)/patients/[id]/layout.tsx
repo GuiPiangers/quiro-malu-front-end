@@ -6,7 +6,7 @@ import DateTime from '@/utils/Date'
 import { ReactNode } from 'react'
 import { DeletePatientModal } from '../components/DeletePatient'
 import { Validate } from '@/services/api/Validate'
-import CreateSchedulingModal from '../../scheduling/components/CreateSchedulingModal'
+import CreateSchedulingModal from '../../scheduling/components/SchedulingModal'
 
 type LayoutProps = {
   children: ReactNode
