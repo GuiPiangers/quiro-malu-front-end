@@ -6,6 +6,7 @@ import DateTime from '@/utils/Date'
 import { ReactNode } from 'react'
 import { DeletePatientModal } from '../components/DeletePatient'
 import { Validate } from '@/services/api/Validate'
+import CreateSchedulingModal from '../../scheduling/components/CreateSchedulingModal'
 
 type LayoutProps = {
   children: ReactNode
@@ -44,9 +45,13 @@ export default async function Layout({ children, params }: LayoutProps) {
               <Button variant="outline" size="small">
                 Contato
               </Button>
-              <Button variant="outline" size="small">
+              <CreateSchedulingModal
+                color="primary"
+                variant="outline"
+                size="small"
+              >
                 Agendar horário
-              </Button>
+              </CreateSchedulingModal>
               <DeletePatientModal id={patientData?.id || ''} />
             </div>
           </div>
