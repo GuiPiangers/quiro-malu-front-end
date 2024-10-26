@@ -54,11 +54,10 @@ export default function DiagnosticForm({
     if (Validate.isError(res)) {
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
-      reset({ ...data })
+      reset({ ...data }, { keepValues: true })
       if (afterValidate) {
         afterValidate()
       } else {
-        router.refresh()
         handleOpen({ title: 'Diagnóstico salvo com sucesso!', type: 'success' })
       }
     }

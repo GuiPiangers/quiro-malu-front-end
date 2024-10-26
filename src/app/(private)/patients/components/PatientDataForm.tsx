@@ -138,7 +138,7 @@ export default function PatientDataForm({
   } = createPatientForm
 
   const resetForm = (data: CreatePatientData) => {
-    reset({ ...data })
+    reset({ ...data }, { keepValues: true })
     setCepNotSave(false)
     setCpfNotSave(false)
     setPhoneNotSave(false)
@@ -288,7 +288,7 @@ export default function PatientDataForm({
             disabled={isSubmitting}
             defaultValue={data?.location?.cep}
             notSave={cepNotSave}
-            onChange={(e) => setCepNotSave(true)}
+            onChange={() => setCepNotSave(true)}
             inputMode="numeric"
           />
           {errors.location?.cep && (

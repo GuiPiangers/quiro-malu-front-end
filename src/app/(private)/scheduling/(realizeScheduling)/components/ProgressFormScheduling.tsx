@@ -52,7 +52,7 @@ export default function ProgressForm({
   } = setProgressForm
 
   const setProgress = async (data: setProgressData) => {
-    reset({ ...data })
+    reset({ ...data }, { keepValues: true })
     handleFormState((value) => ({ ...value, progress: data }))
     if (afterValidation) afterValidation()
   }

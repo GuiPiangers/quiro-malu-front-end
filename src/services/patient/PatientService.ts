@@ -38,9 +38,9 @@ export type AnamnesisResponse = {
   familiarHistory?: string
   activities?: string
   smoke?: string | null
-  useMedicine?: string | null
+  useMedicine?: boolean | null
   medicines?: string
-  underwentSurgery?: string | null
+  underwentSurgery?: boolean | null
   surgeries?: string
 }
 export type DiagnosticResponse = {

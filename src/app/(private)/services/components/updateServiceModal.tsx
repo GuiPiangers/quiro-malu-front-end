@@ -43,7 +43,6 @@ export default function UpdateServiceModal({
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       closeModal()
-      router.refresh()
       handleMessage({ title: 'Serviço deletado com sucesso!', type: 'success' })
     }
   }

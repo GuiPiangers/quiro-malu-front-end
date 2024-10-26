@@ -20,7 +20,6 @@ export default function UpdatePatientForm({
   const { handleMessage } = useSnackbarContext()
 
   const afterValidate = () => {
-    router.refresh()
     handleMessage({
       title: 'Paciente salvo com sucesso!',
       type: 'success',

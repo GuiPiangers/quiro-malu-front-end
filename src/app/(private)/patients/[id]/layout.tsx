@@ -26,9 +26,12 @@ export default async function Layout({ children, params }: LayoutProps) {
           <div className="flex justify-between">
             <div className="flex flex-col gap-1">
               <span className="font-semibold">{patientData?.name}</span>
-              <span className="text-xs">{`Registrado em ${
-                patientData && DateTime.getLocaleDate(patientData.createAt!)
-              }`}</span>
+              <span className="text-xs">
+                {`Registrado em ${
+                  patientData?.createAt &&
+                  DateTime.getLocaleDate(patientData.createAt)
+                }`}
+              </span>
               <span className="text-xs">{patientData?.phone}</span>
               {patientData?.dateOfBirth && (
                 <span className="text-xs">

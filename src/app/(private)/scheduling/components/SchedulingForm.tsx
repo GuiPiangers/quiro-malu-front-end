@@ -137,7 +137,7 @@ export default function SchedulingForm({
           type: 'error',
         })
     } else {
-      reset({ ...data })
+      reset({ ...data }, { keepValues: true })
       if (afterValidation) afterValidation()
       handleMessage({
         title: 'Serviço salvo com sucesso!',

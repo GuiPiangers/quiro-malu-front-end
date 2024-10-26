@@ -65,7 +65,7 @@ export default function ServiceForm({
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
-      reset({ ...data })
+      reset({ ...data }, { keepValues: true })
       if (afterValidation) afterValidation()
       handleMessage({
         title: 'Serviço salvo com sucesso!',

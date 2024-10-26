@@ -56,7 +56,6 @@ export default function PaymentForm({
     handleSubmit,
     formState: { isSubmitting, errors, dirtyFields },
     register,
-    reset,
     setValue,
   } = setPaymentForm
 

@@ -8,7 +8,7 @@ import { AnamnesisResponse } from '@/services/patient/PatientService'
 import { ReactNode, useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { set, useForm } from 'react-hook-form'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
@@ -23,8 +23,20 @@ const setAnamnesisSchema = z.object({
   medicines: z.string().optional(),
   smoke: z.string().optional().nullable(),
   surgeries: z.string().optional(),
-  underwentSurgery: z.string().optional().nullable(),
-  useMedicine: z.string().optional().nullable(),
+  underwentSurgery: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((value) => {
+      return value === 'yes' ? true : value === 'no' ? false : null
+    }),
+  useMedicine: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((value) => {
+      return value === 'yes' ? true : value === 'no' ? false : null
+    }),
 })
 
 export type setAnamnesisData = z.infer<typeof setAnamnesisSchema>
@@ -55,9 +67,8 @@ export default function AnamnesisForm({
   afterValidate,
 }: AnamnesisFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
-  const router = useRouter()
 
-  const setAnamnesisForm = useForm<AnamnesisResponse>({
+  const setAnamnesisForm = useForm<setAnamnesisData>({
     resolver: zodResolver(setAnamnesisSchema),
   })
 
@@ -72,23 +83,18 @@ export default function AnamnesisForm({
     if (Validate.isError(res)) {
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
-      reset({ ...data })
-
       if (afterValidate) {
         afterValidate()
       } else {
-        router.refresh()
+        reset(data, { keepValues: true })
         handleOpen({ title: 'Anamnese salva com sucesso!', type: 'success' })
       }
     }
   }
 
-  const [underwentSurgeryState, setUnderwentSurgeryState] = useState(
-    underwentSurgery === 'yes',
-  )
-  const [useMedicineState, setUseMedicineState] = useState(
-    useMedicine === 'yes',
-  )
+  const [underwentSurgeryState, setUnderwentSurgeryState] =
+    useState(underwentSurgery)
+  const [useMedicineState, setUseMedicineState] = useState(useMedicine)
 
   return (
     <Form
@@ -222,7 +228,7 @@ export default function AnamnesisForm({
               value={'yes'}
               disabled={isSubmitting}
               {...register('useMedicine')}
-              defaultChecked={useMedicine === 'yes'}
+              defaultChecked={useMedicine === true}
               onClick={() => setUseMedicineState(true)}
             />
             <RadioButton
@@ -230,7 +236,7 @@ export default function AnamnesisForm({
               value={'no'}
               disabled={isSubmitting}
               {...register('useMedicine')}
-              defaultChecked={useMedicine === 'no'}
+              defaultChecked={!useMedicine}
               onClick={() => setUseMedicineState(false)}
             />
           </div>
@@ -266,7 +272,7 @@ export default function AnamnesisForm({
               value={'yes'}
               disabled={isSubmitting}
               {...register('underwentSurgery')}
-              defaultChecked={underwentSurgery === 'yes'}
+              defaultChecked={underwentSurgery === true}
               onClick={() => setUnderwentSurgeryState(true)}
             />
             <RadioButton
@@ -274,7 +280,7 @@ export default function AnamnesisForm({
               value={'no'}
               disabled={isSubmitting}
               {...register('underwentSurgery')}
-              defaultChecked={underwentSurgery === 'no'}
+              defaultChecked={!underwentSurgery}
               onClick={() => setUnderwentSurgeryState(false)}
             />
           </div>

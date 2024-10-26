@@ -39,12 +39,6 @@ export default function ProgressForm({
   const { patientId, actualProblem, date, procedures, service, id } = formData
   const [services, setServices] = useState<ServiceResponse[]>()
 
-  useEffect(() => {
-    clientService
-      .list({})
-      .then((res) => Validate.isOk(res) && setServices(res.services))
-  }, [])
-
   const { handleMessage } = useSnackbarContext()
   const setProgressForm = useForm<ProgressResponse>({
     resolver: zodResolver(setProgressSchema),
@@ -56,6 +50,16 @@ export default function ProgressForm({
     register,
     setValue,
   } = setProgressForm
+
+  useEffect(() => {
+    clientService
+      .list({})
+      .then((res) => Validate.isOk(res) && setServices(res.services))
+  }, [])
+
+  useEffect(() => {
+    if (service) setValue('service', service)
+  }, [service, setValue])
 
   const setProgress = async (data: setProgressData) => {
     const res = await formAction({
