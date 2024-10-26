@@ -1,3 +1,5 @@
+import { validateRegex } from './validateRegex'
+
 export default class Cpf {
   private static _pattern = '???.???.???-??'
 
@@ -13,5 +15,12 @@ export default class Cpf {
 
   static unformat(valor: string): string {
     return valor.replace(/[^0-9]+/g, '')
+  }
+
+  static validate(value: string): boolean {
+    return (
+      value.length > 0 &&
+      validateRegex(value, /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/)
+    )
   }
 }

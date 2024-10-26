@@ -13,16 +13,13 @@ import { ReactNode, useState } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
+import { validateRegex } from '@/utils/validateRegex'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
     if (value.length < 3) return false
     if (value.length > 120) return false
   }
-  return true
-}
-const validateRegex = (value: string, pattern: RegExp) => {
-  if (value.length > 0) return pattern.test(value)
   return true
 }
 
@@ -54,17 +51,28 @@ export const createPatientSchema = z.object({
     .string()
     .optional()
     .refine(
-      (value) =>
-        value && validateRegex(value, /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/),
+      (value) => {
+        if (value) return Cpf.validate(value)
+        return true
+      },
       { message: 'CPF fora do padrão esperado' },
     ),
   location: z
     .object({
       cep: z
         .string()
-        .refine((value) => validateRegex(value, /^[0-9]{5}-[0-9]{3}$/), {
-          message: 'CEP fora do padrão esperado',
-        })
+        .refine(
+          (value) => {
+            if (value)
+              return (
+                value.length > 0 && validateRegex(value, /^[0-9]{5}-[0-9]{3}$/)
+              )
+            return true
+          },
+          {
+            message: 'CEP fora do padrão esperado',
+          },
+        )
         .optional(),
       state: z
         .string()
