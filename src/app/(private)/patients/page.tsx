@@ -60,6 +60,11 @@ export default async function Patients({
                   color="primary"
                   variant="outline"
                   size="small"
+                  formData={{
+                    patient: patient.name,
+                    patientId: patient.id,
+                    patientPhone: patient.phone,
+                  }}
                 >
                   Agendar
                 </CreateSchedulingModal>

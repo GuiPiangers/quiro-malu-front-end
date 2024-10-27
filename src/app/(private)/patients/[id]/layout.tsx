@@ -49,6 +49,11 @@ export default async function Layout({ children, params }: LayoutProps) {
                 color="primary"
                 variant="outline"
                 size="small"
+                formData={{
+                  patient: patientData?.name,
+                  patientId: patientData?.id,
+                  patientPhone: patientData?.phone,
+                }}
               >
                 Agendar horário
               </CreateSchedulingModal>

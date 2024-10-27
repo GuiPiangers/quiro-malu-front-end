@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 
-export default function CreateSchedulingModal({
+export default function SchedulingModal({
   color,
   children,
   formData,
