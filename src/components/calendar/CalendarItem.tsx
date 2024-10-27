@@ -87,6 +87,7 @@ export default function CalendarItem({
         itemRef.current?.focus()
     }
   }, [date, focusDate])
+
   return (
     <button
       ref={itemRef}

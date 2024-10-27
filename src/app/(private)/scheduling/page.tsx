@@ -10,7 +10,7 @@ import { Time } from '@/utils/Time'
 import Link from 'next/link'
 import RouteReplace from '../../../components/RouteReplace'
 import { RxCaretDown } from 'react-icons/rx'
-import CreateSchedulingModal from './components/SchedulingModal'
+import SchedulingModal from './components/SchedulingModal'
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import DeleteSchedulingButton from './components/DeleteSchedulingButton'
@@ -32,13 +32,6 @@ export default async function Scheduling({
   )
 
   const schedulesResp = await schedulingService.list({ date })
-  const qdtSchedules = await schedulingService
-    .getQtdSchedulesByDay({
-      month: newDate.getMonth() + 1,
-      year: newDate.getFullYear(),
-    })
-    .then((res) => (Validate.isOk(res) ? res : undefined))
-
   const table = new GenerateWorkHours({
     schedulingDuration: 30,
     workSchedules: [
@@ -100,7 +93,7 @@ export default async function Scheduling({
                   <strong>Duração:</strong> {durationString}
                 </p>
                 <div className="flex gap-2 pt-2 ">
-                  <CreateSchedulingModal
+                  <SchedulingModal
                     variant="outline"
                     size="small"
                     color="blue"
@@ -111,7 +104,7 @@ export default async function Scheduling({
                     }}
                   >
                     Editar
-                  </CreateSchedulingModal>
+                  </SchedulingModal>
                   <DeleteSchedulingButton id={scheduling.id!} />
                 </div>
               </div>
@@ -136,7 +129,7 @@ export default async function Scheduling({
         )
       }
       return (
-        <CreateSchedulingModal
+        <SchedulingModal
           key={hour}
           className="contents text-black"
           formData={{ date: `${date}T${hour}` }}
@@ -147,13 +140,13 @@ export default async function Scheduling({
               Novo Agendamento
             </Table.Cell>
           </Table.Row>
-        </CreateSchedulingModal>
+        </SchedulingModal>
       )
     })
   }
 
   return (
-    <div className="grid w-full max-w-screen-xl grid-cols-[1fr_320px] gap-4">
+    <div className="flex w-full max-w-screen-xl flex-col-reverse gap-4 md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px]">
       <Box className="">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex gap-1">
@@ -174,7 +167,7 @@ export default async function Scheduling({
             </RouteReplace>
           </div>
 
-          <CreateSchedulingModal>Agendar</CreateSchedulingModal>
+          <SchedulingModal>Agendar</SchedulingModal>
         </div>
         <AccordionTable.Root>{generateTable()}</AccordionTable.Root>
       </Box>

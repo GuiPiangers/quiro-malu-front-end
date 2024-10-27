@@ -37,11 +37,12 @@ export default function UpdateServiceModal({
     return await clientService.update(data)
   }
   const deleteService = async () => {
-    const res = await clientService.delete(service.id!)
+    const res = service.id ? await clientService.delete(service.id) : undefined
 
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
+      router.refresh()
       closeModal()
       handleMessage({ title: 'Serviço deletado com sucesso!', type: 'success' })
     }
