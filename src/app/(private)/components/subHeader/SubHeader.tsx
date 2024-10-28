@@ -8,7 +8,7 @@ const routes = [
   { name: 'Agenda', path: '/scheduling' },
   { name: 'Pacientes', path: '/patients' },
   { name: 'Novo Paciente', path: '/patients/create' },
-  { name: 'Fixa do paciente', path: '/patients/*' },
+  { name: 'Ficha do paciente', path: '/patients/*' },
   { name: 'Evolução', path: '/patients/*/progress' },
   { name: 'Anamnese', path: '/patients/*/anamnesis' },
   { name: 'Exames', path: '/patients/*/exams' },

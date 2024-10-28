@@ -1,15 +1,14 @@
 'use client'
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
-import { ReactNode, Reducer, useReducer, useRef, useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useRef, useState } from 'react'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
-import ProgressFormScheduling from './ProgressFormScheduling'
-import Link from 'next/link'
-import PaymentForm from './PaymentForm'
-import { ProgressResponse } from '@/services/patient/PatientService'
+import ProgressForm from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
+import PatientDataForm from '@/app/(private)/patients/components/PatientDataForm'
+import PatientSchedulingFrom from './PatientSchedulingFrom'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -19,6 +18,26 @@ type RealizeSchedulingProps = {
   service: string
 } & ButtonPropsVariants
 
+function FormButton({
+  setPageStage,
+}: {
+  setPageStage: Dispatch<
+    SetStateAction<
+      'progress' | 'payment' | 'anamnesis' | 'diagnostic' | 'record'
+    >
+  >
+}) {
+  return (
+    <div className="flex justify-end gap-2">
+      <Button variant="outline" onClick={() => setPageStage('progress')}>
+        Voltar
+      </Button>
+      <Button variant="outline" onClick={() => setPageStage('payment')}>
+        Próximo
+      </Button>
+    </div>
+  )
+}
 export default function RealizeScheduling({
   children,
   patientId,
@@ -27,25 +46,12 @@ export default function RealizeScheduling({
   ...props
 }: RealizeSchedulingProps) {
   const modalRef = useRef<ModalHandles>(null)
-  const [pageStage, setPageStage] = useState<'progress' | 'payment'>('progress')
-  const [formState, setFormState] = useState<{
-    progress: ProgressResponse
-    payment: object
-  }>({
-    progress: {
-      id: '',
-      patientId: '',
-      service: '',
-      actualProblem: '',
-      procedures: '',
-      date: '',
-    },
-    payment: {},
-  })
+  const [pageStage, setPageStage] = useState<
+    'progress' | 'payment' | 'anamnesis' | 'diagnostic' | 'record'
+  >('progress')
 
   const handleOpen = () => modalRef.current?.openModal()
   const handleClose = () => modalRef.current?.closeModal()
-  console.log(formState)
 
   const { NavItemStyles } = navStyles({ variants: 'underline' })
 
@@ -66,6 +72,24 @@ export default function RealizeScheduling({
         <Nav.root className="m-auto max-w-screen-lg items-center justify-between">
           <div className="flex">
             <button
+              onClick={() => setPageStage('record')}
+              className={NavItemStyles({ active: pageStage === 'record' })}
+            >
+              Ficha
+            </button>
+            <button
+              onClick={() => setPageStage('anamnesis')}
+              className={NavItemStyles({ active: pageStage === 'anamnesis' })}
+            >
+              Anamnese
+            </button>
+            <button
+              onClick={() => setPageStage('diagnostic')}
+              className={NavItemStyles({ active: pageStage === 'diagnostic' })}
+            >
+              Diagnostic
+            </button>
+            <button
               onClick={() => setPageStage('progress')}
               className={NavItemStyles({ active: pageStage === 'progress' })}
             >
@@ -78,20 +102,25 @@ export default function RealizeScheduling({
               Pagamento
             </button>
           </div>
-          <div className=" flex gap-2 pr-4">
-            <Button asChild variant="outline" size="small">
-              <Link href={'/'} className="text-sm">
-                Fixa do paciente
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="small">
-              <Link href={'/'} className="text-sm">
-                Anamnese
-              </Link>
-            </Button>
-          </div>
+          <div className=" flex gap-2 pr-4"></div>
         </Nav.root>
-        {/*  {form()} */}
+        {pageStage === 'record' && (
+          <PatientSchedulingFrom patientId={patientId} />
+        )}
+        {pageStage === 'progress' && (
+          <ProgressForm
+            buttons={<FormButton setPageStage={setPageStage} />}
+            formAction={() => {
+              console.log('clicou')
+              return undefined
+            }}
+            formData={{
+              patientId,
+              date,
+              service,
+            }}
+          />
+        )}
       </Modal>
     </>
   )

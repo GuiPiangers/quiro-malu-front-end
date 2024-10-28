@@ -121,7 +121,7 @@ export default async function Scheduling({
                   Contato
                 </Button>
                 <Button asChild variant="outline" size="small">
-                  <Link href={`/patients/${scheduling.patientId}`}>Fixa</Link>
+                  <Link href={`/patients/${scheduling.patientId}`}>ficha</Link>
                 </Button>
               </div>
             </AccordionTable.Content>

@@ -24,7 +24,7 @@ export const setProgressSchema = z.object({
 
 export type setProgressData = z.infer<typeof setProgressSchema>
 
-type ProgressFormProps = {
+export type ProgressFormProps = {
   formData: Partial<ProgressResponse>
   formAction(data: ProgressResponse): void | Promise<responseError | void>
   afterValidation?(): void
