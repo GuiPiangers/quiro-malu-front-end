@@ -3,21 +3,21 @@ import { responseError } from '../api/api'
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 
 export type LocationDTO = {
-  cep?: string | null
-  state?: string | null
-  city?: string | null
-  neighborhood?: string | null
-  address?: string | null
+  cep?: string
+  state?: string
+  city?: string
+  neighborhood?: string
+  address?: string
 }
 
 export type PatientResponse = {
   id?: string
   name: string
   phone: string
-  dateOfBirth?: string | null
-  gender?: 'masculino' | 'feminino' | null
-  cpf?: string | null
-  location?: LocationDTO | null
+  dateOfBirth?: string
+  gender?: 'masculino' | 'feminino'
+  cpf?: string
+  location?: LocationDTO
   createAt?: string
 }
 export type PatientsListResponse = {
@@ -25,7 +25,7 @@ export type PatientsListResponse = {
     id?: string
     name: string
     phone: string
-    dateOfBirth?: string | null
+    dateOfBirth?: string
   }>
   total: number
   limit: number

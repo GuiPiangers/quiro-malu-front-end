@@ -8,7 +8,7 @@ import { AnamnesisResponse } from '@/services/patient/PatientService'
 import { ReactNode, useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { set, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
@@ -70,6 +70,19 @@ export default function AnamnesisForm({
 
   const setAnamnesisForm = useForm<setAnamnesisData>({
     resolver: zodResolver(setAnamnesisSchema),
+    values: {
+      underwentSurgery:
+        underwentSurgery === undefined ? null : underwentSurgery,
+      useMedicine: useMedicine === undefined ? null : useMedicine,
+      activities,
+      currentIllness,
+      familiarHistory,
+      history,
+      mainProblem,
+      medicines: medicines ?? '',
+      smoke,
+      surgeries: surgeries ?? '',
+    },
   })
 
   const {
@@ -77,7 +90,12 @@ export default function AnamnesisForm({
     formState: { isSubmitting, dirtyFields, errors },
     register,
     reset,
+    watch,
   } = setAnamnesisForm
+
+  const smokeState = watch('smoke')
+  const router = useRouter()
+
   const setAnamnesis = async (data: setAnamnesisData) => {
     const res = await clientPatientService.setAnamnesis({ patientId, ...data })
     if (Validate.isError(res)) {
@@ -87,11 +105,11 @@ export default function AnamnesisForm({
         afterValidate()
       } else {
         reset(data, { keepValues: true })
+        router.refresh()
         handleOpen({ title: 'Anamnese salva com sucesso!', type: 'success' })
       }
     }
   }
-
   const [underwentSurgeryState, setUnderwentSurgeryState] =
     useState(underwentSurgery)
   const [useMedicineState, setUseMedicineState] = useState(useMedicine)
@@ -197,22 +215,26 @@ export default function AnamnesisForm({
               label="Sim"
               value={'yes'}
               disabled={isSubmitting}
-              defaultChecked={smoke === 'yes'}
+              defaultChecked={smokeState === 'yes'}
+              checked={smokeState === 'yes'}
               {...register('smoke')}
             />
             <RadioButton
               label="Não"
               value={'no'}
               disabled={isSubmitting}
-              defaultChecked={smoke === 'no'}
+              defaultChecked={smokeState === 'no'}
+              checked={smokeState === 'no'}
               {...register('smoke')}
             />
             <RadioButton
               label="Passivo"
               value={'passive'}
               {...register('smoke')}
+              checked={smokeState === 'passive'}
               disabled={isSubmitting}
-              defaultChecked={smoke === 'passive'}
+              defaultChecked={smokeState === 'passive'}
+              // onClick={() => setSmokeState('passive')}
             />
           </div>
           {errors.smoke && (

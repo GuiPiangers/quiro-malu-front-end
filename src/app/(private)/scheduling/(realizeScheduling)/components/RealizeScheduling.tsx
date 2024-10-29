@@ -1,14 +1,21 @@
 'use client'
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
-import { Dispatch, ReactNode, SetStateAction, useRef, useState } from 'react'
+import {
+  MutableRefObject,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+} from 'react'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
 import ProgressForm from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
-import PatientDataForm from '@/app/(private)/patients/components/PatientDataForm'
 import PatientSchedulingFrom from './PatientSchedulingFrom'
+import { FormButtons } from './FormButtons'
+import AnamnesisSchedulingFrom from './AnamnesisSchedulingFrom'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -18,26 +25,13 @@ type RealizeSchedulingProps = {
   service: string
 } & ButtonPropsVariants
 
-function FormButton({
-  setPageStage,
-}: {
-  setPageStage: Dispatch<
-    SetStateAction<
-      'progress' | 'payment' | 'anamnesis' | 'diagnostic' | 'record'
-    >
-  >
-}) {
-  return (
-    <div className="flex justify-end gap-2">
-      <Button variant="outline" onClick={() => setPageStage('progress')}>
-        Voltar
-      </Button>
-      <Button variant="outline" onClick={() => setPageStage('payment')}>
-        Próximo
-      </Button>
-    </div>
-  )
-}
+export type PageStage =
+  | 'progress'
+  | 'payment'
+  | 'anamnesis'
+  | 'diagnostic'
+  | 'record'
+
 export default function RealizeScheduling({
   children,
   patientId,
@@ -46,9 +40,16 @@ export default function RealizeScheduling({
   ...props
 }: RealizeSchedulingProps) {
   const modalRef = useRef<ModalHandles>(null)
-  const [pageStage, setPageStage] = useState<
-    'progress' | 'payment' | 'anamnesis' | 'diagnostic' | 'record'
-  >('progress')
+  const [pageStage, setPageStage] = useState<PageStage>('progress')
+
+  const nextPage = useRef(pageStage)
+  const setNextPage = useCallback((page: PageStage) => {
+    nextPage.current = page
+  }, [])
+
+  const goToNextPage = useCallback(() => {
+    setPageStage(nextPage.current)
+  }, [])
 
   const handleOpen = () => modalRef.current?.openModal()
   const handleClose = () => modalRef.current?.closeModal()
@@ -105,13 +106,23 @@ export default function RealizeScheduling({
           <div className=" flex gap-2 pr-4"></div>
         </Nav.root>
         {pageStage === 'record' && (
-          <PatientSchedulingFrom patientId={patientId} />
+          <PatientSchedulingFrom
+            patientId={patientId}
+            nextPage={nextPage}
+            goToNextPage={goToNextPage}
+          />
         )}
         {pageStage === 'progress' && (
           <ProgressForm
-            buttons={<FormButton setPageStage={setPageStage} />}
+            buttons={
+              <FormButtons
+                setNextPage={setNextPage}
+                previousPage="diagnostic"
+                nextPage="payment"
+              />
+            }
             formAction={() => {
-              console.log('clicou')
+              goToNextPage()
               return undefined
             }}
             formData={{
@@ -119,6 +130,13 @@ export default function RealizeScheduling({
               date,
               service,
             }}
+          />
+        )}
+        {pageStage === 'anamnesis' && (
+          <AnamnesisSchedulingFrom
+            patientId={patientId}
+            setNextPage={setNextPage}
+            goToNextPage={goToNextPage}
           />
         )}
       </Modal>

@@ -134,6 +134,21 @@ export default function PatientDataForm({
 
   const createPatientForm = useForm<CreatePatientData>({
     resolver: zodResolver(createPatientSchema),
+    values: {
+      name: data?.name ?? '',
+      phone: data?.phone ?? '',
+      cpf: data?.cpf ? data.cpf : undefined,
+      gender: data?.gender ? data.gender : undefined,
+      location: {
+        cep: data?.location?.cep ? data.location.cep : undefined,
+        state: data?.location?.state ? data.location.state : undefined,
+        city: data?.location?.city ? data.location.city : undefined,
+        neighborhood: data?.location?.neighborhood
+          ? data.location.neighborhood
+          : undefined,
+        address: data?.location?.address ? data.location.address : undefined,
+      },
+    },
   })
 
   const {
@@ -143,7 +158,11 @@ export default function PatientDataForm({
     setValue,
     setError,
     reset,
+    watch,
   } = createPatientForm
+
+  console.log(data?.name)
+  console.log(watch('phone'))
 
   const resetForm = (data: CreatePatientData) => {
     reset({ ...data }, { keepValues: true })
@@ -152,7 +171,6 @@ export default function PatientDataForm({
     setPhoneNotSave(false)
     setGenderNotSave(false)
   }
-
   const handleAction = async (data: CreatePatientData) => {
     const res = await action(data)
     if (Validate.isError(res)) {

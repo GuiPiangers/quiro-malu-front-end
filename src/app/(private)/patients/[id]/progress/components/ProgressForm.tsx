@@ -67,7 +67,7 @@ export default function ProgressForm({
       patientId: patientId!,
       ...data,
     })
-    if (Validate.isError(res)) {
+    if (res && Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       if (afterValidation) afterValidation()

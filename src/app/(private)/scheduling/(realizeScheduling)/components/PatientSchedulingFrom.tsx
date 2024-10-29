@@ -6,33 +6,44 @@ import { responseError } from '@/services/api/api'
 import { Validate } from '@/services/api/Validate'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { PatientResponse } from '@/services/patient/PatientService'
-import { useEffect, useState } from 'react'
+import { MutableRefObject, useEffect, useState } from 'react'
 
 type PatientSchedulingFromProps = {
   patientId: string
+  nextPage: MutableRefObject<
+    'progress' | 'payment' | 'anamnesis' | 'diagnostic' | 'record'
+  >
+  goToNextPage(): void
 }
 
 function PatientSchedulingButtons() {
-  return <Button>Avançar</Button>
+  return <Button color="green">Avançar</Button>
 }
 
 export default function PatientSchedulingFrom({
   patientId,
+  goToNextPage,
+  nextPage,
 }: PatientSchedulingFromProps) {
   const [patientData, setPatientData] = useState<PatientResponse>()
+
   useEffect(() => {
     clientPatientService
       .get(patientId)
       .then((res) => Validate.isOk(res) && setPatientData(res))
   }, [patientId])
+
   return (
     <PatientDataForm
       buttons={<PatientSchedulingButtons />}
+      btWrapperClassName="justify-end"
       data={patientData}
-      action={function (
+      action={async function (
         data: CreatePatientData | PatientResponse,
       ): Promise<PatientResponse | responseError> {
-        throw new Error('Function not implemented.')
+        nextPage.current = 'anamnesis'
+        goToNextPage()
+        return data as PatientResponse
       }}
     />
   )
