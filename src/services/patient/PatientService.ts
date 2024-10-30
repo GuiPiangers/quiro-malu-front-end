@@ -45,8 +45,8 @@ export type AnamnesisResponse = {
 }
 export type DiagnosticResponse = {
   patientId: string
-  diagnostic: string
-  treatmentPlan: string
+  diagnostic?: string
+  treatmentPlan?: string
 }
 export type ProgressResponse = {
   id: string

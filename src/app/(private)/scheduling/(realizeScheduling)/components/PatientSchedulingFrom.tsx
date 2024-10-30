@@ -38,11 +38,11 @@ export default function PatientSchedulingFrom({
       buttons={<PatientSchedulingButtons />}
       btWrapperClassName="justify-end"
       data={patientData}
+      afterValidate={goToNextPage}
       action={async function (
         data: CreatePatientData | PatientResponse,
       ): Promise<PatientResponse | responseError> {
         nextPage.current = 'anamnesis'
-        goToNextPage()
         return data as PatientResponse
       }}
     />

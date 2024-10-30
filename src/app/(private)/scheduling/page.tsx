@@ -114,6 +114,7 @@ export default async function Scheduling({
                   date={scheduling.date}
                   service={scheduling.service}
                   patientId={scheduling.patientId}
+                  schedulingId={scheduling.id!}
                 >
                   Realizar consulta
                 </RealizeScheduling>
@@ -121,7 +122,7 @@ export default async function Scheduling({
                   Contato
                 </Button>
                 <Button asChild variant="outline" size="small">
-                  <Link href={`/patients/${scheduling.patientId}`}>ficha</Link>
+                  <Link href={`/patients/${scheduling.patientId}`}>Ficha</Link>
                 </Button>
               </div>
             </AccordionTable.Content>

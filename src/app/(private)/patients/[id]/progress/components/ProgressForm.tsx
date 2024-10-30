@@ -71,10 +71,12 @@ export default function ProgressForm({
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       if (afterValidation) afterValidation()
-      handleMessage({
-        title: 'Evolução salva com sucesso!',
-        type: 'success',
-      })
+      else {
+        handleMessage({
+          title: 'Evolução salva com sucesso!',
+          type: 'success',
+        })
+      }
     }
   }
 

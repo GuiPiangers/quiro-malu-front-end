@@ -9,11 +9,12 @@ import Cpf from '@/utils/Cpf'
 import { PatientResponse } from '@/services/patient/PatientService'
 import Form from '@/components/form/Form'
 import { sectionStyles, titleStyles } from '@/components/form/Styles'
-import { ReactNode, useState } from 'react'
+import { ChangeEvent, ReactNode, useState } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import { validateRegex } from '@/utils/validateRegex'
+import { get } from 'http'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
@@ -127,11 +128,6 @@ export default function PatientDataForm({
 }: PatientDataForm) {
   const { handleMessage } = useSnackbarContext()
 
-  const [phoneNotSave, setPhoneNotSave] = useState(false)
-  const [cpfNotSave, setCpfNotSave] = useState(false)
-  const [genderNotSave, setGenderNotSave] = useState(false)
-  const [cepNotSave, setCepNotSave] = useState(false)
-
   const createPatientForm = useForm<CreatePatientData>({
     resolver: zodResolver(createPatientSchema),
     values: {
@@ -156,21 +152,15 @@ export default function PatientDataForm({
     formState: { isSubmitting, errors, dirtyFields },
     register,
     setValue,
+    getValues,
     setError,
     reset,
-    watch,
   } = createPatientForm
-
-  console.log(data?.name)
-  console.log(watch('phone'))
 
   const resetForm = (data: CreatePatientData) => {
     reset({ ...data }, { keepValues: true })
-    setCepNotSave(false)
-    setCpfNotSave(false)
-    setPhoneNotSave(false)
-    setGenderNotSave(false)
   }
+
   const handleAction = async (data: CreatePatientData) => {
     const res = await action(data)
     if (Validate.isError(res)) {
@@ -221,21 +211,21 @@ export default function PatientDataForm({
         </Input.Root>
 
         <Input.Root>
-          <Input.Label required notSave={phoneNotSave}>
+          <Input.Label required notSave={dirtyFields.phone}>
             Telefone
           </Input.Label>
           <Input.Field
             type="tel"
             autoComplete="off"
             error={!!errors.phone}
-            {...register('phone')}
+            {...register('phone', {
+              onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                e.target.value = Phone.format(e.target.value)
+              },
+            })}
             disabled={isSubmitting}
-            onChange={(e) => {
-              setValue('phone', Phone.format(e.target.value))
-              setPhoneNotSave(true)
-            }}
             defaultValue={data?.phone}
-            notSave={phoneNotSave}
+            notSave={dirtyFields.phone}
           />
           {errors.phone && (
             <Input.Message error>{errors.phone.message}</Input.Message>
@@ -243,19 +233,19 @@ export default function PatientDataForm({
         </Input.Root>
 
         <Input.Root>
-          <Input.Label notSave={cpfNotSave}>CPF</Input.Label>
+          <Input.Label notSave={dirtyFields.cpf}>CPF</Input.Label>
           <Input.Field
             autoComplete="off"
             error={!!errors.cpf}
-            {...register('cpf')}
+            {...register('cpf', {
+              onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                e.target.value = Cpf.format(e.target.value)
+              },
+            })}
             disabled={isSubmitting}
-            onChange={(e) => {
-              setValue('cpf', Cpf.format(e.target.value))
-              setCpfNotSave(true)
-            }}
             inputMode="numeric"
             defaultValue={data?.cpf}
-            notSave={cpfNotSave}
+            notSave={dirtyFields.cpf}
           />
           {errors.cpf && (
             <Input.Message error>{errors.cpf.message}</Input.Message>
@@ -282,17 +272,17 @@ export default function PatientDataForm({
           </Input.Root>
 
           <Input.Root>
-            <Input.Label notSave={genderNotSave}>Gênero</Input.Label>
+            <Input.Label notSave={dirtyFields.gender}>Gênero</Input.Label>
             <Input.Select
               {...register('gender')}
               onChange={(_, newValue) => {
-                setValue('gender', newValue as string)
-                setGenderNotSave(true)
+                setValue('gender', newValue as string, { shouldDirty: true })
               }}
               disabled={isSubmitting}
               error={!!errors.gender}
               defaultValue={data?.gender}
-              notSave={genderNotSave}
+              value={getValues('gender')}
+              notSave={dirtyFields.gender}
             >
               <Input.Option value="Masculino">Masculino</Input.Option>
               <Input.Option value="Feminino">Feminino</Input.Option>
@@ -307,14 +297,13 @@ export default function PatientDataForm({
       <section className={sectionStyles()}>
         <h2 className={titleStyles()}>Endereço</h2>
         <Input.Root>
-          <Input.Label notSave={cepNotSave}>CEP</Input.Label>
+          <Input.Label notSave={dirtyFields.location?.cep}>CEP</Input.Label>
           <Input.Field
             error={!!errors.location?.cep}
             {...register('location.cep')}
             disabled={isSubmitting}
             defaultValue={data?.location?.cep}
-            notSave={cepNotSave}
-            onChange={() => setCepNotSave(true)}
+            notSave={dirtyFields.location?.cep}
             inputMode="numeric"
           />
           {errors.location?.cep && (

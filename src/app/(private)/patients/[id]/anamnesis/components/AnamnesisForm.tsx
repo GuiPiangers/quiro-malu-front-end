@@ -66,7 +66,7 @@ export default function AnamnesisForm({
   btWrapperClassName,
   afterValidate,
 }: AnamnesisFormProps) {
-  const { handleMessage: handleOpen } = useSnackbarContext()
+  const { handleMessage } = useSnackbarContext()
 
   const setAnamnesisForm = useForm<setAnamnesisData>({
     resolver: zodResolver(setAnamnesisSchema),
@@ -99,14 +99,14 @@ export default function AnamnesisForm({
   const setAnamnesis = async (data: setAnamnesisData) => {
     const res = await clientPatientService.setAnamnesis({ patientId, ...data })
     if (Validate.isError(res)) {
-      handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
+      handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
       if (afterValidate) {
         afterValidate()
       } else {
         reset(data, { keepValues: true })
         router.refresh()
-        handleOpen({ title: 'Anamnese salva com sucesso!', type: 'success' })
+        handleMessage({ title: 'Anamnese salva com sucesso!', type: 'success' })
       }
     }
   }

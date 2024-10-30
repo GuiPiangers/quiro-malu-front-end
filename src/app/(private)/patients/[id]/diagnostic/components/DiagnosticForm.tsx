@@ -14,8 +14,8 @@ import { useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 
 const setDiagnosticSchema = z.object({
-  diagnostic: z.string(),
-  treatmentPlan: z.string(),
+  diagnostic: z.string().optional(),
+  treatmentPlan: z.string().optional(),
 })
 
 export type setDiagnosticData = z.infer<typeof setDiagnosticSchema>
@@ -37,6 +37,11 @@ export default function DiagnosticForm({
   const router = useRouter()
   const setDiagnosticForm = useForm<DiagnosticResponse>({
     resolver: zodResolver(setDiagnosticSchema),
+    values: {
+      diagnostic,
+      treatmentPlan,
+      patientId: patientId!,
+    },
   })
 
   const {

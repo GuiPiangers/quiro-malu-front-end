@@ -5,6 +5,7 @@ import {
   MutableRefObject,
   ReactNode,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from 'react'
@@ -16,10 +17,15 @@ import ProgressForm from '@/app/(private)/patients/[id]/progress/components/Prog
 import PatientSchedulingFrom from './PatientSchedulingFrom'
 import { FormButtons } from './FormButtons'
 import AnamnesisSchedulingFrom from './AnamnesisSchedulingFrom'
+import DiagnosticSchedulingFrom from './DiagnosticSchedulingFrom'
+import { clientPatientService } from '@/services/patient/clientPatientService'
+import { ProgressResponse } from '@/services/patient/PatientService'
+import { Validate } from '@/services/api/Validate'
 
 type RealizeSchedulingProps = {
   className?: string
   children?: ReactNode
+  schedulingId: string
   patientId: string
   date: string
   service: string
@@ -35,6 +41,7 @@ export type PageStage =
 export default function RealizeScheduling({
   children,
   patientId,
+  schedulingId,
   date,
   service,
   ...props
@@ -55,6 +62,14 @@ export default function RealizeScheduling({
   const handleClose = () => modalRef.current?.closeModal()
 
   const { NavItemStyles } = navStyles({ variants: 'underline' })
+
+  const [progressData, setProgressData] = useState<ProgressResponse>()
+
+  useEffect(() => {
+    clientPatientService
+      .getProgress({ id: schedulingId, patientId })
+      .then((res) => Validate.isOk(res) && setProgressData(res))
+  }, [patientId, schedulingId])
 
   return (
     <>
@@ -121,19 +136,29 @@ export default function RealizeScheduling({
                 nextPage="payment"
               />
             }
-            formAction={() => {
-              goToNextPage()
-              return undefined
+            afterValidation={goToNextPage}
+            formAction={(data) => {
+              return clientPatientService.setProgress(data)
             }}
             formData={{
+              id: schedulingId,
               patientId,
               date,
               service,
+              actualProblem: progressData?.actualProblem,
+              procedures: progressData?.procedures,
             }}
           />
         )}
         {pageStage === 'anamnesis' && (
           <AnamnesisSchedulingFrom
+            patientId={patientId}
+            setNextPage={setNextPage}
+            goToNextPage={goToNextPage}
+          />
+        )}
+        {pageStage === 'diagnostic' && (
+          <DiagnosticSchedulingFrom
             patientId={patientId}
             setNextPage={setNextPage}
             goToNextPage={goToNextPage}
