@@ -20,7 +20,7 @@ function PatientSchedulingButtons() {
   return <Button color="green">Avançar</Button>
 }
 
-export default function PatientSchedulingFrom({
+export default function PatientSchedulingForm({
   patientId,
   goToNextPage,
   nextPage,

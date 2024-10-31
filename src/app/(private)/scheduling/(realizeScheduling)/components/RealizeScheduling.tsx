@@ -14,13 +14,14 @@ import HeaderForm from '@/components/modal/HeaderModal'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
 import ProgressForm from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
-import PatientSchedulingFrom from './PatientSchedulingFrom'
+import PatientSchedulingForm from './PatientSchedulingForm'
 import { FormButtons } from './FormButtons'
-import AnamnesisSchedulingFrom from './AnamnesisSchedulingFrom'
-import DiagnosticSchedulingFrom from './DiagnosticSchedulingFrom'
+import AnamnesisSchedulingFrom from './AnamnesisSchedulingForm'
+import DiagnosticSchedulingForm from './DiagnosticSchedulingForm'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import { Validate } from '@/services/api/Validate'
+import { ProgressSchedulingForm } from './ProgressSchedulingForm'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -63,13 +64,13 @@ export default function RealizeScheduling({
 
   const { NavItemStyles } = navStyles({ variants: 'underline' })
 
-  const [progressData, setProgressData] = useState<ProgressResponse>()
+  // const [progressData, setProgressData] = useState<ProgressResponse>()
 
-  useEffect(() => {
-    clientPatientService
-      .getProgress({ id: schedulingId, patientId })
-      .then((res) => Validate.isOk(res) && setProgressData(res))
-  }, [patientId, schedulingId])
+  // useEffect(() => {
+  //   clientPatientService
+  //     .getProgress({ id: schedulingId, patientId })
+  //     .then((res) => Validate.isOk(res) && setProgressData(res))
+  // }, [patientId, schedulingId])
 
   return (
     <>
@@ -121,32 +122,42 @@ export default function RealizeScheduling({
           <div className=" flex gap-2 pr-4"></div>
         </Nav.root>
         {pageStage === 'record' && (
-          <PatientSchedulingFrom
+          <PatientSchedulingForm
             patientId={patientId}
             nextPage={nextPage}
             goToNextPage={goToNextPage}
           />
         )}
         {pageStage === 'progress' && (
-          <ProgressForm
-            buttons={
-              <FormButtons
-                setNextPage={setNextPage}
-                previousPage="diagnostic"
-                nextPage="payment"
-              />
-            }
-            afterValidation={goToNextPage}
-            formAction={(data) => {
-              return clientPatientService.setProgress(data)
-            }}
-            formData={{
-              id: schedulingId,
-              patientId,
+          // <ProgressForm
+          //   buttons={
+          //     <FormButtons
+          //       setNextPage={setNextPage}
+          //       previousPage="diagnostic"
+          //       nextPage="payment"
+          //     />
+          //   }
+          //   afterValidation={goToNextPage}
+          //   formAction={(data) => {
+          //     return clientPatientService.setProgress(data)
+          //   }}
+          //   formData={{
+          //     id: schedulingId,
+          //     patientId,
+          //     date,
+          //     service,
+          //     actualProblem: progressData?.actualProblem,
+          //     procedures: progressData?.procedures,
+          //   }}
+          // />
+          <ProgressSchedulingForm
+            goToNextPage={goToNextPage}
+            setNextPage={setNextPage}
+            schedulingData={{
               date,
               service,
-              actualProblem: progressData?.actualProblem,
-              procedures: progressData?.procedures,
+              patientId,
+              schedulingId,
             }}
           />
         )}
@@ -158,7 +169,7 @@ export default function RealizeScheduling({
           />
         )}
         {pageStage === 'diagnostic' && (
-          <DiagnosticSchedulingFrom
+          <DiagnosticSchedulingForm
             patientId={patientId}
             setNextPage={setNextPage}
             goToNextPage={goToNextPage}

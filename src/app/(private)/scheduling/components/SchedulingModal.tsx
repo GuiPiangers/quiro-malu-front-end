@@ -3,7 +3,10 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
 import SchedulingForm from './SchedulingForm'
-import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
+import {
+  SchedulingResponse,
+  SchedulingStatusEnum,
+} from '@/services/scheduling/SchedulingService'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
@@ -38,6 +41,7 @@ export default function SchedulingModal({
     data: SchedulingResponse,
   ): Promise<SchedulingResponse | responseError> => {
     if (formData?.id) return await clientSchedulingService.update(data)
+      console.log('oi')
     return await clientSchedulingService.create(data)
   }
 
@@ -52,7 +56,7 @@ export default function SchedulingModal({
           title={formData?.id ? 'Editar agendamento' : 'Novo agendamento'}
         />
         <SchedulingForm
-          formData={{ status: 'Agendado', ...formData }}
+          formData={{ status: SchedulingStatusEnum.attended, ...formData }}
           className="shadow-none"
           action={formAction}
           afterValidation={afterSubmit}

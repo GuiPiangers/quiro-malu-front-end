@@ -1,12 +1,17 @@
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
-import { responseError } from '../api/api'
+
+export type SchedulingStatus = 'Agendado' | 'Atendido'
+export enum SchedulingStatusEnum {
+  scheduled = 'Agendado',
+  attended = 'Atendido',
+}
 
 export type SchedulingResponse = {
   id?: string
   patientId: string
   service: string
   duration: number
-  status: string
+  status: SchedulingStatus
   date: string
 }
 export type SchedulingListResponse = {
@@ -34,6 +39,24 @@ export class Scheduling extends ServiceApi {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
+
+    return res
+  }
+
+  async updateStatus({
+    id,
+    patientId,
+    status,
+  }: {
+    id: string
+    patientId: string
+    status: SchedulingStatus
+  }) {
+    const res = await this.fetchData<SchedulingResponse>('/schedules/status', {
+      method: 'PATCH',
+      body: JSON.stringify({ id, patientId, status }),
+    })
+    console.log(res)
 
     return res
   }

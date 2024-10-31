@@ -1,9 +1,6 @@
 import { Validate } from '@/services/api/Validate'
 import { clientPatientService } from '@/services/patient/clientPatientService'
-import {
-  AnamnesisResponse,
-  DiagnosticResponse,
-} from '@/services/patient/PatientService'
+import { DiagnosticResponse } from '@/services/patient/PatientService'
 import { useEffect, useState } from 'react'
 import { FormButtons } from './FormButtons'
 import { PageStage } from './RealizeScheduling'
@@ -15,7 +12,7 @@ type DiagnosticSchedulingFromProps = {
   setNextPage: (page: PageStage) => void
 }
 
-export default function DiagnosticSchedulingFrom({
+export default function DiagnosticSchedulingForm({
   patientId,
   setNextPage,
   goToNextPage,

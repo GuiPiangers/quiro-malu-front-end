@@ -2,7 +2,10 @@ import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import { AccordionTable } from '@/components/accordionTable'
 import { Table } from '@/components/table'
-import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
+import {
+  SchedulingResponse,
+  SchedulingStatusEnum,
+} from '@/services/scheduling/SchedulingService'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
 import DateTime from '@/utils/Date'
 import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
@@ -59,9 +62,9 @@ export default async function Scheduling({
           scheduling.duration,
         ).getHoursAndMinutes()
         const status =
-          scheduling.status === 'Agendado' &&
+          scheduling.status === SchedulingStatusEnum.attended &&
           scheduling.date < new Date().toISOString()
-            ? 'Atrasado'
+            ? SchedulingStatusEnum.attended
             : scheduling.status
 
         return (
@@ -69,9 +72,11 @@ export default async function Scheduling({
             <AccordionTable.Row
               columns={['2fr', '2fr', '1fr']}
               data-status={status}
-              className={`${status === 'Agendado' && 'text-blue-600'} ${
-                status === 'Atendido' && 'text-green-600'
-              } ${status === 'Atrasado' && 'text-red-600'}`}
+              className={`${
+                status === SchedulingStatusEnum.scheduled && 'text-blue-600'
+              } ${
+                status === SchedulingStatusEnum.attended && 'text-green-600'
+              } ${status === SchedulingStatusEnum.scheduled && 'text-red-600'}`}
             >
               <AccordionTable.Cell>
                 {hour} {'('}

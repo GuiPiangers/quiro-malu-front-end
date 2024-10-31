@@ -27,7 +27,7 @@ const setSchedulingSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
   service: z.string({ required_error: 'Campo obrigatório' }),
   duration: z.coerce.number().optional(),
-  status: z.string().optional(),
+  status: z.enum(['Agendado', 'Atendido']).optional(),
   patientId: z.string().optional(),
   patientName: z.string({ required_error: 'Campo obrigatório' }),
   patientPhone: z.string({ required_error: 'Campo obrigatório' }),
@@ -37,7 +37,7 @@ export type setSchedulingData = z.infer<typeof setSchedulingSchema>
 
 type SchedulingFormProps = {
   action(
-    data: SchedulingResponse | setSchedulingData,
+    data: SchedulingResponse | (setSchedulingData & { id?: string }),
   ): Promise<SchedulingResponse | responseError>
   formData?: Partial<
     SchedulingResponse & { patient: string; patientPhone: string }
@@ -114,35 +114,39 @@ export default function SchedulingForm({
 
   const setScheduling = async (data: setSchedulingData) => {
     const patient = selectedPatient
-      ? selectedPatient?.id
+      ? selectedPatient.id
       : await clientPatientService
           .create({ name: patientSearch, phone })
           .then((res) => (Validate.isOk(res) ? res.id : undefined))
 
-    const res = await action({
-      id,
-      patientId: patient,
-      duration: data.duration || duration,
-      status,
-      ...data,
-    })
-
-    if (Validate.isError(res)) {
-      if (res.type) {
-        setError(res.type as keyof setSchedulingData, { message: res.message })
-      } else
-        handleMessage({
-          title: 'Erro!',
-          description: res.message,
-          type: 'error',
-        })
-    } else {
-      reset({ ...data }, { keepValues: true })
-      if (afterValidation) afterValidation()
-      handleMessage({
-        title: 'Serviço salvo com sucesso!',
-        type: 'success',
+    if (formData?.id && patient) {
+      const res = await action({
+        id,
+        patientId,
+        duration: data.duration || duration,
+        status,
+        ...data,
       })
+
+      if (Validate.isError(res)) {
+        if (res.type) {
+          setError(res.type as keyof setSchedulingData, {
+            message: res.message,
+          })
+        } else
+          handleMessage({
+            title: 'Erro!',
+            description: res.message,
+            type: 'error',
+          })
+      } else {
+        reset({ ...data }, { keepValues: true })
+        if (afterValidation) afterValidation()
+        handleMessage({
+          title: 'Serviço salvo com sucesso!',
+          type: 'success',
+        })
+      }
     }
   }
 
