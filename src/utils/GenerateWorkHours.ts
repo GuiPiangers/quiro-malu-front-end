@@ -36,6 +36,7 @@ export class GenerateWorkHours {
     const newArray = [...this.workHours, ...data]
       .filter((value) => {
         return !data.some((scheduling) => {
+          console.log(scheduling)
           const startTime = DateTime.getTime(new Date(scheduling.date))
           const end = new Date(scheduling.date)
           end.setSeconds(scheduling.duration)

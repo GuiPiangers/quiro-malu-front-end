@@ -118,14 +118,17 @@ export default function SchedulingForm({
       : await clientPatientService
           .create({ name: patientSearch, phone })
           .then((res) => (Validate.isOk(res) ? res.id : undefined))
+          .catch((err) => console.log(err))
 
-    if (formData?.id && patient) {
+    console.log(data)
+
+    if (patient) {
       const res = await action({
+        ...data,
         id,
-        patientId,
         duration: data.duration || duration,
         status,
-        ...data,
+        patientId: selectedPatient?.id || patient,
       })
 
       if (Validate.isError(res)) {

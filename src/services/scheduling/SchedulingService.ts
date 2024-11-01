@@ -1,9 +1,10 @@
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 
-export type SchedulingStatus = 'Agendado' | 'Atendido'
+export type SchedulingStatus = 'Agendado' | 'Atendido' | 'Atrasado'
 export enum SchedulingStatusEnum {
   scheduled = 'Agendado',
   attended = 'Atendido',
+  late = 'Atrasado',
 }
 
 export type SchedulingResponse = {
@@ -56,7 +57,6 @@ export class Scheduling extends ServiceApi {
       method: 'PATCH',
       body: JSON.stringify({ id, patientId, status }),
     })
-    console.log(res)
 
     return res
   }

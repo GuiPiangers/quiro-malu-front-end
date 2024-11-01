@@ -41,7 +41,6 @@ export default function SchedulingModal({
     data: SchedulingResponse,
   ): Promise<SchedulingResponse | responseError> => {
     if (formData?.id) return await clientSchedulingService.update(data)
-      console.log('oi')
     return await clientSchedulingService.create(data)
   }
 
@@ -56,7 +55,7 @@ export default function SchedulingModal({
           title={formData?.id ? 'Editar agendamento' : 'Novo agendamento'}
         />
         <SchedulingForm
-          formData={{ status: SchedulingStatusEnum.attended, ...formData }}
+          formData={{ status: SchedulingStatusEnum.scheduled, ...formData }}
           className="shadow-none"
           action={formAction}
           afterValidation={afterSubmit}

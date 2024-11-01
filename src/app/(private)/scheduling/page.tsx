@@ -76,7 +76,7 @@ export default async function Scheduling({
                 status === SchedulingStatusEnum.scheduled && 'text-blue-600'
               } ${
                 status === SchedulingStatusEnum.attended && 'text-green-600'
-              } ${status === SchedulingStatusEnum.scheduled && 'text-red-600'}`}
+              } ${status === SchedulingStatusEnum.late && 'text-red-600'}`}
             >
               <AccordionTable.Cell>
                 {hour} {'('}

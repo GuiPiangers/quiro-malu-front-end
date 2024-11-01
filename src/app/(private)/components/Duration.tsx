@@ -1,11 +1,10 @@
 'use client'
 
 import { Time } from '@/utils/Time'
-import { ChangeEvent, useEffect, useMemo, useReducer, useState } from 'react'
+import { ChangeEvent, useEffect, useReducer, useState } from 'react'
 import { Input } from '@/components/input'
 import Button from '@/components/Button'
 import { IoChevronUp } from 'react-icons/io5'
-import DateTime from '@/utils/Date'
 
 type timeState = {
   hours: number
@@ -50,7 +49,7 @@ const reducer = (state: timeState, action: TimeAction) => {
     case 'changeHour':
       action.setValue(
         Time.hoursAndMinutesToSec({
-          hours: state.hours + 1,
+          hours: action.value,
           minutes: state.minutes,
         }),
       )
@@ -142,6 +141,7 @@ export default function Duration({
     })
 
   useEffect(() => {
+    if (duration === undefined) return
     const newDuration = new Time(duration)
     dispatch({
       type: 'changeHour',
