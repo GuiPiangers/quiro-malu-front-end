@@ -42,6 +42,14 @@ export default function ProgressForm({
   const { handleMessage } = useSnackbarContext()
   const setProgressForm = useForm<ProgressResponse>({
     resolver: zodResolver(setProgressSchema),
+    values: {
+      actualProblem: formData.actualProblem ?? '',
+      date: formData.date ?? '',
+      procedures: formData.procedures ?? '',
+      service: formData.service ?? '',
+      id: formData.id ?? '',
+      patientId: formData.patientId ?? '',
+    },
   })
 
   const {

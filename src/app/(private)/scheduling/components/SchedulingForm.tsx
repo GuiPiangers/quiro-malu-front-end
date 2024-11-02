@@ -120,8 +120,6 @@ export default function SchedulingForm({
           .then((res) => (Validate.isOk(res) ? res.id : undefined))
           .catch((err) => console.log(err))
 
-    console.log(data)
-
     if (patient) {
       const res = await action({
         ...data,
