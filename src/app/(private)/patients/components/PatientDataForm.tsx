@@ -14,7 +14,6 @@ import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import { validateRegex } from '@/utils/validateRegex'
-import { get } from 'http'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
@@ -47,7 +46,7 @@ export const createPatientSchema = z.object({
     message: 'Formato de telefone inválido - padrão (DDD) 99999 9999',
   }),
   dateOfBirth: z.string().optional(),
-  gender: z.string().optional(),
+  gender: z.enum(['Masculino', 'Feminino']).optional(),
   cpf: z
     .string()
     .optional()
@@ -276,7 +275,9 @@ export default function PatientDataForm({
             <Input.Select
               {...register('gender')}
               onChange={(_, newValue) => {
-                setValue('gender', newValue as string, { shouldDirty: true })
+                setValue('gender', newValue as 'Masculino' | 'Feminino', {
+                  shouldDirty: true,
+                })
               }}
               disabled={isSubmitting}
               error={!!errors.gender}

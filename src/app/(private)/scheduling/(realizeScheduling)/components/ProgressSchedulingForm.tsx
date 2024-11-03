@@ -2,7 +2,6 @@ import ProgressForm from '@/app/(private)/patients/[id]/progress/components/Prog
 import { PageStage } from './RealizeScheduling'
 import { FormButtons } from './FormButtons'
 import { clientPatientService } from '@/services/patient/clientPatientService'
-import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import { useEffect, useState } from 'react'
 import { Validate } from '@/services/api/Validate'
@@ -52,7 +51,7 @@ export function ProgressSchedulingForm({
         const progressRes = await clientPatientService.setProgress(data)
         if (Validate.isOk(progressRes))
           await clientSchedulingService.updateStatus({
-            id: schedulingId,
+            id: data.id ?? schedulingId,
             patientId,
             status: 'Atendido',
           })

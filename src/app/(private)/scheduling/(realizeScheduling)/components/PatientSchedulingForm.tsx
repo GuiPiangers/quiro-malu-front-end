@@ -6,13 +6,12 @@ import { responseError } from '@/services/api/api'
 import { Validate } from '@/services/api/Validate'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { PatientResponse } from '@/services/patient/PatientService'
-import { MutableRefObject, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { PageStage } from './RealizeScheduling'
 
 type PatientSchedulingFromProps = {
   patientId: string
-  nextPage: MutableRefObject<
-    'progress' | 'payment' | 'anamnesis' | 'diagnostic' | 'record'
-  >
+  setNextPage: (page: PageStage) => void
   goToNextPage(): void
 }
 
@@ -23,7 +22,7 @@ function PatientSchedulingButtons() {
 export default function PatientSchedulingForm({
   patientId,
   goToNextPage,
-  nextPage,
+  setNextPage,
 }: PatientSchedulingFromProps) {
   const [patientData, setPatientData] = useState<PatientResponse>()
 
@@ -42,8 +41,15 @@ export default function PatientSchedulingForm({
       action={async function (
         data: CreatePatientData | PatientResponse,
       ): Promise<PatientResponse | responseError> {
-        nextPage.current = 'anamnesis'
-        return data as PatientResponse
+        setNextPage('anamnesis')
+        return await clientPatientService.update({
+          id: patientId,
+          name: data.name,
+          phone: data.phone,
+          cpf: data.cpf,
+          gender: data.gender,
+          location: data.location,
+        })
       }}
     />
   )

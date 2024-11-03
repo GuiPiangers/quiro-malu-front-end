@@ -15,7 +15,7 @@ export type PatientResponse = {
   name: string
   phone: string
   dateOfBirth?: string
-  gender?: 'masculino' | 'feminino'
+  gender?: 'Masculino' | 'Feminino'
   cpf?: string
   location?: LocationDTO
   createAt?: string

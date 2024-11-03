@@ -124,7 +124,7 @@ export default function RealizeScheduling({
         {pageStage === 'record' && (
           <PatientSchedulingForm
             patientId={patientId}
-            nextPage={nextPage}
+            setNextPage={setNextPage}
             goToNextPage={goToNextPage}
           />
         )}
