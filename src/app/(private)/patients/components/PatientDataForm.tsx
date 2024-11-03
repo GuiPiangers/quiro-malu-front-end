@@ -273,11 +273,15 @@ export default function PatientDataForm({
           <Input.Root>
             <Input.Label notSave={dirtyFields.gender}>Gênero</Input.Label>
             <Input.Select
-              {...register('gender')}
               onChange={(_, newValue) => {
+                console.log(newValue)
                 setValue('gender', newValue as 'Masculino' | 'Feminino', {
                   shouldDirty: true,
+                  shouldValidate: true,
                 })
+              }}
+              slotProps={{
+                popper: { className: 'z-40' },
               }}
               disabled={isSubmitting}
               error={!!errors.gender}

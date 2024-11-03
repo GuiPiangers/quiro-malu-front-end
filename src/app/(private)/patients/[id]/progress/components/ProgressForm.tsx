@@ -114,12 +114,13 @@ export default function ProgressForm({
             Serviço
           </Input.Label>
           <Input.Select
-            {...register('service')}
             disabled={isSubmitting}
             defaultValue={service}
             error={!!errors.service}
             slotProps={{ popper: { className: 'z-40' } }}
-            onChange={(_, newValue) => setValue('service', newValue as string)}
+            onChange={(_, newValue) =>
+              setValue('service', newValue as string, { shouldDirty: true })
+            }
           >
             {services?.map((service) => (
               <Input.Option key={service.id} value={service.name}>

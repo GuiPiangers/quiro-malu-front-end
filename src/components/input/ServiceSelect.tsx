@@ -14,7 +14,7 @@ export default forwardRef(function ServiceSelect(
 
   useEffect(() => {
     clientService
-      .list({ page: '1' })
+      .list({})
       .then((data) => Validate.isOk(data) && setServices(data.services))
   }, [])
 
