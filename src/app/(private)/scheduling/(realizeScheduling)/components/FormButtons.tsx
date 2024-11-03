@@ -14,10 +14,18 @@ export function FormButtons({
 }: FormButtonsProps) {
   return (
     <div className="flex w-full justify-between gap-2">
-      <Button variant="outline" onClick={() => setNextPage(previousPage)}>
+      <Button
+        variant="outline"
+        color="green"
+        onClick={() => setNextPage(previousPage)}
+      >
         Voltar
       </Button>
-      <Button variant="outline" onClick={() => setNextPage(nextPage)}>
+      <Button
+        variant="solid"
+        color={'green'}
+        onClick={() => setNextPage(nextPage)}
+      >
         Próximo
       </Button>
     </div>

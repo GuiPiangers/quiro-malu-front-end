@@ -48,7 +48,7 @@ export default function RealizeScheduling({
   ...props
 }: RealizeSchedulingProps) {
   const modalRef = useRef<ModalHandles>(null)
-  const [pageStage, setPageStage] = useState<PageStage>('progress')
+  const [pageStage, setPageStage] = useState<PageStage>('record')
 
   const nextPage = useRef(pageStage)
   const setNextPage = useCallback((page: PageStage) => {

@@ -16,7 +16,11 @@ type PatientSchedulingFromProps = {
 }
 
 function PatientSchedulingButtons() {
-  return <Button color="green">Avançar</Button>
+  return (
+    <Button color="green" variant="solid">
+      Avançar
+    </Button>
+  )
 }
 
 export default function PatientSchedulingForm({
