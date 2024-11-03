@@ -55,6 +55,7 @@ export function ProgressSchedulingForm({
             patientId,
             status: 'Atendido',
           })
+        return progressRes
       }}
       formData={{
         id: schedulingId,

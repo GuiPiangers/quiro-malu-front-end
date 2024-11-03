@@ -22,6 +22,7 @@ import { clientPatientService } from '@/services/patient/clientPatientService'
 import { ProgressResponse } from '@/services/patient/PatientService'
 import { Validate } from '@/services/api/Validate'
 import { ProgressSchedulingForm } from './ProgressSchedulingForm'
+import PaymentForm from './PaymentForm'
 
 type RealizeSchedulingProps = {
   className?: string
@@ -63,14 +64,6 @@ export default function RealizeScheduling({
   const handleClose = () => modalRef.current?.closeModal()
 
   const { NavItemStyles } = navStyles({ variants: 'underline' })
-
-  // const [progressData, setProgressData] = useState<ProgressResponse>()
-
-  // useEffect(() => {
-  //   clientPatientService
-  //     .getProgress({ id: schedulingId, patientId })
-  //     .then((res) => Validate.isOk(res) && setProgressData(res))
-  // }, [patientId, schedulingId])
 
   return (
     <>
@@ -129,27 +122,6 @@ export default function RealizeScheduling({
           />
         )}
         {pageStage === 'progress' && (
-          // <ProgressForm
-          //   buttons={
-          //     <FormButtons
-          //       setNextPage={setNextPage}
-          //       previousPage="diagnostic"
-          //       nextPage="payment"
-          //     />
-          //   }
-          //   afterValidation={goToNextPage}
-          //   formAction={(data) => {
-          //     return clientPatientService.setProgress(data)
-          //   }}
-          //   formData={{
-          //     id: schedulingId,
-          //     patientId,
-          //     date,
-          //     service,
-          //     actualProblem: progressData?.actualProblem,
-          //     procedures: progressData?.procedures,
-          //   }}
-          // />
           <ProgressSchedulingForm
             goToNextPage={goToNextPage}
             setNextPage={setNextPage}
@@ -173,6 +145,17 @@ export default function RealizeScheduling({
             patientId={patientId}
             setNextPage={setNextPage}
             goToNextPage={goToNextPage}
+          />
+        )}
+        {pageStage === 'payment' && (
+          <PaymentForm
+            setNextPage={setNextPage}
+            goNextPage={goToNextPage}
+            afterValidation={(buttonClicked: string) => {
+              if (buttonClicked === 'finalizar') {
+                handleClose()
+              }
+            }}
           />
         )}
       </Modal>
