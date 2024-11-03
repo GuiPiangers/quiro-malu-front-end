@@ -5,10 +5,10 @@ import RadioButton from '@/components/radioButton/RadioButton'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
 import { AnamnesisResponse } from '@/services/patient/PatientService'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
 import { Validate } from '@/services/api/Validate'
@@ -23,20 +23,14 @@ const setAnamnesisSchema = z.object({
   medicines: z.string().optional(),
   smoke: z.string().optional().nullable(),
   surgeries: z.string().optional(),
-  underwentSurgery: z
-    .string()
-    .optional()
-    .nullable()
-    .transform((value) => {
-      return value === 'yes' ? true : value === 'no' ? false : null
-    }),
-  useMedicine: z
-    .string()
-    .optional()
-    .nullable()
-    .transform((value) => {
-      return value === 'yes' ? true : value === 'no' ? false : null
-    }),
+  underwentSurgery: z.boolean().optional().nullable(),
+  // .transform((value) => {
+  //   return value === 'yes' ? true : value === 'no' ? false : null
+  // }),
+  useMedicine: z.boolean().optional().nullable(),
+  // .transform((value) => {
+  //   return value === 'yes' ? true : value === 'no' ? false : null
+  // }),
 })
 
 export type setAnamnesisData = z.infer<typeof setAnamnesisSchema>
@@ -91,9 +85,16 @@ export default function AnamnesisForm({
     register,
     reset,
     watch,
+    setValue,
   } = setAnamnesisForm
 
   const smokeState = watch('smoke')
+  const underwentSurgeryState = watch('underwentSurgery')
+  const useMedicineState = watch('useMedicine')
+  // const [underwentSurgeryState, setUnderwentSurgeryState] =
+  //   useState(underwentSurgery)
+  // const [useMedicineState, setUseMedicineState] = useState(useMedicine)
+
   const router = useRouter()
 
   const setAnamnesis = async (data: setAnamnesisData) => {
@@ -110,9 +111,6 @@ export default function AnamnesisForm({
       }
     }
   }
-  const [underwentSurgeryState, setUnderwentSurgeryState] =
-    useState(underwentSurgery)
-  const [useMedicineState, setUseMedicineState] = useState(useMedicine)
 
   return (
     <Form
@@ -249,17 +247,22 @@ export default function AnamnesisForm({
               label="Sim"
               value={'yes'}
               disabled={isSubmitting}
-              {...register('useMedicine')}
+              onChange={() => {
+                setValue('useMedicine', true)
+              }}
               defaultChecked={useMedicine === true}
-              onClick={() => setUseMedicineState(true)}
+              checked={useMedicineState === true}
+              // onClick={() => setUseMedicineState(true)}
             />
             <RadioButton
               label="Não"
               value={'no'}
               disabled={isSubmitting}
-              {...register('useMedicine')}
+              onChange={() => {
+                setValue('useMedicine', false)
+              }}
+              checked={useMedicineState === false}
               defaultChecked={!useMedicine}
-              onClick={() => setUseMedicineState(false)}
             />
           </div>
           {errors.useMedicine && (
@@ -293,17 +296,23 @@ export default function AnamnesisForm({
               label="Sim"
               value={'yes'}
               disabled={isSubmitting}
-              {...register('underwentSurgery')}
+              onChange={() => {
+                setValue('underwentSurgery', true)
+              }}
+              checked={underwentSurgeryState === true}
               defaultChecked={underwentSurgery === true}
-              onClick={() => setUnderwentSurgeryState(true)}
+              // onClick={() => setUnderwentSurgeryState(true)}
             />
             <RadioButton
               label="Não"
               value={'no'}
               disabled={isSubmitting}
-              {...register('underwentSurgery')}
+              onChange={() => {
+                setValue('underwentSurgery', false)
+              }}
+              checked={underwentSurgeryState === false}
               defaultChecked={!underwentSurgery}
-              onClick={() => setUnderwentSurgeryState(false)}
+              // onClick={() => setUnderwentSurgeryState(false)}
             />
           </div>
           {errors.underwentSurgery && (
