@@ -19,7 +19,7 @@ export class UserService extends ServiceApi {
 
   async register(data: CreateUserData) {
     console.log(JSON.stringify(data))
-    const res = await fetch('http://localhost:8000/register', {
+    const res = await fetch(process.env.NEXT_PUBLIC_HOST + '/register', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' },

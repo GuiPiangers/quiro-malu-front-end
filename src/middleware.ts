@@ -9,7 +9,7 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(signURL)
   }
   if (!token) {
-    const newToken = await fetch('http://localhost:8000/refresh-token', {
+    const newToken = await fetch(process.env.NEXT_PUBLIC_HOST + '/refresh-token', {
       method: 'POST',
       body: JSON.stringify({ refreshTokenId: refreshToken }),
       headers: {

@@ -8,6 +8,7 @@ import { ChangeEvent, useState } from 'react'
 import useAuthContext from '@/hooks/useAuthContext'
 import { Input } from '@/components/input'
 import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import { Validate } from '@/services/api/Validate'
 
 export default function Login() {
   const { singIn } = useAuthContext()
@@ -31,7 +32,7 @@ export default function Login() {
     setIsLoading(true)
     const res = await singIn(fields)
     setIsLoading(false)
-    if (res) {
+    if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     }
   }

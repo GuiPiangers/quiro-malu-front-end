@@ -28,8 +28,10 @@ export async function api<T>(
   init?: RequestInit | undefined,
   cookieService?: ICookies,
 ): Promise<T | responseError> {
-  const baseURL = 'http://localhost:8000'
+  const baseURL = process.env.NEXT_PUBLIC_HOST
   const cookieMethod = cookieService || clientCookie
+
+  console.log(baseURL)
 
   const token = cookieMethod.get('quiro-token')
   const refreshToken = cookieMethod.get('quiro-refresh-token')
