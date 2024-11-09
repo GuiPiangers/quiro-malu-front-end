@@ -274,7 +274,6 @@ export default function PatientDataForm({
             <Input.Label notSave={dirtyFields.gender}>Gênero</Input.Label>
             <Input.Select
               onChange={(_, newValue) => {
-                console.log(newValue)
                 setValue('gender', newValue as 'Masculino' | 'Feminino', {
                   shouldDirty: true,
                   shouldValidate: true,
