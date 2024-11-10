@@ -31,8 +31,6 @@ export async function api<T>(
   const baseURL = process.env.NEXT_PUBLIC_HOST
   const cookieMethod = cookieService || clientCookie
 
-  console.log(baseURL)
-
   const token = cookieMethod.get('quiro-token')
   const refreshToken = cookieMethod.get('quiro-refresh-token')
 
