@@ -72,7 +72,7 @@ export default function RealizeScheduling({
       </Button>
       <Modal
         ref={modalRef}
-        className="m-5 max-h-screen w-full max-w-screen-sm overflow-auto p-0"
+        className="max-h-svh m-5 w-full max-w-screen-sm overflow-auto p-0"
       >
         <HeaderForm
           title="Realizar Consulta"
