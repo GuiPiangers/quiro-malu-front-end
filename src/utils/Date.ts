@@ -11,7 +11,9 @@ export default class DateTime {
 
   static getTime(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
-    return dateValue.toLocaleTimeString().substring(0, 5)
+    const hours = dateValue.getHours().toString().padStart(2, '0')
+    const minutes = dateValue.getMinutes().toString().padStart(2, '0')
+    return `${hours}:${minutes}`
   }
 
   static getLocaleDate(date: Date | string) {
