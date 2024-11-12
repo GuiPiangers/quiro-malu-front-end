@@ -91,7 +91,7 @@ export default async function Patients({
   return (
     <main className="w-full max-w-screen-lg">
       <Box>
-        <div className="mb-6 grid grid-cols-[1fr_auto] items-center gap-8">
+        <div className="mb-6 grid grid-cols-[1fr_auto] items-center gap-6">
           <SearchInput className="text-base" />
           <Button asChild color="green">
             <Link href="/patients/create">Cadastrar</Link>

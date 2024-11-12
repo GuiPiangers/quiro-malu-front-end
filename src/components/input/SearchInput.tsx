@@ -12,7 +12,9 @@ export default function SearchInput({ className }: SearchInputProps) {
         className={className}
         placeholder="Pesquisar..."
         autoComplete="off"
-        startAdornment={<IoIosSearch size={24} className="ml-3" />}
+        startAdornment={
+          <IoIosSearch size={24} className="ml-3 hidden sm:block" />
+        }
       ></Input.Field>
     </Input.Root>
   )
