@@ -12,7 +12,7 @@ const routes = [
   { name: 'Evolução', path: '/patients/*/progress' },
   { name: 'Anamnese', path: '/patients/*/anamnesis' },
   { name: 'Exames', path: '/patients/*/exams' },
-  { name: 'Diagnóstico/Tratamento', path: '/patients/*/diagnostic' },
+  { name: 'Diagnóstico', path: '/patients/*/diagnostic' },
   { name: 'Financeiro', path: '/patients/*/finance' },
   { name: 'Serviços', path: '/services' },
   { name: 'Financeiro', path: '/finance' },
