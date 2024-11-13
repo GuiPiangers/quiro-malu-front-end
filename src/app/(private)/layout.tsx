@@ -13,7 +13,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     <ToggleContextProvider>
-      <div className="h-svh grid grid-rows-[auto_1fr]">
+      <div className="grid h-[100svh] grid-rows-[auto_1fr]">
         <Header />
         <div className="flex h-full w-full">
           <Sidebar />

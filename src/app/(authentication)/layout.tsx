@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export default function AuthenticationLayout({ children }: LayoutProps) {
   return (
-    <main className="h-lvh grid w-full place-items-center">
+    <main className="grid h-[svh] w-full place-items-center">
       <Snackbar>
         <div className="flex flex-wrap items-center justify-center gap-8">
           <div className="flex flex-col items-center gap-2">
