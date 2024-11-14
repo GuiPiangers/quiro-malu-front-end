@@ -17,7 +17,7 @@ export default function Layout({ children }: LayoutProps) {
         <Header />
         <div className="flex h-full w-full">
           <Sidebar />
-          <ScrollArea className="h-[calc(100vh-3.25rem)]">
+          <ScrollArea className="h-[calc(100svh-3.25rem)]">
             <SubHeader />
             <div className="flex w-full items-center justify-center px-4 py-6">
               <Snackbar>{children}</Snackbar>
