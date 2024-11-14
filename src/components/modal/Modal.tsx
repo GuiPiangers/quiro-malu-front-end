@@ -36,14 +36,6 @@ export default forwardRef<ModalHandles, ModalProps>(function Modal(
     return { openModal: handleOpen, closeModal: handleClose, isOpen: open }
   })
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-  }, [open])
-
   return (
     <BaseModal
       aria-labelledby="unstyled-modal-title"
