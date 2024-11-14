@@ -83,8 +83,8 @@ export default function CalendarItem({
 
   useEffect(() => {
     if (focusDate) {
-      if (DateTime.getIsoDate(date) === DateTime.getIsoDate(focusDate))
-        itemRef.current?.focus()
+      // if (DateTime.getIsoDate(date) === DateTime.getIsoDate(focusDate))
+      //   itemRef.current?.focus()
     }
   }, [date, focusDate])
 

@@ -182,7 +182,7 @@ export default async function Scheduling({
         <AccordionTable.Root>{generateTable()}</AccordionTable.Root>
       </Box>
       <Box className="w-full place-self-start">
-        {/* <SchedulingCalendar /> */}
+        <SchedulingCalendar />
       </Box>
     </div>
   )
