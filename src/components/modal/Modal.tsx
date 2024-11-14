@@ -7,6 +7,7 @@ import {
   forwardRef,
   useState,
   useImperativeHandle,
+  useEffect,
 } from 'react'
 import { Modal as BaseModal } from '@mui/base/Modal'
 import { twMerge } from 'tailwind-merge'
@@ -34,6 +35,14 @@ export default forwardRef<ModalHandles, ModalProps>(function Modal(
   useImperativeHandle(ref, () => {
     return { openModal: handleOpen, closeModal: handleClose, isOpen: open }
   })
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  }, [open])
 
   return (
     <BaseModal
