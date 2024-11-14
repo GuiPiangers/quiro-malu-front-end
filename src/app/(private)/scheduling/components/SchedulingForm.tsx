@@ -195,6 +195,7 @@ export default function SchedulingForm({
   return (
     <Form onSubmit={handleSubmit(setScheduling)} {...formProps}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
+        <input />
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data

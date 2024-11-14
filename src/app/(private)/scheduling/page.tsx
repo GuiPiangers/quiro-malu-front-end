@@ -18,6 +18,7 @@ import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import DeleteSchedulingButton from './components/DeleteSchedulingButton'
 import RealizeScheduling from './(realizeScheduling)/components/RealizeScheduling'
+import { Input } from '@/components/input'
 
 export default async function Scheduling({
   searchParams,
@@ -154,6 +155,9 @@ export default async function Scheduling({
   return (
     <div className="flex w-full max-w-screen-xl flex-col-reverse gap-4 md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px]">
       <Box className="">
+        <Input.Root>
+          <Input.Field></Input.Field>
+        </Input.Root>
         <div className="mb-4 flex items-center justify-between">
           <div className="flex gap-1">
             <RouteReplace route={incDate(-1)}>
