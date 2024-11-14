@@ -152,7 +152,7 @@ export default async function Scheduling({
   }
 
   return (
-    <div className="flex w-full max-w-screen-xl flex-col-reverse gap-4 overflow-y-auto md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px]">
+    <div className="flex w-full max-w-screen-xl flex-col-reverse gap-4 md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px]">
       <Box className="">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex gap-1">
