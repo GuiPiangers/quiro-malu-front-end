@@ -58,7 +58,7 @@ const Backdrop = forwardRef<
   const { open, className, ...other } = props
   return (
     <div
-      className={'fixed inset-0 z-30 bg-black bg-opacity-50 '}
+      className={'fixed inset-0 -z-10 bg-black bg-opacity-50 '}
       ref={ref}
       {...other}
     />
