@@ -60,7 +60,7 @@ export default async function Services({
   return (
     <div className="flex w-full flex-col items-center gap-4">
       <Box className="w-full max-w-screen-lg">
-        <div className="mb-6 grid grid-cols-[1fr_auto] items-center gap-8">
+        <div className="mb-6 grid grid-cols-1 items-center gap-4 sm:grid-cols-[1fr_auto]">
           <SearchInput className="text-base" />
           <CreateServiceModal>Adicionar</CreateServiceModal>
         </div>
