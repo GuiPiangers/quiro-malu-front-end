@@ -55,6 +55,7 @@ export type ProgressResponse = {
   actualProblem: string
   procedures: string
   date: string
+  schedulingId?: string
   createAt?: string
   updateAt?: string
 }

@@ -48,12 +48,14 @@ export function ProgressSchedulingForm({
         router.refresh()
       }}
       formAction={async (data) => {
-        const progressRes = await clientPatientService.setProgress(data)
+        const progressRes = await clientPatientService.setProgress({
+          ...data,
+          schedulingId,
+        })
         if (Validate.isOk(progressRes))
-          await clientSchedulingService.updateStatus({
+          await clientSchedulingService.realizeScheduling({
             id: data.id ?? schedulingId,
             patientId,
-            status: 'Atendido',
           })
         return progressRes
       }}

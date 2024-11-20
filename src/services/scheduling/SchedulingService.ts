@@ -44,18 +44,16 @@ export class Scheduling extends ServiceApi {
     return res
   }
 
-  async updateStatus({
+  async realizeScheduling({
     id,
     patientId,
-    status,
   }: {
     id: string
     patientId: string
-    status: SchedulingStatus
   }) {
-    const res = await this.fetchData<SchedulingResponse>('/schedules/status', {
-      method: 'PATCH',
-      body: JSON.stringify({ id, patientId, status }),
+    const res = await this.fetchData<SchedulingResponse>('/realizeScheduling', {
+      method: 'POST',
+      body: JSON.stringify({ id, patientId }),
     })
 
     return res
