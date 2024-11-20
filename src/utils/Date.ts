@@ -1,7 +1,6 @@
 export default class DateTime {
   static getIsoDate(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
-    console.log(dateValue)
     return dateValue.toISOString().substring(0, 10)
   }
 

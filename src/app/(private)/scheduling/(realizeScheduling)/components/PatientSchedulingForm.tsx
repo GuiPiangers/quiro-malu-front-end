@@ -54,7 +54,6 @@ export default function PatientSchedulingForm({
           gender: data.gender,
           location: data.location,
         })
-        console.log(result)
         return result
       }}
     />

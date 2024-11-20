@@ -151,6 +151,10 @@ export default function RealizeScheduling({
           <PaymentForm
             setNextPage={setNextPage}
             goNextPage={goToNextPage}
+            formData={{
+              date,
+              service,
+            }}
             afterValidation={(buttonClicked: string) => {
               if (buttonClicked === 'finalizar') {
                 handleClose()

@@ -38,6 +38,7 @@ type PaymentResponse = {
   date: string
   price: string
   paymentMethod?: string
+  service: string
 }
 export type setPaymentData = z.infer<typeof setPaymentSchema>
 
@@ -66,12 +67,16 @@ export default function PaymentForm({
     formState: { isSubmitting, errors, dirtyFields },
     register,
     setValue,
+    watch,
   } = setPaymentForm
 
   const setPayment = () => {
     afterValidation && afterValidation(buttonClicked.current)
     goNextPage()
   }
+
+  const selectedService = watch('service')
+  console.log(selectedService)
 
   return (
     <Form
@@ -128,6 +133,7 @@ export default function PaymentForm({
           <Input.Label notSave={dirtyFields.service?.name}>Serviço</Input.Label>
           <ServiceSelect
             notSave={dirtyFields.service?.name}
+            defaultValue={formData?.service}
             onChange={(_, value) => {
               setValue('service', value as ServiceResponse, {
                 shouldDirty: true,
@@ -147,7 +153,9 @@ export default function PaymentForm({
               autoComplete="off"
               disabled={isSubmitting}
               defaultValue={Currency.format(
-                formData?.price ? parseFloat(formData.price).toFixed(2) : '0',
+                selectedService?.value
+                  ? selectedService?.value.toFixed(2)
+                  : '0',
               )}
               {...register('price')}
               error={!!errors.price}
