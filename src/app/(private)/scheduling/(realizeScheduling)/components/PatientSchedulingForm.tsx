@@ -53,6 +53,7 @@ export default function PatientSchedulingForm({
           cpf: data.cpf,
           gender: data.gender,
           location: data.location,
+          dateOfBirth: data.dateOfBirth,
         })
         return result
       }}
