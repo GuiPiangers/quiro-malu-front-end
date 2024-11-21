@@ -151,6 +151,22 @@ export class PatientService extends ServiceApi {
     return res
   }
 
+  async getProgressByScheduling({
+    patientId,
+    schedulingId,
+  }: {
+    patientId: string
+    schedulingId: string
+  }) {
+    const res = await this.fetchData<ProgressResponse>(
+      `/patients/progress/scheduling/${patientId}/${schedulingId}`,
+      {
+        method: 'GET',
+      },
+    )
+    return res
+  }
+
   async listProgress({
     patientId,
     page = '1',
