@@ -24,7 +24,7 @@ export default function Sidebar({ className }: SidebarProps) {
       <div onClick={toggle} className={sideWrapperStyle()}></div>
       <nav className={SidebarStyle({ className })}>
         <li className="list-none space-y-1">
-          <NavItem href="/Home" icon={CiHome}>
+          <NavItem href="/" icon={CiHome}>
             Home
           </NavItem>
           <NavItem href="/scheduling" icon={CiCalendar}>
