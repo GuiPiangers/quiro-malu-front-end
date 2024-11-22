@@ -1,24 +1,13 @@
 import { Box } from '@/components/box/Box'
-import Button from '@/components/Button'
-import { AccordionTable } from '@/components/accordionTable'
-import { Table } from '@/components/table'
-import {
-  SchedulingResponse,
-  SchedulingStatusEnum,
-} from '@/services/scheduling/SchedulingService'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
 import DateTime from '@/utils/Date'
 import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
-import { Time } from '@/utils/Time'
-import Link from 'next/link'
 import RouteReplace from '../../../components/RouteReplace'
 import { RxCaretDown } from 'react-icons/rx'
 import SchedulingModal from './components/SchedulingModal'
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
-import DeleteSchedulingButton from './components/DeleteSchedulingButton'
-import RealizeScheduling from './(realizeScheduling)/components/RealizeScheduling'
-import { Input } from '@/components/input'
+import SchedulingList from '@/components/schedulingList/SchedulingList'
 
 export default async function Scheduling({
   searchParams,
@@ -37,14 +26,12 @@ export default async function Scheduling({
 
   const schedulesResp = await schedulingService.list({ date })
   const table = new GenerateWorkHours({
-    schedulingDuration: 30,
+    workTimeIncrement: 30,
     workSchedules: [
       { start: '07:00', end: '11:00' },
       { start: '13:00', end: '19:00' },
     ],
-  }).generate<SchedulingResponse & { patient: string; phone: string }>(
-    Validate.isOk(schedulesResp) ? schedulesResp.schedules : [],
-  )
+  })
 
   const incDate = (number: number) =>
     `?date=${DateTime.getIsoDate(
@@ -54,103 +41,6 @@ export default async function Scheduling({
         +date.substring(8, 10) + number,
       ),
     )}`
-
-  const generateTable = () => {
-    return table.map((item) => {
-      const [hour, scheduling] = item
-      if (scheduling) {
-        const durationString = new Time(
-          scheduling.duration,
-        ).getHoursAndMinutes()
-        const status =
-          scheduling.status === SchedulingStatusEnum.attended &&
-          scheduling.date < new Date().toISOString()
-            ? SchedulingStatusEnum.attended
-            : scheduling.status
-
-        return (
-          <AccordionTable.Item key={scheduling.id}>
-            <AccordionTable.Row
-              columns={['2fr', '2fr', '1fr']}
-              data-status={status}
-              className={`${
-                status === SchedulingStatusEnum.scheduled && 'text-blue-600'
-              } ${
-                status === SchedulingStatusEnum.attended && 'text-green-600'
-              } ${status === SchedulingStatusEnum.late && 'text-red-600'}`}
-            >
-              <AccordionTable.Cell>
-                {hour} {'('}
-                {durationString}
-                {')'}
-              </AccordionTable.Cell>
-              <AccordionTable.Cell>{scheduling.patient}</AccordionTable.Cell>
-              <AccordionTable.Cell>{status}</AccordionTable.Cell>
-            </AccordionTable.Row>
-            <AccordionTable.Content className="flex justify-between gap-2">
-              <div className="space-y-1 text-sm">
-                <p>
-                  <strong>Paciente:</strong> {scheduling.patient}
-                </p>
-                <p>
-                  <strong>Serviço:</strong> {scheduling.service}
-                </p>
-                <p>
-                  <strong>Duração:</strong> {durationString}
-                </p>
-                <div className="flex gap-2 pt-2 ">
-                  <SchedulingModal
-                    variant="outline"
-                    size="small"
-                    color="blue"
-                    className="w-20"
-                    formData={{
-                      ...scheduling,
-                      patientPhone: scheduling.phone,
-                    }}
-                  >
-                    Editar
-                  </SchedulingModal>
-                  <DeleteSchedulingButton id={scheduling.id!} />
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <RealizeScheduling
-                  size="small"
-                  date={scheduling.date}
-                  service={scheduling.service}
-                  patientId={scheduling.patientId}
-                  schedulingId={scheduling.id!}
-                >
-                  Realizar consulta
-                </RealizeScheduling>
-                <Button variant="outline" size="small">
-                  Contato
-                </Button>
-                <Button asChild variant="outline" size="small">
-                  <Link href={`/patients/${scheduling.patientId}`}>Ficha</Link>
-                </Button>
-              </div>
-            </AccordionTable.Content>
-          </AccordionTable.Item>
-        )
-      }
-      return (
-        <SchedulingModal
-          key={hour}
-          className="contents text-black"
-          formData={{ date: `${date}T${hour}` }}
-        >
-          <Table.Row clickable columns={['auto', '1fr']} className="group">
-            <Table.Cell>{hour}</Table.Cell>
-            <Table.Cell className="pointer-events-none w-full rounded border border-slate-300 text-center text-slate-400 opacity-0 group-hover:opacity-100">
-              Novo Agendamento
-            </Table.Cell>
-          </Table.Row>
-        </SchedulingModal>
-      )
-    })
-  }
 
   return (
     <div className="flex w-full max-w-screen-xl flex-col-reverse gap-4 md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px]">
@@ -176,7 +66,13 @@ export default async function Scheduling({
 
           <SchedulingModal>Agendar</SchedulingModal>
         </div>
-        <AccordionTable.Root>{generateTable()}</AccordionTable.Root>
+        <SchedulingList
+          date={date}
+          generateWorkHours={table}
+          schedules={
+            Validate.isOk(schedulesResp) ? schedulesResp.schedules : []
+          }
+        />
       </Box>
       <Box className="w-full place-self-start">
         <SchedulingCalendar />

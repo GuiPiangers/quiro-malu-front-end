@@ -3,17 +3,17 @@ import DateTime from './Date'
 export class GenerateWorkHours {
   readonly workSchedules: Array<{ start: string; end: string }>
   readonly workHours: Array<string>
-  readonly schedulingDuration: number
+  readonly workTimeIncrement: number
 
   constructor({
     workSchedules,
-    schedulingDuration,
+    workTimeIncrement,
   }: {
     workSchedules: Array<{ start: string; end: string }>
-    schedulingDuration: number
+    workTimeIncrement: number
   }) {
     this.workSchedules = workSchedules
-    this.schedulingDuration = schedulingDuration
+    this.workTimeIncrement = workTimeIncrement
 
     const times = new Set<string>()
 
@@ -24,7 +24,7 @@ export class GenerateWorkHours {
       // eslint-disable-next-line no-unmodified-loop-condition
       while (currentTime <= endTime) {
         times.add(DateTime.getTime(currentTime))
-        currentTime.setMinutes(currentTime.getMinutes() + schedulingDuration)
+        currentTime.setMinutes(currentTime.getMinutes() + workTimeIncrement)
       }
     })
 

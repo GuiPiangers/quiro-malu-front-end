@@ -21,6 +21,11 @@ export default class DateTime {
     return dateValue.toLocaleDateString()
   }
 
+  static validateDate(date: string) {
+    const datePattern = /^(\d{4})-(\d{2})-(\d{2})/
+    return datePattern.test(date)
+  }
+
   static calcAge(date: Date | string) {
     const dateOfBirth = typeof date === 'string' ? new Date(date) : date
     const year = dateOfBirth.getFullYear()

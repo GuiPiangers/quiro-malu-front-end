@@ -1,6 +1,12 @@
 'use client'
 
-import { CiCalendar, CiDollar, CiStethoscope, CiUser } from 'react-icons/ci'
+import {
+  CiCalendar,
+  CiDollar,
+  CiStethoscope,
+  CiUser,
+  CiHome,
+} from 'react-icons/ci'
 import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
 import useToggleContext from '@/hooks/useToggleContext'
@@ -18,6 +24,9 @@ export default function Sidebar({ className }: SidebarProps) {
       <div onClick={toggle} className={sideWrapperStyle()}></div>
       <nav className={SidebarStyle({ className })}>
         <li className="list-none space-y-1">
+          <NavItem href="/Home" icon={CiHome}>
+            Home
+          </NavItem>
           <NavItem href="/scheduling" icon={CiCalendar}>
             Agenda
           </NavItem>
