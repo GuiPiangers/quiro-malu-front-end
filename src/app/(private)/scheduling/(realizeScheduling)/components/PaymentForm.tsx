@@ -5,15 +5,14 @@ import Form, { FormProps } from '@/components/form/Form'
 import { sectionStyles } from '@/components/form/Styles'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import { set, useForm } from 'react-hook-form'
 import Button from '@/components/Button'
 import { Currency } from '@/utils/Currency'
 import DateTime from '@/utils/Date'
 import ServiceSelect from '@/components/input/ServiceSelect'
 import { PageStage } from './RealizeScheduling'
 import { ServiceResponse } from '@/services/service/Service'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 export const setPaymentSchema = z.object({
   date: z.string(),
@@ -38,6 +37,7 @@ type PaymentResponse = {
   date: string
   price: string
   paymentMethod?: string
+  service: string
 }
 export type setPaymentData = z.infer<typeof setPaymentSchema>
 
@@ -55,7 +55,8 @@ export default function PaymentForm({
   goNextPage,
   ...formProps
 }: PaymentFormProps) {
-  const { handleMessage } = useSnackbarContext()
+  const [selectedService, setSelectedService] = useState<ServiceResponse>()
+
   const setPaymentForm = useForm<setPaymentData>({
     resolver: zodResolver(setPaymentSchema),
   })
@@ -66,7 +67,10 @@ export default function PaymentForm({
     formState: { isSubmitting, errors, dirtyFields },
     register,
     setValue,
+    watch,
   } = setPaymentForm
+
+  console.log(watch('price'))
 
   const setPayment = () => {
     afterValidation && afterValidation(buttonClicked.current)
@@ -128,10 +132,30 @@ export default function PaymentForm({
           <Input.Label notSave={dirtyFields.service?.name}>Serviço</Input.Label>
           <ServiceSelect
             notSave={dirtyFields.service?.name}
-            onChange={(_, value) => {
+            defaultValue={formData?.service}
+            onInitialize={(value) => {
               setValue('service', value as ServiceResponse, {
                 shouldDirty: true,
               })
+              setSelectedService(value as ServiceResponse)
+              value &&
+                setValue(
+                  'price',
+                  Currency.format(value ? value.value.toFixed(2) : '0'),
+                )
+            }}
+            value={selectedService}
+            onChange={(_, value) => {
+              setSelectedService(value as ServiceResponse)
+              setValue('service', value as ServiceResponse, {
+                shouldDirty: true,
+              })
+              setValue(
+                'price',
+                Currency.format(
+                  value ? (value as ServiceResponse).value.toFixed(2) : '0',
+                ),
+              )
             }}
           />
           {errors.service && (
@@ -146,9 +170,6 @@ export default function PaymentForm({
               startAdornment={<span className="pl-2">R$</span>}
               autoComplete="off"
               disabled={isSubmitting}
-              defaultValue={Currency.format(
-                formData?.price ? parseFloat(formData.price).toFixed(2) : '0',
-              )}
               {...register('price')}
               error={!!errors.price}
               notSave={dirtyFields.price}

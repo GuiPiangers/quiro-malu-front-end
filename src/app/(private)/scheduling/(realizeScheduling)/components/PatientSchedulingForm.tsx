@@ -46,14 +46,16 @@ export default function PatientSchedulingForm({
         data: CreatePatientData | PatientResponse,
       ): Promise<PatientResponse | responseError> {
         setNextPage('anamnesis')
-        return await clientPatientService.update({
+        const result = await clientPatientService.update({
           id: patientId,
           name: data.name,
           phone: data.phone,
           cpf: data.cpf,
           gender: data.gender,
           location: data.location,
+          dateOfBirth: data.dateOfBirth,
         })
+        return result
       }}
     />
   )

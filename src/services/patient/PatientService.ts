@@ -55,6 +55,7 @@ export type ProgressResponse = {
   actualProblem: string
   procedures: string
   date: string
+  schedulingId?: string
   createAt?: string
   updateAt?: string
 }
@@ -143,6 +144,22 @@ export class PatientService extends ServiceApi {
   async getProgress({ patientId, id }: { patientId: string; id: string }) {
     const res = await this.fetchData<ProgressResponse>(
       `/patients/progress/${patientId}/${id}`,
+      {
+        method: 'GET',
+      },
+    )
+    return res
+  }
+
+  async getProgressByScheduling({
+    patientId,
+    schedulingId,
+  }: {
+    patientId: string
+    schedulingId: string
+  }) {
+    const res = await this.fetchData<ProgressResponse>(
+      `/patients/progress/scheduling/${patientId}/${schedulingId}`,
       {
         method: 'GET',
       },

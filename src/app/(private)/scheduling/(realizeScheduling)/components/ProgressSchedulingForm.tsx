@@ -27,12 +27,16 @@ export function ProgressSchedulingForm({
   const [progressData, setProgressData] = useState<ProgressResponse>()
   const router = useRouter()
 
+  console.log(schedulingId)
+
   useEffect(() => {
     schedulingId &&
       clientPatientService
-        .getProgress({ id: schedulingId, patientId })
+        .getProgressByScheduling({ schedulingId, patientId })
         .then((res) => Validate.isOk(res) && setProgressData(res))
   }, [patientId, schedulingId])
+
+  console.log(progressData)
 
   return (
     <ProgressForm
@@ -48,17 +52,19 @@ export function ProgressSchedulingForm({
         router.refresh()
       }}
       formAction={async (data) => {
-        const progressRes = await clientPatientService.setProgress(data)
+        const progressRes = await clientPatientService.setProgress({
+          ...data,
+          schedulingId,
+        })
         if (Validate.isOk(progressRes))
-          await clientSchedulingService.updateStatus({
-            id: data.id ?? schedulingId,
+          await clientSchedulingService.realizeScheduling({
+            id: schedulingId,
             patientId,
-            status: 'Atendido',
           })
         return progressRes
       }}
       formData={{
-        id: schedulingId,
+        id: progressData?.id,
         patientId,
         date,
         service,

@@ -5,17 +5,31 @@ import { Input } from '.'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { clientService } from '@/services/service/clientService'
+import { service } from '@/services/service/serverService'
 
 export default forwardRef(function ServiceSelect(
-  props: SelectProps<object | string, boolean> & inputVariantProps,
+  {
+    defaultValue,
+    onInitialize,
+    ...props
+  }: SelectProps<object | string, boolean> &
+    inputVariantProps & {
+      onInitialize?(value: ServiceResponse | undefined): void
+    },
   ref: ForwardedRef<HTMLButtonElement>,
 ) {
   const [services, setServices] = useState<ServiceResponse[]>()
 
   useEffect(() => {
-    clientService
-      .list({})
-      .then((data) => Validate.isOk(data) && setServices(data.services))
+    clientService.list({}).then((data) => {
+      if (Validate.isOk(data)) {
+        setServices(data.services)
+        onInitialize &&
+          onInitialize(
+            data.services.find((service) => service.name === defaultValue),
+          )
+      }
+    })
   }, [])
 
   return (
