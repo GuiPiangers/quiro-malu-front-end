@@ -18,7 +18,7 @@ export default class DateTime {
   static getLocaleDate(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
 
-    return dateValue.toLocaleDateString()
+    return dateValue.toLocaleDateString('pt-BR')
   }
 
   static validateDate(date: string) {
