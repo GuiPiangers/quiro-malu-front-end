@@ -6,6 +6,7 @@ import {
   CiStethoscope,
   CiUser,
   CiHome,
+  CiFileOn,
 } from 'react-icons/ci'
 import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
@@ -38,6 +39,9 @@ export default function Sidebar({ className }: SidebarProps) {
           </NavItem>
           <NavItem href="/finance" icon={CiDollar}>
             Financeiro
+          </NavItem>
+          <NavItem href="/arquivos" icon={CiFileOn}>
+            arquivos
           </NavItem>
         </li>
       </nav>
