@@ -2,16 +2,25 @@ import { ICookies } from '../cookies/ICookies'
 import { clientCookie } from '../cookies/clientCookies'
 
 const request = async (
-  input: RequestInfo,
-  init?: RequestInit | undefined,
+  input: RequestInfo | URL,
+  init?: RequestInit & { noContentType?: boolean },
   token?: string,
 ) => {
+  const { noContentType, headers, ...initData } = init || {}
+  const headersData: HeadersInit = noContentType
+    ? {
+        Authorization: `Bearer ${token}`,
+        ...headers,
+      }
+    : {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        ...headers,
+      }
+
   const data = await fetch(input, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    ...init,
+    headers: headersData,
+    ...initData,
   })
   return data
 }
@@ -25,7 +34,7 @@ export type responseError = {
 
 export async function api<T>(
   input: RequestInfo,
-  init?: RequestInit | undefined,
+  init?: RequestInit & { noContentType?: boolean },
   cookieService?: ICookies,
 ): Promise<T | responseError> {
   const baseURL = process.env.NEXT_PUBLIC_HOST

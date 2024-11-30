@@ -1,6 +1,7 @@
 import { CreatePatientData } from '@/app/(private)/patients/components/PatientDataForm'
 import { responseError } from '../api/api'
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
+import { clientCookie } from '../cookies/clientCookies'
 
 export type LocationDTO = {
   cep?: string
@@ -20,6 +21,14 @@ export type PatientResponse = {
   location?: LocationDTO
   createAt?: string
 }
+
+export type uploadPatientsResponse = {
+  duplicateCounter: number
+  erroCounter: number
+  errors: { error: string; patient: PatientResponse }[]
+  successCounter: number
+}
+
 export type PatientsListResponse = {
   patients: Array<{
     id?: string
@@ -84,6 +93,24 @@ export class PatientService extends ServiceApi {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
+
+    return res
+  }
+
+  async upload(data: File) {
+    const formData = new FormData()
+    formData.append('file', data)
+
+    console.log(formData)
+
+    const res = await this.fetchData<uploadPatientsResponse>(
+      '/uploadPatients',
+      {
+        method: 'POST',
+        body: formData,
+        noContentType: true,
+      },
+    )
 
     return res
   }
