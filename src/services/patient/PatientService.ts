@@ -1,7 +1,5 @@
 import { CreatePatientData } from '@/app/(private)/patients/components/PatientDataForm'
-import { responseError } from '../api/api'
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
-import { clientCookie } from '../cookies/clientCookies'
 
 export type LocationDTO = {
   cep?: string
@@ -16,10 +14,13 @@ export type PatientResponse = {
   name: string
   phone: string
   dateOfBirth?: string
-  gender?: 'Masculino' | 'Feminino'
+  gender?: 'masculino' | 'feminino'
   cpf?: string
   location?: LocationDTO
   createAt?: string
+  education?: string
+  profession?: string
+  maritalStatus?: string
 }
 
 export type uploadPatientsResponse = {

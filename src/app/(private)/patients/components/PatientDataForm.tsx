@@ -46,7 +46,9 @@ export const createPatientSchema = z.object({
     message: 'Formato de telefone inválido - padrão (DDD) 99999 9999',
   }),
   dateOfBirth: z.string().optional(),
-  gender: z.enum(['Masculino', 'Feminino']).optional(),
+  gender: z.enum(['masculino', 'feminino']).optional(),
+  profession: z.string().optional(),
+  maritalStatus: z.string().optional(),
   cpf: z
     .string()
     .optional()
@@ -274,7 +276,7 @@ export default function PatientDataForm({
             <Input.Label notSave={dirtyFields.gender}>Gênero</Input.Label>
             <Input.Select
               onChange={(_, newValue) => {
-                setValue('gender', newValue as 'Masculino' | 'Feminino', {
+                setValue('gender', newValue as 'masculino' | 'feminino', {
                   shouldDirty: true,
                   shouldValidate: true,
                 })
@@ -288,8 +290,8 @@ export default function PatientDataForm({
               value={getValues('gender')}
               notSave={dirtyFields.gender}
             >
-              <Input.Option value="Masculino">Masculino</Input.Option>
-              <Input.Option value="Feminino">Feminino</Input.Option>
+              <Input.Option value="masculino">Masculino</Input.Option>
+              <Input.Option value="feminino">Feminino</Input.Option>
             </Input.Select>
             {errors.gender && (
               <Input.Message error>{errors.gender.message}</Input.Message>
