@@ -1,6 +1,6 @@
 'use client'
 
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 import PatientDataForm, {
   CreatePatientData,
 } from '../components/PatientDataForm'

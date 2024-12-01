@@ -1,5 +1,5 @@
 import { Box } from '@/components/box/Box'
-import PatientsFile from '@/components/input/file/PatientsFile'
+import PatientsFile from '@/components/form/patients/UploadPatientsForm'
 
 export default function Page() {
   return (

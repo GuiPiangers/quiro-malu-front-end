@@ -7,7 +7,7 @@ import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
 import useAuthContext from '@/hooks/useAuthContext'
 import { Input } from '@/components/input'
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 
 export default function Login() {

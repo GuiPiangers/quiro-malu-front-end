@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 const createUserSchema = z.object({
   name: z

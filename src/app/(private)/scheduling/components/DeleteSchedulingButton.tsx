@@ -1,7 +1,7 @@
 'use client'
 
 import Button from '@/components/Button'
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 import { useRouter } from 'next/navigation'
 

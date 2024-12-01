@@ -2,7 +2,7 @@
 import Button from '@/components/Button'
 import ConfirmationModal from '@/components/modal/ConfirmationModal'
 import { ModalHandles } from '@/components/modal/Modal'
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { clientPatientService } from '@/services/patient/clientPatientService'
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef } from 'react'

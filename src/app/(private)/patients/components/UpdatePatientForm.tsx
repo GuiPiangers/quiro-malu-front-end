@@ -3,7 +3,7 @@
 import { PatientResponse } from '@/services/patient/PatientService'
 import PatientDataForm from '../components/PatientDataForm'
 import { clientPatientService } from '@/services/patient/clientPatientService'
-import useSnackbarContext from '@/hooks/useSnackbarContext copy'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 type UpdatePatientFormProps = {
   formData: PatientResponse
