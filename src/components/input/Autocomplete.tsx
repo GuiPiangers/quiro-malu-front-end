@@ -22,7 +22,7 @@ export default forwardRef(function Autocomplete(
     boolean
   > &
     inputVariantProps & {
-      onLastOptionView(): void
+      onLastOptionView?(): void
       condition?: boolean
     },
   ref: ForwardedRef<HTMLDivElement>,

@@ -102,8 +102,6 @@ export class PatientService extends ServiceApi {
     const formData = new FormData()
     formData.append('file', data)
 
-    console.log(formData)
-
     const res = await this.fetchData<uploadPatientsResponse>(
       '/uploadPatients',
       {
@@ -215,15 +213,19 @@ export class PatientService extends ServiceApi {
     page = '1',
     search,
     orderBy,
+    limit = 20,
   }: {
     page?: string
     search?: { [key: string]: string }
     orderBy?: [{ field: string; orientation: string }]
+    limit?: number | 'all'
   }) {
     const searchValue = JSON.stringify(search) || null
     const orderValue = JSON.stringify(orderBy) || null
+    const limitValue = limit === 'all' ? limit : JSON.stringify(limit)
+
     const res = await this.fetchData<PatientsListResponse>(
-      `/patients?page=${page}&search=${searchValue}&orderBy=${orderValue}`,
+      `/patients?page=${page}&search=${searchValue}&orderBy=${orderValue}&limit=${limitValue}`,
       {
         method: 'GET',
       },

@@ -49,6 +49,7 @@ export const createPatientSchema = z.object({
   gender: z.enum(['masculino', 'feminino']).optional(),
   profession: z.string().optional(),
   maritalStatus: z.string().optional(),
+  education: z.string().optional(),
   cpf: z
     .string()
     .optional()
@@ -136,6 +137,9 @@ export default function PatientDataForm({
       phone: data?.phone ?? '',
       cpf: data?.cpf ? data.cpf : undefined,
       gender: data?.gender ? data.gender : undefined,
+      education: data?.education ? data.education : undefined,
+      profession: data?.profession ? data.profession : undefined,
+      maritalStatus: data?.maritalStatus ? data.maritalStatus : undefined,
       location: {
         cep: data?.location?.cep ? data.location.cep : undefined,
         state: data?.location?.state ? data.location.state : undefined,
@@ -227,29 +231,10 @@ export default function PatientDataForm({
             disabled={isSubmitting}
             defaultValue={data?.phone}
             notSave={dirtyFields.phone}
+            inputMode="tel"
           />
           {errors.phone && (
             <Input.Message error>{errors.phone.message}</Input.Message>
-          )}
-        </Input.Root>
-
-        <Input.Root>
-          <Input.Label notSave={dirtyFields.cpf}>CPF</Input.Label>
-          <Input.Field
-            autoComplete="off"
-            error={!!errors.cpf}
-            {...register('cpf', {
-              onChange: (e: ChangeEvent<HTMLInputElement>) => {
-                e.target.value = Cpf.format(e.target.value)
-              },
-            })}
-            disabled={isSubmitting}
-            inputMode="numeric"
-            defaultValue={data?.cpf}
-            notSave={dirtyFields.cpf}
-          />
-          {errors.cpf && (
-            <Input.Message error>{errors.cpf.message}</Input.Message>
           )}
         </Input.Root>
 
@@ -295,6 +280,122 @@ export default function PatientDataForm({
             </Input.Select>
             {errors.gender && (
               <Input.Message error>{errors.gender.message}</Input.Message>
+            )}
+          </Input.Root>
+        </div>
+        <div className="flex gap-5 sm:grid-cols-2">
+          <Input.Root>
+            <Input.Label notSave={dirtyFields.cpf}>CPF</Input.Label>
+            <Input.Field
+              autoComplete="off"
+              error={!!errors.cpf}
+              {...register('cpf', {
+                onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                  e.target.value = Cpf.format(e.target.value)
+                },
+              })}
+              disabled={isSubmitting}
+              inputMode="numeric"
+              defaultValue={data?.cpf}
+              notSave={dirtyFields.cpf}
+            />
+            {errors.cpf && (
+              <Input.Message error>{errors.cpf.message}</Input.Message>
+            )}
+          </Input.Root>
+
+          <Input.Root>
+            <Input.Label notSave={dirtyFields.maritalStatus}>
+              Estado civil
+            </Input.Label>
+            <Input.Select
+              onChange={(_, newValue) => {
+                setValue('maritalStatus', newValue as string, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }}
+              slotProps={{
+                popper: { className: 'z-40' },
+              }}
+              disabled={isSubmitting}
+              error={!!errors.maritalStatus}
+              defaultValue={data?.maritalStatus}
+              value={getValues('maritalStatus')}
+              notSave={dirtyFields.maritalStatus}
+            >
+              <Input.Option value="casado">Casado</Input.Option>
+              <Input.Option value="solteiro">Solteiro</Input.Option>
+              <Input.Option value="divorciado">Divorciado</Input.Option>
+              <Input.Option value="viuvo">Viúvo</Input.Option>
+            </Input.Select>
+
+            {errors.maritalStatus && (
+              <Input.Message error>
+                {errors.maritalStatus.message}
+              </Input.Message>
+            )}
+          </Input.Root>
+        </div>
+
+        <div className="flex gap-5 sm:grid-cols-2">
+          <Input.Root>
+            <Input.Label notSave={dirtyFields.profession}>
+              Profissão
+            </Input.Label>
+            <Input.Field
+              autoComplete="off"
+              error={!!errors.profession}
+              {...register('profession')}
+              disabled={isSubmitting}
+              defaultValue={data?.profession}
+              notSave={dirtyFields.profession}
+            />
+            {errors.profession && (
+              <Input.Message error>{errors.profession.message}</Input.Message>
+            )}
+          </Input.Root>
+
+          <Input.Root>
+            <Input.Label notSave={dirtyFields.education}>
+              Escolaridade
+            </Input.Label>
+            <Input.Select
+              onChange={(_, newValue) => {
+                setValue('education', newValue as string, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }}
+              slotProps={{
+                popper: { className: 'z-40' },
+              }}
+              disabled={isSubmitting}
+              error={!!errors.education}
+              defaultValue={data?.education}
+              value={getValues('education')}
+              notSave={dirtyFields.education}
+            >
+              <Input.Option value="fundamental incompleto">
+                Fundamental incompleto
+              </Input.Option>
+              <Input.Option value="fundamental completo">
+                Fundamental completo
+              </Input.Option>
+              <Input.Option value="medio incompleto">
+                Médio incompleto
+              </Input.Option>
+              <Input.Option value="medio completo">Médio completo</Input.Option>
+              <Input.Option value="superior incompleto">
+                Superior incompleto
+              </Input.Option>
+              <Input.Option value="superior completo">
+                Superior completo
+              </Input.Option>
+            </Input.Select>
+
+            {errors.education && (
+              <Input.Message error>{errors.education.message}</Input.Message>
             )}
           </Input.Root>
         </div>

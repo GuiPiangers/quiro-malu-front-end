@@ -27,16 +27,12 @@ export function ProgressSchedulingForm({
   const [progressData, setProgressData] = useState<ProgressResponse>()
   const router = useRouter()
 
-  console.log(schedulingId)
-
   useEffect(() => {
     schedulingId &&
       clientPatientService
         .getProgressByScheduling({ schedulingId, patientId })
         .then((res) => Validate.isOk(res) && setProgressData(res))
   }, [patientId, schedulingId])
-
-  console.log(progressData)
 
   return (
     <ProgressForm

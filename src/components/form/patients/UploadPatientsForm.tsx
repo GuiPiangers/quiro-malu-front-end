@@ -51,7 +51,6 @@ export default function PatientsFile() {
           description: res.message,
           type: 'error',
         })
-        console.log('chegou aqui')
         setError(
           'file',
           { message: 'Erro ao salvar pacientes' },

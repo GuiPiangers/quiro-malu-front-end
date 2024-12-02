@@ -67,10 +67,7 @@ export default function PaymentForm({
     formState: { isSubmitting, errors, dirtyFields },
     register,
     setValue,
-    watch,
   } = setPaymentForm
-
-  console.log(watch('price'))
 
   const setPayment = () => {
     afterValidation && afterValidation(buttonClicked.current)

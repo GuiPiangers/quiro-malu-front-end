@@ -78,30 +78,30 @@ export default function SchedulingForm({
     resolver: zodResolver(setSchedulingSchema),
   })
 
-  const loadMorePatients = () => {
-    if (patients && Math.ceil(patients.total / patients?.limit) === patientPage)
-      return undefined
-    clientPatientService
-      .list({
-        page: `${patientPage + 1}`,
-        search: { name: patientSearch },
-      })
-      .then((data) => {
-        if (Validate.isOk(data)) {
-          setPatientPage((value) => value + 1)
+  // const loadMorePatients = () => {
+  //   if (patients && Math.ceil(patients.total / patients?.limit) === patientPage)
+  //     return undefined
+  //   clientPatientService
+  //     .list({
+  //       page: `${patientPage + 1}`,
+  //       search: { name: patientSearch },
+  //     })
+  //     .then((data) => {
+  //       if (Validate.isOk(data)) {
+  //         setPatientPage((value) => value + 1)
 
-          setPatients((value) => {
-            if (value && value.patients) {
-              return {
-                total: data.total,
-                limit: data.limit,
-                patients: [...data.patients, ...value.patients],
-              }
-            }
-          })
-        }
-      })
-  }
+  //         setPatients((value) => {
+  //           if (value && value.patients) {
+  //             return {
+  //               total: data.total,
+  //               limit: data.limit,
+  //               patients: [...data.patients, ...value.patients],
+  //             }
+  //           }
+  //         })
+  //       }
+  //     })
+  // }
 
   const {
     handleSubmit,
@@ -186,7 +186,7 @@ export default function SchedulingForm({
   }, [patientId, service, setService, setValue])
 
   useEffect(() => {
-    clientPatientService.list({}).then((data) => {
+    clientPatientService.list({ limit: 'all' }).then((data) => {
       Validate.isOk(data) && setPatients(data)
     })
     setPatientPage(1)
@@ -278,7 +278,7 @@ export default function SchedulingForm({
               label: patient || '',
               id: patientId || '',
             }}
-            onLastOptionView={loadMorePatients}
+            // onLastOptionView={loadMorePatients}
             options={
               patients
                 ? patients?.patients.map((patient) => ({

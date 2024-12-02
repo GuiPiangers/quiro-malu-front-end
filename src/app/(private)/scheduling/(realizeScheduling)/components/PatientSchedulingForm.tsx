@@ -54,6 +54,9 @@ export default function PatientSchedulingForm({
           gender: data.gender,
           location: data.location,
           dateOfBirth: data.dateOfBirth,
+          education: data.education,
+          maritalStatus: data.maritalStatus,
+          profession: data.profession,
         })
         return result
       }}
