@@ -283,7 +283,7 @@ export default function PatientDataForm({
             )}
           </Input.Root>
         </div>
-        <div className="flex gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Input.Root>
             <Input.Label notSave={dirtyFields.cpf}>CPF</Input.Label>
             <Input.Field
@@ -338,7 +338,7 @@ export default function PatientDataForm({
           </Input.Root>
         </div>
 
-        <div className="flex gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Input.Root>
             <Input.Label notSave={dirtyFields.profession}>
               Profissão
