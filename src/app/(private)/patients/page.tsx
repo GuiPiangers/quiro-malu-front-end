@@ -34,7 +34,7 @@ export default async function Patients({
                 size="small"
                 className="justify-self-stretch"
               >
-                <Link href={`/patients/${patient.id}`}>ficha</Link>
+                <Link href={`/patients/${patient.id}`}>Ficha</Link>
               </Button>
             </AccordionTable.Row>
             <AccordionTable.Content className="flex justify-between gap-2">
@@ -53,8 +53,13 @@ export default async function Patients({
                 )}
               </div>
               <div className="flex w-28 flex-col gap-2">
-                <Button variant="outline" size="small">
-                  Contato
+                <Button variant="outline" size="small" asChild>
+                  <Link
+                    href={`https://wa.me/55${patient.phone}`}
+                    target="_blank"
+                  >
+                    Contato
+                  </Link>
                 </Button>
                 <CreateSchedulingModal
                   color="primary"

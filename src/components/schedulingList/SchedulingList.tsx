@@ -105,7 +105,12 @@ export default function SchedulingList({
                     Realizar consulta
                   </RealizeScheduling>
                   <Button variant="outline" size="small">
-                    Contato
+                    <Link
+                      href={`https://wa.me/55${scheduling.phone}`}
+                      target="_blank"
+                    >
+                      Contato
+                    </Link>
                   </Button>
                   <Button asChild variant="outline" size="small">
                     <Link href={`/patients/${scheduling.patientId}`}>

@@ -7,6 +7,7 @@ import { ReactNode } from 'react'
 import { DeletePatientModal } from '../components/DeletePatient'
 import { Validate } from '@/services/api/Validate'
 import CreateSchedulingModal from '../../scheduling/components/SchedulingModal'
+import Link from 'next/link'
 
 type LayoutProps = {
   children: ReactNode
@@ -42,8 +43,13 @@ export default async function Layout({ children, params }: LayoutProps) {
               )}
             </div>
             <div className="flex flex-col gap-2">
-              <Button variant="outline" size="small">
-                Contato
+              <Button variant="outline" size="small" asChild>
+                <Link
+                  href={`https://wa.me/55${patientData?.phone}`}
+                  target="_blank"
+                >
+                  Contato
+                </Link>
               </Button>
               <CreateSchedulingModal
                 color="primary"
