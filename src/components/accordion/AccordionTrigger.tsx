@@ -2,7 +2,7 @@
 
 import useIdContext from '@/hooks/useIdContext'
 import useToggleGroupContext from '@/hooks/useToggleGroupContext'
-import { ReactNode, HTMLAttributes } from 'react'
+import { ReactNode, HTMLAttributes, use, useRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 import AccordionHeader from './AccordionHeader'
 

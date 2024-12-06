@@ -12,6 +12,9 @@ import Button from '../Button'
 import Link from 'next/link'
 import { Table } from '../table'
 import DateTime from '@/utils/Date'
+import Menu from '../Menu/Index'
+import StopPropagation from '../StopPropagation'
+import { Input } from '../input'
 
 type SchedulingListProps = {
   date: string
@@ -23,6 +26,12 @@ type SchedulingListProps = {
       }
   >
 }
+
+const statusColors = {
+  [SchedulingStatusEnum.scheduled]: 'blue',
+  [SchedulingStatusEnum.late]: 'red',
+  [SchedulingStatusEnum.attended]: 'green',
+} as Record<string, 'blue' | 'green' | 'red'>
 
 export default function SchedulingList({
   date,
@@ -42,22 +51,20 @@ export default function SchedulingList({
           const durationString = new Time(
             scheduling.duration,
           ).getHoursAndMinutes()
-          const status =
-            scheduling.status === SchedulingStatusEnum.attended &&
-            scheduling.date < new Date().toISOString()
-              ? SchedulingStatusEnum.attended
-              : scheduling.status
 
           return (
             <AccordionTable.Item key={scheduling.id}>
               <AccordionTable.Row
                 columns={['2fr', '2fr', '1fr']}
-                data-status={status}
+                data-status={scheduling.status}
                 className={`${
-                  status === SchedulingStatusEnum.scheduled && 'text-blue-600'
+                  statusColors[scheduling.status] === 'blue' && 'text-blue-600'
                 } ${
-                  status === SchedulingStatusEnum.attended && 'text-green-600'
-                } ${status === SchedulingStatusEnum.late && 'text-red-600'}`}
+                  statusColors[scheduling.status] === 'green' &&
+                  'text-green-600'
+                } ${
+                  statusColors[scheduling.status] === 'red' && 'text-red-600'
+                }`}
               >
                 <AccordionTable.Cell>
                   {hour} {'('}
@@ -65,7 +72,31 @@ export default function SchedulingList({
                   {')'}
                 </AccordionTable.Cell>
                 <AccordionTable.Cell>{scheduling.patient}</AccordionTable.Cell>
-                <AccordionTable.Cell>{status}</AccordionTable.Cell>
+                <StopPropagation>
+                  <AccordionTable.Cell>
+                    <Input.Root>
+                      <Button
+                        asChild
+                        className="text-sm"
+                        color={statusColors[scheduling.status] || 'blue'}
+                        variant="outline"
+                        size="small"
+                      >
+                        <Input.Select>
+                          <Input.Option value={'Agendado'}>
+                            Agendado
+                          </Input.Option>
+                          <Input.Option value={'Atendido'}>
+                            Atendido
+                          </Input.Option>
+                          <Input.Option value={'Cancelado'}>
+                            Cancelado
+                          </Input.Option>
+                        </Input.Select>
+                      </Button>
+                    </Input.Root>
+                  </AccordionTable.Cell>
+                </StopPropagation>
               </AccordionTable.Row>
               <AccordionTable.Content className="flex justify-between gap-2">
                 <div className="space-y-1 text-sm">
