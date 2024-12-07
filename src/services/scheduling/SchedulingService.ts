@@ -1,10 +1,15 @@
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 
-export type SchedulingStatus = 'Agendado' | 'Atendido' | 'Atrasado'
+export type SchedulingStatus =
+  | 'Agendado'
+  | 'Atendido'
+  | 'Atrasado'
+  | 'Cancelado'
 export enum SchedulingStatusEnum {
   scheduled = 'Agendado',
   attended = 'Atendido',
   late = 'Atrasado',
+  canceled = 'Cancelado',
 }
 
 export type SchedulingResponse = {
@@ -17,8 +22,6 @@ export type SchedulingResponse = {
 }
 export type SchedulingListResponse = {
   schedules: (SchedulingResponse & { patient: string; phone: string })[]
-  total: number
-  limit: number
 }
 
 export class Scheduling extends ServiceApi {
@@ -35,7 +38,7 @@ export class Scheduling extends ServiceApi {
     return res
   }
 
-  async update(data: SchedulingResponse) {
+  async update(data: Partial<SchedulingResponse>) {
     const res = await this.fetchData<SchedulingResponse>('/schedules', {
       method: 'PATCH',
       body: JSON.stringify(data),

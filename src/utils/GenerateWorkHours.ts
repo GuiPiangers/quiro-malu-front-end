@@ -1,5 +1,10 @@
 import DateTime from './Date'
 
+export type GenerateWorkHoursProps = {
+  workSchedules: Array<{ start: string; end: string }>
+  workTimeIncrement: number
+}
+
 export class GenerateWorkHours {
   readonly workSchedules: Array<{ start: string; end: string }>
   readonly workHours: Array<string>

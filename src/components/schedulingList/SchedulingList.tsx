@@ -1,8 +1,13 @@
+'use client'
+
 import {
   SchedulingResponse,
   SchedulingStatusEnum,
 } from '@/services/scheduling/SchedulingService'
-import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
+import {
+  GenerateWorkHours,
+  GenerateWorkHoursProps,
+} from '@/utils/GenerateWorkHours'
 import { Time } from '@/utils/Time'
 import { AccordionTable } from '../accordionTable'
 import SchedulingModal from '@/app/(private)/scheduling/components/SchedulingModal'
@@ -12,13 +17,16 @@ import Button from '../Button'
 import Link from 'next/link'
 import { Table } from '../table'
 import DateTime from '@/utils/Date'
-import Menu from '../Menu/Index'
 import StopPropagation from '../StopPropagation'
-import { Input } from '../input'
+import StatusSelect from './StatusSelect'
+import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'next/navigation'
+import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
+import { Validate } from '@/services/api/Validate'
 
 type SchedulingListProps = {
   date: string
-  generateWorkHours: GenerateWorkHours
+  workHours: GenerateWorkHoursProps
   schedules: Array<
     { date: string; duration: number } & SchedulingResponse & {
         patient: string
@@ -31,14 +39,45 @@ const statusColors = {
   [SchedulingStatusEnum.scheduled]: 'blue',
   [SchedulingStatusEnum.late]: 'red',
   [SchedulingStatusEnum.attended]: 'green',
-} as Record<string, 'blue' | 'green' | 'red'>
+  [SchedulingStatusEnum.canceled]: 'yellow',
+} as Record<string, 'blue' | 'green' | 'red' | 'yellow'>
 
 export default function SchedulingList({
   date,
-  generateWorkHours,
+  workHours,
   schedules,
 }: SchedulingListProps) {
-  const table = generateWorkHours.generate(schedules)
+  const searchParams = useSearchParams()
+
+  const month = searchParams.get('date')
+    ? new Date(searchParams.get('date')!).getMonth()
+    : new Date().getMonth()
+
+  const year = searchParams.get('year')
+    ? new Date(searchParams.get('date')!).getFullYear()
+    : new Date().getFullYear()
+
+  const { data } = useQuery({
+    queryKey: ['listLaunches', { month, year }],
+    queryFn: async () =>
+      await clientSchedulingService.list({
+        date,
+      }),
+    initialData: {
+      schedules,
+    },
+    staleTime: 1000 * 60 * 3, // 3 minutes
+  })
+
+  const generateWorkHours = new GenerateWorkHours(workHours)
+  const table = generateWorkHours.generate(
+    schedules as unknown as Array<
+      { date: string; duration: number } & SchedulingResponse & {
+          patient: string
+          phone: string
+        }
+    >,
+  )
 
   if (!DateTime.validateDate(date))
     throw new Error('A data informada está incorreta')
@@ -62,42 +101,31 @@ export default function SchedulingList({
                 } ${
                   statusColors[scheduling.status] === 'green' &&
                   'text-green-600'
-                } ${
-                  statusColors[scheduling.status] === 'red' && 'text-red-600'
-                }`}
+                } ${statusColors[scheduling.status] === 'red' && 'text-red-600'}
+                ${
+                  statusColors[scheduling.status] === 'yellow' &&
+                  'text-orange-600 opacity-60'
+                }
+                `}
               >
                 <AccordionTable.Cell>
                   {hour} {'('}
                   {durationString}
                   {')'}
                 </AccordionTable.Cell>
+
                 <AccordionTable.Cell>{scheduling.patient}</AccordionTable.Cell>
                 <StopPropagation>
                   <AccordionTable.Cell>
-                    <Input.Root>
-                      <Button
-                        asChild
-                        className="text-sm"
-                        color={statusColors[scheduling.status] || 'blue'}
-                        variant="outline"
-                        size="small"
-                      >
-                        <Input.Select>
-                          <Input.Option value={'Agendado'}>
-                            Agendado
-                          </Input.Option>
-                          <Input.Option value={'Atendido'}>
-                            Atendido
-                          </Input.Option>
-                          <Input.Option value={'Cancelado'}>
-                            Cancelado
-                          </Input.Option>
-                        </Input.Select>
-                      </Button>
-                    </Input.Root>
+                    <StatusSelect
+                      schedulingId={scheduling.id || ''}
+                      status={scheduling.status}
+                      color={statusColors[scheduling.status]}
+                    ></StatusSelect>
                   </AccordionTable.Cell>
                 </StopPropagation>
               </AccordionTable.Row>
+
               <AccordionTable.Content className="flex justify-between gap-2">
                 <div className="space-y-1 text-sm">
                   <p>

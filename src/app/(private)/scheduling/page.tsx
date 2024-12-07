@@ -1,7 +1,6 @@
 import { Box } from '@/components/box/Box'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
 import DateTime from '@/utils/Date'
-import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 import RouteReplace from '../../../components/RouteReplace'
 import { RxCaretDown } from 'react-icons/rx'
 import SchedulingModal from './components/SchedulingModal'
@@ -25,13 +24,13 @@ export default async function Scheduling({
   )
 
   const schedulesResp = await schedulingService.list({ date })
-  const table = new GenerateWorkHours({
+  const table = {
     workTimeIncrement: 30,
     workSchedules: [
       { start: '07:00', end: '11:00' },
       { start: '13:00', end: '19:00' },
     ],
-  })
+  }
 
   const incDate = (number: number) =>
     `?date=${DateTime.getIsoDate(
@@ -68,7 +67,7 @@ export default async function Scheduling({
         </div>
         <SchedulingList
           date={date}
-          generateWorkHours={table}
+          workHours={table}
           schedules={
             Validate.isOk(schedulesResp) ? schedulesResp.schedules : []
           }

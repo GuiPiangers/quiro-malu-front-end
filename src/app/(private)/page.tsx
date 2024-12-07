@@ -1,11 +1,7 @@
-import { Logo } from '@/components/logo'
-import UserProfile from '@/app/(private)/components/UserProfile'
-import { Table } from '@/components/table'
 import DateTime from '@/utils/Date'
 import { schedulingService } from '@/services/scheduling/serverScheduling'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { Validate } from '@/services/api/Validate'
-import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 import { Box } from '@/components/box/Box'
 import Link from 'next/link'
 
@@ -25,12 +21,10 @@ export default async function Home() {
           schedulesResp.schedules.length > 0 ? (
             <SchedulingList
               date={date}
-              generateWorkHours={
-                new GenerateWorkHours({
-                  workTimeIncrement: 30,
-                  workSchedules: [{ start: '01:00', end: '00:00' }],
-                })
-              }
+              workHours={{
+                workTimeIncrement: 30,
+                workSchedules: [{ start: '01:00', end: '00:00' }],
+              }}
               schedules={
                 Validate.isOk(schedulesResp) ? schedulesResp.schedules : []
               }
