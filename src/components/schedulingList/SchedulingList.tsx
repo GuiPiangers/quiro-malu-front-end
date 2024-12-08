@@ -130,6 +130,7 @@ export default function SchedulingList({
                       className="w-20"
                       formData={{
                         ...scheduling,
+                        service: scheduling.service,
                         patientPhone: scheduling.phone,
                       }}
                     >

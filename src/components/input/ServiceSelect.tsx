@@ -7,6 +7,7 @@ import {
   listService,
 } from '@/services/service/actions/service'
 import { Validate } from '@/services/api/Validate'
+import { useQuery } from '@tanstack/react-query'
 
 export default forwardRef(function ServiceSelect(
   {
@@ -20,18 +21,28 @@ export default forwardRef(function ServiceSelect(
   ref: ForwardedRef<HTMLButtonElement>,
 ) {
   const [services, setServices] = useState<ServiceResponse[]>()
+  const { data } = useQuery({
+    queryKey: ['select'],
+    queryFn: async () => {
+      const result = await listService({})
 
-  useEffect(() => {
-    listService({}).then((data) => {
-      if (Validate.isOk(data)) {
-        setServices(data.services)
+      if (Validate.isOk(result)) {
         onInitialize &&
           onInitialize(
-            data.services.find((service) => service.name === defaultValue),
+            result.services.find((service) => service.name === defaultValue),
           )
+        return result
       }
-    })
-  }, [])
+    },
+  })
+
+  useEffect(() => {
+    onInitialize &&
+      data &&
+      onInitialize(
+        data.services.find((service) => service.name === defaultValue),
+      )
+  }, [onInitialize, data, defaultValue])
 
   return (
     <Input.Select
@@ -41,8 +52,8 @@ export default forwardRef(function ServiceSelect(
         popper: { className: 'z-40' },
       }}
     >
-      {services &&
-        services.map((service) => (
+      {data &&
+        data.services.map((service) => (
           <Input.Option key={service.id} value={service}>
             {service.name}
           </Input.Option>

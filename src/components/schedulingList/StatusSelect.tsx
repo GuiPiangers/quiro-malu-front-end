@@ -3,6 +3,7 @@
 import { SchedulingStatus } from '@/services/scheduling/actions/scheduling'
 import Button from '../Button'
 import { Input } from '../input'
+import { useRouter } from 'next/navigation'
 import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateScheduling'
 
 export default function StatusSelect({
@@ -25,7 +26,7 @@ export default function StatusSelect({
     return status === 'Agendado' || status === 'Atrasado' ? 'Agendado' : status
   }
 
-  const saveStatus = async ({
+  const saveStatus = ({
     schedulingId,
     status,
   }: {
@@ -53,7 +54,7 @@ export default function StatusSelect({
           value={getSelectedStatus(status)}
           onChange={async (_, value) => {
             const newStatus = value as SchedulingStatus
-            await saveStatus({
+            saveStatus({
               schedulingId,
               status: newStatus,
             })

@@ -28,6 +28,7 @@ import {
   getPatient,
   listPatient,
 } from '@/services/patient/actions/patient'
+import ServiceSelect from '@/components/input/ServiceSelect'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
@@ -164,31 +165,19 @@ export default function SchedulingForm({
     (value: ServiceResponse) => {
       setSelectedService(value)
       setValue('service', value.name)
+      setDuration(value.duration)
     },
     [setValue],
   )
 
   useEffect(() => {
-    listService({ page: '1' }).then(
-      (data) => Validate.isOk(data) && setServices(data.services),
-    )
-    Promise.all([
-      listService({ page: '1' }),
-      patientId && getPatient(patientId),
-    ]).then(([serviceData, patientData]) => {
-      if (Validate.isOk(serviceData)) {
-        setServices(serviceData.services)
-        const selectedService = serviceData.services.find(
-          (serviceData) => serviceData.name === service,
-        )
-        selectedService && setService(selectedService)
-      }
+    Promise.all([patientId && getPatient(patientId)]).then(([patientData]) => {
       if (patientData && Validate.isOk(patientData)) {
         setSelectedPatient(patientData)
         setValue('patientPhone', (patientData as PatientResponse).phone)
       }
     })
-  }, [patientId, service, setService, setValue])
+  }, [patientId, setValue])
 
   useEffect(() => {
     listPatient({ limit: 'all' }).then((data) => {
@@ -222,27 +211,19 @@ export default function SchedulingForm({
           <Input.Label required notSave={dirtyFields.service}>
             Serviço
           </Input.Label>
-          <Input.Select
-            value={selectedService}
-            onChange={(e, newValue) => {
-              if (!newValue) return
-              setService(newValue as ServiceResponse)
-              setDuration((newValue as ServiceResponse).duration)
-            }}
-            slotProps={{
-              popper: { className: 'z-40' },
-            }}
-            disabled={isSubmitting}
+
+          <ServiceSelect
+            notSave={dirtyFields.service}
             defaultValue={service}
-            error={!!errors.service}
-          >
-            {services &&
-              services.map((service) => (
-                <Input.Option key={service.id} value={service}>
-                  {service.name}
-                </Input.Option>
-              ))}
-          </Input.Select>
+            onInitialize={(value) => {
+              console.log(value)
+              setService(value as ServiceResponse)
+            }}
+            value={selectedService}
+            onChange={(_, value) => {
+              setService(value as ServiceResponse)
+            }}
+          />
           {errors.service && (
             <Input.Message error>{errors.service.message}</Input.Message>
           )}
