@@ -8,6 +8,7 @@ import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
 import Button, { ButtonPropsVariants } from '@/components/Button'
+import { useCreateService } from '@/hooks/service/useCreateService'
 
 export default function CreateServiceModal({
   color,
@@ -16,6 +17,7 @@ export default function CreateServiceModal({
 }: { className?: string; children?: ReactNode } & ButtonPropsVariants) {
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
+  const createService = useCreateService()
 
   const openModal = () => modalRef.current?.openModal()
   const closeModal = () => modalRef.current?.closeModal()
@@ -25,10 +27,11 @@ export default function CreateServiceModal({
     router.refresh()
   }
 
-  const createService = async (
+  const handleCreateService = async (
     data: ServiceResponse,
   ): Promise<ServiceResponse | responseError> => {
-    return await createService(data)
+    createService.mutate(data)
+    return data
   }
 
   return (
@@ -41,7 +44,7 @@ export default function CreateServiceModal({
         <ServiceForm
           buttons={<Button color="green">Salvar</Button>}
           className="shadow-none"
-          action={createService}
+          action={handleCreateService}
           afterValidation={afterSubmit}
         />
       </Modal>

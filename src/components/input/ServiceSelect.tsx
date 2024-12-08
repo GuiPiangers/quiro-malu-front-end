@@ -1,5 +1,7 @@
+'use client'
+
 import { SelectProps } from '@mui/base'
-import { ForwardedRef, forwardRef, useEffect, useState } from 'react'
+import { ForwardedRef, forwardRef, useEffect } from 'react'
 import { inputVariantProps } from './InputField'
 import { Input } from '.'
 import {
@@ -20,17 +22,12 @@ export default forwardRef(function ServiceSelect(
     },
   ref: ForwardedRef<HTMLButtonElement>,
 ) {
-  const [services, setServices] = useState<ServiceResponse[]>()
   const { data } = useQuery({
-    queryKey: ['select'],
+    queryKey: ['listServices'],
     queryFn: async () => {
       const result = await listService({})
 
       if (Validate.isOk(result)) {
-        onInitialize &&
-          onInitialize(
-            result.services.find((service) => service.name === defaultValue),
-          )
         return result
       }
     },
@@ -42,7 +39,7 @@ export default forwardRef(function ServiceSelect(
       onInitialize(
         data.services.find((service) => service.name === defaultValue),
       )
-  }, [onInitialize, data, defaultValue])
+  }, [data, defaultValue])
 
   return (
     <Input.Select

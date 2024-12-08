@@ -62,7 +62,7 @@ export async function getScheduling({ id }: { id: string }) {
 
 export async function listSchedules({
   date,
-  page = '1',
+  page,
 }: {
   date: string
   page?: string

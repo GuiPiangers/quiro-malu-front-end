@@ -39,7 +39,7 @@ export async function getService(id: string) {
   return res
 }
 
-export async function listService({ page = '1' }: { page?: string }) {
+export async function listService({ page }: { page?: string }) {
   const res = await api<ServiceListResponse>(`/services?page=${page}`, {
     method: 'GET',
   })

@@ -9,13 +9,11 @@ import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { ProgressResponse } from '@/services/patient/actions/patient'
 import DateTime from '@/utils/Date'
-import { useEffect, useState } from 'react'
-import {
-  ServiceResponse,
-  listService,
-} from '@/services/service/actions/service'
+import { useState } from 'react'
+import { ServiceResponse } from '@/services/service/actions/service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
+import ServiceSelect from '@/components/input/ServiceSelect'
 
 export const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -39,7 +37,7 @@ export default function ProgressForm({
   ...formProps
 }: ProgressFormProps) {
   const { patientId, actualProblem, date, procedures, service, id } = formData
-  const [services, setServices] = useState<ServiceResponse[]>()
+  const [serviceData, setService] = useState<ServiceResponse>()
 
   const { handleMessage } = useSnackbarContext()
   const setProgressForm = useForm<ProgressResponse>({
@@ -60,16 +58,6 @@ export default function ProgressForm({
     register,
     setValue,
   } = setProgressForm
-
-  useEffect(() => {
-    listService({}).then(
-      (res) => Validate.isOk(res) && setServices(res.services),
-    )
-  }, [])
-
-  useEffect(() => {
-    if (service) setValue('service', service)
-  }, [service, setValue])
 
   const setProgress = async (data: setProgressData) => {
     const res = await formAction({
@@ -115,21 +103,26 @@ export default function ProgressForm({
           <Input.Label required notSave={dirtyFields.service}>
             Serviço
           </Input.Label>
-          <Input.Select
+          <ServiceSelect
             disabled={isSubmitting}
             defaultValue={service}
+            value={serviceData}
             error={!!errors.service}
             slotProps={{ popper: { className: 'z-40' } }}
-            onChange={(_, newValue) =>
-              setValue('service', newValue as string, { shouldDirty: true })
-            }
-          >
-            {services?.map((service) => (
-              <Input.Option key={service.id} value={service.name}>
-                {service.name}
-              </Input.Option>
-            ))}
-          </Input.Select>
+            onChange={(_, newValue) => {
+              setValue('service', (newValue as ServiceResponse).name, {
+                shouldDirty: true,
+              })
+              setService(newValue as ServiceResponse)
+            }}
+            onInitialize={(service) => {
+              service &&
+                setValue('service', service.name, {
+                  shouldDirty: true,
+                })
+              setService(service)
+            }}
+          />
 
           {errors.service && (
             <Input.Message error>{errors.service.message}</Input.Message>

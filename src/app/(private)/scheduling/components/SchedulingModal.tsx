@@ -3,16 +3,14 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
 import SchedulingForm from './SchedulingForm'
-import {
-  SchedulingResponse,
-  createScheduling,
-} from '@/services/scheduling/actions/scheduling'
+import { SchedulingResponse } from '@/services/scheduling/actions/scheduling'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { SchedulingStatusEnum } from '@/services/scheduling/actions/schedulingStatusEnum'
 import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateScheduling'
+import { useCreateScheduling } from '@/hooks/scheduling/useCreateScheduling'
 
 export default function SchedulingModal({
   color,
@@ -30,6 +28,7 @@ export default function SchedulingModal({
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
   const updateScheduling = useUpdateScheduling()
+  const createScheduling = useCreateScheduling()
 
   const openModal = () => modalRef.current?.openModal()
   const closeModal = () => modalRef.current?.closeModal()
@@ -40,11 +39,14 @@ export default function SchedulingModal({
   }
 
   const formAction = async (
-    data: SchedulingResponse,
+    data: SchedulingResponse & { patient: string; phone: string },
   ): Promise<SchedulingResponse | responseError> => {
     updateScheduling.mutate(data)
     if (formData?.id) return data
-    return await createScheduling(data)
+
+    const result = await createScheduling.mutateAsync(data)
+    console.log(result)
+    return result
   }
 
   return (

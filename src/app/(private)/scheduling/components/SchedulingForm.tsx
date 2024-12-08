@@ -12,10 +12,7 @@ import { responseError } from '@/services/api/api'
 
 import Duration from '@/app/(private)/components/Duration'
 import { useCallback, useEffect, useState } from 'react'
-import {
-  ServiceResponse,
-  listService,
-} from '@/services/service/actions/service'
+import { ServiceResponse } from '@/services/service/actions/service'
 import { Validate } from '@/services/api/Validate'
 import {
   PatientResponse,
@@ -70,7 +67,6 @@ export default function SchedulingForm({
   } = formData || {}
   const { handleMessage } = useSnackbarContext()
 
-  const [services, setServices] = useState<ServiceResponse[]>()
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
   const [patients, setPatients] = useState<PatientsListResponse>()
@@ -84,31 +80,6 @@ export default function SchedulingForm({
   const setSchedulingForm = useForm<setSchedulingData>({
     resolver: zodResolver(setSchedulingSchema),
   })
-
-  // const loadMorePatients = () => {
-  //   if (patients && Math.ceil(patients.total / patients?.limit) === patientPage)
-  //     return undefined
-  //   clientPatientService
-  //     .list({
-  //       page: `${patientPage + 1}`,
-  //       search: { name: patientSearch },
-  //     })
-  //     .then((data) => {
-  //       if (Validate.isOk(data)) {
-  //         setPatientPage((value) => value + 1)
-
-  //         setPatients((value) => {
-  //           if (value && value.patients) {
-  //             return {
-  //               total: data.total,
-  //               limit: data.limit,
-  //               patients: [...data.patients, ...value.patients],
-  //             }
-  //           }
-  //         })
-  //       }
-  //     })
-  // }
 
   const {
     handleSubmit,
@@ -217,11 +188,11 @@ export default function SchedulingForm({
             defaultValue={service}
             onInitialize={(value) => {
               console.log(value)
-              setService(value as ServiceResponse)
+              value && setService(value)
             }}
             value={selectedService}
             onChange={(_, value) => {
-              setService(value as ServiceResponse)
+              value && setService(value as ServiceResponse)
             }}
           />
           {errors.service && (

@@ -5,7 +5,7 @@ import ProgressModal from './components/ProgressModal'
 import DateTime from '@/utils/Date'
 import DeleteProgress from './components/DeleteProgress'
 import Pagination from '@/components/pagination/Pagination'
-import NoDataFound from '@/components/NoDataFound'
+import NoDataFound from '@/components/notFound/NoDataFound'
 import { Validate } from '@/services/api/Validate'
 import { listProgress } from '@/services/patient/actions/patient'
 
