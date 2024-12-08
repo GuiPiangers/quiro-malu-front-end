@@ -12,7 +12,7 @@ import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { SchedulingStatusEnum } from '@/services/scheduling/actions/schedulingStatusEnum'
-import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateSchedulig'
+import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateScheduling'
 
 export default function SchedulingModal({
   color,

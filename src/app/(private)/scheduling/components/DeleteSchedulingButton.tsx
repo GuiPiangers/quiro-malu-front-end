@@ -1,16 +1,16 @@
 'use client'
 
 import Button from '@/components/Button'
+import { useDeleteScheduling } from '@/hooks/scheduling/useDeleteScheduling'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { deleteScheduling } from '@/services/scheduling/actions/scheduling'
-import { useRouter } from 'next/navigation'
 
 export default function DeleteSchedulingButton({ id }: { id: string }) {
-  const router = useRouter()
+  const deleteScheduling = useDeleteScheduling()
   const { handleMessage } = useSnackbarContext()
+
   const handleDeleteScheduling = async () => {
-    await deleteScheduling({ id })
-    router.refresh()
+    deleteScheduling.mutate({ id })
+
     handleMessage({
       title: 'Agendamento deletado com sucesso!',
       type: 'success',

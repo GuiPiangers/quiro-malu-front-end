@@ -3,8 +3,7 @@
 import { SchedulingStatus } from '@/services/scheduling/actions/scheduling'
 import Button from '../Button'
 import { Input } from '../input'
-import { useRouter } from 'next/navigation'
-import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateSchedulig'
+import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateScheduling'
 
 export default function StatusSelect({
   status,
@@ -41,8 +40,6 @@ export default function StatusSelect({
     })
   }
 
-  const router = useRouter()
-
   return (
     <Input.Root>
       <Button
@@ -60,7 +57,6 @@ export default function StatusSelect({
               schedulingId,
               status: newStatus,
             })
-            router.refresh()
           }}
         >
           <Input.Option

@@ -20,7 +20,6 @@ import DateTime from '@/utils/Date'
 import StopPropagation from '../StopPropagation'
 import StatusSelect from './StatusSelect'
 import { useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
 import { SchedulingStatusEnum } from '@/services/scheduling/actions/schedulingStatusEnum'
 import { Validate } from '@/services/api/Validate'
 
@@ -47,18 +46,8 @@ export default function SchedulingList({
   workHours,
   schedules,
 }: SchedulingListProps) {
-  const searchParams = useSearchParams()
-
-  const month = searchParams.get('date')
-    ? new Date(searchParams.get('date')!).getMonth()
-    : new Date().getMonth()
-
-  const year = searchParams.get('year')
-    ? new Date(searchParams.get('date')!).getFullYear()
-    : new Date().getFullYear()
-
   const { data } = useQuery({
-    queryKey: ['listSchedules', { month, year }],
+    queryKey: ['listSchedules', date],
     queryFn: async () =>
       await listSchedules({
         date,

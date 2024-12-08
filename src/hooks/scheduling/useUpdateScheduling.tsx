@@ -12,13 +12,7 @@ export function useUpdateScheduling() {
 
   const searchParams = useSearchParams()
 
-  const month = searchParams.get('date')
-    ? new Date(searchParams.get('date')!).getMonth()
-    : new Date().getMonth()
-
-  const year = searchParams.get('year')
-    ? new Date(searchParams.get('date')!).getFullYear()
-    : new Date().getFullYear()
+  const date = searchParams.get('date')
 
   const mutation = useMutation({
     mutationFn: async (data: Partial<SchedulingResponse>) => {
@@ -35,16 +29,16 @@ export function useUpdateScheduling() {
         updateSchedulingData.status === 'Agendado'
 
       await queryClient.cancelQueries({
-        queryKey: ['listSchedules', { month, year }],
+        queryKey: ['listSchedules', date],
       })
 
       const previousLaunches = queryClient.getQueryData<SchedulingResponse[]>([
         'listSchedules',
-        { month, year },
+        date,
       ])
 
       queryClient.setQueryData<SchedulingListResponse>(
-        ['listSchedules', { month, year }],
+        ['listSchedules', date],
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
@@ -74,14 +68,14 @@ export function useUpdateScheduling() {
 
     onError: (_err, newTodo, context) => {
       queryClient.setQueryData(
-        ['listSchedules', { month, year }],
+        ['listSchedules', date],
         context?.previousLaunches,
       )
     },
 
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ['listSchedules', { month, year }],
+        queryKey: ['listSchedules', date],
       })
     },
   })
