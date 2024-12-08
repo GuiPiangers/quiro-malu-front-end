@@ -6,13 +6,13 @@ import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 
 import useAuthContext from '@/hooks/useAuthContext'
-import { clientUserService } from '@/services/user/clientUserService'
 import { Input } from '@/components/input'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
+import { registerUser } from '@/services/user/actions/user'
 
 const createUserSchema = z.object({
   name: z
@@ -71,7 +71,7 @@ export default function Register() {
   } = createUserForm
 
   const createUser = async (data: CreateUserData) => {
-    const user = await clientUserService.register(data)
+    const user = await registerUser(data)
     if (user.type) {
       setError(user.type as keyof CreateUserData, { message: user.message })
     } else {

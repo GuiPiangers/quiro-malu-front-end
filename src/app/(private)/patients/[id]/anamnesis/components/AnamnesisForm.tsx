@@ -4,12 +4,14 @@ import { Input } from '@/components/input'
 import RadioButton from '@/components/radioButton/RadioButton'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
-import { AnamnesisResponse } from '@/services/patient/PatientService'
-import { ReactNode, useEffect, useState } from 'react'
+import {
+  AnamnesisResponse,
+  setAnamnesis,
+} from '@/services/patient/actions/patient'
+import { ReactNode } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch } from 'react-hook-form'
-import { clientPatientService } from '@/services/patient/clientPatientService'
+import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import { useRouter } from 'next/navigation'
@@ -97,8 +99,8 @@ export default function AnamnesisForm({
 
   const router = useRouter()
 
-  const setAnamnesis = async (data: setAnamnesisData) => {
-    const res = await clientPatientService.setAnamnesis({ patientId, ...data })
+  const handleSetAnamnesis = async (data: setAnamnesisData) => {
+    const res = await setAnamnesis({ patientId, ...data })
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
@@ -114,7 +116,7 @@ export default function AnamnesisForm({
 
   return (
     <Form
-      onSubmit={handleSubmit(setAnamnesis)}
+      onSubmit={handleSubmit(handleSetAnamnesis)}
       buttons={buttons}
       btWrapperClassName={btWrapperClassName}
     >

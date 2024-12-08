@@ -7,11 +7,13 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { ProgressResponse } from '@/services/patient/PatientService'
+import { ProgressResponse } from '@/services/patient/actions/patient'
 import DateTime from '@/utils/Date'
 import { useEffect, useState } from 'react'
-import { clientService } from '@/services/service/clientService'
-import { ServiceResponse } from '@/services/service/Service'
+import {
+  ServiceResponse,
+  listService,
+} from '@/services/service/actions/service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 
@@ -60,9 +62,9 @@ export default function ProgressForm({
   } = setProgressForm
 
   useEffect(() => {
-    clientService
-      .list({})
-      .then((res) => Validate.isOk(res) && setServices(res.services))
+    listService({}).then(
+      (res) => Validate.isOk(res) && setServices(res.services),
+    )
   }, [])
 
   useEffect(() => {

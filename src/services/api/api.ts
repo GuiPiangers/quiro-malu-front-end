@@ -1,5 +1,11 @@
-import { ICookies } from '../cookies/ICookies'
-import { clientCookie } from '../cookies/clientCookies'
+import { cookies } from 'next/headers'
+
+export type responseError = {
+  message: string
+  statusCode: number
+  type: string
+  error: boolean
+}
 
 const request = async (
   input: RequestInfo | URL,
@@ -25,35 +31,38 @@ const request = async (
   return data
 }
 
-export type responseError = {
-  message: string
-  statusCode: number
-  type: string
-  error: boolean
+export const revalidateToken = async ({
+  refreshToken,
+}: {
+  refreshToken: string
+}) => {
+  const { token } = await request(
+    `${process.env.NEXT_PUBLIC_HOST}/refresh-token`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ refreshTokenId: refreshToken }),
+    },
+  ).then((res) => res.json())
+
+  return token
 }
 
 export async function api<T>(
   input: RequestInfo,
   init?: RequestInit & { noContentType?: boolean },
-  cookieService?: ICookies,
 ): Promise<T | responseError> {
   const baseURL = process.env.NEXT_PUBLIC_HOST
-  const cookieMethod = cookieService || clientCookie
 
-  const token = cookieMethod.get('quiro-token')
-  const refreshToken = cookieMethod.get('quiro-refresh-token')
+  const token = cookies().get('quiro-token')?.value
+  const refreshToken = cookies().get('quiro-refresh-token')?.value
 
   const data = await request(`${baseURL}${input}`, { ...init }, token)
 
   if (data.status === 401 && refreshToken) {
-    const { token: newToken } = await request(`${baseURL}/refresh-token`, {
-      method: 'POST',
-      body: JSON.stringify({ refreshTokenId: refreshToken }),
-    }).then((res) => res.json())
+    const newToken = await revalidateToken({ refreshToken })
 
     if (!newToken) throw new Error('Falha de autenticação')
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
-    clientCookie.set('quiro-token', newToken, { maxAge: 60 * 10 })
 
     return await newData.json()
   }

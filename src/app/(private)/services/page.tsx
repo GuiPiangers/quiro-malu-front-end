@@ -1,12 +1,12 @@
 import { Box } from '@/components/box/Box'
 import SearchInput from '@/components/input/SearchInput'
 import { Table } from '@/components/table'
-import { service } from '@/services/service/serverService'
 import CreateServiceModal from './components/CreateServiceModal'
 import UpdateServiceModal from './components/updateServiceModal'
 import NoDataFound from '@/components/NoDataFound'
 import Pagination from '@/components/pagination/Pagination'
 import { Validate } from '@/services/api/Validate'
+import { listService } from '@/services/service/actions/service'
 
 function NoServicesDataFound() {
   return (
@@ -34,7 +34,7 @@ export default async function Services({
 }) {
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
-  const res = await service.list({ page })
+  const res = await listService({ page })
   if (Validate.isError(res)) {
     return <NoDataFound />
   }

@@ -4,8 +4,9 @@ export default async function middleware(request: NextRequest) {
   const token = request.cookies.get('quiro-token')?.value
   const refreshToken = request.cookies.get('quiro-refresh-token')?.value
   const signURL = new URL('/login', request.url)
+  const response = NextResponse.next()
 
-  if (!token && !refreshToken) {
+  if (!refreshToken) {
     return NextResponse.redirect(signURL)
   }
   if (!token) {
@@ -22,9 +23,14 @@ export default async function middleware(request: NextRequest) {
     if (newToken.status !== 200) {
       return NextResponse.redirect(signURL)
     }
+    response.cookies.set('quiro-token', await newToken.json(), {
+      maxAge: 60 * 15,
+    })
   }
+
+  return response
 }
 
 export const config = {
-  matcher: ['/'],
+  matcher: '/((?!login|_next/static|_next/image|register|favicon.ico).*)',
 }

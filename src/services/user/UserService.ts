@@ -1,6 +1,5 @@
 import { CreateUserData } from '@/app/(authentication)/register/page'
 import { SignInData } from '@/contexts/AuthContext'
-import { responseError } from '../api/api'
 import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
 
 export type UserResponse = {

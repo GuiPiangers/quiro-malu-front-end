@@ -2,8 +2,8 @@
 
 import {
   SchedulingResponse,
-  SchedulingStatusEnum,
-} from '@/services/scheduling/SchedulingService'
+  listSchedules,
+} from '@/services/scheduling/actions/scheduling'
 import {
   GenerateWorkHours,
   GenerateWorkHoursProps,
@@ -21,7 +21,7 @@ import StopPropagation from '../StopPropagation'
 import StatusSelect from './StatusSelect'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
-import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
+import { SchedulingStatusEnum } from '@/services/scheduling/actions/schedulingStatusEnum'
 import { Validate } from '@/services/api/Validate'
 
 type SchedulingListProps = {
@@ -58,25 +58,19 @@ export default function SchedulingList({
     : new Date().getFullYear()
 
   const { data } = useQuery({
-    queryKey: ['listLaunches', { month, year }],
+    queryKey: ['listSchedules', { month, year }],
     queryFn: async () =>
-      await clientSchedulingService.list({
+      await listSchedules({
         date,
       }),
     initialData: {
       schedules,
     },
-    staleTime: 1000 * 60 * 3, // 3 minutes
   })
 
   const generateWorkHours = new GenerateWorkHours(workHours)
   const table = generateWorkHours.generate(
-    schedules as unknown as Array<
-      { date: string; duration: number } & SchedulingResponse & {
-          patient: string
-          phone: string
-        }
-    >,
+    Validate.isOk(data) ? data.schedules : schedules,
   )
 
   if (!DateTime.validateDate(date))
@@ -118,6 +112,8 @@ export default function SchedulingList({
                 <StopPropagation>
                   <AccordionTable.Cell>
                     <StatusSelect
+                      duration={scheduling.duration}
+                      date={scheduling.date}
                       schedulingId={scheduling.id || ''}
                       status={scheduling.status}
                       color={statusColors[scheduling.status]}

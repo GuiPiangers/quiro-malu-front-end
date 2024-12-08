@@ -2,10 +2,11 @@ import { SelectProps } from '@mui/base'
 import { ForwardedRef, forwardRef, useEffect, useState } from 'react'
 import { inputVariantProps } from './InputField'
 import { Input } from '.'
-import { ServiceResponse } from '@/services/service/Service'
+import {
+  ServiceResponse,
+  listService,
+} from '@/services/service/actions/service'
 import { Validate } from '@/services/api/Validate'
-import { clientService } from '@/services/service/clientService'
-import { service } from '@/services/service/serverService'
 
 export default forwardRef(function ServiceSelect(
   {
@@ -21,7 +22,7 @@ export default forwardRef(function ServiceSelect(
   const [services, setServices] = useState<ServiceResponse[]>()
 
   useEffect(() => {
-    clientService.list({}).then((data) => {
+    listService({}).then((data) => {
       if (Validate.isOk(data)) {
         setServices(data.services)
         onInitialize &&

@@ -1,4 +1,5 @@
 'use client'
+
 import { Input } from '@/components/input'
 
 import Phone from '@/utils/Phone'
@@ -6,10 +7,10 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Cpf from '@/utils/Cpf'
-import { PatientResponse } from '@/services/patient/PatientService'
+import { PatientResponse } from '@/services/patient/actions/patient'
 import Form from '@/components/form/Form'
 import { sectionStyles, titleStyles } from '@/components/form/Styles'
-import { ChangeEvent, ReactNode, useState } from 'react'
+import { ChangeEvent, ReactNode } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'

@@ -2,7 +2,6 @@
 
 import Button from '@/components/Button'
 import { Validate } from '@/services/api/Validate'
-import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,6 +10,7 @@ import { useForm } from 'react-hook-form'
 import { PiPaperclipLight } from 'react-icons/pi'
 import { z } from 'zod'
 import { FileInput } from '@/components/input/file/FileInput'
+import { uploadPatient } from '@/services/patient/actions/patient'
 
 export const uploadPatientsSchema = z.object({
   file: z.any(),
@@ -40,7 +40,7 @@ export default function PatientsFile() {
   } = createPatientForm
   const handleUploadPatient = async (data: UploadPatientsData) => {
     try {
-      const res = await clientPatientService.upload(data.file)
+      const res = await uploadPatient(data.file)
       if (Validate.isOk(res)) {
         setSuccessCount(res.successCounter)
         setErrorCount(res.erroCounter)

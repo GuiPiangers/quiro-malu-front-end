@@ -2,13 +2,14 @@
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import ProgressForm from './ProgressForm'
-import { ReactNode, useRef, useState } from 'react'
-import { clientPatientService } from '@/services/patient/clientPatientService'
-import { ProgressResponse } from '@/services/patient/PatientService'
+import { ReactNode, useRef } from 'react'
+import {
+  ProgressResponse,
+  setProgress,
+} from '@/services/patient/actions/patient'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { useRouter } from 'next/navigation'
 import HeaderForm from '@/components/modal/HeaderModal'
-import DateTime from '@/utils/Date'
 
 type ProgressModalProps = {
   className?: string
@@ -33,7 +34,7 @@ export default function ProgressModal({
   }
 
   const formAction = async (data: ProgressResponse) => {
-    return clientPatientService.setProgress(data)
+    return setProgress(data)
   }
 
   return (

@@ -5,13 +5,14 @@ import { ReactNode, useRef } from 'react'
 import SchedulingForm from './SchedulingForm'
 import {
   SchedulingResponse,
-  SchedulingStatusEnum,
-} from '@/services/scheduling/SchedulingService'
+  createScheduling,
+} from '@/services/scheduling/actions/scheduling'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
 import Button, { ButtonPropsVariants } from '@/components/Button'
-import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
+import { SchedulingStatusEnum } from '@/services/scheduling/actions/schedulingStatusEnum'
+import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateSchedulig'
 
 export default function SchedulingModal({
   color,
@@ -28,6 +29,7 @@ export default function SchedulingModal({
 } & ButtonPropsVariants) {
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
+  const updateScheduling = useUpdateScheduling()
 
   const openModal = () => modalRef.current?.openModal()
   const closeModal = () => modalRef.current?.closeModal()
@@ -40,8 +42,9 @@ export default function SchedulingModal({
   const formAction = async (
     data: SchedulingResponse,
   ): Promise<SchedulingResponse | responseError> => {
-    if (formData?.id) return await clientSchedulingService.update(data)
-    return await clientSchedulingService.create(data)
+    updateScheduling.mutate(data)
+    if (formData?.id) return data
+    return await createScheduling(data)
   }
 
   return (

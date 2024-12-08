@@ -3,9 +3,9 @@ import Button from '@/components/Button'
 import ConfirmationModal from '@/components/modal/ConfirmationModal'
 import { ModalHandles } from '@/components/modal/Modal'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { clientPatientService } from '@/services/patient/clientPatientService'
+import { deleteProgress } from '@/services/patient/actions/patient'
 import { useRouter } from 'next/navigation'
-import { useCallback, useRef } from 'react'
+import { useRef } from 'react'
 
 type DeleteProgressProps = { id: string; patientId: string }
 
@@ -18,8 +18,8 @@ export default function DeleteProgress({ id, patientId }: DeleteProgressProps) {
   const handleOpen = () => modalHandle.current?.openModal()
   const handleClose = () => modalHandle.current?.closeModal()
 
-  const deletePatient = async () => {
-    await clientPatientService.deleteProgress({ id, patientId })
+  const haldeDeleteProgress = async () => {
+    await deleteProgress({ id, patientId })
     handleClose()
     router.refresh()
     handleMessage({
@@ -44,7 +44,7 @@ export default function DeleteProgress({ id, patientId }: DeleteProgressProps) {
         buttonText="Excluir"
         buttonConfig={{ color: 'red' }}
         description="Após excluir a evolução, a ação não poderá ser revertida"
-        action={deletePatient}
+        action={haldeDeleteProgress}
         ref={modalHandle}
       />
     </>

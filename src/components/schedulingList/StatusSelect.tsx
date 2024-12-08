@@ -1,20 +1,27 @@
 'use client'
 
-import { SchedulingStatus } from '@/services/scheduling/SchedulingService'
+import { SchedulingStatus } from '@/services/scheduling/actions/scheduling'
 import Button from '../Button'
 import { Input } from '../input'
-import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 import { useRouter } from 'next/navigation'
+import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateSchedulig'
 
 export default function StatusSelect({
   status,
   schedulingId,
+  date,
   color,
+  duration,
 }: {
   status: SchedulingStatus
   schedulingId: string
+  date: string
   color?: 'blue' | 'green' | 'red' | 'yellow'
+  duration: number
 }) {
+  const updateScheduling = useUpdateScheduling()
+  const isLate = new Date().toISOString() > new Date(date).toISOString()
+
   const getSelectedStatus = (status: SchedulingStatus) => {
     return status === 'Agendado' || status === 'Atrasado' ? 'Agendado' : status
   }
@@ -26,9 +33,11 @@ export default function StatusSelect({
     schedulingId: string
     status: SchedulingStatus
   }) => {
-    await clientSchedulingService.update({
+    updateScheduling.mutate({
       id: schedulingId,
       status,
+      date,
+      duration,
     })
   }
 
@@ -38,7 +47,7 @@ export default function StatusSelect({
     <Input.Root>
       <Button
         asChild
-        className="min-w-[112px] justify-start text-sm text-current hover:bg-slate-300 hover:text-current"
+        className="min-w-[126px] justify-start text-sm text-current hover:bg-slate-300 hover:text-current"
         variant="outline"
         size="small"
         color={color || 'blue'}
@@ -54,8 +63,11 @@ export default function StatusSelect({
             router.refresh()
           }}
         >
-          <Input.Option value={'Agendado'} className="text-blue-600">
-            {status === 'Atrasado' ? 'Atrasado' : 'Agendado'}
+          <Input.Option
+            value={'Agendado'}
+            className={`${isLate ? 'text-red-600' : 'text-blue-600'}`}
+          >
+            {isLate ? 'Atrasado' : 'Agendado'}
           </Input.Option>
           <Input.Option value={'Atendido'} className="text-green-600">
             Atendido

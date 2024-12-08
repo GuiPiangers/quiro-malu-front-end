@@ -1,7 +1,9 @@
 import AnamnesisForm from '@/app/(private)/patients/[id]/anamnesis/components/AnamnesisForm'
 import { Validate } from '@/services/api/Validate'
-import { clientPatientService } from '@/services/patient/clientPatientService'
-import { AnamnesisResponse } from '@/services/patient/PatientService'
+import {
+  AnamnesisResponse,
+  getAnamnesis,
+} from '@/services/patient/actions/patient'
 import { useEffect, useState } from 'react'
 import { FormButtons } from './FormButtons'
 import { PageStage } from './RealizeScheduling'
@@ -20,9 +22,9 @@ export default function AnamnesisSchedulingFrom({
   const [anamnesisData, setAnamnesisData] = useState<AnamnesisResponse>()
 
   useEffect(() => {
-    clientPatientService
-      .getAnamnesis(patientId)
-      .then((res) => Validate.isOk(res) && setAnamnesisData(res))
+    getAnamnesis(patientId).then(
+      (res) => Validate.isOk(res) && setAnamnesisData(res),
+    )
   }, [patientId])
 
   return (

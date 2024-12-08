@@ -1,4 +1,3 @@
-import { patientService } from '@/services/patient/serverPatientService'
 import { ParamsType } from '../page'
 import { Box } from '@/components/box/Box'
 import SearchInput from '@/components/input/SearchInput'
@@ -8,6 +7,7 @@ import DeleteProgress from './components/DeleteProgress'
 import Pagination from '@/components/pagination/Pagination'
 import NoDataFound from '@/components/NoDataFound'
 import { Validate } from '@/services/api/Validate'
+import { listProgress } from '@/services/patient/actions/patient'
 
 export default async function Progress({
   params,
@@ -19,12 +19,10 @@ export default async function Progress({
   const patientId = params.id
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
-  const patientData = await patientService
-    .listProgress({
-      patientId,
-      page,
-    })
-    .then((res) => (Validate.isOk(res) ? res : undefined))
+  const patientData = await listProgress({
+    patientId,
+    page,
+  }).then((res) => (Validate.isOk(res) ? res : undefined))
 
   const generateProgress = () => {
     return (

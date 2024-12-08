@@ -1,13 +1,13 @@
 import DateTime from '@/utils/Date'
-import { schedulingService } from '@/services/scheduling/serverScheduling'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { Validate } from '@/services/api/Validate'
 import { Box } from '@/components/box/Box'
 import Link from 'next/link'
+import { listSchedules } from '@/services/scheduling/actions/scheduling'
 
 export default async function Home() {
   const date = DateTime.getIsoDate(new Date())
-  const schedulesResp = await schedulingService.list({ date })
+  const schedulesResp = await listSchedules({ date })
 
   return (
     <section className="flex w-full justify-center">

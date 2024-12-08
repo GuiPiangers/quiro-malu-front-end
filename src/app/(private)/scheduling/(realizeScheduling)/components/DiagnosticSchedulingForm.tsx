@@ -1,6 +1,8 @@
 import { Validate } from '@/services/api/Validate'
-import { clientPatientService } from '@/services/patient/clientPatientService'
-import { DiagnosticResponse } from '@/services/patient/PatientService'
+import {
+  DiagnosticResponse,
+  getDiagnostic,
+} from '@/services/patient/actions/patient'
 import { useEffect, useState } from 'react'
 import { FormButtons } from './FormButtons'
 import { PageStage } from './RealizeScheduling'
@@ -20,9 +22,9 @@ export default function DiagnosticSchedulingForm({
   const [diagnosticData, setDiagnosticData] = useState<DiagnosticResponse>()
 
   useEffect(() => {
-    clientPatientService
-      .getDiagnostic(patientId)
-      .then((res) => Validate.isOk(res) && setDiagnosticData(res))
+    getDiagnostic(patientId).then(
+      (res) => Validate.isOk(res) && setDiagnosticData(res),
+    )
   }, [patientId])
 
   return (

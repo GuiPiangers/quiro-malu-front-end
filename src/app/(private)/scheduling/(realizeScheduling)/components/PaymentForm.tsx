@@ -11,7 +11,7 @@ import { Currency } from '@/utils/Currency'
 import DateTime from '@/utils/Date'
 import ServiceSelect from '@/components/input/ServiceSelect'
 import { PageStage } from './RealizeScheduling'
-import { ServiceResponse } from '@/services/service/Service'
+import { ServiceResponse } from '@/services/service/actions/service'
 import { useRef, useState } from 'react'
 
 export const setPaymentSchema = z.object({

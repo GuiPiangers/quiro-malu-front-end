@@ -4,14 +4,14 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import PatientDataForm, {
   CreatePatientData,
 } from '../components/PatientDataForm'
-import { clientPatientService } from '@/services/patient/clientPatientService'
 import { useRouter } from 'next/navigation'
+import { createPatient } from '@/services/patient/actions/patient'
 
 export default function CreatePatientForm() {
   const router = useRouter()
 
-  const createPatient = async (data: CreatePatientData) => {
-    const res = await clientPatientService.create(data)
+  const handleCreatePatient = async (data: CreatePatientData) => {
+    const res = createPatient(data)
     return res
   }
   const { handleMessage } = useSnackbarContext()
@@ -27,7 +27,10 @@ export default function CreatePatientForm() {
 
   return (
     <section className="w-full">
-      <PatientDataForm action={createPatient} afterValidate={afterValidate} />
+      <PatientDataForm
+        action={handleCreatePatient}
+        afterValidate={afterValidate}
+      />
     </section>
   )
 }

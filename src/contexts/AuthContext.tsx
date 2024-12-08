@@ -1,10 +1,13 @@
 'use client'
 
-import { ReactNode, createContext, useState, useEffect } from 'react'
+import { ReactNode, createContext, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { UserResponse } from '@/services/user/UserService'
-import { clientUserService } from '@/services/user/clientUserService'
+import {
+  UserResponse,
+  loginUser,
+  logoutUser,
+} from '@/services/user/actions/user'
 import { clientCookie } from '@/services/cookies/clientCookies'
 import { responseError } from '@/services/api/api'
 import { Validate } from '@/services/api/Validate'
@@ -26,19 +29,8 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
 
   const router = useRouter()
 
-  useEffect(() => {
-    const getUser = async () => {
-      const userResponse = await clientUserService.get()
-      if (Validate.isOk(userResponse)) {
-        const { name, email } = userResponse
-        setUser({ name, email })
-      }
-    }
-    getUser()
-  }, [])
-
   async function singIn(data: SignInData) {
-    const userResponse = await clientUserService.login(data)
+    const userResponse = await loginUser(data)
     if (userResponse) {
       if (Validate.isOk(userResponse)) {
         const { refreshToken, token, user: userData } = userResponse
@@ -61,7 +53,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }
   async function singOut() {
     const refreshToken = clientCookie.get('quiro-refresh-token')
-    await clientUserService.logout(refreshToken!)
+    await logoutUser(refreshToken!)
     clientCookie.delete('quiro-token')
     clientCookie.delete('quiro-refresh-token')
 

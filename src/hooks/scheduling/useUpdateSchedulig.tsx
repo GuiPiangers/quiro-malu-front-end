@@ -1,9 +1,13 @@
-import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
-import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
+import {
+  updateScheduling,
+  SchedulingResponse,
+} from '@/services/scheduling/actions/scheduling'
+import { SchedulingListResponse } from '@/services/scheduling/SchedulingService'
+
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 
-export function useCreateLaunch() {
+export function useUpdateScheduling() {
   const queryClient = useQueryClient()
 
   const searchParams = useSearchParams()
@@ -18,22 +22,51 @@ export function useCreateLaunch() {
 
   const mutation = useMutation({
     mutationFn: async (data: Partial<SchedulingResponse>) => {
-      const message = await clientSchedulingService.update(data)
-      console.log(message)
+      await updateScheduling(data)
     },
-    onMutate: async (newScheduling) => {
+    onMutate: async (updateSchedulingData) => {
+      const isLate =
+        updateSchedulingData.date &&
+        new Date().toISOString() >
+          new Date(updateSchedulingData.date).toISOString()
+
+      const isAppointed =
+        updateSchedulingData.status === 'Atrasado' ||
+        updateSchedulingData.status === 'Agendado'
+
       await queryClient.cancelQueries({
         queryKey: ['listSchedules', { month, year }],
       })
-      const previousLaunches = queryClient.getQueryData<
-        Partial<SchedulingResponse>[]
-      >(['listSchedules', { month, year }])
 
-      queryClient.setQueryData<Partial<SchedulingResponse>[]>(
+      const previousLaunches = queryClient.getQueryData<SchedulingResponse[]>([
+        'listSchedules',
+        { month, year },
+      ])
+
+      queryClient.setQueryData<SchedulingListResponse>(
         ['listSchedules', { month, year }],
         (oldQuery) => {
-          if (oldQuery) return [...oldQuery!, newScheduling]
-          return [newScheduling]
+          if (!oldQuery) return oldQuery
+
+          const updatedLaunches = oldQuery.schedules.map((launch) => {
+            if (launch.id === updateSchedulingData.id) {
+              const updateStatus = isAppointed
+                ? isLate
+                  ? 'Atrasado'
+                  : 'Agendado'
+                : updateSchedulingData.status ?? launch.status
+
+              return {
+                ...launch,
+                ...updateSchedulingData,
+                status: updateStatus,
+              }
+            }
+
+            return launch
+          })
+
+          return { ...oldQuery, schedules: updatedLaunches }
         },
       )
       return { previousLaunches }

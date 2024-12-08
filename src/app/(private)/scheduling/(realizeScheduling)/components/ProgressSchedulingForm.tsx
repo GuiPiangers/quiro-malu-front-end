@@ -1,12 +1,16 @@
 import ProgressForm from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
 import { PageStage } from './RealizeScheduling'
 import { FormButtons } from './FormButtons'
-import { clientPatientService } from '@/services/patient/clientPatientService'
-import { ProgressResponse } from '@/services/patient/PatientService'
+import {
+  ProgressResponse,
+  getProgressByScheduling,
+  setProgress,
+} from '@/services/patient/actions/patient'
 import { useEffect, useState } from 'react'
 import { Validate } from '@/services/api/Validate'
-import { clientSchedulingService } from '@/services/scheduling/clientScheduling'
 import { useRouter } from 'next/navigation'
+
+import { realizeScheduling } from '@/services/scheduling/actions/scheduling'
 
 type ProgressSchedulingFormProps = {
   goToNextPage(): void
@@ -29,9 +33,9 @@ export function ProgressSchedulingForm({
 
   useEffect(() => {
     schedulingId &&
-      clientPatientService
-        .getProgressByScheduling({ schedulingId, patientId })
-        .then((res) => Validate.isOk(res) && setProgressData(res))
+      getProgressByScheduling({ schedulingId, patientId }).then(
+        (res) => Validate.isOk(res) && setProgressData(res),
+      )
   }, [patientId, schedulingId])
 
   return (
@@ -48,12 +52,12 @@ export function ProgressSchedulingForm({
         router.refresh()
       }}
       formAction={async (data) => {
-        const progressRes = await clientPatientService.setProgress({
+        const progressRes = await setProgress({
           ...data,
           schedulingId,
         })
         if (Validate.isOk(progressRes))
-          await clientSchedulingService.realizeScheduling({
+          await realizeScheduling({
             id: schedulingId,
             patientId,
           })

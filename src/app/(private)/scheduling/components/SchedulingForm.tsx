@@ -7,21 +7,27 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { SchedulingResponse } from '@/services/scheduling/SchedulingService'
+import { SchedulingResponse } from '@/services/scheduling/actions/scheduling'
 import { responseError } from '@/services/api/api'
 
 import Duration from '@/app/(private)/components/Duration'
 import { useCallback, useEffect, useState } from 'react'
-import { clientService } from '@/services/service/clientService'
-import { ServiceResponse } from '@/services/service/Service'
+import {
+  ServiceResponse,
+  listService,
+} from '@/services/service/actions/service'
 import { Validate } from '@/services/api/Validate'
-import { clientPatientService } from '@/services/patient/clientPatientService'
 import {
   PatientResponse,
   PatientsListResponse,
 } from '@/services/patient/PatientService'
 import Phone from '@/utils/Phone'
 import DateTime from '@/utils/Date'
+import {
+  createPatient,
+  getPatient,
+  listPatient,
+} from '@/services/patient/actions/patient'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
@@ -115,8 +121,7 @@ export default function SchedulingForm({
   const setScheduling = async (data: setSchedulingData) => {
     const patient = selectedPatient
       ? selectedPatient.id
-      : await clientPatientService
-          .create({ name: patientSearch, phone })
+      : await createPatient({ name: patientSearch, phone })
           .then((res) => (Validate.isOk(res) ? res.id : undefined))
           .catch((err) => console.log(err))
 
@@ -164,12 +169,12 @@ export default function SchedulingForm({
   )
 
   useEffect(() => {
-    clientService
-      .list({ page: '1' })
-      .then((data) => Validate.isOk(data) && setServices(data.services))
+    listService({ page: '1' }).then(
+      (data) => Validate.isOk(data) && setServices(data.services),
+    )
     Promise.all([
-      clientService.list({ page: '1' }),
-      patientId && clientPatientService.get(patientId),
+      listService({ page: '1' }),
+      patientId && getPatient(patientId),
     ]).then(([serviceData, patientData]) => {
       if (Validate.isOk(serviceData)) {
         setServices(serviceData.services)
@@ -186,7 +191,7 @@ export default function SchedulingForm({
   }, [patientId, service, setService, setValue])
 
   useEffect(() => {
-    clientPatientService.list({ limit: 'all' }).then((data) => {
+    listPatient({ limit: 'all' }).then((data) => {
       Validate.isOk(data) && setPatients(data)
     })
     setPatientPage(1)

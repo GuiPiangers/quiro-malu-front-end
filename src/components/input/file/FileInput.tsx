@@ -1,7 +1,5 @@
 'use client'
 
-import Button from '@/components/Button'
-import { error } from 'console'
 import { ForwardedRef, forwardRef, InputHTMLAttributes, useId } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
 

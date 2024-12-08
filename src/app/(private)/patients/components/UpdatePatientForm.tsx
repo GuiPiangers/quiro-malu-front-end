@@ -1,8 +1,10 @@
 'use client'
 
-import { PatientResponse } from '@/services/patient/PatientService'
+import {
+  PatientResponse,
+  updatePatient,
+} from '@/services/patient/actions/patient'
 import PatientDataForm from '../components/PatientDataForm'
-import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 type UpdatePatientFormProps = {
@@ -12,8 +14,8 @@ type UpdatePatientFormProps = {
 export default function UpdatePatientForm({
   formData,
 }: UpdatePatientFormProps) {
-  const updatePatient = async (data: PatientResponse) => {
-    return await clientPatientService.update({ id: formData.id, ...data })
+  const handleUpdatePatient = async (data: PatientResponse) => {
+    return await updatePatient({ id: formData.id, ...data })
   }
   const { handleMessage } = useSnackbarContext()
 
@@ -27,7 +29,7 @@ export default function UpdatePatientForm({
   return (
     <section className="w-full">
       <PatientDataForm
-        action={updatePatient}
+        action={handleUpdatePatient}
         data={formData}
         afterValidate={afterValidate}
       />

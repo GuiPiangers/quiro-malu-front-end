@@ -1,26 +1,14 @@
 'use client'
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
-import {
-  MutableRefObject,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
-import ProgressForm from '@/app/(private)/patients/[id]/progress/components/ProgressForm'
 import PatientSchedulingForm from './PatientSchedulingForm'
-import { FormButtons } from './FormButtons'
 import AnamnesisSchedulingFrom from './AnamnesisSchedulingForm'
 import DiagnosticSchedulingForm from './DiagnosticSchedulingForm'
-import { clientPatientService } from '@/services/patient/clientPatientService'
-import { ProgressResponse } from '@/services/patient/PatientService'
-import { Validate } from '@/services/api/Validate'
 import { ProgressSchedulingForm } from './ProgressSchedulingForm'
 import PaymentForm from './PaymentForm'
 

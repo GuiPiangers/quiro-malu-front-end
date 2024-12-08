@@ -3,11 +3,13 @@
 import { Input } from '@/components/input'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
-import { DiagnosticResponse } from '@/services/patient/PatientService'
+import {
+  DiagnosticResponse,
+  setDiagnostic,
+} from '@/services/patient/actions/patient'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { clientPatientService } from '@/services/patient/clientPatientService'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import { useRouter } from 'next/navigation'
@@ -51,8 +53,8 @@ export default function DiagnosticForm({
     reset,
   } = setDiagnosticForm
 
-  const setDiagnostic = async (data: setDiagnosticData) => {
-    const res = await clientPatientService.setDiagnostic({
+  const handleSetDiagnostic = async (data: setDiagnosticData) => {
+    const res = await setDiagnostic({
       patientId: patientId!,
       ...data,
     })
@@ -70,7 +72,7 @@ export default function DiagnosticForm({
 
   return (
     <Form
-      onSubmit={handleSubmit(setDiagnostic)}
+      onSubmit={handleSubmit(handleSetDiagnostic)}
       buttons={buttons}
       btWrapperClassName={btWrapperClassName}
     >

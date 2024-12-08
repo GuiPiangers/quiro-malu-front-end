@@ -3,7 +3,7 @@ import Button from '@/components/Button'
 import ConfirmationModal from '@/components/modal/ConfirmationModal'
 import { ModalHandles } from '@/components/modal/Modal'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { clientPatientService } from '@/services/patient/clientPatientService'
+import { deletePatient } from '@/services/patient/actions/patient'
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef } from 'react'
 
@@ -18,8 +18,8 @@ export function DeletePatientModal({ id }: DeletePatientProps) {
   const handleOpen = () => modalHandle.current?.openModal()
   const handleClose = () => modalHandle.current?.closeModal()
 
-  const deletePatient = useCallback(async () => {
-    await clientPatientService.delete(id)
+  const handleDeletePatient = useCallback(async () => {
+    await deletePatient(id)
     handleClose()
     router.push('/patients')
     router.refresh()
@@ -39,7 +39,7 @@ export function DeletePatientModal({ id }: DeletePatientProps) {
         buttonText="Excluir"
         buttonConfig={{ color: 'red' }}
         description="Após excluir o paciente, a ação não poderá ser revertida"
-        action={deletePatient}
+        action={handleDeletePatient}
         ref={modalHandle}
       />
     </>

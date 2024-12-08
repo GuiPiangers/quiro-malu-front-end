@@ -1,13 +1,13 @@
 import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import { Nav } from '@/components/navigation'
-import { patientService } from '@/services/patient/serverPatientService'
 import DateTime from '@/utils/Date'
 import { ReactNode } from 'react'
 import { DeletePatientModal } from '../components/DeletePatient'
 import { Validate } from '@/services/api/Validate'
 import CreateSchedulingModal from '../../scheduling/components/SchedulingModal'
 import Link from 'next/link'
+import { getPatient } from '@/services/patient/actions/patient'
 
 type LayoutProps = {
   children: ReactNode
@@ -18,9 +18,9 @@ type LayoutProps = {
 
 export default async function Layout({ children, params }: LayoutProps) {
   const id = params.id
-  const patientData = await patientService
-    .get(id)
-    .then((res) => (Validate.isOk(res) ? res : undefined))
+  const patientData = await getPatient(id).then((res) =>
+    Validate.isOk(res) ? res : undefined,
+  )
   return (
     <div className="flex w-full flex-col items-center gap-4">
       <Box asChild className="w-full max-w-screen-lg">

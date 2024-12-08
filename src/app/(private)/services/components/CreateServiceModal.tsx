@@ -3,8 +3,7 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
 import ServiceForm from './ServiceForm'
-import { clientService } from '@/services/service/clientService'
-import { ServiceResponse } from '@/services/service/Service'
+import { ServiceResponse } from '@/services/service/actions/service'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
@@ -29,7 +28,7 @@ export default function CreateServiceModal({
   const createService = async (
     data: ServiceResponse,
   ): Promise<ServiceResponse | responseError> => {
-    return await clientService.create(data)
+    return await createService(data)
   }
 
   return (

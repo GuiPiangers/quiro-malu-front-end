@@ -3,8 +3,11 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { useRef } from 'react'
 import ServiceForm from './ServiceForm'
-import { clientService } from '@/services/service/clientService'
-import { ServiceResponse } from '@/services/service/Service'
+import {
+  ServiceResponse,
+  deleteService,
+  updateService,
+} from '@/services/service/actions/service'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
@@ -34,10 +37,10 @@ export default function UpdateServiceModal({
   const createService = async (
     data: ServiceResponse,
   ): Promise<ServiceResponse | responseError> => {
-    return await clientService.update(data)
+    return await updateService(data)
   }
-  const deleteService = async () => {
-    const res = service.id ? await clientService.delete(service.id) : undefined
+  const handleDeleteService = async () => {
+    const res = service.id ? await deleteService(service.id) : undefined
 
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
@@ -79,7 +82,7 @@ export default function UpdateServiceModal({
                 type="button"
                 variant="outline"
                 color="red"
-                onClick={deleteService}
+                onClick={handleDeleteService}
               >
                 Excluir
               </Button>

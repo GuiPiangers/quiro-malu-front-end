@@ -1,5 +1,4 @@
 import { Box } from '@/components/box/Box'
-import { schedulingService } from '@/services/scheduling/serverScheduling'
 import DateTime from '@/utils/Date'
 import RouteReplace from '../../../components/RouteReplace'
 import { RxCaretDown } from 'react-icons/rx'
@@ -7,6 +6,7 @@ import SchedulingModal from './components/SchedulingModal'
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
+import { listSchedules } from '@/services/scheduling/actions/scheduling'
 
 export default async function Scheduling({
   searchParams,
@@ -23,7 +23,7 @@ export default async function Scheduling({
     +date.substring(8, 10),
   )
 
-  const schedulesResp = await schedulingService.list({ date })
+  const schedulesResp = await listSchedules({ date })
   const table = {
     workTimeIncrement: 30,
     workSchedules: [

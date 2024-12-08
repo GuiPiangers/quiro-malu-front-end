@@ -4,8 +4,11 @@ import PatientDataForm, {
 import Button from '@/components/Button'
 import { responseError } from '@/services/api/api'
 import { Validate } from '@/services/api/Validate'
-import { clientPatientService } from '@/services/patient/clientPatientService'
-import { PatientResponse } from '@/services/patient/PatientService'
+import {
+  PatientResponse,
+  getPatient,
+  updatePatient,
+} from '@/services/patient/actions/patient'
 import { useEffect, useState } from 'react'
 import { PageStage } from './RealizeScheduling'
 
@@ -31,9 +34,9 @@ export default function PatientSchedulingForm({
   const [patientData, setPatientData] = useState<PatientResponse>()
 
   useEffect(() => {
-    clientPatientService
-      .get(patientId)
-      .then((res) => Validate.isOk(res) && setPatientData(res))
+    getPatient(patientId).then(
+      (res) => Validate.isOk(res) && setPatientData(res),
+    )
   }, [patientId])
 
   return (
@@ -46,7 +49,7 @@ export default function PatientSchedulingForm({
         data: CreatePatientData | PatientResponse,
       ): Promise<PatientResponse | responseError> {
         setNextPage('anamnesis')
-        const result = await clientPatientService.update({
+        const result = await updatePatient({
           id: patientId,
           name: data.name,
           phone: data.phone,

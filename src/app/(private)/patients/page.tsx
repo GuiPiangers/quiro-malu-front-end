@@ -3,12 +3,12 @@ import Button from '@/components/Button'
 import SearchInput from '@/components/input/SearchInput'
 import { AccordionTable } from '@/components/accordionTable'
 import Link from 'next/link'
-import { patientService } from '@/services/patient/serverPatientService'
 import DateTime from '@/utils/Date'
 import NoDataFound from '@/components/NoDataFound'
 import Pagination from '@/components/pagination/Pagination'
 import { Validate } from '@/services/api/Validate'
 import CreateSchedulingModal from '../scheduling/components/SchedulingModal'
+import { listPatient } from '@/services/patient/actions/patient'
 
 export default async function Patients({
   searchParams,
@@ -18,7 +18,7 @@ export default async function Patients({
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
 
-  const patientData = await patientService.list({ page })
+  const patientData = await listPatient({ page })
 
   const generateTable = () => {
     if (Validate.isOk(patientData) && patientData.patients.length > 0) {
