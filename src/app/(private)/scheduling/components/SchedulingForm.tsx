@@ -30,7 +30,9 @@ import ServiceSelect from '@/components/input/ServiceSelect'
 const setSchedulingSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
   service: z.string({ required_error: 'Campo obrigatório' }),
-  duration: z.coerce.number().optional(),
+  duration: z.coerce
+    .number()
+    .min(1, { message: 'A duração deve ser definida' }),
   status: z.enum(['Agendado', 'Atendido']).optional(),
   patientId: z.string().optional(),
   patientName: z.string({ required_error: 'Campo obrigatório' }),
@@ -89,6 +91,8 @@ export default function SchedulingForm({
     setError,
     setValue,
   } = setSchedulingForm
+
+  console.log(dirtyFields)
 
   const setScheduling = async (data: setSchedulingData) => {
     const patient = selectedPatient
@@ -156,7 +160,6 @@ export default function SchedulingForm({
     })
     setPatientPage(1)
   }, [])
-
   return (
     <Form onSubmit={handleSubmit(setScheduling)} {...formProps}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
@@ -199,13 +202,16 @@ export default function SchedulingForm({
             <Input.Message error>{errors.service.message}</Input.Message>
           )}
         </Input.Root>
-
         <Duration
           duration={duration}
           setValue={(value: number) => {
+            setValue('duration', value, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
             setDuration(value)
-            setValue('duration', value)
           }}
+          notSave={dirtyFields.duration}
           errors={errors?.duration?.message}
         />
 
@@ -235,7 +241,6 @@ export default function SchedulingForm({
               label: patient || '',
               id: patientId || '',
             }}
-            // onLastOptionView={loadMorePatients}
             options={
               patients
                 ? patients?.patients.map((patient) => ({

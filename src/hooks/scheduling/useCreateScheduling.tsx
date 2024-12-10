@@ -41,10 +41,6 @@ export function useCreateScheduling() {
           status,
         }
 
-        await queryClient.cancelQueries({
-          queryKey: ['listSchedules', date],
-        })
-
         queryClient.setQueryData<SchedulingListResponse>(
           ['listSchedules', date],
           (oldQuery) => {
@@ -59,13 +55,6 @@ export function useCreateScheduling() {
       }
       return response
     },
-
-    // onError: (_err, newTodo, context) => {
-    //   queryClient.setQueryData(
-    //     ['listSchedules', date],
-    //     context?.previousLaunches,
-    //   )
-    // },
 
     onSettled: () => {
       queryClient.invalidateQueries({
