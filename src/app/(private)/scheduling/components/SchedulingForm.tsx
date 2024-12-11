@@ -123,7 +123,9 @@ export default function SchedulingForm({
           })
       } else {
         reset({ ...data }, { keepValues: true })
-        if (afterValidation) afterValidation()
+
+        console.log('chegou aqui')
+        // if (afterValidation) afterValidation()
         handleMessage({
           title: 'Serviço salvo com sucesso!',
           type: 'success',
@@ -190,7 +192,6 @@ export default function SchedulingForm({
             notSave={dirtyFields.service}
             defaultValue={service}
             onInitialize={(value) => {
-              console.log(value)
               value && setService(value)
             }}
             value={selectedService}

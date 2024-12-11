@@ -41,12 +41,11 @@ export default function SchedulingModal({
   const formAction = async (
     data: SchedulingResponse & { patient: string; phone: string },
   ): Promise<SchedulingResponse | responseError> => {
-    updateScheduling.mutate(data)
-    if (formData?.id) return data
+    if (formData?.id) return await updateScheduling.mutateAsync(data)
 
     const result = await createScheduling.mutateAsync(data)
-    console.log(result)
-    return result
+    console.log('resultado ', result)
+    return await createScheduling.mutateAsync(data)
   }
 
   return (

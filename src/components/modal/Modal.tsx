@@ -7,7 +7,6 @@ import {
   forwardRef,
   useState,
   useImperativeHandle,
-  useEffect,
 } from 'react'
 import { Modal as BaseModal } from '@mui/base/Modal'
 import { twMerge } from 'tailwind-merge'
@@ -44,6 +43,7 @@ export default forwardRef<ModalHandles, ModalProps>(function Modal(
       onClose={handleClose}
       className="fixed inset-0 z-40 flex items-center justify-center"
       slots={{ backdrop: Backdrop }}
+      disablePortal
     >
       <div className={twMerge('rounded-lg bg-white p-4', className)}>
         {children}

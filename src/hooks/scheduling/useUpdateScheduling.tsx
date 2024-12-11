@@ -16,7 +16,7 @@ export function useUpdateScheduling() {
 
   const mutation = useMutation({
     mutationFn: async (data: Partial<SchedulingResponse>) => {
-      await updateScheduling(data)
+      return await updateScheduling(data)
     },
     onMutate: async (updateSchedulingData) => {
       const isLate =

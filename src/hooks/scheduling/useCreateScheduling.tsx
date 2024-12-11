@@ -18,42 +18,93 @@ export function useCreateScheduling() {
     ) => {
       return createScheduling(newScheduling)
     },
-    onSuccess: async (response, scheduling) => {
-      if (Validate.isOk(response)) {
-        const isLate =
-          scheduling.date &&
-          new Date().toISOString() > new Date(scheduling.date).toISOString()
+    onMutate: async (scheduling) => {
+      const previousLaunches = queryClient.getQueryData<SchedulingResponse[]>([
+        'listSchedules',
+        date,
+      ])
 
-        const isAppointed =
-          scheduling.status === 'Atrasado' || scheduling.status === 'Agendado'
+      await queryClient.cancelQueries({
+        queryKey: ['listSchedules', date],
+      })
 
-        const status = isAppointed
-          ? isLate
-            ? 'Atrasado'
-            : 'Agendado'
-          : scheduling.status
+      const isLate =
+        scheduling.date &&
+        new Date().toISOString() > new Date(scheduling.date).toISOString()
 
-        const newScheduling = {
-          ...(scheduling as SchedulingResponse & {
-            patient: string
-            phone: string
-          }),
-          status,
-        }
+      const isAppointed =
+        scheduling.status === 'Atrasado' || scheduling.status === 'Agendado'
 
-        queryClient.setQueryData<SchedulingListResponse>(
-          ['listSchedules', date],
-          (oldQuery) => {
-            if (!oldQuery) return oldQuery
+      const status = isAppointed
+        ? isLate
+          ? 'Atrasado'
+          : 'Agendado'
+        : scheduling.status
 
-            return {
-              ...oldQuery,
-              schedules: [...oldQuery.schedules, newScheduling],
-            }
-          },
-        )
+      const newScheduling = {
+        ...(scheduling as SchedulingResponse & {
+          patient: string
+          phone: string
+        }),
+        status,
       }
-      return response
+
+      queryClient.setQueryData<SchedulingListResponse>(
+        ['listSchedules', date],
+        (oldQuery) => {
+          if (!oldQuery) return oldQuery
+
+          return {
+            ...oldQuery,
+            schedules: [...oldQuery.schedules, newScheduling],
+          }
+        },
+      )
+
+      return { previousLaunches }
+    },
+    // onSuccess: async (response, scheduling) => {
+    //   if (Validate.isOk(response)) {
+    //     const isLate =
+    //       scheduling.date &&
+    //       new Date().toISOString() > new Date(scheduling.date).toISOString()
+
+    //     const isAppointed =
+    //       scheduling.status === 'Atrasado' || scheduling.status === 'Agendado'
+
+    //     const status = isAppointed
+    //       ? isLate
+    //         ? 'Atrasado'
+    //         : 'Agendado'
+    //       : scheduling.status
+
+    //     const newScheduling = {
+    //       ...(scheduling as SchedulingResponse & {
+    //         patient: string
+    //         phone: string
+    //       }),
+    //       status,
+    //     }
+
+    //     queryClient.setQueryData<SchedulingListResponse>(
+    //       ['listSchedules', date],
+    //       (oldQuery) => {
+    //         if (!oldQuery) return oldQuery
+
+    //         return {
+    //           ...oldQuery,
+    //           schedules: [...oldQuery.schedules, newScheduling],
+    //         }
+    //       },
+    //     )
+    //   }
+    //   return response
+    // },
+    onError: (_err, newTodo, context) => {
+      queryClient.setQueryData(
+        ['listSchedules', date],
+        context?.previousLaunches,
+      )
     },
 
     onSettled: () => {

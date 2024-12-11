@@ -38,8 +38,6 @@ export function useDeleteScheduling() {
             (launch) => launch.id !== updateSchedulingData.id,
           )
 
-          console.log(oldQuery)
-
           return { ...oldQuery, schedules: updatedLaunches }
         },
       )
