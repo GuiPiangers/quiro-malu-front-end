@@ -8,12 +8,13 @@ import { useSearchParams } from 'next/navigation'
 
 export function useCreateService() {
   const queryClient = useQueryClient()
+
   const searchParams = useSearchParams()
   const page = searchParams.get('page')
 
   const mutation = useMutation({
     mutationFn: async (data: ServiceResponse) => {
-      const message = await createService(data)
+      return await createService(data)
     },
     onMutate: async (newService) => {
       await queryClient.cancelQueries({

@@ -46,7 +46,7 @@ export async function listService({ page }: { page?: string }) {
   return res
 }
 
-export async function deleteService(id: string) {
+export async function deleteService({ id }: { id: string }) {
   const res = await api<void>('/services', {
     method: 'DELETE',
     body: JSON.stringify({ id }),

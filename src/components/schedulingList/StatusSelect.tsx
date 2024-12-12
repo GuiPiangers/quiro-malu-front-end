@@ -3,7 +3,6 @@
 import { SchedulingStatus } from '@/services/scheduling/actions/scheduling'
 import Button from '../Button'
 import { Input } from '../input'
-import { useRouter } from 'next/navigation'
 import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateScheduling'
 
 export default function StatusSelect({

@@ -42,7 +42,7 @@ export function useUpdateScheduling() {
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          const updatedLaunches = oldQuery.schedules.map((launch) => {
+          const updatedLaunches = oldQuery.service.map((launch) => {
             if (launch.id === updateSchedulingData.id) {
               const updateStatus = isAppointed
                 ? isLate
@@ -60,7 +60,7 @@ export function useUpdateScheduling() {
             return launch
           })
 
-          return { ...oldQuery, schedules: updatedLaunches }
+          return { ...oldQuery, service: updatedLaunches }
         },
       )
       return { previousLaunches }

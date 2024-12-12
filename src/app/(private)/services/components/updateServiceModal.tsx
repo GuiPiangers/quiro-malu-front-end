@@ -5,7 +5,6 @@ import { useRef } from 'react'
 import ServiceForm from './ServiceForm'
 import {
   ServiceResponse,
-  deleteService,
   updateService,
 } from '@/services/service/actions/service'
 import { responseError } from '@/services/api/api'
@@ -16,6 +15,7 @@ import Button from '@/components/Button'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Time } from '@/utils/Time'
 import { Validate } from '@/services/api/Validate'
+import { useDeleteService } from '@/hooks/service/useDeleteService'
 
 export default function UpdateServiceModal({
   service,
@@ -25,6 +25,7 @@ export default function UpdateServiceModal({
   const { handleMessage } = useSnackbarContext()
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
+  const deleteService = useDeleteService()
 
   const openModal = () => modalRef.current?.openModal()
   const closeModal = () => modalRef.current?.closeModal()
@@ -40,7 +41,9 @@ export default function UpdateServiceModal({
     return await updateService(data)
   }
   const handleDeleteService = async () => {
-    const res = service.id ? await deleteService(service.id) : undefined
+    const res = service.id
+      ? deleteService.mutate({ id: service.id })
+      : undefined
 
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })

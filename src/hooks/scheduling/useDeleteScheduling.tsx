@@ -19,7 +19,7 @@ export function useDeleteScheduling() {
       await deleteScheduling({ id })
       router.refresh()
     },
-    onMutate: async (updateSchedulingData) => {
+    onMutate: async (deleteSchedulingData) => {
       await queryClient.cancelQueries({
         queryKey: ['listSchedules', date],
       })
@@ -34,11 +34,11 @@ export function useDeleteScheduling() {
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          const updatedLaunches = oldQuery.schedules.filter(
-            (launch) => launch.id !== updateSchedulingData.id,
+          const updatedLaunches = oldQuery.service.filter(
+            (launch) => launch.id !== deleteSchedulingData.id,
           )
 
-          return { ...oldQuery, schedules: updatedLaunches }
+          return { ...oldQuery, service: updatedLaunches }
         },
       )
       return { previousLaunches }

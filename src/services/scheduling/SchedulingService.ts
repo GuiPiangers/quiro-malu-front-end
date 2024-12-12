@@ -21,7 +21,7 @@ export type SchedulingResponse = {
   date: string
 }
 export type SchedulingListResponse = {
-  schedules: (SchedulingResponse & { patient: string; phone: string })[]
+  service: (SchedulingResponse & { patient: string; phone: string })[]
 }
 
 export class Scheduling extends ServiceApi {
