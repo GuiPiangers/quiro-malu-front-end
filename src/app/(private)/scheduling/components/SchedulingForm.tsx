@@ -124,8 +124,7 @@ export default function SchedulingForm({
       } else {
         reset({ ...data }, { keepValues: true })
 
-        console.log('chegou aqui')
-        // if (afterValidation) afterValidation()
+        if (afterValidation) afterValidation()
         handleMessage({
           title: 'Serviço salvo com sucesso!',
           type: 'success',

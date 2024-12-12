@@ -71,6 +71,7 @@ export async function listSchedules({
     `/Schedules?page=${page}&date=${date}`,
     {
       method: 'GET',
+      next: { revalidate: 3600 },
     },
   )
   return res

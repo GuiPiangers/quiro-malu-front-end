@@ -75,7 +75,7 @@ export function useUpdateScheduling() {
 
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ['listSchedules', date],
+        queryKey: ['listSchedules'],
       })
     },
   })

@@ -2,7 +2,7 @@
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
-import SchedulingForm from './SchedulingForm'
+import SchedulingForm from '../../../app/(private)/scheduling/components/SchedulingForm'
 import { SchedulingResponse } from '@/services/scheduling/actions/scheduling'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'

@@ -7,7 +7,7 @@ import DateTime from '@/utils/Date'
 import NoDataFound from '@/components/notFound/NoDataFound'
 import Pagination from '@/components/pagination/Pagination'
 import { Validate } from '@/services/api/Validate'
-import CreateSchedulingModal from '../scheduling/components/SchedulingModal'
+import CreateSchedulingModal from '../../../components/modal/SchedulingModal/SchedulingModal'
 import { listPatient } from '@/services/patient/actions/patient'
 
 export default async function Patients({

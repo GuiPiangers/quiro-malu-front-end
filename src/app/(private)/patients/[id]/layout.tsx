@@ -5,7 +5,7 @@ import DateTime from '@/utils/Date'
 import { ReactNode } from 'react'
 import { DeletePatientModal } from '../components/DeletePatient'
 import { Validate } from '@/services/api/Validate'
-import CreateSchedulingModal from '../../scheduling/components/SchedulingModal'
+import CreateSchedulingModal from '../../../../components/modal/SchedulingModal/SchedulingModal'
 import Link from 'next/link'
 import { getPatient } from '@/services/patient/actions/patient'
 
