@@ -92,8 +92,6 @@ export default function SchedulingForm({
     setValue,
   } = setSchedulingForm
 
-  console.log(dirtyFields)
-
   const setScheduling = async (data: setSchedulingData) => {
     const patient = selectedPatient
       ? selectedPatient.id

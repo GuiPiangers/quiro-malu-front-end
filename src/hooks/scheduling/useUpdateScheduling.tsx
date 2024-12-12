@@ -1,8 +1,8 @@
 import {
   updateScheduling,
   SchedulingResponse,
+  SchedulingListResponse,
 } from '@/services/scheduling/actions/scheduling'
-import { SchedulingListResponse } from '@/services/scheduling/SchedulingService'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
@@ -42,7 +42,9 @@ export function useUpdateScheduling() {
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          const updatedLaunches = oldQuery.service.map((launch) => {
+          console.log(oldQuery)
+
+          const updatedLaunches = oldQuery.schedules.map((launch) => {
             if (launch.id === updateSchedulingData.id) {
               const updateStatus = isAppointed
                 ? isLate

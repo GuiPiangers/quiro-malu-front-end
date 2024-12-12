@@ -59,7 +59,6 @@ export default function SchedulingList({
     },
   })
   const modalRef = useRef<ModalHandles>(null)
-  console.log(modalRef.current)
 
   const openModal = modalRef.current?.openModal
   const [modalData, setModalData] = useState<

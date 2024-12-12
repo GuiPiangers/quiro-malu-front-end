@@ -71,7 +71,6 @@ export async function listSchedules({
     `/Schedules?page=${page}&date=${date}`,
     {
       method: 'GET',
-      next: { revalidate: 3600 },
     },
   )
   return res
@@ -98,5 +97,6 @@ export async function deleteScheduling({ id }: { id: string }) {
     method: 'DELETE',
     body: JSON.stringify({ id }),
   })
+  console.log(res)
   return res
 }

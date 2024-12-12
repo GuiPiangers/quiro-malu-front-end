@@ -11,7 +11,7 @@ export default function DeleteSchedulingButton({ id }: { id: string }) {
   const handleDeleteScheduling = async () => {
     deleteScheduling.mutate({ id })
 
-    handleMessage({
+    return handleMessage({
       title: 'Agendamento deletado com sucesso!',
       type: 'success',
     })

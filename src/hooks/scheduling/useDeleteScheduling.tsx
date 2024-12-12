@@ -1,8 +1,8 @@
 import {
+  SchedulingListResponse,
   SchedulingResponse,
   deleteScheduling,
 } from '@/services/scheduling/actions/scheduling'
-import { SchedulingListResponse } from '@/services/scheduling/SchedulingService'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -16,8 +16,9 @@ export function useDeleteScheduling() {
 
   const mutation = useMutation({
     mutationFn: async ({ id }: { id: string }) => {
-      await deleteScheduling({ id })
+      const result = await deleteScheduling({ id })
       router.refresh()
+      return result
     },
     onMutate: async (deleteSchedulingData) => {
       await queryClient.cancelQueries({
@@ -34,7 +35,7 @@ export function useDeleteScheduling() {
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          const updatedLaunches = oldQuery.service.filter(
+          const updatedLaunches = oldQuery.schedules.filter(
             (launch) => launch.id !== deleteSchedulingData.id,
           )
 
@@ -53,7 +54,7 @@ export function useDeleteScheduling() {
 
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ['listSchedules'],
+        queryKey: ['listSchedules', date],
       })
     },
   })
