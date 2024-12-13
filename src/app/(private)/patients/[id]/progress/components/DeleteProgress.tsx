@@ -3,7 +3,7 @@ import Button from '@/components/Button'
 import ConfirmationModal from '@/components/modal/ConfirmationModal'
 import { ModalHandles } from '@/components/modal/Modal'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { deleteProgress } from '@/services/patient/actions/patient'
+import { deleteProgress } from '@/services/patient/patient'
 import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
 

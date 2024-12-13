@@ -1,6 +1,6 @@
 'use client'
 
-import { getQtdSchedulesByDay } from '@/services/scheduling/actions/scheduling'
+import { getQtdSchedulesByDay } from '@/services/scheduling/scheduling'
 import Calendar from './Calendar'
 
 export default function SchedulingCalendar() {

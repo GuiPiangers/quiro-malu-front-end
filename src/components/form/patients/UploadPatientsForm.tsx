@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { PiPaperclipLight } from 'react-icons/pi'
 import { z } from 'zod'
 import { FileInput } from '@/components/input/file/FileInput'
-import { uploadPatient } from '@/services/patient/actions/patient'
+import { uploadPatient } from '@/services/patient/patient'
 
 export const uploadPatientsSchema = z.object({
   file: z.any(),

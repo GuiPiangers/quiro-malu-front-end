@@ -3,7 +3,7 @@ import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { Validate } from '@/services/api/Validate'
 import { Box } from '@/components/box/Box'
 import Link from 'next/link'
-import { listSchedules } from '@/services/scheduling/actions/scheduling'
+import { listSchedules } from '@/services/scheduling/scheduling'
 
 export default async function Home() {
   const date = DateTime.getIsoDate(new Date())

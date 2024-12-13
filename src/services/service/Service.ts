@@ -1,5 +1,6 @@
-import { ServiceApi, ServiceApiFetchData } from '../api/ServiceApi'
-import { responseError } from '../api/api'
+'use server'
+
+import { api } from '@/services/api/api'
 
 export type ServiceResponse = {
   id?: string
@@ -13,51 +14,42 @@ export type ServiceListResponse = {
   limit: number
 }
 
-export class Service extends ServiceApi {
-  constructor(fetchData: ServiceApiFetchData) {
-    super(fetchData)
-  }
+export async function createService(data: ServiceResponse) {
+  const res = await api<ServiceResponse>('/services', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
 
-  async create(data: ServiceResponse) {
-    const res = await this.fetchData<ServiceResponse>('/services', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
+  return res
+}
 
-    return res
-  }
+export async function updateService(data: ServiceResponse) {
+  const res = await api<ServiceResponse>('/services', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
 
-  async update(data: ServiceResponse) {
-    const res = await this.fetchData<ServiceResponse>('/services', {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    })
+  return res
+}
 
-    return res
-  }
+export async function getService(id: string) {
+  const res = await api<ServiceResponse>(`/services/${id}`, {
+    method: 'GET',
+  })
+  return res
+}
 
-  async get(id: string) {
-    const res = await this.fetchData<ServiceResponse>(`/services/${id}`, {
-      method: 'GET',
-    })
-    return res
-  }
+export async function listService({ page }: { page?: string }) {
+  const res = await api<ServiceListResponse>(`/services?page=${page}`, {
+    method: 'GET',
+  })
+  return res
+}
 
-  async list({ page = '1' }: { page?: string }) {
-    const res = await this.fetchData<ServiceListResponse>(
-      `/services?page=${page}`,
-      {
-        method: 'GET',
-      },
-    )
-    return res
-  }
-
-  async delete(id: string) {
-    const res = await this.fetchData<void>('/services', {
-      method: 'DELETE',
-      body: JSON.stringify({ id }),
-    })
-    return res
-  }
+export async function deleteService({ id }: { id: string }) {
+  const res = await api<void>('/services', {
+    method: 'DELETE',
+    body: JSON.stringify({ id }),
+  })
+  return res
 }

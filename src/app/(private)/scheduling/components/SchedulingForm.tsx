@@ -7,24 +7,23 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { SchedulingResponse } from '@/services/scheduling/actions/scheduling'
+import { SchedulingResponse } from '@/services/scheduling/scheduling'
 import { responseError } from '@/services/api/api'
 
 import Duration from '@/app/(private)/components/Duration'
 import { useCallback, useEffect, useState } from 'react'
-import { ServiceResponse } from '@/services/service/actions/service'
+import { ServiceResponse } from '@/services/service/service'
 import { Validate } from '@/services/api/Validate'
 import {
   PatientResponse,
   PatientsListResponse,
-} from '@/services/patient/PatientService'
-import Phone from '@/utils/Phone'
-import DateTime from '@/utils/Date'
-import {
   createPatient,
   getPatient,
   listPatient,
-} from '@/services/patient/actions/patient'
+} from '@/services/patient/patient'
+import Phone from '@/utils/Phone'
+import DateTime from '@/utils/Date'
+
 import ServiceSelect from '@/components/input/ServiceSelect'
 
 const setSchedulingSchema = z.object({

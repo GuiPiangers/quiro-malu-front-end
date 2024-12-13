@@ -12,7 +12,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { registerUser } from '@/services/user/actions/user'
+import { registerUser } from '@/services/user/user'
 
 const createUserSchema = z.object({
   name: z

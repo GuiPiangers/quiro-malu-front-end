@@ -7,7 +7,7 @@ import {
   UserResponse,
   loginUser,
   logoutUser,
-} from '@/services/user/actions/user'
+} from '@/services/user/user'
 import { clientCookie } from '@/services/cookies/clientCookies'
 import { responseError } from '@/services/api/api'
 import { Validate } from '@/services/api/Validate'

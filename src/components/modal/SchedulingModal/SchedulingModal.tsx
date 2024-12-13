@@ -2,7 +2,7 @@
 
 import { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
-import { SchedulingResponse } from '@/services/scheduling/actions/scheduling'
+import { SchedulingResponse } from '@/services/scheduling/scheduling'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import SchedulingModalContent from './SchedulingModalContent'
 

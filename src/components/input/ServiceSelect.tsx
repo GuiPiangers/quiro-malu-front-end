@@ -7,7 +7,7 @@ import { Input } from '.'
 import {
   ServiceResponse,
   listService,
-} from '@/services/service/actions/service'
+} from '@/services/service/service'
 import { Validate } from '@/services/api/Validate'
 import { useQuery } from '@tanstack/react-query'
 

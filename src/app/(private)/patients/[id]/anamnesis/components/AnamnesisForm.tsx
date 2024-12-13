@@ -7,7 +7,7 @@ import { sectionStyles } from '../../../../../../components/form/Styles'
 import {
   AnamnesisResponse,
   setAnamnesis,
-} from '@/services/patient/actions/patient'
+} from '@/services/patient/patient'
 import { ReactNode } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'

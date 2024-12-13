@@ -1,9 +1,6 @@
 'use client'
 
-import {
-  listService,
-  ServiceListResponse,
-} from '@/services/service/actions/service'
+import { listService, ServiceListResponse } from '@/services/service/service'
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import NoDataFound from '../notFound/NoDataFound'
 import { Validate } from '@/services/api/Validate'

@@ -1,8 +1,9 @@
 import {
   createService,
   ServiceListResponse,
-} from '@/services/service/actions/service'
-import { ServiceResponse } from '@/services/service/Service'
+  ServiceResponse,
+} from '@/services/service/service'
+
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 

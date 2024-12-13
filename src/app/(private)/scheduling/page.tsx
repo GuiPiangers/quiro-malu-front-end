@@ -6,7 +6,7 @@ import SchedulingModal from '../../../components/modal/SchedulingModal/Schedulin
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
-import { listSchedules } from '@/services/scheduling/actions/scheduling'
+import { listSchedules } from '@/services/scheduling/scheduling'
 
 export default async function Scheduling({
   searchParams,

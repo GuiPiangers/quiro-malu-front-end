@@ -3,7 +3,7 @@ import { Validate } from '@/services/api/Validate'
 import {
   AnamnesisResponse,
   getAnamnesis,
-} from '@/services/patient/actions/patient'
+} from '@/services/patient/patient'
 import { useEffect, useState } from 'react'
 import { FormButtons } from './FormButtons'
 import { PageStage } from './RealizeScheduling'

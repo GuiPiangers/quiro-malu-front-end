@@ -5,12 +5,12 @@ import {
   ProgressResponse,
   getProgressByScheduling,
   setProgress,
-} from '@/services/patient/actions/patient'
+} from '@/services/patient/patient'
 import { useEffect, useState } from 'react'
 import { Validate } from '@/services/api/Validate'
 import { useRouter } from 'next/navigation'
 
-import { realizeScheduling } from '@/services/scheduling/actions/scheduling'
+import { realizeScheduling } from '@/services/scheduling/scheduling'
 
 type ProgressSchedulingFormProps = {
   goToNextPage(): void

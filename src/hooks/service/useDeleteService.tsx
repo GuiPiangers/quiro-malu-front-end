@@ -1,8 +1,8 @@
 import {
   deleteService,
   ServiceResponse,
-} from '@/services/service/actions/service'
-import { ServiceListResponse } from '@/services/service/Service'
+  ServiceListResponse,
+} from '@/services/service/service'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -12,7 +12,7 @@ export function useDeleteService() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const page = searchParams.get('page')
+  const page = searchParams.get('page') ?? 1
 
   const mutation = useMutation({
     mutationFn: async ({ id }: { id: string }) => {
@@ -22,16 +22,16 @@ export function useDeleteService() {
     },
     onMutate: async (deleteServiceData) => {
       await queryClient.cancelQueries({
-        queryKey: ['listService', page],
+        queryKey: ['listServices', page],
       })
 
       const previousLaunches = queryClient.getQueryData<ServiceResponse[]>([
-        'listService',
+        'listServices',
         page,
       ])
 
       queryClient.setQueryData<ServiceListResponse>(
-        ['listService', page],
+        ['listServices', page],
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
@@ -39,19 +39,27 @@ export function useDeleteService() {
             (launch) => launch.id !== deleteServiceData.id,
           )
 
-          return { ...oldQuery, service: deleteService }
+          console.log(deleteService)
+
+          const services = { ...oldQuery, services: deleteService }
+          console.log(services)
+
+          return services
         },
       )
       return { previousLaunches }
     },
 
     onError: (_err, newTodo, context) => {
-      queryClient.setQueryData(['listService', page], context?.previousLaunches)
+      queryClient.setQueryData(
+        ['listServices', page],
+        context?.previousLaunches,
+      )
     },
 
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ['listService'],
+        queryKey: ['listServices'],
       })
     },
   })

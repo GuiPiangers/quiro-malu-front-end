@@ -6,7 +6,7 @@ import { ReactNode, useRef } from 'react'
 import {
   ProgressResponse,
   setProgress,
-} from '@/services/patient/actions/patient'
+} from '@/services/patient/patient'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { useRouter } from 'next/navigation'
 import HeaderForm from '@/components/modal/HeaderModal'

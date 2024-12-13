@@ -5,7 +5,7 @@ import PatientDataForm, {
   CreatePatientData,
 } from '../components/PatientDataForm'
 import { useRouter } from 'next/navigation'
-import { createPatient } from '@/services/patient/actions/patient'
+import { createPatient } from '@/services/patient/patient'
 
 export default function CreatePatientForm() {
   const router = useRouter()

@@ -8,7 +8,7 @@ import {
   PatientResponse,
   getPatient,
   updatePatient,
-} from '@/services/patient/actions/patient'
+} from '@/services/patient/patient'
 import { useEffect, useState } from 'react'
 import { PageStage } from './RealizeScheduling'
 

@@ -3,12 +3,12 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
 import ServiceForm from './ServiceForm'
-import { ServiceResponse } from '@/services/service/actions/service'
+import { createService, ServiceResponse } from '@/services/service/service'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
 import Button, { ButtonPropsVariants } from '@/components/Button'
-import { useCreateService } from '@/hooks/service/useCreateService'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function CreateServiceModal({
   color,
@@ -17,7 +17,7 @@ export default function CreateServiceModal({
 }: { className?: string; children?: ReactNode } & ButtonPropsVariants) {
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
-  const createService = useCreateService()
+  const queryClient = useQueryClient()
 
   const openModal = () => modalRef.current?.openModal()
   const closeModal = () => modalRef.current?.closeModal()
@@ -30,8 +30,11 @@ export default function CreateServiceModal({
   const handleCreateService = async (
     data: ServiceResponse,
   ): Promise<ServiceResponse | responseError> => {
-    createService.mutate(data)
-    return data
+    const result = await createService(data)
+    queryClient.invalidateQueries({
+      queryKey: ['listServices'],
+    })
+    return result
   }
 
   return (

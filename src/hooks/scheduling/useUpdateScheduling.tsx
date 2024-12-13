@@ -2,7 +2,7 @@ import {
   updateScheduling,
   SchedulingResponse,
   SchedulingListResponse,
-} from '@/services/scheduling/actions/scheduling'
+} from '@/services/scheduling/scheduling'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'

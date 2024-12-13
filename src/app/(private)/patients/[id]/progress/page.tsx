@@ -7,7 +7,7 @@ import DeleteProgress from './components/DeleteProgress'
 import Pagination from '@/components/pagination/Pagination'
 import NoDataFound from '@/components/notFound/NoDataFound'
 import { Validate } from '@/services/api/Validate'
-import { listProgress } from '@/services/patient/actions/patient'
+import { listProgress } from '@/services/patient/patient'
 
 export default async function Progress({
   params,

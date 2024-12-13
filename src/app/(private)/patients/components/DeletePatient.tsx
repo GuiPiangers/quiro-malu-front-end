@@ -3,7 +3,7 @@ import Button from '@/components/Button'
 import ConfirmationModal from '@/components/modal/ConfirmationModal'
 import { ModalHandles } from '@/components/modal/Modal'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { deletePatient } from '@/services/patient/actions/patient'
+import { deletePatient } from '@/services/patient/patient'
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef } from 'react'
 

@@ -3,7 +3,7 @@
 import {
   SchedulingResponse,
   listSchedules,
-} from '@/services/scheduling/actions/scheduling'
+} from '@/services/scheduling/scheduling'
 import {
   GenerateWorkHours,
   GenerateWorkHoursProps,
@@ -19,7 +19,7 @@ import DateTime from '@/utils/Date'
 import StopPropagation from '../StopPropagation'
 import StatusSelect from './StatusSelect'
 import { useQuery } from '@tanstack/react-query'
-import { SchedulingStatusEnum } from '@/services/scheduling/actions/schedulingStatusEnum'
+import { SchedulingStatusEnum } from '@/services/scheduling/schedulingStatusEnum'
 import { Validate } from '@/services/api/Validate'
 import { useRef, useState } from 'react'
 import { ModalHandles } from '../modal/Modal'

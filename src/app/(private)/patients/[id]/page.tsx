@@ -1,6 +1,6 @@
 import UpdatePatientForm from '../components/UpdatePatientForm'
 import { Validate } from '@/services/api/Validate'
-import { getPatient } from '@/services/patient/actions/patient'
+import { getPatient } from '@/services/patient/patient'
 
 export type ParamsType = { id: string }
 

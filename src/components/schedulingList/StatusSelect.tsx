@@ -1,6 +1,6 @@
 'use client'
 
-import { SchedulingStatus } from '@/services/scheduling/actions/scheduling'
+import { SchedulingStatus } from '@/services/scheduling/scheduling'
 import Button from '../Button'
 import { Input } from '../input'
 import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateScheduling'

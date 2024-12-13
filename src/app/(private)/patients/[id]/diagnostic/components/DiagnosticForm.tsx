@@ -6,7 +6,7 @@ import { sectionStyles } from '../../../../../../components/form/Styles'
 import {
   DiagnosticResponse,
   setDiagnostic,
-} from '@/services/patient/actions/patient'
+} from '@/services/patient/patient'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
