@@ -1,31 +1,27 @@
 import {
-  deleteService,
-  ServiceResponse,
   ServiceListResponse,
+  ServiceResponse,
+  updateService,
 } from '@/services/service/service'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 
-export function useDeleteService() {
+export function useUpdateService() {
   const queryClient = useQueryClient()
-  const router = useRouter()
-  const searchParams = useSearchParams()
 
+  const searchParams = useSearchParams()
   const page = searchParams.get('page') ?? '1'
 
   const mutation = useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      const response = await deleteService({ id })
-      router.refresh()
-      return response
+    mutationFn: async (data: ServiceResponse) => {
+      return await updateService(data)
     },
-    onMutate: async (deleteServiceData) => {
+    onMutate: async (updateService) => {
       await queryClient.cancelQueries({
         queryKey: ['listServices', page],
       })
-
-      const previousLaunches = queryClient.getQueryData<ServiceResponse[]>([
+      const previousLaunches = queryClient.getQueryData<ServiceListResponse>([
         'listServices',
         page,
       ])
@@ -35,16 +31,21 @@ export function useDeleteService() {
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          const deleteService = oldQuery.services.filter(
-            (launch) => launch.id !== deleteServiceData.id,
-          )
+          const updatedServices = oldQuery.services.map((service) => {
+            if (service.id === updateService.id) {
+              return {
+                ...service,
+                ...updateService,
+                value: +updateService.value,
+              }
+            }
 
-          console.log(deleteService)
+            return service
+          })
 
-          const services = { ...oldQuery, services: deleteService }
-          console.log(services)
+          console.log(oldQuery)
 
-          return services
+          return { ...oldQuery, services: updatedServices }
         },
       )
       return { previousLaunches }

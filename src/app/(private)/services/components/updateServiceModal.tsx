@@ -3,7 +3,7 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { useRef } from 'react'
 import ServiceForm from './ServiceForm'
-import { ServiceResponse, updateService } from '@/services/service/service'
+import { ServiceResponse } from '@/services/service/service'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
@@ -13,6 +13,7 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Time } from '@/utils/Time'
 import { Validate } from '@/services/api/Validate'
 import { useDeleteService } from '@/hooks/service/useDeleteService'
+import { useUpdateService } from '@/hooks/service/useUpdateService'
 
 export default function UpdateServiceModal({
   service,
@@ -23,6 +24,7 @@ export default function UpdateServiceModal({
   const modalRef = useRef<ModalHandles>(null)
   const router = useRouter()
   const deleteService = useDeleteService()
+  const updateService = useUpdateService()
 
   const openModal = () => modalRef.current?.openModal()
   const closeModal = () => modalRef.current?.closeModal()
@@ -35,7 +37,7 @@ export default function UpdateServiceModal({
   const createService = async (
     data: ServiceResponse,
   ): Promise<ServiceResponse | responseError> => {
-    return await updateService(data)
+    return await updateService.mutateAsync(data)
   }
   const handleDeleteService = async () => {
     const res = service.id

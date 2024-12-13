@@ -62,7 +62,7 @@ export function useUpdateScheduling() {
             return launch
           })
 
-          return { ...oldQuery, service: updatedLaunches }
+          return { ...oldQuery, schedules: updatedLaunches }
         },
       )
       return { previousLaunches }
