@@ -2,7 +2,7 @@ import {
   deleteService,
   ServiceResponse,
   ServiceListResponse,
-} from '@/services/service/service'
+} from '@/services/service/Service'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'

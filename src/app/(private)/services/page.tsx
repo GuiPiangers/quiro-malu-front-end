@@ -1,6 +1,6 @@
 import ServiceList from '@/components/serviceList/ServiceList'
 import { Validate } from '@/services/api/Validate'
-import { listService } from '@/services/service/service'
+import { listService } from '@/services/service/Service'
 
 export default async function Services({
   searchParams,

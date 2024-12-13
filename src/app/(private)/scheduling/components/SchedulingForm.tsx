@@ -12,7 +12,7 @@ import { responseError } from '@/services/api/api'
 
 import Duration from '@/app/(private)/components/Duration'
 import { useCallback, useEffect, useState } from 'react'
-import { ServiceResponse } from '@/services/service/service'
+import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import {
   PatientResponse,
@@ -99,6 +99,7 @@ export default function SchedulingForm({
           .catch((err) => console.log(err))
 
     if (patient) {
+      console.log(data)
       const res = await action({
         ...data,
         id,
