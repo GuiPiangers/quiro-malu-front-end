@@ -4,7 +4,7 @@ import { Input } from '@/components/input'
 
 import Phone from '@/utils/Phone'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { object, z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Cpf from '@/utils/Cpf'
 import { PatientResponse } from '@/services/patient/patient'
@@ -168,7 +168,10 @@ export default function PatientDataForm({
   }
 
   const handleAction = async (data: CreatePatientData) => {
-    const res = await action(data)
+    const hasDirtyFields = Object.keys(dirtyFields).length > 0
+
+    const res = hasDirtyFields ? await action(data) : undefined
+
     if (Validate.isError(res)) {
       if (res.type === 'date') {
         setError('dateOfBirth', { message: res.message })

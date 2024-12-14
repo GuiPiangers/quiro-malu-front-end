@@ -1,4 +1,3 @@
-import { Validate } from '@/services/api/Validate'
 import {
   createScheduling,
   SchedulingListResponse,
@@ -63,43 +62,7 @@ export function useCreateScheduling() {
 
       return { previousLaunches }
     },
-    // onSuccess: async (response, scheduling) => {
-    //   if (Validate.isOk(response)) {
-    //     const isLate =
-    //       scheduling.date &&
-    //       new Date().toISOString() > new Date(scheduling.date).toISOString()
 
-    //     const isAppointed =
-    //       scheduling.status === 'Atrasado' || scheduling.status === 'Agendado'
-
-    //     const status = isAppointed
-    //       ? isLate
-    //         ? 'Atrasado'
-    //         : 'Agendado'
-    //       : scheduling.status
-
-    //     const newScheduling = {
-    //       ...(scheduling as SchedulingResponse & {
-    //         patient: string
-    //         phone: string
-    //       }),
-    //       status,
-    //     }
-
-    //     queryClient.setQueryData<SchedulingListResponse>(
-    //       ['listSchedules', date],
-    //       (oldQuery) => {
-    //         if (!oldQuery) return oldQuery
-
-    //         return {
-    //           ...oldQuery,
-    //           schedules: [...oldQuery.schedules, newScheduling],
-    //         }
-    //       },
-    //     )
-    //   }
-    //   return response
-    // },
     onError: (_err, newTodo, context) => {
       queryClient.setQueryData(
         ['listSchedules', date],

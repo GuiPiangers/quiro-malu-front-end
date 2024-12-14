@@ -12,7 +12,7 @@ import { responseError } from '@/services/api/api'
 
 import Duration from '@/app/(private)/components/Duration'
 import { useCallback, useEffect, useState } from 'react'
-import { ServiceResponse } from '@/services/service/Service'
+import { ServiceResponse } from '@/services/service/service'
 import { Validate } from '@/services/api/Validate'
 import {
   PatientResponse,

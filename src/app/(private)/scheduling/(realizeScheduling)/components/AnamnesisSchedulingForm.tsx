@@ -1,12 +1,9 @@
 import AnamnesisForm from '@/app/(private)/patients/[id]/anamnesis/components/AnamnesisForm'
 import { Validate } from '@/services/api/Validate'
-import {
-  AnamnesisResponse,
-  getAnamnesis,
-} from '@/services/patient/patient'
-import { useEffect, useState } from 'react'
+import { getAnamnesis } from '@/services/patient/patient'
 import { FormButtons } from './FormButtons'
 import { PageStage } from './RealizeScheduling'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 type AnamnesisSchedulingFromProps = {
   patientId: string
@@ -19,18 +16,27 @@ export default function AnamnesisSchedulingFrom({
   setNextPage,
   goToNextPage,
 }: AnamnesisSchedulingFromProps) {
-  const [anamnesisData, setAnamnesisData] = useState<AnamnesisResponse>()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    getAnamnesis(patientId).then(
-      (res) => Validate.isOk(res) && setAnamnesisData(res),
-    )
-  }, [patientId])
+  const { data: anamnesisData } = useQuery({
+    queryKey: ['anamnesis', patientId],
+    queryFn: async () =>
+      await getAnamnesis(patientId).then((res) =>
+        Validate.isOk(res) ? res : undefined,
+      ),
+  })
+
+  const handleAfterValidate = () => {
+    goToNextPage()
+    queryClient.invalidateQueries({
+      queryKey: ['anamnesis', patientId],
+    })
+  }
 
   return (
     <AnamnesisForm
       formData={anamnesisData ?? { patientId }}
-      afterValidate={goToNextPage}
+      afterValidate={handleAfterValidate}
       buttons={
         <FormButtons
           setNextPage={setNextPage}

@@ -4,12 +4,9 @@ import { Input } from '@/components/input'
 import RadioButton from '@/components/radioButton/RadioButton'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
-import {
-  AnamnesisResponse,
-  setAnamnesis,
-} from '@/services/patient/patient'
+import { AnamnesisResponse, setAnamnesis } from '@/services/patient/patient'
 import { ReactNode } from 'react'
-import { z } from 'zod'
+import { object, z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
@@ -93,14 +90,16 @@ export default function AnamnesisForm({
   const smokeState = watch('smoke')
   const underwentSurgeryState = watch('underwentSurgery')
   const useMedicineState = watch('useMedicine')
-  // const [underwentSurgeryState, setUnderwentSurgeryState] =
-  //   useState(underwentSurgery)
-  // const [useMedicineState, setUseMedicineState] = useState(useMedicine)
 
   const router = useRouter()
 
   const handleSetAnamnesis = async (data: setAnamnesisData) => {
-    const res = await setAnamnesis({ patientId, ...data })
+    const hasDirtyFields = Object.keys(dirtyFields).length > 0
+
+    const res = hasDirtyFields
+      ? await setAnamnesis({ patientId, ...data })
+      : undefined
+
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {
@@ -234,7 +233,6 @@ export default function AnamnesisForm({
               checked={smokeState === 'passive'}
               disabled={isSubmitting}
               defaultChecked={smokeState === 'passive'}
-              // onClick={() => setSmokeState('passive')}
             />
           </div>
           {errors.smoke && (
@@ -250,18 +248,17 @@ export default function AnamnesisForm({
               value={'yes'}
               disabled={isSubmitting}
               onChange={() => {
-                setValue('useMedicine', true)
+                setValue('useMedicine', true, { shouldDirty: true })
               }}
               defaultChecked={useMedicine === true}
               checked={useMedicineState === true}
-              // onClick={() => setUseMedicineState(true)}
             />
             <RadioButton
               label="Não"
               value={'no'}
               disabled={isSubmitting}
               onChange={() => {
-                setValue('useMedicine', false)
+                setValue('useMedicine', false, { shouldDirty: true })
               }}
               checked={useMedicineState === false}
               defaultChecked={!useMedicine}
@@ -299,7 +296,7 @@ export default function AnamnesisForm({
               value={'yes'}
               disabled={isSubmitting}
               onChange={() => {
-                setValue('underwentSurgery', true)
+                setValue('underwentSurgery', true, { shouldDirty: true })
               }}
               checked={underwentSurgeryState === true}
               defaultChecked={underwentSurgery === true}
@@ -310,11 +307,10 @@ export default function AnamnesisForm({
               value={'no'}
               disabled={isSubmitting}
               onChange={() => {
-                setValue('underwentSurgery', false)
+                setValue('underwentSurgery', false, { shouldDirty: true })
               }}
               checked={underwentSurgeryState === false}
               defaultChecked={!underwentSurgery}
-              // onClick={() => setUnderwentSurgeryState(false)}
             />
           </div>
           {errors.underwentSurgery && (

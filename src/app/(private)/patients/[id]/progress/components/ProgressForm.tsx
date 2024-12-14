@@ -10,7 +10,7 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { ProgressResponse } from '@/services/patient/patient'
 import DateTime from '@/utils/Date'
 import { useState } from 'react'
-import { ServiceResponse } from '@/services/service/Service'
+import { ServiceResponse } from '@/services/service/service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import ServiceSelect from '@/components/input/ServiceSelect'
@@ -60,11 +60,16 @@ export default function ProgressForm({
   } = setProgressForm
 
   const setProgress = async (data: setProgressData) => {
-    const res = await formAction({
-      id: id!,
-      patientId: patientId!,
-      ...data,
-    })
+    const hasDirtyFields = Object.keys(dirtyFields).length > 0
+
+    const res = hasDirtyFields
+      ? await formAction({
+          id: id!,
+          patientId: patientId!,
+          ...data,
+        })
+      : undefined
+
     if (res && Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     } else {

@@ -3,16 +3,12 @@
 import { Input } from '@/components/input'
 import Form from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
-import {
-  DiagnosticResponse,
-  setDiagnostic,
-} from '@/services/patient/patient'
+import { DiagnosticResponse, setDiagnostic } from '@/services/patient/patient'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
-import { useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 
 const setDiagnosticSchema = z.object({
@@ -36,7 +32,6 @@ export default function DiagnosticForm({
   buttons,
 }: DiagnosticFormProps) {
   const { handleMessage: handleOpen } = useSnackbarContext()
-  const router = useRouter()
   const setDiagnosticForm = useForm<DiagnosticResponse>({
     resolver: zodResolver(setDiagnosticSchema),
     values: {
@@ -54,10 +49,15 @@ export default function DiagnosticForm({
   } = setDiagnosticForm
 
   const handleSetDiagnostic = async (data: setDiagnosticData) => {
-    const res = await setDiagnostic({
-      patientId: patientId!,
-      ...data,
-    })
+    const hasDirtyFields = Object.keys(dirtyFields).length > 0
+
+    const res = hasDirtyFields
+      ? await setDiagnostic({
+          patientId: patientId!,
+          ...data,
+        })
+      : undefined
+
     if (Validate.isError(res)) {
       handleOpen({ title: 'Erro!', description: res.message, type: 'error' })
     } else {

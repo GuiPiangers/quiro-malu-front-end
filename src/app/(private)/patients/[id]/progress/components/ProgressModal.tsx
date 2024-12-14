@@ -3,10 +3,7 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import ProgressForm from './ProgressForm'
 import { ReactNode, useRef } from 'react'
-import {
-  ProgressResponse,
-  setProgress,
-} from '@/services/patient/patient'
+import { ProgressResponse, setProgress } from '@/services/patient/patient'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { useRouter } from 'next/navigation'
 import HeaderForm from '@/components/modal/HeaderModal'

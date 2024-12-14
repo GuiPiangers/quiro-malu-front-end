@@ -2,15 +2,13 @@ import ProgressForm from '@/app/(private)/patients/[id]/progress/components/Prog
 import { PageStage } from './RealizeScheduling'
 import { FormButtons } from './FormButtons'
 import {
-  ProgressResponse,
   getProgressByScheduling,
   setProgress,
 } from '@/services/patient/patient'
-import { useEffect, useState } from 'react'
 import { Validate } from '@/services/api/Validate'
-import { useRouter } from 'next/navigation'
 
 import { realizeScheduling } from '@/services/scheduling/scheduling'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 type ProgressSchedulingFormProps = {
   goToNextPage(): void
@@ -28,15 +26,15 @@ export function ProgressSchedulingForm({
   setNextPage,
   schedulingData: { date, patientId, service, schedulingId },
 }: ProgressSchedulingFormProps) {
-  const [progressData, setProgressData] = useState<ProgressResponse>()
-  const router = useRouter()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    schedulingId &&
-      getProgressByScheduling({ schedulingId, patientId }).then(
-        (res) => Validate.isOk(res) && setProgressData(res),
-      )
-  }, [patientId, schedulingId])
+  const { data: progressData } = useQuery({
+    queryKey: ['progress', { patientId, schedulingId }],
+    queryFn: async () =>
+      await getProgressByScheduling({ patientId, schedulingId }).then((res) =>
+        Validate.isOk(res) ? res : undefined,
+      ),
+  })
 
   return (
     <ProgressForm
@@ -49,7 +47,10 @@ export function ProgressSchedulingForm({
       }
       afterValidation={() => {
         goToNextPage()
-        router.refresh()
+        queryClient.invalidateQueries({
+          queryKey: ['progress', { patientId, schedulingId }],
+        })
+        queryClient.invalidateQueries({ queryKey: ['listSchedules'] })
       }}
       formAction={async (data) => {
         const progressRes = await setProgress({
@@ -67,7 +68,7 @@ export function ProgressSchedulingForm({
         id: progressData?.id,
         patientId,
         date,
-        service,
+        service: progressData?.service ?? service,
         actualProblem: progressData?.actualProblem,
         procedures: progressData?.procedures,
       }}

@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { ServiceResponse } from '@/services/service/Service'
+import { ServiceResponse } from '@/services/service/service'
 import { responseError } from '@/services/api/api'
 import { Currency } from '@/utils/Currency'
 

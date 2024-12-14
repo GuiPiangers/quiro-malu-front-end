@@ -9,8 +9,9 @@ import {
   getPatient,
   updatePatient,
 } from '@/services/patient/patient'
-import { useEffect, useState } from 'react'
 import { PageStage } from './RealizeScheduling'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { deepCompare } from '@/utils/deepCompare'
 
 type PatientSchedulingFromProps = {
   patientId: string
@@ -31,24 +32,31 @@ export default function PatientSchedulingForm({
   goToNextPage,
   setNextPage,
 }: PatientSchedulingFromProps) {
-  const [patientData, setPatientData] = useState<PatientResponse>()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    getPatient(patientId).then(
-      (res) => Validate.isOk(res) && setPatientData(res),
-    )
-  }, [patientId])
+  const { data: patientData } = useQuery({
+    queryKey: ['patients', patientId],
+    queryFn: async () =>
+      await getPatient(patientId).then((res) =>
+        Validate.isOk(res) ? res : undefined,
+      ),
+  })
+
+  const handleAfterValidate = () => {
+    setNextPage('anamnesis')
+    goToNextPage()
+    queryClient.invalidateQueries({ queryKey: ['patients', patientId] })
+  }
 
   return (
     <PatientDataForm
       buttons={<PatientSchedulingButtons />}
       btWrapperClassName="justify-end"
       data={patientData}
-      afterValidate={goToNextPage}
+      afterValidate={handleAfterValidate}
       action={async function (
         data: CreatePatientData | PatientResponse,
       ): Promise<PatientResponse | responseError> {
-        setNextPage('anamnesis')
         const result = await updatePatient({
           id: patientId,
           name: data.name,

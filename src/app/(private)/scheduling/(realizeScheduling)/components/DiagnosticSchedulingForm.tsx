@@ -1,12 +1,9 @@
 import { Validate } from '@/services/api/Validate'
-import {
-  DiagnosticResponse,
-  getDiagnostic,
-} from '@/services/patient/patient'
-import { useEffect, useState } from 'react'
+import { getDiagnostic } from '@/services/patient/patient'
 import { FormButtons } from './FormButtons'
 import { PageStage } from './RealizeScheduling'
 import DiagnosticForm from '@/app/(private)/patients/[id]/diagnostic/components/DiagnosticForm'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 type DiagnosticSchedulingFromProps = {
   patientId: string
@@ -19,18 +16,25 @@ export default function DiagnosticSchedulingForm({
   setNextPage,
   goToNextPage,
 }: DiagnosticSchedulingFromProps) {
-  const [diagnosticData, setDiagnosticData] = useState<DiagnosticResponse>()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    getDiagnostic(patientId).then(
-      (res) => Validate.isOk(res) && setDiagnosticData(res),
-    )
-  }, [patientId])
+  const { data: diagnosticData } = useQuery({
+    queryKey: ['diagnostic', patientId],
+    queryFn: async () =>
+      await getDiagnostic(patientId).then((res) =>
+        Validate.isOk(res) ? res : undefined,
+      ),
+  })
+
+  const handleAfterValidate = () => {
+    goToNextPage()
+    queryClient.invalidateQueries({ queryKey: ['diagnostic', patientId] })
+  }
 
   return (
     <DiagnosticForm
       formData={diagnosticData ?? { patientId }}
-      afterValidate={goToNextPage}
+      afterValidate={handleAfterValidate}
       buttons={
         <FormButtons
           setNextPage={setNextPage}
