@@ -15,8 +15,11 @@ export default async function Patients({
 }: {
   searchParams: { [key: string]: string | undefined }
 }) {
-  const page =
-    searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
+  const page = searchParams.page
+    ? +searchParams.page > 0
+      ? searchParams.page
+      : '1'
+    : '1'
 
   const patientData = await listPatient({ page })
 
