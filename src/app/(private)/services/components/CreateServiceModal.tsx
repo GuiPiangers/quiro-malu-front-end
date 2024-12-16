@@ -3,7 +3,7 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
 import ServiceForm from './ServiceForm'
-import { createService, ServiceResponse } from '@/services/service/service'
+import { createService, ServiceResponse } from '@/services/service/Service'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
