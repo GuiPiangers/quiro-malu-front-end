@@ -5,13 +5,12 @@ import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 import { ChangeEvent, useState } from 'react'
-import useAuthContext from '@/hooks/useAuthContext'
 import { Input } from '@/components/input'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
+import { loginUser } from '@/services/user/user'
 
 export default function Login() {
-  const { singIn } = useAuthContext()
   const { handleMessage } = useSnackbarContext()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -30,9 +29,10 @@ export default function Login() {
 
   const handleSignIn = async () => {
     setIsLoading(true)
-    const res = await singIn(fields)
+    const res = await loginUser(fields)
     setIsLoading(false)
     if (Validate.isError(res)) {
+      console.log('resposta ', res)
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     }
   }

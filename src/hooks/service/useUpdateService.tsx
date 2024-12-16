@@ -43,8 +43,6 @@ export function useUpdateService() {
             return service
           })
 
-          console.log(oldQuery)
-
           return { ...oldQuery, services: updatedServices }
         },
       )

@@ -39,11 +39,7 @@ export function useDeleteService() {
             (launch) => launch.id !== deleteServiceData.id,
           )
 
-          console.log(deleteService)
-
           const services = { ...oldQuery, services: deleteService }
-          console.log(services)
-
           return services
         },
       )

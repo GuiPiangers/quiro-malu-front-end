@@ -17,8 +17,6 @@ export default function TableSkeleton({
 }: TableSkeletonProps) {
   const ArrayItems = Array.from(Array(length ?? 12).keys())
 
-  console.log(ArrayItems.values())
-
   return (
     <Table.Root className={clsx(className, 'w-full')}>
       <Table.Row columns={columns}>

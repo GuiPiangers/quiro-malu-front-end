@@ -5,14 +5,13 @@ import Link from 'next/link'
 import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 
-import useAuthContext from '@/hooks/useAuthContext'
 import { Input } from '@/components/input'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { registerUser } from '@/services/user/user'
+import { loginUser, registerUser } from '@/services/user/user'
 
 const createUserSchema = z.object({
   name: z
@@ -55,7 +54,6 @@ const createUserSchema = z.object({
 export type CreateUserData = z.infer<typeof createUserSchema>
 
 export default function Register() {
-  const { singIn } = useAuthContext()
   const { handleMessage } = useSnackbarContext()
 
   const createUserForm = useForm<CreateUserData>({
@@ -76,7 +74,7 @@ export default function Register() {
       setError(user.type as keyof CreateUserData, { message: user.message })
     } else {
       if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
-        await singIn({ email: user.email, password: user.password })
+        await loginUser({ email: user.email, password: user.password })
       else {
         handleMessage({
           title: 'Erro!',

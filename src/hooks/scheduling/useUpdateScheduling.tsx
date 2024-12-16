@@ -42,8 +42,6 @@ export function useUpdateScheduling() {
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          console.log(oldQuery)
-
           const updatedLaunches = oldQuery.schedules.map((launch) => {
             if (launch.id === updateSchedulingData.id) {
               const updateStatus = isAppointed

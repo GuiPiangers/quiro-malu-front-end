@@ -97,6 +97,5 @@ export async function deleteScheduling({ id }: { id: string }) {
     method: 'DELETE',
     body: JSON.stringify({ id }),
   })
-  console.log(res)
   return res
 }

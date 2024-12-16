@@ -1,4 +1,3 @@
-import { AuthContextProvider } from '@/contexts/AuthContext'
 import './globals.css'
 import { Poppins } from 'next/font/google'
 import { Viewport } from 'next'
@@ -28,9 +27,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${font.className} bg-slate-50`}>
-        <QueryClientContext>
-          <AuthContextProvider>{children}</AuthContextProvider>
-        </QueryClientContext>
+        <QueryClientContext>{children}</QueryClientContext>
       </body>
     </html>
   )

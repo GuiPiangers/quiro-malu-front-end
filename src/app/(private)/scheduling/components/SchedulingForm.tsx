@@ -99,7 +99,6 @@ export default function SchedulingForm({
           .catch((err) => console.log(err))
 
     if (patient) {
-      console.log(data)
       const res = await action({
         ...data,
         id,

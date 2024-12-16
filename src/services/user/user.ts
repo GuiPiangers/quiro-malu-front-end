@@ -1,8 +1,10 @@
 'use server'
 
 import { CreateUserData } from '@/app/(authentication)/register/page'
-import { SignInData } from '@/contexts/AuthContext'
-import { api } from '@/services/api/api'
+import { api, responseError } from '@/services/api/api'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { Validate } from '../api/Validate'
 
 export type UserResponse = {
   token: string
@@ -22,12 +24,25 @@ export async function registerUser(data: CreateUserData) {
   return await res.json()
 }
 
-export async function loginUser(data: SignInData) {
-  const res = await api<UserResponse>('/login', {
+export async function loginUser(data: { email: string; password: string }) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/login`, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
-  return res
+
+  const auth: UserResponse | responseError = await res.json()
+
+  if (Validate.isOk(auth)) {
+    cookies().set('quiro-token', auth.token, {
+      maxAge: 60 * 15, // 15 min
+    })
+    cookies().set('quiro-refresh-token', auth.refreshToken, {
+      maxAge: 60 * 60 * 24 * 15, // 15 dias
+    })
+    redirect('/')
+  }
+  return auth
 }
 
 export async function logoutUser(refreshTokenId: string): Promise<void> {
@@ -35,6 +50,10 @@ export async function logoutUser(refreshTokenId: string): Promise<void> {
     method: 'POST',
     body: JSON.stringify({ refreshTokenId }),
   })
+
+  cookies().delete('quiro-token')
+  cookies().delete('quiro-refresh-token')
+  redirect('/login')
 }
 
 export async function getUser() {
