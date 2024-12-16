@@ -1,9 +1,6 @@
 'use client'
 
-import {
-  PatientResponse,
-  updatePatient,
-} from '@/services/patient/patient'
+import { PatientResponse, updatePatient } from '@/services/patient/patient'
 import PatientDataForm from '../components/PatientDataForm'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 
