@@ -11,7 +11,6 @@ import {
 } from '@/services/patient/patient'
 import { PageStage } from './RealizeScheduling'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { deepCompare } from '@/utils/deepCompare'
 
 type PatientSchedulingFromProps = {
   patientId: string

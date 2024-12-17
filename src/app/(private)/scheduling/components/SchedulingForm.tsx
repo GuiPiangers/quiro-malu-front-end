@@ -25,6 +25,7 @@ import Phone from '@/utils/Phone'
 import DateTime from '@/utils/Date'
 
 import ServiceSelect from '@/components/input/ServiceSelect'
+import { useQuery } from '@tanstack/react-query'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
@@ -70,11 +71,9 @@ export default function SchedulingForm({
 
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
-  const [patients, setPatients] = useState<PatientsListResponse>()
   const [selectedPatient, setSelectedPatient] =
     useState<PatientResponse | null>(null)
   const [patientSearch, setPatientSearch] = useState('')
-  const [patientPage, setPatientPage] = useState(1)
   const [phone, setPhone] = useState(patientPhone || '')
   const [duration, setDuration] = useState(durationService || 0)
 
@@ -90,6 +89,14 @@ export default function SchedulingForm({
     setError,
     setValue,
   } = setSchedulingForm
+
+  const { data: patients } = useQuery({
+    queryKey: ['patients'],
+    queryFn: async () =>
+      await listPatient({ limit: 'all' }).then((res) =>
+        Validate.isOk(res) ? res : undefined,
+      ),
+  })
 
   const setScheduling = async (data: setSchedulingData) => {
     const patient = selectedPatient
@@ -152,12 +159,6 @@ export default function SchedulingForm({
     })
   }, [patientId, setValue])
 
-  useEffect(() => {
-    listPatient({ limit: 'all' }).then((data) => {
-      Validate.isOk(data) && setPatients(data)
-    })
-    setPatientPage(1)
-  }, [])
   return (
     <Form onSubmit={handleSubmit(setScheduling)} {...formProps}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
@@ -220,10 +221,6 @@ export default function SchedulingForm({
             freeSolo
             disabled={isSubmitting}
             error={!!errors.patientName}
-            condition={
-              patients &&
-              Math.ceil(patients.total / patients?.limit) <= patientPage
-            }
             onInputChange={(e, value) => {
               setPatientSearch(value)
               setValue('patientName', value)
