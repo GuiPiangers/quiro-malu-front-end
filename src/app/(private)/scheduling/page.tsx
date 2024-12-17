@@ -7,7 +7,6 @@ import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { listSchedules } from '@/services/scheduling/scheduling'
-import { Suspense } from 'react'
 
 export default async function Scheduling({
   searchParams,
