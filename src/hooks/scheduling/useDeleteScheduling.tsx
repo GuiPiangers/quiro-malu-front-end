@@ -3,6 +3,7 @@ import {
   SchedulingResponse,
   deleteScheduling,
 } from '@/services/scheduling/scheduling'
+import DateTime from '@/utils/Date'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -12,7 +13,7 @@ export function useDeleteScheduling() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const date = searchParams.get('date')
+  const date = searchParams.get('date') || DateTime.getIsoDate(new Date())
 
   const mutation = useMutation({
     mutationFn: async ({ id }: { id: string }) => {
@@ -39,7 +40,7 @@ export function useDeleteScheduling() {
             (launch) => launch.id !== deleteSchedulingData.id,
           )
 
-          return { ...oldQuery, service: updatedLaunches }
+          return { ...oldQuery, schedules: updatedLaunches }
         },
       )
       return { previousLaunches }

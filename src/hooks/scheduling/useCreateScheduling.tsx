@@ -3,12 +3,13 @@ import {
   SchedulingListResponse,
   SchedulingResponse,
 } from '@/services/scheduling/scheduling'
+import DateTime from '@/utils/Date'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 
 export function useCreateScheduling() {
   const searchParams = useSearchParams()
-  const date = searchParams.get('date')
+  const date = searchParams.get('date') || DateTime.getIsoDate(new Date())
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
