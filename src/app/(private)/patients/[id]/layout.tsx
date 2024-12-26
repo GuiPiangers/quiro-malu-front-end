@@ -8,6 +8,7 @@ import { Validate } from '@/services/api/Validate'
 import CreateSchedulingModal from '../../../../components/modal/SchedulingModal/SchedulingModal'
 import Link from 'next/link'
 import { getPatient } from '@/services/patient/patient'
+import Phone from '@/utils/Phone'
 
 type LayoutProps = {
   children: ReactNode
@@ -45,7 +46,9 @@ export default async function Layout({ children, params }: LayoutProps) {
             <div className="flex flex-col gap-2">
               <Button variant="outline" size="small" asChild>
                 <Link
-                  href={`https://wa.me/55${patientData?.phone}`}
+                  href={`https://wa.me/55${Phone.unformat(
+                    patientData?.phone ?? '',
+                  )}`}
                   target="_blank"
                 >
                   Contato

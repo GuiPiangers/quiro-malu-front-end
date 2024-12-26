@@ -24,6 +24,7 @@ import { Validate } from '@/services/api/Validate'
 import { useRef, useState } from 'react'
 import { ModalHandles } from '../modal/Modal'
 import SchedulingModalContent from '../modal/SchedulingModal/SchedulingModalContent'
+import Phone from '@/utils/Phone'
 
 type SchedulingListProps = {
   date: string
@@ -173,7 +174,9 @@ export default function SchedulingList({
                     </RealizeScheduling>
                     <Button variant="outline" size="small">
                       <Link
-                        href={`https://wa.me/55${scheduling.phone}`}
+                        href={`https://wa.me/55${Phone.unformat(
+                          scheduling.phone,
+                        )}`}
                         target="_blank"
                       >
                         Contato

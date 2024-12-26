@@ -9,6 +9,7 @@ import Pagination from '@/components/pagination/Pagination'
 import { Validate } from '@/services/api/Validate'
 import CreateSchedulingModal from '../../../components/modal/SchedulingModal/SchedulingModal'
 import { listPatient } from '@/services/patient/patient'
+import Phone from '@/utils/Phone'
 
 export default async function Patients({
   searchParams,
@@ -58,7 +59,7 @@ export default async function Patients({
               <div className="flex w-28 flex-col gap-2">
                 <Button variant="outline" size="small" asChild>
                   <Link
-                    href={`https://wa.me/55${patient.phone}`}
+                    href={`https://wa.me/55${Phone.unformat(patient.phone)}`}
                     target="_blank"
                   >
                     Contato
