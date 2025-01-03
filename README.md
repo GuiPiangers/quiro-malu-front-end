@@ -1,5 +1,7 @@
 <h1 align="center" style="font-weight: bold;">Front-end do Sistema de Gestão para Clínica de Quiropraxia</h1>
 
+![](https://github.com/GuiPiangers/quiro-malu-front-end/blob/master/preview.png)
+
 <p align="center">
  <a href="#features">Funcionalidades</a> • 
  <a href="#tech">Tecnologias</a> • 
