@@ -15,9 +15,10 @@ export default function Header({ className }: HeaderProps) {
   return (
     <header className={HeaderStyle({ className })}>
       <SidebarToggleBt />
-      <Logo.Root>
+      {/* <Logo.Root>
         <Logo.Text color="white" className="h-6 w-fit" />
-      </Logo.Root>
+      </Logo.Root> */}
+      <div className="text-center text-lg font-bold text-white">Quiro Malu</div>
       <UserProfile />
     </header>
   )
