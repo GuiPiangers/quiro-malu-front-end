@@ -1,7 +1,12 @@
 export default class DateTime {
   static getIsoDate(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
-    return dateValue.toISOString().substring(0, 10)
+
+    const year = dateValue.getFullYear()
+    const month = (dateValue.getMonth() + 1).toString().padStart(2, '0')
+    const day = dateValue.getDate().toString().padStart(2, '0')
+
+    return `${year}-${month}-${day}`
   }
 
   static getTime(date: Date | string) {
