@@ -53,7 +53,7 @@ export default async function Scheduling({
               />
             </RouteReplace>
             <span className="text-lg font-semibold text-main">
-              {newDate.toLocaleDateString()}
+              {DateTime.getLocaleDate(newDate)}
             </span>
             <RouteReplace route={incDate(1)}>
               <RxCaretDown
