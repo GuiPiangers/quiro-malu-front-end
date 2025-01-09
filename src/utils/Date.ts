@@ -4,10 +4,6 @@ export default class DateTime {
     return dateValue.toISOString().substring(0, 10)
   }
 
-  static getIsoDateTime(date: Date | string) {
-    return `${DateTime.getIsoDate(date)}T${DateTime.getTime(date)}`
-  }
-
   static getTime(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
     const hours = dateValue.getHours().toString().padStart(2, '0')
@@ -15,10 +11,17 @@ export default class DateTime {
     return `${hours}:${minutes}`
   }
 
+  static getIsoDateTime(date: Date | string) {
+    return `${DateTime.getIsoDate(date)}T${DateTime.getTime(date)}`
+  }
+
   static getLocaleDate(date: Date | string) {
     const dateValue = typeof date === 'string' ? new Date(date) : date
 
-    return dateValue.toLocaleDateString('pt-BR')
+    return DateTime.getIsoDate(dateValue).replace(
+      /(\d{4})-(\d{2})-(\d{2})/,
+      '$3/$2/$1',
+    )
   }
 
   static validateDate(date: string) {
