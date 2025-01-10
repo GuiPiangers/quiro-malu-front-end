@@ -175,7 +175,7 @@ export default function SchedulingList({
                     <Button variant="outline" size="small">
                       <Link
                         href={`https://wa.me/55${Phone.unformat(
-                          scheduling.phone,
+                          scheduling.phone || '',
                         )}`}
                         target="_blank"
                       >

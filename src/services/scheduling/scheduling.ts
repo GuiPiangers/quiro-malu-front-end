@@ -20,10 +20,16 @@ export type SchedulingListResponse = {
   schedules: (SchedulingResponse & { patient: string; phone: string })[]
 }
 
-export async function createScheduling(data: SchedulingResponse) {
+export async function createScheduling({
+  date,
+  duration,
+  patientId,
+  service,
+  status,
+}: SchedulingResponse) {
   const res = await api<SchedulingResponse>('/schedules', {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify({ date, duration, patientId, service, status }),
   })
 
   return res
