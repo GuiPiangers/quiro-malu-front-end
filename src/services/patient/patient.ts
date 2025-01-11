@@ -112,6 +112,7 @@ export async function getPatient(id: string) {
   const res = await api<PatientResponse>(`/patients/${id}`, {
     method: 'GET',
   })
+  console.log(res)
   return res
 }
 

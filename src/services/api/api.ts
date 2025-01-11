@@ -63,6 +63,7 @@ export async function api<T>(
 
     if (!newToken) throw new Error('Falha de autenticação')
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
+    console.log(newData)
 
     return await newData.json()
   }
