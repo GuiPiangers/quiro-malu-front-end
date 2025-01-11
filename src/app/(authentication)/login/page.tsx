@@ -32,7 +32,6 @@ export default function Login() {
     const res = await loginUser(fields)
     setIsLoading(false)
     if (Validate.isError(res)) {
-      console.log('resposta ', res)
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
     }
   }
