@@ -1,5 +1,6 @@
 import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
+import NewFinanceModal from '@/components/modal/newFinanceModal/NewFinanceModal'
 import { Nav } from '@/components/navigation'
 import ResultCard from '@/components/ResultCard'
 import RouteReplace from '@/components/RouteReplace'
@@ -59,7 +60,7 @@ export default function Finance({
       </div>
 
       <Box>
-        <Button color="blue">Novo registro</Button>
+        <NewFinanceModal>Novo registro</NewFinanceModal>
       </Box>
 
       <FinanceTable />
