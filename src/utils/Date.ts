@@ -29,6 +29,28 @@ export default class DateTime {
     )
   }
 
+  static getLocaleMonth(date: Date | string) {
+    const months = [
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro',
+    ]
+    const dateValue = typeof date === 'string' ? new Date(date) : date
+
+    const month = dateValue.getMonth()
+
+    return months[month]
+  }
+
   static validateDate(date: string) {
     const datePattern = /^(\d{4})-(\d{2})-(\d{2})/
     return datePattern.test(date)
