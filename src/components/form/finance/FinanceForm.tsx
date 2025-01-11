@@ -77,7 +77,10 @@ export default function FinanceForm({
 
   return (
     <Form onSubmit={handleSubmit(setFinance)} {...formProps}>
-      <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
+      <section
+        aria-label="Novo registro financeiro"
+        className={sectionStyles()}
+      >
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data
@@ -122,10 +125,13 @@ export default function FinanceForm({
             autoComplete="off"
             disabled={isSubmitting}
             defaultValue={Currency.format(value ?? 0)}
-            {...register('value')}
+            {...register('value', {
+              onChange(e) {
+                setValue('value', Currency.format(e.target.value))
+              },
+            })}
             error={!!errors.value}
             notSave={dirtyFields.value}
-            onChange={(e) => setValue('value', Currency.format(e.target.value))}
           />
           {errors.value && (
             <Input.Message error>{errors.value.message}</Input.Message>
@@ -137,6 +143,10 @@ export default function FinanceForm({
             Tipo
           </Input.Label>
           <Input.Select
+            onChange={(_, value) =>
+              setValue('type', value as 'income' | 'expense')
+            }
+            defaultValue={type}
             disabled={isSubmitting}
             error={!!errors.type}
             notSave={dirtyFields.type}
@@ -157,7 +167,9 @@ export default function FinanceForm({
             Forma de pagamento
           </Input.Label>
           <Input.Select
+            onChange={(_, value) => setValue('paymentMethod', value as string)}
             disabled={isSubmitting}
+            defaultValue={paymentMethod}
             error={!!errors.paymentMethod}
             notSave={dirtyFields.paymentMethod}
             slotProps={{

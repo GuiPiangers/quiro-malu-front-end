@@ -5,10 +5,12 @@ import { Nav } from '@/components/navigation'
 import ResultCard from '@/components/ResultCard'
 import RouteReplace from '@/components/RouteReplace'
 import FinanceTable from '@/components/table/financeTable/FinanceTable'
+import { Validate } from '@/services/api/Validate'
+import { listFinances } from '@/services/finance/Finance'
 import DateTime from '@/utils/Date'
 import { RxCaretDown } from 'react-icons/rx'
 
-export default function Finance({
+export default async function Finance({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined }
@@ -21,6 +23,8 @@ export default function Finance({
     `?date=${DateTime.getIsoDate(
       new Date(+date.substring(0, 4), +date.substring(5, 7) - 1 + month),
     )}`
+
+  const financeList = await listFinances()
 
   return (
     <section className="flex flex-col gap-4">
@@ -63,7 +67,9 @@ export default function Finance({
         <NewFinanceModal>Novo registro</NewFinanceModal>
       </Box>
 
-      <FinanceTable />
+      <FinanceTable
+        financeList={Validate.isOk(financeList) ? financeList : undefined}
+      />
     </section>
   )
 }

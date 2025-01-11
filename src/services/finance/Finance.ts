@@ -38,7 +38,7 @@ export async function getFinance(id: string) {
   return res
 }
 
-export async function listFinances({ page }: { page?: string }) {
+export async function listFinances({ page }: { page?: string } = {}) {
   const res = await api<FinanceListResponse>(`/finance?page=${page}`, {
     method: 'GET',
   })
