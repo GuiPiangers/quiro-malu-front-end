@@ -1,3 +1,9 @@
+import FinanceTable from '@/components/table/financeTable/FinanceTable'
+
 export default function Finance() {
-  return <div></div>
+  return (
+    <div>
+      <FinanceTable />
+    </div>
+  )
 }
