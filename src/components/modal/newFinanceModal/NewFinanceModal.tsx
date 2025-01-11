@@ -55,7 +55,7 @@ export default forwardRef<ModalHandles, ModalProps>(
         >
           <HeaderForm
             handleClose={closeModal}
-            title={formData?.id ? 'Editar agendamento' : 'Novo agendamento'}
+            title={formData?.id ? 'Editar agendamento' : 'Novo registro'}
           />
           <FinanceForm
             formData={formData}
