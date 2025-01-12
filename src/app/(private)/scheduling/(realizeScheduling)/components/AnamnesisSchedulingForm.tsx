@@ -35,7 +35,7 @@ export default function AnamnesisSchedulingFrom({
 
   return (
     <AnamnesisForm
-      formData={anamnesisData ?? { patientId }}
+      formData={anamnesisData?.patientId ? anamnesisData : { patientId }}
       afterValidate={handleAfterValidate}
       buttons={
         <FormButtons

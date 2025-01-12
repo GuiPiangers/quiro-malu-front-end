@@ -23,7 +23,7 @@ export default function ResultCard({
       )}
     >
       <span className="text-xs">{title}</span>
-      <strong className="text-xl">{Currency.format(value)}</strong>
+      <strong className="text-xl">R$ {Currency.format(value) ?? 0}</strong>
       <span className="mt-2 text-xs">{subText}</span>
     </div>
   )

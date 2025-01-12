@@ -2,7 +2,6 @@ import { Box } from '@/components/box/Box'
 import { Table } from '@/components/table'
 import { FinanceListResponse } from '@/services/finance/Finance'
 import { financePaymentMethod } from '@/services/finance/FinancePaymentMethod'
-import { financeRecordType } from '@/services/finance/FinanceRecordType'
 import { Currency } from '@/utils/Currency'
 import DateTime from '@/utils/Date'
 

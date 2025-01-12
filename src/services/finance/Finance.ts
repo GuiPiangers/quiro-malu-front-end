@@ -7,7 +7,7 @@ export type FinanceResponse = {
   date: string
   description: string
   type: 'income' | 'expense'
-  paymentMethod: string
+  paymentMethod?: string
   value: number
   patientId?: string
 }

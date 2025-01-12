@@ -15,10 +15,13 @@ import PaymentForm from './PaymentForm'
 type RealizeSchedulingProps = {
   className?: string
   children?: ReactNode
-  schedulingId: string
-  patientId: string
-  date: string
-  service: string
+  formData: {
+    schedulingId: string
+    patientId: string
+    date: string
+    service: string
+    patient: string
+  }
 } & ButtonPropsVariants
 
 export type PageStage =
@@ -30,10 +33,7 @@ export type PageStage =
 
 export default function RealizeScheduling({
   children,
-  patientId,
-  schedulingId,
-  date,
-  service,
+  formData: { patientId, schedulingId, date, service, patient },
   ...props
 }: RealizeSchedulingProps) {
   const modalRef = useRef<ModalHandles>(null)
@@ -140,7 +140,7 @@ export default function RealizeScheduling({
             setNextPage={setNextPage}
             goNextPage={goToNextPage}
             formData={{
-              date,
+              description: patient,
               service,
             }}
             afterValidation={(buttonClicked: string) => {

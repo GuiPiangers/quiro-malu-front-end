@@ -165,10 +165,13 @@ export default function SchedulingList({
                   <div className="flex flex-col gap-2">
                     <RealizeScheduling
                       size="small"
-                      date={scheduling.date}
-                      service={scheduling.service}
-                      patientId={scheduling.patientId}
-                      schedulingId={scheduling.id!}
+                      formData={{
+                        date: scheduling.date,
+                        patientId: scheduling.patientId,
+                        schedulingId: scheduling.id!,
+                        service: scheduling.service,
+                        patient: scheduling.patient,
+                      }}
                     >
                       Realizar consulta
                     </RealizeScheduling>

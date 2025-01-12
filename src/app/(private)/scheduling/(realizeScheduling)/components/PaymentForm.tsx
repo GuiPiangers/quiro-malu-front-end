@@ -13,36 +13,42 @@ import ServiceSelect from '@/components/input/ServiceSelect'
 import { PageStage } from './RealizeScheduling'
 import { ServiceResponse } from '@/services/service/Service'
 import { useRef, useState } from 'react'
+import { createFinance, FinanceResponse } from '@/services/finance/Finance'
+import {
+  setFinanceData,
+  setFinanceSchema,
+} from '@/components/form/finance/FinanceForm'
+import { Validate } from '@/services/api/Validate'
 
-export const setPaymentSchema = z.object({
-  date: z.string(),
-  price: z
-    .string()
-    .transform((value) => value.replace('.', '').replace(',', '.'))
-    .refine((value) => +value > 0, {
-      message: 'A o valor precisa ser um número positivo',
-    }),
-  paymentMethod: z.string().optional(),
-  service: z
-    .object({
-      id: z.string().optional(),
-      name: z.string(),
-      value: z.number(),
-      duration: z.number(),
-    })
-    .optional(),
-})
+// export const setPaymentSchema = z.object({
+//   date: z.string(),
+//   price: z
+//     .string()
+//     .transform((value) => value.replace('.', '').replace(',', '.'))
+//     .refine((value) => +value > 0, {
+//       message: 'A o valor precisa ser um número positivo',
+//     }),
+//   paymentMethod: z.string().optional(),
+//   service: z
+//     .object({
+//       id: z.string().optional(),
+//       name: z.string(),
+//       value: z.number(),
+//       duration: z.number(),
+//     })
+//     .optional(),
+// })
 
-type PaymentResponse = {
-  date: string
-  price: string
-  paymentMethod?: string
-  service: string
-}
-export type setPaymentData = z.infer<typeof setPaymentSchema>
+// type PaymentResponse = {
+//   date: string
+//   price: string
+//   paymentMethod?: string
+//   service: string
+// }
+// export type setPaymentData = z.infer<typeof setPaymentSchema>
 
 type PaymentFormProps = {
-  formData?: Partial<PaymentResponse>
+  formData?: Partial<FinanceResponse & { service: string }>
   afterValidation?(buttonClicked: string): void
   setNextPage: (page: PageStage) => void
   goNextPage: () => void
@@ -57,8 +63,14 @@ export default function PaymentForm({
 }: PaymentFormProps) {
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
-  const setPaymentForm = useForm<setPaymentData>({
-    resolver: zodResolver(setPaymentSchema),
+  const setPaymentForm = useForm<setFinanceData>({
+    resolver: zodResolver(setFinanceSchema),
+    values: {
+      type: 'income',
+      description: formData?.description || '',
+      date: formData?.date || DateTime.getIsoDateTime(new Date()),
+      value: Currency.format(formData?.value || 0),
+    },
   })
   const buttonClicked = useRef<'voltar' | 'finalizar'>('voltar')
 
@@ -69,9 +81,14 @@ export default function PaymentForm({
     setValue,
   } = setPaymentForm
 
-  const setPayment = () => {
-    afterValidation && afterValidation(buttonClicked.current)
-    goNextPage()
+  const setPayment = async (data: setFinanceData) => {
+    const result = await createFinance({ ...data, value: +data.value })
+    console.log(result)
+
+    if (Validate.isOk(result)) {
+      afterValidation && afterValidation(buttonClicked.current)
+      goNextPage()
+    }
   }
 
   return (
@@ -126,56 +143,46 @@ export default function PaymentForm({
         </Input.Root>
 
         <Input.Root>
-          <Input.Label notSave={dirtyFields.service?.name}>Serviço</Input.Label>
+          <Input.Label>Serviço</Input.Label>
           <ServiceSelect
-            notSave={dirtyFields.service?.name}
             defaultValue={formData?.service}
             onInitialize={(value) => {
-              setValue('service', value as ServiceResponse, {
-                shouldDirty: true,
-              })
               setSelectedService(value as ServiceResponse)
               value &&
                 setValue(
-                  'price',
+                  'value',
                   Currency.format(value ? value.value.toFixed(2) : '0'),
                 )
             }}
             value={selectedService}
             onChange={(_, value) => {
               setSelectedService(value as ServiceResponse)
-              setValue('service', value as ServiceResponse, {
-                shouldDirty: true,
-              })
               setValue(
-                'price',
+                'value',
                 Currency.format(
                   value ? (value as ServiceResponse).value.toFixed(2) : '0',
                 ),
               )
             }}
           />
-          {errors.service && (
-            <Input.Message error>{errors.service.message}</Input.Message>
-          )}
         </Input.Root>
 
         <div className="flex gap-4">
           <Input.Root>
-            <Input.Label notSave={dirtyFields.price}>Valor</Input.Label>
+            <Input.Label notSave={dirtyFields.value}>Valor</Input.Label>
             <Input.Field
               startAdornment={<span className="pl-2">R$</span>}
               autoComplete="off"
               disabled={isSubmitting}
-              {...register('price')}
-              error={!!errors.price}
-              notSave={dirtyFields.price}
+              {...register('value')}
+              error={!!errors.value}
+              notSave={dirtyFields.value}
               onChange={(e) =>
-                setValue('price', Currency.format(e.target.value))
+                setValue('value', Currency.format(e.target.value))
               }
             />
-            {errors.price && (
-              <Input.Message error>{errors.price.message}</Input.Message>
+            {errors.value && (
+              <Input.Message error>{errors.value.message}</Input.Message>
             )}
           </Input.Root>
 

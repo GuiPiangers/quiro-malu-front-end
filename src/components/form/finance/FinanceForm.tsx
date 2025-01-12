@@ -12,7 +12,7 @@ import { FinanceResponse } from '@/services/finance/Finance'
 import { responseError } from '@/services/api/api'
 import { z } from 'zod'
 
-const setFinanceSchema = z.object({
+export const setFinanceSchema = z.object({
   description: z.string().min(1, 'Campo obrigatório'),
   value: z
     .string()

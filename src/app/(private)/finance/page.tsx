@@ -26,6 +26,26 @@ export default async function Finance({
 
   const financeList = await listFinances()
 
+  const income = Validate.isOk(financeList)
+    ? financeList.reduce((acc, finance) => {
+        if (finance.type === 'income') {
+          return acc + finance.value
+        }
+        return acc
+      }, 0)
+    : 0
+
+  const expense = Validate.isOk(financeList)
+    ? financeList.reduce((acc, finance) => {
+        if (finance.type === 'expense') {
+          return acc + finance.value
+        }
+        return acc
+      }, 0)
+    : 0
+
+  const total = income - expense
+
   return (
     <section className="flex flex-col gap-4">
       <Nav.root>
@@ -56,11 +76,11 @@ export default async function Finance({
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         <ResultCard
           title="Total"
-          value={150.0}
+          value={total}
           className="col-span-2 bg-blue-600 sm:col-span-1"
         />
-        <ResultCard title="Receitas" value={155.66} className="bg-green-600" />
-        <ResultCard title="Despesas" value={100} className="bg-red-600" />
+        <ResultCard title="Receitas" value={income} className="bg-green-600" />
+        <ResultCard title="Despesas" value={expense} className="bg-red-600" />
       </div>
 
       <Box>
