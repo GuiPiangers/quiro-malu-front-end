@@ -70,6 +70,8 @@ export default function PaymentForm({
       description: formData?.description || '',
       date: formData?.date || DateTime.getIsoDateTime(new Date()),
       value: Currency.format(formData?.value || 0),
+      patientId: formData?.patientId,
+      paymentMethod: formData?.paymentMethod,
     },
   })
   const buttonClicked = useRef<'voltar' | 'finalizar'>('voltar')

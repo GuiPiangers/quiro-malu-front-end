@@ -10,6 +10,8 @@ export type FinanceResponse = {
   paymentMethod?: string
   value: number
   patientId?: string
+  schedulingId?: string
+  service?: string
 }
 export type FinanceListResponse = FinanceResponse[]
 

@@ -142,6 +142,8 @@ export default function RealizeScheduling({
             formData={{
               description: patient,
               service,
+              date,
+              patientId,
             }}
             afterValidation={(buttonClicked: string) => {
               if (buttonClicked === 'finalizar') {

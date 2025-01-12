@@ -23,6 +23,8 @@ export const setFinanceSchema = z.object({
   type: z.enum(['income', 'expense']),
   date: z.string(),
   patientId: z.string().optional(),
+  schedulingId: z.string().optional(),
+  service: z.string().optional(),
   paymentMethod: z.string().optional(),
 })
 
