@@ -13,12 +13,17 @@ import ServiceSelect from '@/components/input/ServiceSelect'
 import { PageStage } from './RealizeScheduling'
 import { ServiceResponse } from '@/services/service/Service'
 import { useRef, useState } from 'react'
-import { createFinance, FinanceResponse } from '@/services/finance/Finance'
+import {
+  createFinance,
+  FinanceResponse,
+  getBySchedulingFinance,
+} from '@/services/finance/Finance'
 import {
   setFinanceData,
   setFinanceSchema,
 } from '@/components/form/finance/FinanceForm'
 import { Validate } from '@/services/api/Validate'
+import { useQuery } from '@tanstack/react-query'
 
 // export const setPaymentSchema = z.object({
 //   date: z.string(),
@@ -63,15 +68,27 @@ export default function PaymentForm({
 }: PaymentFormProps) {
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
+  const { data: financeData } = useQuery({
+    queryKey: ['progress', { schedulingId: formData?.schedulingId }],
+    queryFn: async () =>
+      formData?.schedulingId
+        ? await getBySchedulingFinance(formData?.schedulingId).then((res) =>
+            Validate.isOk(res) ? res : undefined,
+          )
+        : undefined,
+  })
+
   const setPaymentForm = useForm<setFinanceData>({
     resolver: zodResolver(setFinanceSchema),
     values: {
       type: 'income',
-      description: formData?.description || '',
+      description: financeData?.description || formData?.description || '',
       date: formData?.date || DateTime.getIsoDateTime(new Date()),
       value: Currency.format(formData?.value || 0),
-      patientId: formData?.patientId,
-      paymentMethod: formData?.paymentMethod,
+      patientId: financeData?.patientId || formData?.patientId,
+      paymentMethod: financeData?.paymentMethod || formData?.paymentMethod,
+      service: financeData?.service || formData?.service,
+      schedulingId: financeData?.schedulingId || formData?.schedulingId,
     },
   })
   const buttonClicked = useRef<'voltar' | 'finalizar'>('voltar')

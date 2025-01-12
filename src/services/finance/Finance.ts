@@ -39,6 +39,15 @@ export async function getFinance(id: string) {
   })
   return res
 }
+export async function getBySchedulingFinance(schedulingId: string) {
+  const res = await api<FinanceResponse>(
+    `/finance/scheduling/${schedulingId}`,
+    {
+      method: 'GET',
+    },
+  )
+  return res
+}
 
 export async function listFinances({ page }: { page?: string } = {}) {
   const res = await api<FinanceListResponse>(`/finance?page=${page}`, {
