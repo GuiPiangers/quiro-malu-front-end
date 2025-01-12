@@ -68,14 +68,17 @@ export default function PaymentForm({
 }: PaymentFormProps) {
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
+  console.log(formData?.schedulingId)
+
   const { data: financeData } = useQuery({
-    queryKey: ['progress', { schedulingId: formData?.schedulingId }],
+    queryKey: ['progress', { schedulingId: formData?.schedulingId ?? '' }],
     queryFn: async () =>
       formData?.schedulingId
-        ? await getBySchedulingFinance(formData?.schedulingId).then((res) =>
-            Validate.isOk(res) ? res : undefined,
-          )
-        : undefined,
+        ? await getBySchedulingFinance(formData?.schedulingId).then((res) => {
+            console.log(res)
+            return Validate.isOk(res) ? res : undefined
+          })
+        : (() => undefined)(),
   })
 
   const setPaymentForm = useForm<setFinanceData>({
@@ -101,8 +104,11 @@ export default function PaymentForm({
   } = setPaymentForm
 
   const setPayment = async (data: setFinanceData) => {
-    const result = await createFinance({ ...data, value: +data.value })
-    console.log(result)
+    const result = await createFinance({
+      ...data,
+      value: +data.value,
+      id: financeData?.id,
+    })
 
     if (Validate.isOk(result)) {
       afterValidation && afterValidation(buttonClicked.current)

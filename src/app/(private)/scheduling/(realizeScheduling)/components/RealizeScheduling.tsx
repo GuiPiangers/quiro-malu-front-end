@@ -144,6 +144,7 @@ export default function RealizeScheduling({
               service,
               date,
               patientId,
+              schedulingId,
             }}
             afterValidation={(buttonClicked: string) => {
               if (buttonClicked === 'finalizar') {
