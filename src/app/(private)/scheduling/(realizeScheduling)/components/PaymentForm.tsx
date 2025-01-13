@@ -87,7 +87,9 @@ export default function PaymentForm({
       type: 'income',
       description: financeData?.description || formData?.description || '',
       date: formData?.date || DateTime.getIsoDateTime(new Date()),
-      value: Currency.format(formData?.value || 0),
+      value:
+        Currency.format(financeData?.value || 0) ||
+        Currency.format(formData?.value || 0),
       patientId: financeData?.patientId || formData?.patientId,
       paymentMethod: financeData?.paymentMethod || formData?.paymentMethod,
       service: financeData?.service || formData?.service,
