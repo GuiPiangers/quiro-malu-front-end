@@ -15,16 +15,21 @@ export default async function Finance({
 }: {
   searchParams: { [key: string]: string | undefined }
 }) {
-  const date = searchParams.date
-    ? searchParams.date
-    : DateTime.getIsoDate(new Date())
+  const year = searchParams.year ? +searchParams.year : new Date().getFullYear()
+  const month = searchParams.month
+    ? +searchParams.month
+    : new Date().getMonth() + 1
 
-  const incMonth = (month: number) =>
-    `?date=${DateTime.getIsoDate(
-      new Date(+date.substring(0, 4), +date.substring(5, 7) - 1 + month),
-    )}`
+  const incMonth = (inc: number) => {
+    const newYearAndMonth = new Date(year, month - 1 + inc, 2)
+    return `?month=${
+      newYearAndMonth.getMonth() + 1
+    }&year=${newYearAndMonth.getFullYear()}`
+  }
 
-  const financeList = await listFinances()
+  const financeList = await listFinances({
+    yearAndMonth: `${year.toString()}-${month.toString().padStart(2, '0')}`,
+  })
 
   const income = Validate.isOk(financeList)
     ? financeList.reduce((acc, finance) => {
@@ -62,7 +67,7 @@ export default async function Finance({
             />
           </RouteReplace>
           <span className="text-lg font-semibold text-main">
-            {DateTime.getLocaleMonth(date)} de {new Date(date).getFullYear()}
+            {DateTime.getLocaleMonth(month.toString())} de {year}
           </span>
           <RouteReplace route={incMonth(1)}>
             <RxCaretDown
