@@ -6,19 +6,25 @@ import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
-import { createFinance, FinanceResponse } from '@/services/finance/Finance'
+import {
+  createFinance,
+  deleteFinance,
+  FinanceResponse,
+} from '@/services/finance/Finance'
 import FinanceForm from '@/components/form/finance/FinanceForm'
 import Button, { ButtonPropsVariants } from '@/components/Button'
+import { Validate } from '@/services/api/Validate'
 
 type ModalProps = {
   className?: string
   formData?: FinanceResponse
+  buttons?: ReactNode
   children?: ReactNode
 } & ButtonPropsVariants & { asChild?: boolean }
 
 export default forwardRef<ModalHandles, ModalProps>(
   function SchedulingModalContent(
-    { formData, className, children, color, ...props },
+    { formData, className, children, color, buttons, ...props },
     ref,
   ) {
     const modalRef = useRef<ModalHandles>(null)
@@ -44,6 +50,16 @@ export default forwardRef<ModalHandles, ModalProps>(
       return result
     }
 
+    const handleDeleteFinance = async () => {
+      if (!formData?.id) return
+
+      const response = await deleteFinance({ id: formData?.id })
+
+      if (Validate.isOk(response)) {
+        router.refresh()
+      }
+    }
+
     return (
       <>
         <Button color={color || 'green'} {...props} onClick={openModal}>
@@ -55,9 +71,27 @@ export default forwardRef<ModalHandles, ModalProps>(
         >
           <HeaderForm
             handleClose={closeModal}
-            title={formData?.id ? 'Editar agendamento' : 'Novo registro'}
+            title={formData?.id ? 'Editar registro' : 'Novo registro'}
           />
           <FinanceForm
+            btWrapperClassName="justify-between"
+            buttons={
+              <>
+                <Button type="submit" color="green">
+                  Salvar
+                </Button>
+
+                {formData?.id && (
+                  <Button
+                    type="button"
+                    color="red"
+                    onClick={() => handleDeleteFinance()}
+                  >
+                    Excluir
+                  </Button>
+                )}
+              </>
+            }
             formData={formData}
             className="shadow-none"
             action={formAction}

@@ -1,6 +1,6 @@
 import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
-import NewFinanceModal from '@/components/modal/newFinanceModal/NewFinanceModal'
+import NewFinanceModal from '@/components/modal/FinanceModal/NewFinanceModal'
 import { Nav } from '@/components/navigation'
 import ResultCard from '@/components/ResultCard'
 import RouteReplace from '@/components/RouteReplace'

@@ -1,5 +1,5 @@
 import { Box } from '@/components/box/Box'
-import NewFinanceModal from '@/components/modal/newFinanceModal/NewFinanceModal'
+import NewFinanceModal from '@/components/modal/FinanceModal/NewFinanceModal'
 import { Table } from '@/components/table'
 import { FinanceListResponse } from '@/services/finance/Finance'
 import { financePaymentMethod } from '@/services/finance/FinancePaymentMethod'
