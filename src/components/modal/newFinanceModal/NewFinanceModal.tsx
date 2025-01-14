@@ -14,7 +14,7 @@ type ModalProps = {
   className?: string
   formData?: FinanceResponse
   children?: ReactNode
-} & ButtonPropsVariants
+} & ButtonPropsVariants & { asChild?: boolean }
 
 export default forwardRef<ModalHandles, ModalProps>(
   function SchedulingModalContent(
