@@ -24,7 +24,7 @@ import {
 import Phone from '@/utils/Phone'
 import DateTime from '@/utils/Date'
 
-import ServiceSelect from '@/components/input/ServiceSelect'
+import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { useQuery } from '@tanstack/react-query'
 
 const setSchedulingSchema = z.object({
@@ -188,7 +188,7 @@ export default function SchedulingForm({
           <ServiceSelect
             notSave={dirtyFields.service}
             defaultValue={service}
-            onInitialize={(value) => {
+            onInitialize={(value: ServiceResponse) => {
               value && setService(value)
             }}
             value={selectedService}

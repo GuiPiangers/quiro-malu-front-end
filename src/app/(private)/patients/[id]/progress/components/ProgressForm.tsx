@@ -13,7 +13,7 @@ import { useState } from 'react'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
-import ServiceSelect from '@/components/input/ServiceSelect'
+import ServiceSelect from '@/components/input/select/ServiceSelect'
 
 export const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -120,7 +120,7 @@ export default function ProgressForm({
               })
               setService(newValue as ServiceResponse)
             }}
-            onInitialize={(service) => {
+            onInitialize={(service: ServiceResponse) => {
               service &&
                 setValue('service', service.name, {
                   shouldDirty: true,

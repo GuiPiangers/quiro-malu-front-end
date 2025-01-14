@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import Button from '@/components/Button'
 import { Currency } from '@/utils/Currency'
 import DateTime from '@/utils/Date'
-import ServiceSelect from '@/components/input/ServiceSelect'
+import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { PageStage } from './RealizeScheduling'
 import { ServiceResponse } from '@/services/service/Service'
 import { useRef, useState } from 'react'
@@ -173,8 +173,8 @@ export default function PaymentForm({
           <Input.Label>Serviço</Input.Label>
           <ServiceSelect
             defaultValue={formData?.service}
-            onInitialize={(value) => {
-              setSelectedService(value as ServiceResponse)
+            onInitialize={(value: ServiceResponse) => {
+              setSelectedService(value)
               value &&
                 setValue(
                   'value',
