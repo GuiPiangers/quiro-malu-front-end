@@ -11,6 +11,7 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { FinanceResponse } from '@/services/finance/Finance'
 import { responseError } from '@/services/api/api'
 import { z } from 'zod'
+import PayMethodSelect from '@/components/input/select/payMethodSelect'
 
 export const setFinanceSchema = z.object({
   description: z.string().min(1, 'Campo obrigatório'),
@@ -164,29 +165,16 @@ export default function FinanceForm({
           )}
         </Input.Root>
 
-        <Input.Root>
-          <Input.Label notSave={dirtyFields.paymentMethod}>
-            Forma de pagamento
-          </Input.Label>
-          <Input.Select
-            onChange={(_, value) => setValue('paymentMethod', value as string)}
-            disabled={isSubmitting}
-            defaultValue={paymentMethod}
-            error={!!errors.paymentMethod}
-            notSave={dirtyFields.paymentMethod}
-            slotProps={{
-              popper: { className: 'z-40' },
-            }}
-          >
-            <Input.Option value="money">Dinheiro</Input.Option>
-            <Input.Option value="pix">PIX</Input.Option>
-            <Input.Option value="creditCard">Crédito</Input.Option>
-            <Input.Option value="creditCard">Débito</Input.Option>
-          </Input.Select>
-          {errors.paymentMethod && (
-            <Input.Message error>{errors.paymentMethod.message}</Input.Message>
-          )}
-        </Input.Root>
+        <PayMethodSelect
+          onChange={(_, value) => setValue('paymentMethod', value as string)}
+          disabled={isSubmitting}
+          defaultValue={paymentMethod}
+          error={!!errors.paymentMethod}
+          notSave={dirtyFields.paymentMethod}
+          slotProps={{
+            popper: { className: 'z-40' },
+          }}
+        />
       </section>
     </Form>
   )
