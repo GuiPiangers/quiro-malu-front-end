@@ -170,6 +170,7 @@ export default function FinanceForm({
           disabled={isSubmitting}
           defaultValue={paymentMethod}
           error={!!errors.paymentMethod}
+          errorMessage={errors.paymentMethod?.message}
           notSave={dirtyFields.paymentMethod}
           slotProps={{
             popper: { className: 'z-40' },

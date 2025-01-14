@@ -24,6 +24,7 @@ import {
 } from '@/components/form/finance/FinanceForm'
 import { Validate } from '@/services/api/Validate'
 import { useQuery } from '@tanstack/react-query'
+import PayMethodSelect from '@/components/input/select/payMethodSelect'
 
 // export const setPaymentSchema = z.object({
 //   date: z.string(),
@@ -159,7 +160,9 @@ export default function PaymentForm({
             autoComplete="off"
             disabled={isSubmitting}
             type="datetime-local"
-            defaultValue={DateTime.getIsoDateTime(formData?.date || new Date())}
+            defaultValue={DateTime.getIsoDateTime(
+              financeData?.date || formData?.date || new Date(),
+            )}
             error={!!errors.date}
             {...register('date')}
             notSave={dirtyFields.date}
@@ -213,30 +216,17 @@ export default function PaymentForm({
             )}
           </Input.Root>
 
-          <Input.Root>
-            <Input.Label notSave={dirtyFields.paymentMethod}>
-              Forma de pagamento
-            </Input.Label>
-            <Input.Select
-              {...register('paymentMethod')}
-              disabled={isSubmitting}
-              defaultValue={formData?.paymentMethod}
-              error={!!errors.paymentMethod}
-              slotProps={{ popper: { className: 'z-40' } }}
-              onChange={(_, newValue) =>
-                setValue('paymentMethod', newValue as string)
-              }
-            >
-              <Input.Option value="Dinheiro">Dinheiro</Input.Option>
-              <Input.Option value="Pix">Pix</Input.Option>
-              <Input.Option value="Cartão">Cartão</Input.Option>
-            </Input.Select>
-            {errors.paymentMethod && (
-              <Input.Message error>
-                {errors.paymentMethod.message}
-              </Input.Message>
-            )}
-          </Input.Root>
+          <PayMethodSelect
+            {...register('paymentMethod')}
+            disabled={isSubmitting}
+            defaultValue={financeData?.paymentMethod}
+            error={!!errors.paymentMethod}
+            errorMessage={errors.paymentMethod?.message}
+            slotProps={{ popper: { className: 'z-40' } }}
+            onChange={(_, newValue) =>
+              setValue('paymentMethod', newValue as string)
+            }
+          />
         </div>
       </section>
     </Form>
