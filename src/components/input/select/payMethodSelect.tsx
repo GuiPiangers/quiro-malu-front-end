@@ -15,8 +15,8 @@ export default function PayMethodSelect({
       <Input.Select {...props}>
         <Input.Option value="money">Dinheiro</Input.Option>
         <Input.Option value="pix">PIX</Input.Option>
-        <Input.Option value="creditCard">Crédito</Input.Option>
-        <Input.Option value="creditCard">Débito</Input.Option>
+        <Input.Option value="credit">Crédito</Input.Option>
+        <Input.Option value="debit">Débito</Input.Option>
       </Input.Select>
       {errorMessage && <Input.Message error>{errorMessage}</Input.Message>}
     </Input.Root>
