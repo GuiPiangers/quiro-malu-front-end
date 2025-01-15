@@ -20,6 +20,7 @@ export const buttonStyle = tv({
       solid: 'border-none text-white disabled:bg-slate-400 ',
       outline:
         'border bg-transparent hover:text-white disabled:border-slate-300 disabled:bg-transparent disabled:text-slate-400',
+      ghost: 'bg-transparent',
     },
     size: {
       small: 'rounded-md px-2 py-1 text-xs font-medium',
