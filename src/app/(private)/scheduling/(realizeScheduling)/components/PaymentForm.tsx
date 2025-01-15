@@ -23,35 +23,8 @@ import {
   setFinanceSchema,
 } from '@/components/form/finance/FinanceForm'
 import { Validate } from '@/services/api/Validate'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import PayMethodSelect from '@/components/input/select/payMethodSelect'
-
-// export const setPaymentSchema = z.object({
-//   date: z.string(),
-//   price: z
-//     .string()
-//     .transform((value) => value.replace('.', '').replace(',', '.'))
-//     .refine((value) => +value > 0, {
-//       message: 'A o valor precisa ser um número positivo',
-//     }),
-//   paymentMethod: z.string().optional(),
-//   service: z
-//     .object({
-//       id: z.string().optional(),
-//       name: z.string(),
-//       value: z.number(),
-//       duration: z.number(),
-//     })
-//     .optional(),
-// })
-
-// type PaymentResponse = {
-//   date: string
-//   price: string
-//   paymentMethod?: string
-//   service: string
-// }
-// export type setPaymentData = z.infer<typeof setPaymentSchema>
 
 type PaymentFormProps = {
   formData?: Partial<FinanceResponse & { service: string }>
@@ -69,10 +42,10 @@ export default function PaymentForm({
 }: PaymentFormProps) {
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
-  console.log(formData?.schedulingId)
+  const queryClient = useQueryClient()
 
   const { data: financeData } = useQuery({
-    queryKey: ['progress', { schedulingId: formData?.schedulingId ?? '' }],
+    queryKey: ['finance', { schedulingId: formData?.schedulingId ?? '' }],
     queryFn: async () =>
       formData?.schedulingId
         ? await getBySchedulingFinance(formData?.schedulingId).then((res) => {
@@ -115,6 +88,7 @@ export default function PaymentForm({
 
     if (Validate.isOk(result)) {
       afterValidation && afterValidation(buttonClicked.current)
+      queryClient.invalidateQueries({ queryKey: ['finance'] })
       goNextPage()
     }
   }
@@ -217,7 +191,6 @@ export default function PaymentForm({
           </Input.Root>
 
           <PayMethodSelect
-            {...register('paymentMethod')}
             disabled={isSubmitting}
             defaultValue={financeData?.paymentMethod}
             error={!!errors.paymentMethod}
