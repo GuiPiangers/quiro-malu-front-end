@@ -51,6 +51,14 @@ export default function FinanceForm({
 
   const setFinanceForm = useForm<setFinanceData>({
     resolver: zodResolver(setFinanceSchema),
+    defaultValues: {
+      description,
+      value: Currency.format(value || 0),
+      date,
+      type,
+      paymentMethod,
+      service: formData?.service,
+    },
   })
 
   const {
