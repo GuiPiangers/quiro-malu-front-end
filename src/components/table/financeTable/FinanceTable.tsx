@@ -26,12 +26,17 @@ export default function FinanceTable({
         </Table.Row>
 
         {financeList?.map((finance) => (
-          <NewFinanceModal asChild key={finance.id} formData={finance}>
+          <NewFinanceModal
+            asChild
+            key={finance.id}
+            formData={finance}
+            variant="ghost"
+          >
             <Table.Row
               columns={['16px', '1fr', '2fr', '1fr', '1fr']}
               clickable
               className={TrowStyle({
-                className: 'text-black ',
+                className: 'rounded-none border-slate-200 text-black',
               })}
             >
               <Table.Cell
