@@ -8,20 +8,22 @@ import { Box } from '@/components/box/Box'
 
 export default async function Exams({ params }: { params: ParamsType }) {
   const patientId = params.id
-  const exams = await listExams({ patientId, page: 1 })
+  const examsData = await listExams({ patientId, page: 1 })
+
+  const exams = Validate.isOk(examsData) ? examsData.exams : []
+  const total = Validate.isOk(examsData) ? examsData.total : []
 
   return (
     <section>
       <Box className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-2">
-          {Validate.isOk(exams) &&
-            exams.map((exam) => (
-              <ExamFile
-                key={exam.id}
-                fileUrl={exam.url}
-                fileName={decode(exam.fileName)}
-              />
-            ))}
+          {exams.map((exam) => (
+            <ExamFile
+              key={exam.id}
+              fileUrl={exam.url}
+              fileName={decode(exam.fileName)}
+            />
+          ))}
           {/* <ExamFile fileUrl="/" fileName="quiro-exame.pdf" /> */}
         </div>
         <form action={saveExam.bind(null, patientId)}>
