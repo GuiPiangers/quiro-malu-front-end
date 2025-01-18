@@ -1,5 +1,4 @@
 'use server'
-
 import { api } from '@/services/api/api'
 
 export type SaveExamData = {
@@ -15,8 +14,6 @@ export type ExamResponse = {
 }
 
 export async function saveExam(patientId: string, data: FormData) {
-  console.log(patientId)
-
   const res = await api<void>(`/exams/${patientId}`, {
     method: 'POST',
     body: data,

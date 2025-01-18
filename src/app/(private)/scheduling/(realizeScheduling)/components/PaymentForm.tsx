@@ -49,7 +49,6 @@ export default function PaymentForm({
     queryFn: async () =>
       formData?.schedulingId
         ? await getBySchedulingFinance(formData?.schedulingId).then((res) => {
-            console.log(res)
             return Validate.isOk(res) ? res : undefined
           })
         : (() => undefined)(),

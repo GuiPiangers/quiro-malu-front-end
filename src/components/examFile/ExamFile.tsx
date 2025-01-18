@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 
 type ExamFileProps = {
@@ -9,7 +8,7 @@ type ExamFileProps = {
 export default function ExamFile({ fileUrl, fileName }: ExamFileProps) {
   return (
     <a
-      className="flex flex-col items-center gap-2"
+      className="flex  flex-col items-center gap-2"
       href={fileUrl}
       target="_blank"
     >
@@ -19,7 +18,9 @@ export default function ExamFile({ fileUrl, fileName }: ExamFileProps) {
           className="text-main group-hover:text-main-hover"
         />
       </div>
-      <span className="text-md">{fileName}</span>
+      <span className="text-md relative max-w-[172px] overflow-hidden overflow-ellipsis whitespace-nowrap">
+        {fileName}
+      </span>
     </a>
   )
 }
