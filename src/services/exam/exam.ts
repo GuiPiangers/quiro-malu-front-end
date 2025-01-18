@@ -37,3 +37,16 @@ export async function getExam({
   })
   return res
 }
+
+export async function listExams({
+  patientId,
+  page,
+}: {
+  patientId: string
+  page: number
+}) {
+  const res = await api<ExamResponse[]>(`/exams/${patientId}?page=${page}`, {
+    method: 'GET',
+  })
+  return res
+}
