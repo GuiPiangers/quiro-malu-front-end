@@ -24,3 +24,16 @@ export async function saveExam(patientId: string, data: FormData) {
   })
   return res
 }
+
+export async function getExam({
+  id,
+  patientId,
+}: {
+  id: string
+  patientId: string
+}) {
+  const res = await api<ExamResponse>(`/exams/${patientId}/${id}`, {
+    method: 'GET',
+  })
+  return res
+}
