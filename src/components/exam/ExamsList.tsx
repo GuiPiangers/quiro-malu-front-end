@@ -31,7 +31,11 @@ export default function ExamsList({
           return []
         }) || exams
 
-      console.log(allExams.length === total)
+      const [total] =
+        pages.flatMap((page) => {
+          if (Validate.isOk(page)) return page.total
+          return []
+        }) || exams
 
       if (allExams.length === total) return undefined
       return pages.length + 1
@@ -52,6 +56,7 @@ export default function ExamsList({
             key={exam.id}
             fileUrl={exam.url}
             fileName={decode(exam.fileName)}
+            examData={{ id: exam.id, patientId }}
           />
         ))}
       </div>
