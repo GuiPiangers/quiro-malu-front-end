@@ -13,7 +13,7 @@ export type ExamResponse = {
   url: string
 }
 
-export type ListExamResponse = { total: number; exams: ExamResponse[] }
+export type ExamsListResponse = { total: number; exams: ExamResponse[] }
 
 export async function saveExam(patientId: string, data: FormData) {
   const res = await api<void>(`/exams/${patientId}`, {
@@ -44,7 +44,7 @@ export async function listExams({
   patientId: string
   page: number
 }) {
-  const res = await api<ListExamResponse>(`/exams/${patientId}?page=${page}`, {
+  const res = await api<ExamsListResponse>(`/exams/${patientId}?page=${page}`, {
     method: 'GET',
   })
   return res
