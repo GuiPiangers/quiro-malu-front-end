@@ -8,17 +8,15 @@ type ExamFileProps = {
 export default function ExamFile({ fileUrl, fileName }: ExamFileProps) {
   return (
     <a
-      className="flex  flex-col items-center gap-2"
+      className="flex items-center gap-2 rounded-md border border-main px-2 py-1 hover:bg-slate-50"
       href={fileUrl}
       target="_blank"
     >
-      <div className="group flex h-24 w-24 items-center justify-center rounded-md border border-main hover:border-main-hover">
-        <IoDocumentTextOutline
-          size={28}
-          className="text-main group-hover:text-main-hover"
-        />
-      </div>
-      <span className="text-md relative max-w-[172px] overflow-hidden overflow-ellipsis whitespace-nowrap">
+      <IoDocumentTextOutline
+        size={28}
+        className="text-main group-hover:text-main-hover"
+      />
+      <span className="text-md relative overflow-hidden overflow-ellipsis whitespace-nowrap">
         {fileName}
       </span>
     </a>
