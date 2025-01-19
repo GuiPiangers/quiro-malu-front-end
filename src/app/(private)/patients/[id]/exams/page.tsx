@@ -1,10 +1,12 @@
 import Button from '@/components/Button'
-import ExamFile from '@/components/examFile/ExamFile'
+import ExamFile from '@/components/exam/ExamFile'
 import { listExams, saveExam } from '@/services/exam/exam'
 import { ParamsType } from '../page'
 import { Validate } from '@/services/api/Validate'
 import { decode } from 'utf8'
 import { Box } from '@/components/box/Box'
+import { FileInput } from '@/components/input/file/FileInput'
+import ExamFileInput from '@/components/exam/ExamFileInput'
 
 export default async function Exams({ params }: { params: ParamsType }) {
   const patientId = params.id
@@ -26,11 +28,7 @@ export default async function Exams({ params }: { params: ParamsType }) {
           ))}
           {/* <ExamFile fileUrl="/" fileName="quiro-exame.pdf" /> */}
         </div>
-        <form action={saveExam.bind(null, patientId)}>
-          <label htmlFor="exam-input"></label>
-          <input type="file" name="file" id="exam-input"></input>
-          <Button>Enviar</Button>
-        </form>
+        <ExamFileInput patientId={patientId}></ExamFileInput>
       </Box>
     </section>
   )
