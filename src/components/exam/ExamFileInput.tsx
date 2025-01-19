@@ -20,10 +20,16 @@ function ExamInput(
   )
 }
 
-export default function ExamFileInput({ patientId }: ExamFileInputProps) {
+export default function ExamFileInput({
+  patientId,
+  ...props
+}: ExamFileInputProps &
+  InputHTMLAttributes<HTMLInputElement> &
+  FileInputPropsVariants) {
   return (
     <form action={saveExam.bind(null, patientId)}>
       <ExamInput
+        {...props}
         name="file"
         onChange={(e) => {
           e.preventDefault()
