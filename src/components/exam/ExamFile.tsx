@@ -34,16 +34,13 @@ export default function ExamFile({
 
       <div
         className="rounded px-2 py-1 hover:bg-red-100"
-        onClick={async () => {
+        onClick={async (e) => {
           await deleteExam({ id, patientId })
+          e.preventDefault()
           queryClient.invalidateQueries({ queryKey: ['exams'] })
         }}
       >
-        <FiTrash
-          size={20}
-          onClick={(e) => e.preventDefault()}
-          className="text-red-600 "
-        ></FiTrash>
+        <FiTrash size={20} className="text-red-600 "></FiTrash>
       </div>
     </a>
   )
