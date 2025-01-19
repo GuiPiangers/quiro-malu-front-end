@@ -44,6 +44,7 @@ export default function PatientsFile() {
     setError,
     reset,
   } = createPatientForm
+
   const handleUploadPatient = async (data: UploadPatientsData) => {
     try {
       const formData = new FormData()
