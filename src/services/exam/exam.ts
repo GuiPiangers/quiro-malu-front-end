@@ -37,6 +37,19 @@ export async function getExam({
   return res
 }
 
+export async function deleteExam({
+  id,
+  patientId,
+}: {
+  id: string
+  patientId: string
+}) {
+  const res = await api<ExamResponse>(`/exams/${patientId}/${id}`, {
+    method: 'POST',
+  })
+  return res
+}
+
 export async function listExams({
   patientId,
   page,
