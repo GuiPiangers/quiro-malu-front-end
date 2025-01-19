@@ -95,13 +95,10 @@ export async function updatePatient(data: PatientResponse) {
   return res
 }
 
-export async function uploadPatient(data: File) {
-  const formData = new FormData()
-  formData.append('file', data)
-
+export async function uploadPatient(data: FormData) {
   const res = await api<uploadPatientsResponse>('/uploadPatients', {
     method: 'POST',
-    body: formData,
+    body: data,
     noContentType: true,
   })
 

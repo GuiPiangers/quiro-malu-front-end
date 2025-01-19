@@ -13,7 +13,13 @@ import { FileInput } from '@/components/input/file/FileInput'
 import { uploadPatient } from '@/services/patient/patient'
 
 export const uploadPatientsSchema = z.object({
-  file: z.any(),
+  file: z
+    .instanceof(File)
+    .nullable()
+    .refine((file) => {
+      if (!file) return true
+      return file.size < 1024 * 1024 * 100 // 100MB
+    }, 'File size must be less than 2MB'),
 })
 
 export type UploadPatientsData = z.infer<typeof uploadPatientsSchema>
@@ -40,7 +46,11 @@ export default function PatientsFile() {
   } = createPatientForm
   const handleUploadPatient = async (data: UploadPatientsData) => {
     try {
-      const res = await uploadPatient(data.file)
+      const formData = new FormData()
+      formData.append('file', new Blob([data.file ?? '']))
+
+      const res = await uploadPatient(formData)
+
       if (Validate.isOk(res)) {
         setSuccessCount(res.successCounter)
         setErrorCount(res.erroCounter)
@@ -51,6 +61,7 @@ export default function PatientsFile() {
           description: res.message,
           type: 'error',
         })
+
         setError(
           'file',
           { message: 'Erro ao salvar pacientes' },
@@ -63,6 +74,7 @@ export default function PatientsFile() {
         description: error.message,
         type: 'error',
       })
+
       setError('file', { message: 'Erro ao salvar pacientes' })
     } finally {
       setSelectedFile(null)
@@ -116,6 +128,10 @@ export default function PatientsFile() {
         </p>
       ) : (
         ''
+      )}
+
+      {errors.file && (
+        <p className="text-xs text-red-800">{errors.file.message}</p>
       )}
 
       <Button color="green" type="submit" disabled={isSubmitting}>
