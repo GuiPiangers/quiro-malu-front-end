@@ -6,6 +6,7 @@ import { decode } from 'utf8'
 import { Box } from '@/components/box/Box'
 import ExamFileInput from '@/components/exam/ExamFileInput'
 import ExamsList from '@/components/exam/ExamsList'
+import { titleStyles } from '@/components/form/Styles'
 
 export default async function Exams({ params }: { params: ParamsType }) {
   const patientId = params.id
@@ -15,10 +16,14 @@ export default async function Exams({ params }: { params: ParamsType }) {
   const total = Validate.isOk(examsData) ? examsData.total : 0
 
   return (
-    <section>
-      <Box className="flex flex-col gap-4">
+    <section className="w-full max-w-screen-lg">
+      <Box className="flex w-full flex-col gap-4">
+        <h2 className={titleStyles({ className: 'm-0' })}>Exames</h2>
+        <ExamFileInput
+          patientId={patientId}
+          className="text-md"
+        ></ExamFileInput>
         {<ExamsList exams={exams} total={total} patientId={patientId} />}
-        <ExamFileInput patientId={patientId}></ExamFileInput>
       </Box>
     </section>
   )
