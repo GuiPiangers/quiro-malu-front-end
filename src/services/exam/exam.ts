@@ -45,7 +45,7 @@ export async function deleteExam({
   patientId: string
 }) {
   const res = await api<ExamResponse>(`/exams/${patientId}/${id}`, {
-    method: 'POST',
+    method: 'DELETE',
   })
   return res
 }
