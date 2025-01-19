@@ -3,7 +3,6 @@
 import { saveExam } from '@/services/exam/exam'
 import { FileInput, FileInputPropsVariants } from '../input/file/FileInput'
 import { useFormStatus } from 'react-dom'
-import Button from '../Button'
 import { InputHTMLAttributes } from 'react'
 
 type ExamFileInputProps = {
