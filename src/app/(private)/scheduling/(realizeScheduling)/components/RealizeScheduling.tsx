@@ -85,7 +85,7 @@ export default function RealizeScheduling({
               onClick={() => setPageStage('diagnostic')}
               className={NavItemStyles({ active: pageStage === 'diagnostic' })}
             >
-              Diagnostic
+              Diagnostico
             </button>
             <button
               onClick={() => setPageStage('progress')}
