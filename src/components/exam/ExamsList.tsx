@@ -46,7 +46,7 @@ export default function ExamsList({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-2">
         {allExams.map((exam) => (
           <ExamFile
             key={exam.id}
@@ -57,7 +57,12 @@ export default function ExamsList({
       </div>
 
       {hasNextPage && (
-        <button onClick={() => fetchNextPage()}>Mostrar mais</button>
+        <button
+          onClick={() => fetchNextPage()}
+          className="text-main underline hover:text-main-hover"
+        >
+          Mostrar mais
+        </button>
       )}
     </div>
   )
