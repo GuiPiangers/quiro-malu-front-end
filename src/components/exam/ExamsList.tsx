@@ -7,10 +7,10 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { Validate } from '@/services/api/Validate'
 
 export default function ExamsList({
-  exams,
-  total,
+  exams = [],
+  total = 0,
   patientId,
-}: ExamsListResponse & { patientId: string }) {
+}: Partial<ExamsListResponse> & { patientId: string }) {
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['exams'],
     queryFn: ({ pageParam }) => listExams({ page: pageParam, patientId }),
