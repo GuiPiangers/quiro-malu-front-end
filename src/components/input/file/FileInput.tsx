@@ -16,6 +16,9 @@ export const fileInputStyle = tv({
     error: {
       true: 'border-red-600  text-red-600',
     },
+    disabled: {
+      true: 'border-slate-300 bg-transparent text-slate-400',
+    },
   },
   defaultVariants: {
     color: 'primary',
@@ -39,7 +42,12 @@ function _FileInput(
     <>
       <label
         htmlFor={inputId}
-        className={fileInputStyle({ color, error, className })}
+        className={fileInputStyle({
+          color,
+          error,
+          disabled: props.disabled,
+          className,
+        })}
       >
         {children}
       </label>
