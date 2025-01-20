@@ -59,7 +59,7 @@ export default function ExamFileInput({
   const handleUploadExam = async (data: UploadExamData) => {
     try {
       const formData = new FormData()
-      formData.append('file', data.file ?? '')
+      formData.append('file', data.file ?? new File([], ''))
 
       const res = await saveExam(patientId, formData)
 

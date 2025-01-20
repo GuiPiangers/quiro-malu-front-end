@@ -1,6 +1,5 @@
 'use client'
 
-import { decode } from 'utf8'
 import ExamFile from './ExamFile'
 import { ExamsListResponse, listExams } from '@/services/exam/exam'
 import { useInfiniteQuery } from '@tanstack/react-query'
@@ -55,7 +54,7 @@ export default function ExamsList({
           <ExamFile
             key={exam.id}
             fileUrl={exam.url}
-            fileName={decode(exam.fileName)}
+            fileName={exam.fileName}
             examData={{ id: exam.id, patientId }}
           />
         ))}

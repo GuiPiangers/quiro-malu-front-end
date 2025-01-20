@@ -1,8 +1,6 @@
-import ExamFile from '@/components/exam/ExamFile'
 import { listExams } from '@/services/exam/exam'
 import { ParamsType } from '../page'
 import { Validate } from '@/services/api/Validate'
-import { decode } from 'utf8'
 import { Box } from '@/components/box/Box'
 import ExamFileInput from '@/components/exam/ExamFileInput'
 import ExamsList from '@/components/exam/ExamsList'

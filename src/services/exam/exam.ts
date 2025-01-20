@@ -16,10 +16,30 @@ export type ExamResponse = {
 export type ExamsListResponse = { total: number; exams: ExamResponse[] }
 
 export async function saveExam(patientId: string, data: FormData) {
+  const formData = new FormData()
+  const unformattedFile = (data.get('file') as File) || new File([], '')
+
+  formData.append(
+    'file',
+    new File(
+      [unformattedFile],
+      Buffer.from(unformattedFile?.name, 'latin1').toString('utf8') ?? '',
+      {
+        type: unformattedFile.type,
+        lastModified: unformattedFile.lastModified,
+      },
+    ),
+  )
+
+  console.log(formData.get('file'))
+
   const res = await api<void>(`/exams/${patientId}`, {
     method: 'POST',
-    body: data,
+    body: formData,
     noContentType: true,
+    headers: {
+      'Accept-Charset': 'utf-8',
+    },
   })
   return res
 }
