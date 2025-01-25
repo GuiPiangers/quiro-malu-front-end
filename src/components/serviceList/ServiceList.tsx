@@ -1,7 +1,6 @@
 'use client'
 
 import { listService, ServiceListResponse } from '@/services/service/Service'
-import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import NoDataFound from '../notFound/NoDataFound'
 import { Validate } from '@/services/api/Validate'
 import { Table } from '../table'
@@ -11,18 +10,23 @@ import SearchInput from '../input/SearchInput'
 import CreateServiceModal from '@/app/(private)/services/components/CreateServiceModal'
 import Pagination from '../pagination/Pagination'
 import { NoServicesDataFound } from '../notFound/NoServiceDataFound'
+import { useSearchParams } from 'next/navigation'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 type ServiceListPros = {
   page: string
   defaultData?: ServiceListResponse
 }
 
-export default function ServiceList({ page, defaultData }: ServiceListPros) {
-  const { data } = useQuery({
-    queryKey: ['listServices', page],
-    queryFn: async () => {
-      const result = await listService({ page })
+export default function ServiceList({ defaultData }: ServiceListPros) {
+  const searchParams = useSearchParams()
+  const search = searchParams.get('pesquisa') ?? ''
+  const page = searchParams.get('page') ?? '1'
 
+  const { data } = useQuery({
+    queryKey: ['listServices', { page, search }],
+    queryFn: async () => {
+      const result = await listService({ page, search })
       return result
     },
     initialData: defaultData,
@@ -55,7 +59,7 @@ export default function ServiceList({ page, defaultData }: ServiceListPros) {
     <div className="flex w-full flex-col items-center gap-4">
       <Box className="w-full max-w-screen-lg">
         <div className="mb-6 grid grid-cols-1 items-center gap-4 sm:grid-cols-[1fr_auto]">
-          <SearchInput className="text-base" />
+          <SearchInput className="text-base" searchParam="pesquisa" />
           <CreateServiceModal>Adicionar</CreateServiceModal>
         </div>
         {services.length > 0 ? generateServiceTable() : <NoServicesDataFound />}
