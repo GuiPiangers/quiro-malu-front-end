@@ -1,8 +1,10 @@
 'use client'
 
 import useWindowSize from '@/hooks/useWindowSize'
-import { useRouter } from 'next/navigation'
-import { RxCaretDown, RxCaretLeft, RxCaretRight } from 'react-icons/rx'
+import { convertEntriesToObject } from '@/utils/convertEntriesToObject'
+import { generateSearchParams } from '@/utils/generateSearchParams'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { RxCaretLeft, RxCaretRight } from 'react-icons/rx'
 
 type PaginationProps = {
   page: number
@@ -33,13 +35,24 @@ const PaginationItem = ({
 
 export default function Pagination({ page, limit, total }: PaginationProps) {
   const router = useRouter()
+
+  const searchParams = useSearchParams()
+  const searchParamsObject = convertEntriesToObject(
+    Array.from(searchParams.entries()),
+  )
+
   const qtdPages = Math.ceil(total / limit)
   const lastPage = page === qtdPages
   const firstPage = page === 1
+
   const { windowWidth } = useWindowSize()
 
   const navigate = (page: number) => {
-    router.push(`?page=${page}`)
+    const params = generateSearchParams({
+      ...searchParamsObject,
+      page: page.toString(),
+    })
+    router.push(params)
   }
 
   const next = () => {
