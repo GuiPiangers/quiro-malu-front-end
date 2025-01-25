@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { generateSearchParams } from '@/utils/generateSearchParams'
 import { convertEntriesToObject } from '@/utils/convertEntriesToObject'
 import { useDebouncing } from '@/hooks/useDebouncing'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 type SearchInputProps = {
   className?: string
@@ -23,21 +23,36 @@ export default function SearchInput({
     Array.from(searchParams.entries()),
   )
   const [debouncedSearch, setValue] = useDebouncing(300)
+  const searchValue = searchParams.get(searchParam) ?? ''
 
   useEffect(() => {
-    const params = generateSearchParams({
-      ...searchParamsObject,
-      page: '1',
-      [searchParam]: debouncedSearch,
-    })
+    const params = debouncedSearch
+      ? generateSearchParams({
+          ...searchParamsObject,
+          page: '1',
+          [searchParam]: debouncedSearch,
+        })
+      : generateSearchParams({
+          ...searchParamsObject,
+          [searchParam]: searchParamsObject[searchParam] ?? '',
+        })
     route.push(params)
-  }, [debouncedSearch])
+  }, [debouncedSearch, route, searchParam])
 
   return (
     <Input.Root>
       <Input.Field
+        defaultValue={searchValue ?? ''}
         onChange={(e) => {
           setValue(e.target.value)
+          if (e.currentTarget.value === '') {
+            route.push(
+              generateSearchParams({
+                ...searchParamsObject,
+                [searchParam]: '',
+              }),
+            )
+          }
         }}
         className={className}
         placeholder="Pesquisar..."
