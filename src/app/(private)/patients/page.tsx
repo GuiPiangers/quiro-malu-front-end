@@ -108,7 +108,7 @@ export default async function Patients({
     <main className="w-full max-w-screen-lg">
       <Box>
         <div className="mb-6 grid grid-cols-1 items-center gap-4 sm:grid-cols-[1fr_auto]">
-          <SearchInput className="text-base" search={{ param: 'pesquisa' }} />
+          <SearchInput className="text-base" searchParam="pesquisa" />
           <Button asChild color="green">
             <Link href="/patients/create">Cadastrar</Link>
           </Button>
