@@ -66,7 +66,6 @@ export default async function Progress({
   return (
     <div className="w-full max-w-screen-lg space-y-4">
       <Box className="flex min-w-min flex-col gap-6 rounded-2xl sm:flex-row">
-        <SearchInput className="text-base" />
         <ProgressModal
           progressData={{ patientId }}
           color="green"
