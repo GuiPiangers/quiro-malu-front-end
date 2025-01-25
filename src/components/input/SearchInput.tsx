@@ -27,6 +27,7 @@ export default function SearchInput({ className, search }: SearchInputProps) {
           if (!search) return
           const params = generateSearchParams({
             ...searchParamsObject,
+            page: '1',
             [search.param]: e.target.value,
           })
           route.push(params)
