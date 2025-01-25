@@ -13,6 +13,7 @@ export function useDeleteService() {
   const searchParams = useSearchParams()
 
   const page = searchParams.get('page') ?? '1'
+  const search = searchParams.get('pesquisa') ?? ''
 
   const mutation = useMutation({
     mutationFn: async ({ id }: { id: string }) => {
@@ -22,7 +23,7 @@ export function useDeleteService() {
     },
     onMutate: async (deleteServiceData) => {
       await queryClient.cancelQueries({
-        queryKey: ['listServices', page],
+        queryKey: ['listServices', { page, search }],
       })
 
       const previousLaunches = queryClient.getQueryData<ServiceResponse[]>([
@@ -31,7 +32,7 @@ export function useDeleteService() {
       ])
 
       queryClient.setQueryData<ServiceListResponse>(
-        ['listServices', page],
+        ['listServices', { page, search }],
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
@@ -48,7 +49,7 @@ export function useDeleteService() {
 
     onError: (_err, newTodo, context) => {
       queryClient.setQueryData(
-        ['listServices', page],
+        ['listServices', { page, search }],
         context?.previousLaunches,
       )
     },

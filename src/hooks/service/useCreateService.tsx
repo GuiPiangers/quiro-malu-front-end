@@ -12,6 +12,7 @@ export function useCreateService() {
 
   const searchParams = useSearchParams()
   const page = searchParams.get('page')
+  const search = searchParams.get('pesquisa')
 
   const mutation = useMutation({
     mutationFn: async (data: ServiceResponse) => {
@@ -19,7 +20,7 @@ export function useCreateService() {
     },
     onMutate: async (newService) => {
       await queryClient.cancelQueries({
-        queryKey: ['listServices', page],
+        queryKey: ['listServices', { page, search }],
       })
       const previousLaunches = queryClient.getQueryData<ServiceListResponse>([
         'listServices',
@@ -27,7 +28,7 @@ export function useCreateService() {
       ])
 
       queryClient.setQueryData<ServiceListResponse>(
-        ['listServices', page],
+        ['listServices', { page, search }],
         (oldQuery) => {
           if (oldQuery) {
             return {
@@ -44,7 +45,7 @@ export function useCreateService() {
 
     onError: (_err, newTodo, context) => {
       queryClient.setQueryData(
-        ['listServices', page],
+        ['listServices', { page, search }],
         context?.previousLaunches,
       )
     },
