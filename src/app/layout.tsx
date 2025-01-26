@@ -2,6 +2,7 @@ import './globals.css'
 import { Poppins } from 'next/font/google'
 import { Viewport } from 'next'
 import QueryClientContext from '@/contexts/QueryClientProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 const font = Poppins({
   subsets: ['latin'],
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${font.className} bg-slate-50`}>
         <QueryClientContext>{children}</QueryClientContext>
+        <Toaster />
       </body>
     </html>
   )
