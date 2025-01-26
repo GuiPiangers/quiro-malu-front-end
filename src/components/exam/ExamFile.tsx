@@ -1,7 +1,9 @@
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import { FiTrash } from 'react-icons/fi'
-import { deleteExam } from '@/services/exam/exam'
+import { deleteExam, restoreExam } from '@/services/exam/exam'
 import { useQueryClient } from '@tanstack/react-query'
+import { useToast } from '@/hooks/use-toast'
+import { ToastAction } from '../ui/toast'
 
 type ExamFileProps = {
   fileUrl: string
@@ -18,6 +20,7 @@ export default function ExamFile({
   examData: { id, patientId },
 }: ExamFileProps) {
   const queryClient = useQueryClient()
+  const { toast } = useToast()
 
   return (
     <a
@@ -36,11 +39,31 @@ export default function ExamFile({
         className="rounded px-2 py-1 hover:bg-red-100"
         onClick={(e) => {
           e.preventDefault()
-          deleteExam({ id, patientId }).then(() =>
-            queryClient.invalidateQueries({
-              queryKey: ['exams', { patientId }],
-            }),
-          )
+          deleteExam({ id, patientId })
+            .then(() =>
+              queryClient.invalidateQueries({
+                queryKey: ['exams', { patientId }],
+              }),
+            )
+            .then(() => {
+              toast({
+                title: 'Exame deletado!',
+                description: 'clique em desfazer para restaurar o exame',
+                action: (
+                  <ToastAction
+                    altText="Restaurar exame deletado"
+                    onClick={async () => {
+                      await restoreExam({ id, patientId })
+                      queryClient.invalidateQueries({
+                        queryKey: ['exams', { patientId }],
+                      })
+                    }}
+                  >
+                    Desfazer
+                  </ToastAction>
+                ),
+              })
+            })
         }}
       >
         <FiTrash size={20} className="text-red-600 "></FiTrash>
