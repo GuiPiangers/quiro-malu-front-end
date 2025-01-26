@@ -11,7 +11,7 @@ export default function ExamsList({
   patientId,
 }: Partial<ExamsListResponse> & { patientId: string }) {
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ['exams'],
+    queryKey: ['exams', { patientId }],
     queryFn: ({ pageParam }) => listExams({ page: pageParam, patientId }),
     initialPageParam: 1,
     initialData: {

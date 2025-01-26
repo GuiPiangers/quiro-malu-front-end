@@ -64,7 +64,7 @@ export default function ExamFileInput({
       const res = await saveExam(patientId, formData)
 
       if (Validate.isOk(res)) {
-        queryClient.invalidateQueries({ queryKey: ['exams'] })
+        queryClient.invalidateQueries({ queryKey: ['exams', { patientId }] })
         handleMessage({
           title: 'Exame salvo com sucesso',
           type: 'success',

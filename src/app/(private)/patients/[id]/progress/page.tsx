@@ -1,6 +1,5 @@
 import { ParamsType } from '../page'
 import { Box } from '@/components/box/Box'
-import SearchInput from '@/components/input/SearchInput'
 import ProgressModal from './components/ProgressModal'
 import DateTime from '@/utils/Date'
 import DeleteProgress from './components/DeleteProgress'
