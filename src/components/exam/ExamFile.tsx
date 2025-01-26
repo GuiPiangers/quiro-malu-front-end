@@ -29,10 +29,8 @@ export default function ExamFile({
       target="_blank"
     >
       <div className="flex items-center gap-2">
-        <IoDocumentTextOutline size={28} className="text-main " />
-        <span className="text-md relative overflow-hidden overflow-ellipsis whitespace-nowrap">
-          {fileName}
-        </span>
+        <IoDocumentTextOutline size={28} className="flex-shrink-0 text-main" />
+        <span className="text-md">{fileName}</span>
       </div>
 
       <div
