@@ -70,6 +70,19 @@ export async function deleteExam({
   return res
 }
 
+export async function restoreExam({
+  id,
+  patientId,
+}: {
+  id: string
+  patientId: string
+}) {
+  const res = await api<ExamResponse>(`/exams/${patientId}/${id}`, {
+    method: 'POST',
+  })
+  return res
+}
+
 export async function listExams({
   patientId,
   page,
