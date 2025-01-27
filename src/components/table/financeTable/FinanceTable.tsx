@@ -1,3 +1,5 @@
+'use client'
+
 import { Box } from '@/components/box/Box'
 import NewFinanceModal from '@/components/modal/FinanceModal/NewFinanceModal'
 import { Table } from '@/components/table'
@@ -6,6 +8,7 @@ import { financePaymentMethod } from '@/services/finance/FinancePaymentMethod'
 import { Currency } from '@/utils/Currency'
 import DateTime from '@/utils/Date'
 import { tableStyles } from '../Style'
+import useWindowSize from '@/hooks/useWindowSize'
 
 export default function FinanceTable({
   financeList,
@@ -13,16 +16,23 @@ export default function FinanceTable({
   financeList?: FinanceListResponse
 }) {
   const { TrowStyle } = tableStyles()
+  const { windowWidth } = useWindowSize()
+  const tableColumns =
+    windowWidth > 640
+      ? ['24px', '1fr', '2fr', '1fr', '1fr']
+      : ['24px', '1fr', '2fr', '1fr']
 
   return (
     <Box>
       <Table.Root>
-        <Table.Row columns={['16px', '1fr', '2fr', '1fr', '1fr']}>
+        <Table.Row columns={tableColumns}>
           <Table.Head></Table.Head>
           <Table.Head>Data</Table.Head>
           <Table.Head>Descrição</Table.Head>
           <Table.Head>Valor</Table.Head>
-          <Table.Head>Forma de pagamento</Table.Head>
+          <Table.Head className="hidden sm:block">
+            Forma de pagamento
+          </Table.Head>
         </Table.Row>
 
         {financeList?.map((finance) => (
@@ -33,7 +43,7 @@ export default function FinanceTable({
             variant="ghost"
           >
             <Table.Row
-              columns={['16px', '1fr', '2fr', '1fr', '1fr']}
+              columns={tableColumns}
               clickable
               className={TrowStyle({
                 className: 'rounded-none border-slate-200 text-black',
@@ -59,7 +69,7 @@ export default function FinanceTable({
                 R$ {finance.type === 'income' ? '' : '-'}{' '}
                 {Currency.format(finance.value)}
               </Table.Cell>
-              <Table.Cell>
+              <Table.Cell className="hidden sm:block">
                 {
                   financePaymentMethod[
                     finance.paymentMethod as keyof typeof financePaymentMethod
