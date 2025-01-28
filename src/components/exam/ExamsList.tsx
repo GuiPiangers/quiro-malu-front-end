@@ -1,8 +1,12 @@
 'use client'
 
 import ExamFile from './ExamFile'
-import { ExamsListResponse, listExams } from '@/services/exam/exam'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import {
+  ExamResponse,
+  ExamsListResponse,
+  listExams,
+} from '@/services/exam/exam'
+import { useInfiniteQuery, useMutationState } from '@tanstack/react-query'
 import { Validate } from '@/services/api/Validate'
 
 export default function ExamsList({
@@ -10,6 +14,25 @@ export default function ExamsList({
   total = 0,
   patientId,
 }: Partial<ExamsListResponse> & { patientId: string }) {
+  const variables = useMutationState<ExamResponse>({
+    filters: { mutationKey: ['saveExam'], status: 'pending' },
+    select: (mutation) => {
+      const mutationData = mutation.state.variables as {
+        patientId: string
+        formData: FormData
+      }
+
+      const fileName = (mutationData.formData.get('file') as File)?.name
+      const url = URL.createObjectURL(
+        (mutationData.formData.get('file') as File) ?? '',
+      ) as string
+
+      return { fileName, id: '', patientId, url }
+    },
+  })
+
+  console.log(variables)
+
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['exams', { patientId }],
     queryFn: ({ pageParam }) => listExams({ page: pageParam, patientId }),
@@ -23,6 +46,7 @@ export default function ExamsList({
       ],
       pageParams: [1],
     },
+
     getNextPageParam: (lastPage, pages) => {
       const allExams =
         pages.flatMap((page) => {
@@ -50,6 +74,15 @@ export default function ExamsList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
+        {variables.map((exam) => (
+          <ExamFile
+            className="pointer-events-none opacity-50"
+            key={exam.id}
+            fileUrl={exam.url}
+            fileName={exam.fileName}
+            examData={{ id: exam.id, patientId }}
+          />
+        ))}
         {allExams.map((exam) => (
           <ExamFile
             key={exam.id}
