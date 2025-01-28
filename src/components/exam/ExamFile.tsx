@@ -4,10 +4,12 @@ import { deleteExam, restoreExam } from '@/services/exam/exam'
 import { useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { ToastAction } from '../ui/toast'
+import { twMerge } from 'tailwind-merge'
 
 type ExamFileProps = {
   fileUrl: string
   fileName: string
+  className?: string
   examData: {
     patientId: string
     id: string
@@ -17,6 +19,7 @@ type ExamFileProps = {
 export default function ExamFile({
   fileUrl,
   fileName,
+  className,
   examData: { id, patientId },
 }: ExamFileProps) {
   const queryClient = useQueryClient()
@@ -24,7 +27,10 @@ export default function ExamFile({
 
   return (
     <a
-      className="flex items-center justify-between gap-2 rounded-md border border-main px-2 py-1 hover:bg-slate-50"
+      className={twMerge(
+        'flex items-center justify-between gap-2 rounded-md border border-main px-2 py-1 hover:bg-slate-50',
+        className,
+      )}
       href={fileUrl}
       target="_blank"
     >
