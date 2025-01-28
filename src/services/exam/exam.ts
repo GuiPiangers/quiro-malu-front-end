@@ -31,8 +31,6 @@ export async function saveExam(patientId: string, data: FormData) {
     ),
   )
 
-  console.log(formData.get('file'))
-
   const res = await api<void>(`/exams/${patientId}`, {
     method: 'POST',
     body: formData,
