@@ -1,6 +1,5 @@
 'use client'
 
-import { saveExam } from '@/services/exam/exam'
 import { FileInput, FileInputPropsVariants } from '../input/file/FileInput'
 import { InputHTMLAttributes } from 'react'
 import { z } from 'zod'
@@ -9,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import { useQueryClient } from '@tanstack/react-query'
+import { useSaveExam } from '@/hooks/exam/useSaveExam'
 
 type ExamFileInputProps = {
   patientId: string
@@ -42,6 +42,7 @@ export default function ExamFileInput({
   InputHTMLAttributes<HTMLInputElement> &
   FileInputPropsVariants) {
   const queryClient = useQueryClient()
+  const saveExam = useSaveExam()
 
   const createPatientForm = useForm<UploadExamData>({
     resolver: zodResolver(uploadExamSchema),
@@ -61,7 +62,7 @@ export default function ExamFileInput({
       const formData = new FormData()
       formData.append('file', data.file ?? new File([], ''))
 
-      const res = await saveExam(patientId, formData)
+      const res = await saveExam.mutateAsync({ patientId, formData })
 
       if (Validate.isOk(res)) {
         queryClient.invalidateQueries({ queryKey: ['exams', { patientId }] })
