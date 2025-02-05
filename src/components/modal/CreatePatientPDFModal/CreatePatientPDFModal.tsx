@@ -23,6 +23,7 @@ import { generatePatientPDF } from '@/services/patientPDF/patientPDF'
 type CreatePatientPDFModalProps = {
   children?: React.ReactNode
   asChild?: boolean
+  patientId: string
 } & ButtonPropsVariants
 
 export type ModalRef = {
@@ -118,7 +119,7 @@ const defaultCheckedDiagnostic = {
 type keyCheckedPatientData = keyof typeof defaultCheckedPatientData
 
 export default forwardRef<ModalRef, CreatePatientPDFModalProps>(
-  function CreatePatientPDFModal({ children, ...buttonProps }, ref) {
+  function CreatePatientPDFModal({ children, patientId, ...buttonProps }, ref) {
     const modalHandle = useRef<ModalHandles>(null)
     const closeModal = () => modalHandle.current?.closeModal()
     const openModal = () => modalHandle.current?.openModal()
@@ -531,7 +532,7 @@ export default forwardRef<ModalRef, CreatePatientPDFModalProps>(
                 className="w-full"
                 onClick={async () => {
                   await generatePatientPDF({
-                    patientId: 'e372ed46-8fb6-4914-8925-8a6bb1b84548',
+                    patientId,
                     patientData: checkedPatientData,
                     anamnesisData: checkedAnamnesis,
                     diagnosticData: checkedDiagnostic,

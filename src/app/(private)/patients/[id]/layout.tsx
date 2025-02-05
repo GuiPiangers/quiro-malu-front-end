@@ -9,6 +9,7 @@ import CreateSchedulingModal from '../../../../components/modal/SchedulingModal/
 import Link from 'next/link'
 import { getPatient } from '@/services/patient/patient'
 import Phone from '@/utils/Phone'
+import CreatePatientPDFModal from '@/components/modal/CreatePatientPDFModal/CreatePatientPDFModal'
 
 type LayoutProps = {
   children: ReactNode
@@ -54,18 +55,15 @@ export default async function Layout({ children, params }: LayoutProps) {
                   Contato
                 </Link>
               </Button>
-              <CreateSchedulingModal
+              <CreatePatientPDFModal
+                patientId={id}
                 color="primary"
                 variant="outline"
                 size="small"
-                formData={{
-                  patient: patientData?.name,
-                  patientId: patientData?.id,
-                  patientPhone: patientData?.phone,
-                }}
               >
-                Agendar horário
-              </CreateSchedulingModal>
+                Gerar PDF
+              </CreatePatientPDFModal>
+
               <DeletePatientModal id={patientData?.id || ''} />
             </div>
           </div>
