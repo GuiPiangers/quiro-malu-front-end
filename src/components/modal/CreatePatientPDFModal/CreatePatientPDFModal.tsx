@@ -1,10 +1,8 @@
 'use client'
 
 import {
-  Dispatch,
   forwardRef,
   SetStateAction,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -20,7 +18,7 @@ import { Accordion } from '@/components/accordion'
 import { IoChevronDown } from 'react-icons/io5'
 import StopPropagation from '@/components/StopPropagation'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import { boolean, TypeOf } from 'zod'
+import { generatePatientPDF } from '@/services/patientPDF/patientPDF'
 
 type CreatePatientPDFModalProps = {
   children?: React.ReactNode
@@ -529,7 +527,20 @@ export default forwardRef<ModalRef, CreatePatientPDFModalProps>(
             </Accordion.Root>
 
             <div className="mt-4 flex w-full justify-stretch gap-2">
-              <Button className="w-full">Gerar PDF</Button>
+              <Button
+                className="w-full"
+                onClick={async () => {
+                  await generatePatientPDF({
+                    patientId: 'e372ed46-8fb6-4914-8925-8a6bb1b84548',
+                    patientData: checkedPatientData,
+                    anamnesisData: checkedAnamnesis,
+                    diagnosticData: checkedDiagnostic,
+                    locationData: checkedLocation,
+                  })
+                }}
+              >
+                Gerar PDF
+              </Button>
             </div>
           </div>
         </Modal>

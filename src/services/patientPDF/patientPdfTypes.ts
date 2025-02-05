@@ -19,3 +19,13 @@ export type PatientPdfProps = {
   anamnesisData?: anamnesisPDFData
   diagnosticData?: diagnosticPDFData
 }
+
+export type AvailablePatientPdf = {
+  patientData: Record<keyof Partial<Omit<patientPDFData, 'name'>>, boolean>
+  locationData?: Record<keyof locationPDFData, boolean>
+  anamnesisData?: Record<
+    keyof Omit<anamnesisPDFData, 'useMedicine' | 'underwentSurgery'>,
+    boolean
+  >
+  diagnosticData?: Record<keyof diagnosticPDFData, boolean>
+}

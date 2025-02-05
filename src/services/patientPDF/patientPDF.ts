@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { PatientPdfProps } from './patientPdfTypes'
+import { AvailablePatientPdf, PatientPdfProps } from './patientPdfTypes'
 
 export async function generatePatientPDF({
   patientId,
@@ -9,9 +9,17 @@ export async function generatePatientPDF({
   anamnesisData,
   diagnosticData,
   locationData,
-}: PatientPdfProps & { patientId: string }) {
-  const patientJSONData = JSON.stringify(patientData ?? {})
-  const anamnesisJSONData = JSON.stringify(anamnesisData ?? {})
+}: AvailablePatientPdf & { patientId: string }) {
+  const patientJSONData = JSON.stringify({ ...patientData, name: true })
+  const anamnesisJSONData = JSON.stringify(
+    anamnesisData
+      ? {
+          ...anamnesisData,
+          useMedicine: anamnesisData.medicines,
+          underwentSurgery: anamnesisData.surgeries,
+        }
+      : {},
+  )
   const diagnosticJSONData = JSON.stringify(diagnosticData ?? {})
   const locationJSONData = JSON.stringify(locationData ?? {})
 

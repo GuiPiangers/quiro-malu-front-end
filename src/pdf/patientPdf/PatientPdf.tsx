@@ -41,7 +41,7 @@ export default function PatientPdf({
           <>
             <SubTitle>Diagnóstico</SubTitle>
             <View style={[styles.container, styles.section]} wrap={false}>
-              <Text style={styles.__no_content}>{diagnostic}</Text>
+              <Text>{diagnostic}</Text>
             </View>
           </>
         )}
@@ -51,7 +51,7 @@ export default function PatientPdf({
             <SubTitle>Plano de tratamento</SubTitle>
 
             <View style={[styles.container, styles.section]} wrap={false}>
-              <Text style={styles.__no_content}>{treatmentPlan}</Text>
+              <Text>{treatmentPlan}</Text>
             </View>
           </>
         )}

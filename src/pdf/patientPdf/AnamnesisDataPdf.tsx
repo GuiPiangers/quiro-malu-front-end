@@ -20,6 +20,11 @@ export default function AnamnesisDataPdf({
 }: {
   anamnesisData: anamnesisPDFData
 }) {
+  const smokeTranslate = {
+    passive: 'Passivo',
+    yes: 'Sim',
+    no: 'Não',
+  }
   return (
     <>
       <SubTitle>Anamnese</SubTitle>
@@ -63,14 +68,14 @@ export default function AnamnesisDataPdf({
         {smoke && (
           <View style={[styles.container]} wrap={false}>
             <Text style={[styles.__bold]}>Fumante?</Text>
-            <Text>{smoke}</Text>
+            <Text>{smokeTranslate[smoke as keyof typeof smokeTranslate]}</Text>
           </View>
         )}
 
         {useMedicine !== undefined && (
           <View style={[styles.container]} wrap={false}>
             <Text style={[styles.__bold]}>Usa medicamentos?</Text>
-            <Text>{useMedicine}</Text>
+            <Text>{useMedicine ? 'Sim' : 'Não'}</Text>
             {useMedicine && (
               <>
                 <Text style={[styles.__bold]}>Medicamentos:</Text>
@@ -83,7 +88,7 @@ export default function AnamnesisDataPdf({
         {underwentSurgery !== undefined && (
           <View style={[styles.container]} wrap={false}>
             <Text style={[styles.__bold]}>Passou por alguma cirurgia?</Text>
-            <Text>{underwentSurgery}</Text>
+            <Text>{underwentSurgery ? 'Sim' : 'Não'}</Text>
             {underwentSurgery && (
               <>
                 <Text style={[styles.__bold]}>Cirurgias:</Text>

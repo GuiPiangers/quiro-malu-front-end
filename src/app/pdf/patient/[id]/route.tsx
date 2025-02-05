@@ -16,6 +16,7 @@ import {
   patientPDFData,
 } from '@/services/patientPDF/patientPdfTypes'
 import { convertEntriesToObject } from '@/utils/convertEntriesToObject'
+import DateTime from '@/utils/Date'
 import { renderToStream } from '@react-pdf/renderer'
 import { NextResponse } from 'next/server'
 
@@ -64,7 +65,13 @@ export async function GET(
   )
   const patientDataResult =
     validateSettler(patientData) && Validate.isOk(patientData.value)
-      ? patientData.value
+      ? {
+          ...patientData.value,
+          location: { ...patientData.value.location },
+          dateOfBirth: patientData.value.dateOfBirth
+            ? DateTime.getLocaleDate(patientData.value.dateOfBirth)
+            : undefined,
+        }
       : undefined
 
   const anamnesisDataResult =
