@@ -6,9 +6,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getUser } from '@/services/user/user'
+import { getUser, logoutUser } from '@/services/user/user'
 import { Validate } from '@/services/api/Validate'
 import Image from 'next/image'
+import LogoutButton from '@/components/LogoutButton'
 
 const imageProfile = '/profile/profile1.svg'
 
@@ -38,9 +39,11 @@ export default async function UserProfile() {
             Configurações
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer text-red-600 hover:bg-red-100 focus:bg-red-100 focus:text-red-600">
-            Sair
-          </DropdownMenuItem>
+          <LogoutButton asChild variant="ghost" className="rounded px-2 py-1.5">
+            <DropdownMenuItem className="cursor-pointer justify-start text-red-600 hover:bg-red-100 focus:bg-red-100 focus:text-red-600">
+              Sair
+            </DropdownMenuItem>
+          </LogoutButton>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

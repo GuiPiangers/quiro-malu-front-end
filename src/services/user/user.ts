@@ -45,7 +45,8 @@ export async function loginUser(data: { email: string; password: string }) {
   return auth
 }
 
-export async function logoutUser(refreshTokenId: string): Promise<void> {
+export async function logoutUser(): Promise<void> {
+  const refreshTokenId = cookies().get('quiro-refresh-token')
   await api<UserResponse>('/logout', {
     method: 'POST',
     body: JSON.stringify({ refreshTokenId }),

@@ -66,7 +66,7 @@ export const buttonStyle = tv({
 
 export type ButtonPropsVariants = VariantProps<typeof buttonStyle>
 
-type ButtonProps = {
+export type ButtonProps = {
   asChild?: boolean
 } & ButtonHTMLAttributes<HTMLButtonElement> &
   ButtonPropsVariants
