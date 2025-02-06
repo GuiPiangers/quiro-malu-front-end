@@ -21,7 +21,7 @@ export default function PatientPdf({
   locationData = {},
 }: PatientPdfProps) {
   return (
-    <Document>
+    <Document title={`Ficha - ${patientData.name}`}>
       <Page size="A4" style={styles.page} wrap={true}>
         <View style={styles.section}>
           <Text style={[styles.title]}>Ficha do paciente</Text>
