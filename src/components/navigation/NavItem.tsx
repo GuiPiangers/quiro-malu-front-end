@@ -9,12 +9,14 @@ type NavItemProps = {
   href: string
   children: ReactNode
   className?: string
+  replace?: boolean
 } & NavPropsVariants
 
 export default function NavItem({
   href,
   className,
   children,
+  replace,
   variants,
 }: NavItemProps) {
   const active = usePathname() === href
@@ -22,7 +24,11 @@ export default function NavItem({
 
   return (
     <li>
-      <Link href={href} className={NavItemStyles({ className })}>
+      <Link
+        href={href}
+        className={NavItemStyles({ className })}
+        replace={replace}
+      >
         {children}
       </Link>
     </li>

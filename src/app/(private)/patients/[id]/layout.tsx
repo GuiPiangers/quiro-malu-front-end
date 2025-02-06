@@ -71,12 +71,24 @@ export default async function Layout({ children, params }: LayoutProps) {
       </Box>
 
       <Nav.root className="m-auto max-w-screen-lg">
-        <Nav.item href={`/patients/${id}`}>Dados</Nav.item>
-        <Nav.item href={`/patients/${id}/progress`}>Evolução</Nav.item>
-        <Nav.item href={`/patients/${id}/anamnesis`}>Anamnese</Nav.item>
-        <Nav.item href={`/patients/${id}/exams`}>Exames</Nav.item>
-        <Nav.item href={`/patients/${id}/diagnostic`}>Diagnóstico</Nav.item>
-        <Nav.item href={`/patients/${id}/finance`}>Financeiro</Nav.item>
+        <Nav.item replace href={`/patients/${id}`}>
+          Dados
+        </Nav.item>
+        <Nav.item replace href={`/patients/${id}/progress`}>
+          Evolução
+        </Nav.item>
+        <Nav.item replace href={`/patients/${id}/anamnesis`}>
+          Anamnese
+        </Nav.item>
+        <Nav.item replace href={`/patients/${id}/exams`}>
+          Exames
+        </Nav.item>
+        <Nav.item replace href={`/patients/${id}/diagnostic`}>
+          Diagnóstico
+        </Nav.item>
+        <Nav.item replace href={`/patients/${id}/finance`}>
+          Financeiro
+        </Nav.item>
       </Nav.root>
 
       {children}
