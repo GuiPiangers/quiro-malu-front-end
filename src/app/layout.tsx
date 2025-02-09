@@ -12,6 +12,7 @@ const font = Poppins({
 export const metadata = {
   title: 'Quiro Malu',
   description: 'Sistema de agendamento e gestão de clínica',
+  manifest: '/manifest.json',
 }
 
 export const viewport: Viewport = {
