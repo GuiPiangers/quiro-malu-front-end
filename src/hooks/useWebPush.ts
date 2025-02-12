@@ -1,3 +1,4 @@
+import { subscribeNotification } from '@/services/notification/notification'
 import { useEffect, useState } from 'react'
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
@@ -24,11 +25,7 @@ export function useNotifications() {
       applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
     })
 
-    await fetch('http://localhost:8000/subscribe', {
-      method: 'POST',
-      body: JSON.stringify(subscription),
-      headers: { 'Content-Type': 'application/json' },
-    })
+    await subscribeNotification(JSON.stringify(subscription))
   }
 
   return { subscribeToPush, permission }
