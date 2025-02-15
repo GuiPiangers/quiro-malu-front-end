@@ -1,6 +1,6 @@
 import './globals.css'
 import { Poppins } from 'next/font/google'
-import { Viewport } from 'next'
+import { Metadata, Viewport } from 'next'
 import QueryClientContext from '@/contexts/QueryClientProvider'
 import { Toaster } from '@/components/ui/toaster'
 import SubscribeNotification from '@/components/notification/SubscribeNotification'
@@ -10,10 +10,13 @@ const font = Poppins({
   weight: ['100', '300', '400', '500', '700', '900'],
 })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Quiro Malu',
   description: 'Sistema de agendamento e gestão de clínica',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/icon.png',
+  },
 }
 
 export const viewport: Viewport = {
