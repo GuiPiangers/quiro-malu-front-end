@@ -3,7 +3,7 @@
 import { useNotifications } from '@/hooks/useWebPush'
 import { useEffect } from 'react'
 
-export default function Notifications() {
+export default function SubscribeNotification() {
   const { subscribeToPush, permission } = useNotifications()
 
   useEffect(() => {
@@ -12,9 +12,5 @@ export default function Notifications() {
 
   console.log(permission)
 
-  return (
-    <div>
-      <h1>Notificações</h1>
-    </div>
-  )
+  return undefined
 }
