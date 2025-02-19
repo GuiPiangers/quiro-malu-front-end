@@ -3,7 +3,6 @@ import { Poppins } from 'next/font/google'
 import { Metadata, Viewport } from 'next'
 import QueryClientContext from '@/contexts/QueryClientProvider'
 import { Toaster } from '@/components/ui/toaster'
-import SubscribeNotification from '@/components/notification/SubscribeNotification'
 
 const font = Poppins({
   subsets: ['latin'],
@@ -33,7 +32,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${font.className} bg-slate-50`}>
-        <SubscribeNotification />
         <QueryClientContext>{children}</QueryClientContext>
         <Toaster />
       </body>

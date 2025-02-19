@@ -5,6 +5,7 @@ import { ReactNode } from 'react'
 import SubHeader from './components/subHeader/SubHeader'
 import Snackbar from '@/components/snackbar/Snackbar'
 import ScrollArea from '@/components/scrollArea/ScrollArea'
+import SubscribeNotification from '@/components/notification/SubscribeNotification'
 
 interface LayoutProps {
   children: ReactNode
@@ -13,6 +14,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     <ToggleContextProvider>
+      <SubscribeNotification />
       <div className="grid h-[100svh] grid-rows-[auto_1fr]">
         <Header />
         <div className="flex h-full w-full">
