@@ -8,24 +8,34 @@ export function useNotifications() {
     useState<NotificationPermission>('default')
 
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().then(setPermission)
+    try {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().then(setPermission)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }, [])
 
   const subscribeToPush = async () => {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      return
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        return
+      }
+
+      await navigator.serviceWorker.register('/sw.js')
+      const serviceWorkerReady = await navigator.serviceWorker.ready
+
+      const subscription = await serviceWorkerReady.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
+      })
+
+      if (subscription)
+        await subscribeNotification(JSON.stringify(subscription))
+    } catch (error) {
+      console.log(error)
     }
-
-    const registration = await navigator.serviceWorker.register('/sw.js')
-
-    const subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
-    })
-
-    await subscribeNotification(JSON.stringify(subscription))
   }
 
   return { subscribeToPush, permission }
