@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: 'Sistema de agendamento e gestão de clínica',
   manifest: '/manifest.json',
   icons: {
-    icon: '/icon.png',
+    icon: '/icon192x192.png',
   },
 }
 
