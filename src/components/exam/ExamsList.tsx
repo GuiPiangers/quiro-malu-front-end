@@ -31,8 +31,6 @@ export default function ExamsList({
     },
   })
 
-  console.log(variables)
-
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['exams', { patientId }],
     queryFn: ({ pageParam }) => listExams({ page: pageParam, patientId }),

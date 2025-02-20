@@ -4,6 +4,9 @@ self.addEventListener('push', (e) => {
   const data = e.data.json()
   self.registration.showNotification(data.title, {
     body: data.body,
+    icon: '/icon192x129.png',
+    badge: '/badge.png',
+    vibrate: [200, 100, 200],
   })
 })
 

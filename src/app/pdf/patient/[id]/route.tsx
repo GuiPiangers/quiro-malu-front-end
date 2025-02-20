@@ -34,8 +34,6 @@ export async function GET(
     location: string
   }
 
-  console.log(availableSearch.location)
-
   const patientAvailableFields = availableSearch?.patient
     ? JSON.parse(availableSearch?.patient)
     : {}
