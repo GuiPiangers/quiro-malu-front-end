@@ -15,6 +15,14 @@ export type UserResponse = {
   }
 }
 
+export async function setCookie(
+  name: string,
+  value: string,
+  config: { maxAge: number },
+) {
+  cookies().set(name, value, config)
+}
+
 export async function registerUser(data: CreateUserData) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/register`, {
     method: 'POST',
