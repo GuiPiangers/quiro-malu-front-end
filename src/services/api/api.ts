@@ -64,17 +64,6 @@ export async function api<T>(
     if (!newToken) throw new Error('Falha de autenticação')
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
 
-    if (newData.status === 401) {
-      const newToken = await revalidateToken({ refreshToken })
-
-      if (!newToken) {
-        return redirect('/login')
-      }
-      setCookie('quiro-token', newToken, { maxAge: 60 * 15 })
-
-      return (await request(`${baseURL}${input}`, { ...init }, newToken)).json()
-    }
-
     return await newData.json()
   }
   return data.json()
