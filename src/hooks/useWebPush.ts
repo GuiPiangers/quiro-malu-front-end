@@ -26,13 +26,19 @@ export function useNotifications() {
       await navigator.serviceWorker.register('/sw.js')
       const serviceWorkerReady = await navigator.serviceWorker.ready
 
-      const subscription = await serviceWorkerReady.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
-      })
+      const isSubscribed = !!sessionStorage.getItem('web-push-subscribed')
 
-      if (subscription)
-        await subscribeNotification(JSON.stringify(subscription))
+      if (!isSubscribed) {
+        const subscription = await serviceWorkerReady.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
+        })
+
+        if (subscription) {
+          await subscribeNotification(JSON.stringify(subscription))
+          sessionStorage.setItem('web-push-subscribed', 'true')
+        }
+      }
     } catch (error) {
       console.log(error)
     }
