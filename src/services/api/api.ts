@@ -1,6 +1,4 @@
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { setCookie } from '../user/user'
 
 export type responseError = {
   message: string
@@ -53,23 +51,17 @@ export async function api<T>(
   input: RequestInfo,
   init?: RequestInit & { noContentType?: boolean },
 ): Promise<T | responseError> {
-  'use server'
-
   const baseURL = process.env.NEXT_PUBLIC_HOST
 
   const token = cookies().get('quiro-token')?.value
   const refreshToken = cookies().get('quiro-refresh-token')?.value
 
-  if (!refreshToken) return redirect('/login')
+  const data = await request(`${baseURL}${input}`, { ...init }, token)
 
-  if (!token) {
+  if (data.status === 401 && refreshToken) {
     const newToken = await revalidateToken({ refreshToken })
 
-    if (!newToken) {
-      return redirect('/login')
-    }
-    setCookie('quiro-token', newToken, { maxAge: 60 * 15 })
-
+    if (!newToken) throw new Error('Falha de autenticação')
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
 
     if (newData.status === 401) {
@@ -85,8 +77,5 @@ export async function api<T>(
 
     return await newData.json()
   }
-
-  const data = await request(`${baseURL}${input}`, { ...init }, token)
-
   return data.json()
 }
