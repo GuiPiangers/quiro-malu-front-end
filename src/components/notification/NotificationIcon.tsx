@@ -17,7 +17,7 @@ export default function NotificationIcon({ className }: NotificationIconProps) {
           size={26}
           className={twMerge('text-white', className)}
         />
-        {totalNotRead && (
+        {!!totalNotRead && (
           <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-white">
             {totalNotRead}
           </div>
