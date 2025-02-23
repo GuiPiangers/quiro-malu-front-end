@@ -19,7 +19,6 @@ export function AppNotificationContextProvider({
   children: ReactNode
 }) {
   const { notification, totalNotRead } = useNotificationSSE()
-
   return (
     <AppNotificationContext.Provider value={{ notification, totalNotRead }}>
       {children}
