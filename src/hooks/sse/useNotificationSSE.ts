@@ -7,7 +7,7 @@ export default function useNotificationSSE() {
   const data = useSSE<{
     notification: NotificationDTO
     totalNotRead: number
-  }>(`${HOST}/notification`)
+  }>(`${HOST}/notifications/connect`)
 
   const notification = data?.notification
   const totalNotRead = data?.totalNotRead
