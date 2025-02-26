@@ -1,9 +1,11 @@
 import { ReactNode } from 'react'
-import { Table } from '../table'
-import { Checkbox } from '../ui/checkbox'
+import { Table } from '../../table'
+import { Checkbox } from '../../ui/checkbox'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-import Button from '../Button'
+import Button from '../../Button'
+import Link from 'next/link'
+import { NotificationMessageItem } from './NotificationMessageItem'
 
 export const NotificationItemStyle = tv({
   variants: {
@@ -31,11 +33,9 @@ export const NotificationItemStyle = tv({
 type actionFunction<T> = (data: T) => void
 
 export class NotificationAction<T> {
-  readonly action: actionFunction<T>
   readonly params: T
 
-  constructor({ action, params }: { action: actionFunction<T>; params: T }) {
-    this.action = action
+  constructor({ params }: { action: actionFunction<T>; params: T }) {
     this.params = params
   }
 }
@@ -54,7 +54,7 @@ export function NotificationActions({
   )
 }
 
-type NotificationItemProps = {
+export type NotificationItemProps = {
   title: string
   message: string
   type?: string
@@ -97,47 +97,40 @@ export function NotificationBaseItem({
   )
 }
 
-type generateNOtificationIconProps = Omit<NotificationItemProps, 'actions'> & {
-  actions?: { [key: string]: NotificationAction<any> }
-}
-
-function generateNOtificationIcon({
+type generateNotificationIconProps = Omit<NotificationItemProps, 'actions'>
+function generateNotificationIcon({
   message,
   title,
   actionNeeded,
-  actions,
   notRead,
   type,
-}: generateNOtificationIconProps) {
-  const callAction = (key: string) => {
-    const actionData = actions ? actions[key] : undefined
-    if (actionData) {
-      const { action, params } = actionData
+}: generateNotificationIconProps) {
+  // const callAction = (key: string) => {
+  //   const actionData = actions ? actions[key] : undefined
+  //   if (actionData) {
+  //     const { action, params } = actionData
 
-      action(params)
-    }
-  }
+  //     action(params)
+  //   }
+  // }
+  // const {params} = actions ? actions[key] : {}
 
   const notificationHashType: Record<string, JSX.Element> = {
     sendMessage: (
-      <NotificationBaseItem
+      <NotificationMessageItem
         notRead={notRead}
         actionNeeded={actionNeeded}
         message={message}
         title={title}
-        actions={
-          <NotificationActions>
-            <Button
-              disabled={!actionNeeded}
-              size="small"
-              onClick={() => {
-                callAction('sendMessage')
-              }}
-            >
-              Enviar mensagem
-            </Button>
-          </NotificationActions>
-        }
+        actions={{
+          sendMessage: {
+            params: {
+              patientPhone: '(51) 98035 1927',
+              templateMessage:
+                'Olá, você está recebendo essa mensagem de teste! *Testanto texto negrito* \ntestanto espaços em branco asd testando nova linha!',
+            },
+          },
+        }}
       />
     ),
   }
@@ -154,6 +147,6 @@ function generateNOtificationIcon({
   return result
 }
 
-export function NotificationItem(data: generateNOtificationIconProps) {
-  return generateNOtificationIcon(data)
+export function NotificationItem(data: generateNotificationIconProps) {
+  return generateNotificationIcon(data)
 }
