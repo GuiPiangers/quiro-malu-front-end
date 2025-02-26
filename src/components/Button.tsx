@@ -17,9 +17,9 @@ export const buttonStyle = tv({
       black: 'border-slate-800 bg-slate-800 text-black  hover:bg-slate-900',
     },
     variant: {
-      solid: 'border-none text-white disabled:bg-slate-400 ',
+      solid: 'border-none text-white aria-[disabled=true]:bg-slate-400 ',
       outline:
-        'border bg-transparent hover:text-white disabled:border-slate-300 disabled:bg-transparent disabled:text-slate-400',
+        'border bg-transparent hover:text-white aria-[disabled=true]:border-slate-300 aria-[disabled=true]:bg-transparent aria-[disabled=true]:text-slate-400',
       ghost: 'bg-transparent',
     },
     size: {
@@ -84,6 +84,7 @@ export default function Button({
   const Element = asChild ? Slot : 'button'
   return (
     <Element
+      aria-disabled={props.disabled}
       onClick={(e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         if (onClick) onClick(e)
