@@ -3,6 +3,7 @@ import { Table } from '../table'
 import { Checkbox } from '../ui/checkbox'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
+import Button from '../Button'
 
 export const NotificationItemStyle = tv({
   variants: {
@@ -27,6 +28,18 @@ export const NotificationItemStyle = tv({
   ],
 })
 
+type actionFunction<T> = (data: T) => void
+
+export class NotificationAction<T> {
+  readonly action: actionFunction<T>
+  readonly params: T
+
+  constructor({ action, params }: { action: actionFunction<T>; params: T }) {
+    this.action = action
+    this.params = params
+  }
+}
+
 export function NotificationActions({
   children,
   className,
@@ -50,7 +63,7 @@ type NotificationItemProps = {
   actionNeeded?: boolean
 }
 
-export default function NotificationItem({
+export function NotificationBaseItem({
   message,
   title,
   actions,
@@ -82,4 +95,65 @@ export default function NotificationItem({
       )}
     </Table.Row>
   )
+}
+
+type generateNOtificationIconProps = Omit<NotificationItemProps, 'actions'> & {
+  actions?: { [key: string]: NotificationAction<any> }
+}
+
+function generateNOtificationIcon({
+  message,
+  title,
+  actionNeeded,
+  actions,
+  notRead,
+  type,
+}: generateNOtificationIconProps) {
+  const callAction = (key: string) => {
+    const actionData = actions ? actions[key] : undefined
+    if (actionData) {
+      const { action, params } = actionData
+
+      action(params)
+    }
+  }
+
+  const notificationHashType: Record<string, JSX.Element> = {
+    sendMessage: (
+      <NotificationBaseItem
+        notRead={notRead}
+        actionNeeded={actionNeeded}
+        message={message}
+        title={title}
+        actions={
+          <NotificationActions>
+            <Button
+              disabled={!actionNeeded}
+              size="small"
+              onClick={() => {
+                callAction('sendMessage')
+              }}
+            >
+              Enviar mensagem
+            </Button>
+          </NotificationActions>
+        }
+      />
+    ),
+  }
+
+  const result = notificationHashType[type ?? 'default'] ?? (
+    <NotificationBaseItem
+      notRead={notRead}
+      actionNeeded={actionNeeded}
+      message={message}
+      title={title}
+    />
+  )
+
+  return result
+}
+
+export function NotificationItem(data: generateNOtificationIconProps) {
+  return generateNOtificationIcon(data)
 }

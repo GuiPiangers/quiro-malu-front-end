@@ -1,7 +1,9 @@
 import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
-import NotificationItem, {
+import {
+  NotificationItem,
   NotificationActions,
+  NotificationAction,
 } from '@/components/notification/notificationItem'
 import { Table } from '@/components/table'
 
@@ -16,15 +18,14 @@ export default function NotificationPage() {
             actionNeeded={value === 20}
             message="Texto exepmplo de mensagem que dewve ser notificada"
             title="A data de aniversário de Guilherme Eduardo Martins Piangers"
-            actions={
-              value === 10 || value === 20 ? (
-                <NotificationActions>
-                  <Button disabled={value === 10} size="small">
-                    Enviar mensagem
-                  </Button>
-                </NotificationActions>
-              ) : undefined
-            }
+            actions={{
+              sendMessage: new NotificationAction<{ patientId: string }>({
+                action: (data) => {
+                  console.log(data.patientId)
+                },
+                params: { patientId: 'patientID' },
+              }),
+            }}
           />
         ))}
       </Table.Root>
