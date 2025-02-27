@@ -3,10 +3,12 @@
 import { api } from '../api/api'
 
 export type NotificationDTO = {
+  id: string
   message: string
   read: boolean
   title: string
   type: string
+  actionNeeded?: boolean
 }
 
 export async function subscribeNotification(subscription: string) {
@@ -17,4 +19,8 @@ export async function subscribeNotification(subscription: string) {
   })
 
   return res
+}
+
+export async function listNotifications() {
+  return await api<NotificationDTO[]>('/notifications')
 }
