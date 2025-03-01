@@ -35,14 +35,16 @@ export default function NotificationTable({
         <span>Você não tem nenhuma notificação!</span>
       )}
       {notifications?.map(
-        ({ message, read, title, type, actionNeeded, id }) => (
+        ({ message, read, title, type, actionNeeded, id, params }) => (
           <NotificationItem
+            id={id}
             type={type}
             key={id}
             notRead={read}
             actionNeeded={actionNeeded}
             message={message}
             title={title}
+            params={params}
           />
         ),
       )}

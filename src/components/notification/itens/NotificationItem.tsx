@@ -55,12 +55,14 @@ export function NotificationActions({
 }
 
 export type NotificationItemProps = {
+  id: string
   title: string
   message: string
   type?: string
   actions?: React.ReactElement<typeof NotificationActions>
   notRead?: boolean
   actionNeeded?: boolean
+  params?: any
 }
 
 export function NotificationBaseItem({
@@ -70,6 +72,7 @@ export function NotificationBaseItem({
   notRead,
   type,
   actionNeeded,
+  params,
 }: NotificationItemProps) {
   const style = NotificationItemStyle({ action: actionNeeded, notRead })
 
@@ -97,24 +100,16 @@ export function NotificationBaseItem({
   )
 }
 
-type generateNotificationIconProps = Omit<NotificationItemProps, 'actions'>
-function generateNotificationIcon({
+type generateNotificationItemProps = Omit<NotificationItemProps, 'actions'>
+function generateNotificationItem({
   message,
   title,
   actionNeeded,
   notRead,
   type,
-}: generateNotificationIconProps) {
-  // const callAction = (key: string) => {
-  //   const actionData = actions ? actions[key] : undefined
-  //   if (actionData) {
-  //     const { action, params } = actionData
-
-  //     action(params)
-  //   }
-  // }
-  // const {params} = actions ? actions[key] : {}
-
+  params,
+  id,
+}: generateNotificationItemProps) {
   const notificationHashType: Record<string, JSX.Element> = {
     sendMessage: (
       <NotificationMessageItem
@@ -122,12 +117,15 @@ function generateNotificationIcon({
         actionNeeded={actionNeeded}
         message={message}
         title={title}
+        id={id}
         actions={{
           sendMessage: {
             params: {
-              patientPhone: '(51) 98035 1927',
-              templateMessage:
-                'Olá, você está recebendo essa mensagem de teste! *Testanto texto negrito* \ntestanto espaços em branco asd testando nova linha!',
+              patientPhone:
+                typeof params?.patientPhone === 'string'
+                  ? params?.patientPhone
+                  : '',
+              templateMessage: params?.templateMessage,
             },
           },
         }}
@@ -137,6 +135,7 @@ function generateNotificationIcon({
 
   const result = notificationHashType[type ?? 'default'] ?? (
     <NotificationBaseItem
+      id={id}
       notRead={notRead}
       actionNeeded={actionNeeded}
       message={message}
@@ -147,6 +146,6 @@ function generateNotificationIcon({
   return result
 }
 
-export function NotificationItem(data: generateNotificationIconProps) {
-  return generateNotificationIcon(data)
+export function NotificationItem(data: generateNotificationItemProps) {
+  return generateNotificationItem(data)
 }

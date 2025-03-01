@@ -8,7 +8,6 @@ export default async function NotificationPage() {
   const notifications = await listNotifications().then((res) =>
     Validate.isOk(res) ? res : undefined,
   )
-
   return (
     <Box className="w-full max-w-screen-lg">
       <Table.Root>

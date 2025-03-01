@@ -7,8 +7,10 @@ import {
 } from './NotificationItem'
 import Link from 'next/link'
 import Phone from '@/utils/Phone'
+import { setActionDoneNotification } from '@/services/notification/notification'
 
-type generateNotificationIconProps = Omit<NotificationItemProps, 'actions'> & {
+type generateNotificationItemProps = Omit<NotificationItemProps, 'actions'> & {
+  id: string
   actions?: {
     sendMessage: NotificationAction<{
       templateMessage: string
@@ -23,15 +25,17 @@ export function NotificationMessageItem({
   actionNeeded,
   actions,
   notRead,
-  type,
-}: generateNotificationIconProps) {
+  id,
+}: generateNotificationItemProps) {
   const actionData = actions?.sendMessage
+  console.log(id)
 
   if (actionData) {
     const { params } = actionData
     const codeMessage = encodeURIComponent(params.templateMessage)
     return (
       <NotificationBaseItem
+        id={id}
         notRead={notRead}
         actionNeeded={actionNeeded}
         message={message}
@@ -41,6 +45,9 @@ export function NotificationMessageItem({
             {actionNeeded ? (
               <Button disabled={!actionNeeded} size="small" asChild>
                 <Link
+                  onClick={async () => {
+                    await setActionDoneNotification({ id })
+                  }}
                   target="_blank"
                   href={`https://wa.me/55${Phone.unformat(
                     params.patientPhone,
