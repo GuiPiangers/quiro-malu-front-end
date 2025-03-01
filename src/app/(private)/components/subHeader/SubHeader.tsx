@@ -16,6 +16,7 @@ const routes = [
   { name: 'Financeiro', path: '/patients/*/finance' },
   { name: 'Serviços', path: '/services' },
   { name: 'Financeiro', path: '/finance' },
+  { name: 'Notificações', path: '/notifications' },
   { name: 'Arquivos', path: '/arquivos' },
 ]
 
