@@ -2,12 +2,14 @@
 
 import { api } from '../api/api'
 
+export type notificationType = 'sendMessage' | 'default' | 'undo'
+
 export type NotificationDTO<T = undefined> = {
   id: string
   message: string
   read: boolean
   title: string
-  type: string
+  type: notificationType
   actionNeeded?: boolean
   params?: T
 }

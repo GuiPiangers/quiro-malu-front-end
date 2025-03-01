@@ -3,9 +3,8 @@ import { Table } from '../../table'
 import { Checkbox } from '../../ui/checkbox'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-import Button from '../../Button'
-import Link from 'next/link'
 import { NotificationMessageItem } from './NotificationMessageItem'
+import { notificationType } from '@/services/notification/notification'
 
 export const NotificationItemStyle = tv({
   variants: {
@@ -58,7 +57,7 @@ export type NotificationItemProps = {
   id: string
   title: string
   message: string
-  type?: string
+  type?: notificationType
   actions?: React.ReactElement<typeof NotificationActions>
   notRead?: boolean
   actionNeeded?: boolean
@@ -70,9 +69,7 @@ export function NotificationBaseItem({
   title,
   actions,
   notRead,
-  type,
   actionNeeded,
-  params,
 }: NotificationItemProps) {
   const style = NotificationItemStyle({ action: actionNeeded, notRead })
 
@@ -110,7 +107,7 @@ function generateNotificationItem({
   params,
   id,
 }: generateNotificationItemProps) {
-  const notificationHashType: Record<string, JSX.Element> = {
+  const notificationHashType: Record<notificationType, JSX.Element> = {
     sendMessage: (
       <NotificationMessageItem
         notRead={notRead}
@@ -131,6 +128,8 @@ function generateNotificationItem({
         }}
       />
     ),
+    default: <div></div>,
+    undo: <div></div>,
   }
 
   const result = notificationHashType[type ?? 'default'] ?? (
