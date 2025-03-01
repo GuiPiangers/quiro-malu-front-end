@@ -24,3 +24,11 @@ export async function subscribeNotification(subscription: string) {
 export async function listNotifications() {
   return await api<NotificationDTO[]>('/notifications')
 }
+
+export async function setReadNotifications(data: { id: string }[]) {
+  return await api<NotificationDTO[]>('/notifications/setRead', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    cache: 'no-store',
+  })
+}
