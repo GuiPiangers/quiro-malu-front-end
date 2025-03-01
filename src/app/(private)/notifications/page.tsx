@@ -9,8 +9,11 @@ export default async function NotificationPage() {
     Validate.isOk(res) ? res : undefined,
   )
   return (
-    <Box>
+    <Box className="w-full max-w-screen-lg">
       <Table.Root>
+        {notifications?.length === 0 && (
+          <span>Você não tem nenhuma notificação!</span>
+        )}
         {notifications?.map(
           ({ message, read, title, type, actionNeeded, id }) => (
             <NotificationItem
