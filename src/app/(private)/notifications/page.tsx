@@ -11,9 +11,6 @@ export default async function NotificationPage() {
   return (
     <Box className="w-full max-w-screen-lg">
       <Table.Root>
-        {notifications?.length === 0 && (
-          <span>Você não tem nenhuma notificação!</span>
-        )}
         {notifications && (
           <NotificationTable notifications={notifications}></NotificationTable>
         )}

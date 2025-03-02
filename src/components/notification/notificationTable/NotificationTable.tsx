@@ -2,6 +2,7 @@
 
 import { Table } from '@/components/table'
 import {
+  deleteManyNotifications,
   NotificationDTO,
   setReadNotifications,
 } from '@/services/notification/notification'
@@ -91,6 +92,15 @@ export default function NotificationTable({
           variant="outline"
           color="black"
           disabled={!Object.values(checkNotifications).some((value) => value)}
+          onClick={async () => {
+            const deleteNotificationsValue = Object.entries(checkNotifications)
+              .filter(([_, value]) => value)
+              .map(([key]) => key)
+
+            await deleteManyNotifications({
+              notificationsId: deleteNotificationsValue,
+            })
+          }}
         >
           Excluir
         </Button>
