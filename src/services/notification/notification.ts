@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache'
 import { api } from '../api/api'
 
-export type notificationType = 'sendMessage' | 'default' | 'undo'
+export type notificationType = 'sendMessage' | 'default' | 'undoExam'
 
 export type NotificationDTO<T = undefined> = {
   id: string
@@ -34,7 +34,6 @@ export async function listNotifications() {
 export async function deleteManyNotifications(data: {
   notificationsId: string[]
 }) {
-  console.log(data)
   revalidateTag('deleteNotification')
   return await api<NotificationDTO[]>('/notifications/deleteMany', {
     method: 'DELETE',

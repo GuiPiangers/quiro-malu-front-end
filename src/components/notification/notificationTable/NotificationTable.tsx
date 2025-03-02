@@ -119,7 +119,6 @@ export default function NotificationTable({
             <NotificationItem
               onCheckedChange={(value) => {
                 handleSetCheckNotification(id, !!value)
-                console.log(value, checkNotifications && checkNotifications[id])
               }}
               checked={checkNotifications ? checkNotifications[id] : false}
               id={id}

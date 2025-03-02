@@ -6,6 +6,8 @@ import { tv } from 'tailwind-variants'
 import { NotificationMessageItem } from './NotificationMessageItem'
 import { notificationType } from '@/services/notification/notification'
 import { CheckedState } from '@radix-ui/react-checkbox'
+import useWindowSize from '@/hooks/useWindowSize'
+import { NotificationUndoExamItem } from './NotificationUndoExamItem'
 
 export const NotificationItemStyle = tv({
   variants: {
@@ -48,7 +50,9 @@ export function NotificationActions({
   className?: string
 }) {
   return (
-    <Table.Cell className={twMerge('col-span-3 flex gap-2', className)}>
+    <Table.Cell
+      className={twMerge('col-span-2 flex gap-2 md:col-span-3', className)}
+    >
       {children}
     </Table.Cell>
   )
@@ -64,6 +68,7 @@ export type NotificationItemProps = {
   actionNeeded?: boolean
   params?: any
   checked?: boolean
+  createAt?: string
   onCheckedChange?(checked: CheckedState): void
 }
 
@@ -75,37 +80,71 @@ export function NotificationBaseItem({
   actionNeeded,
   checked,
   onCheckedChange,
+  createAt,
 }: NotificationItemProps) {
   const style = NotificationItemStyle({ action: actionNeeded, notRead })
-
-  return (
-    <Table.Row columns={['auto', '1fr', '2fr', 'auto']} className={style}>
-      <Table.Cell>
-        <Checkbox
-          checked={checked}
-          className="border-blue-500 data-[state=checked]:bg-blue-500"
-          onCheckedChange={(value) => {
-            onCheckedChange && onCheckedChange(value)
-          }}
-        />
-      </Table.Cell>
-      <Table.Cell>{title}</Table.Cell>
-      <Table.Cell>{message}</Table.Cell>
-      <Table.Cell className="w-full text-end">21 de Fev.</Table.Cell>
-      {actions}
-      {actionNeeded && actions ? (
-        <span className="whitespace-nowrap rounded bg-white p-1 text-end text-xs font-bold text-blue-800">
-          Ação necessária
-        </span>
-      ) : (
-        actions && (
-          <span className="whitespace-nowrap rounded bg-white p-1 text-end text-xs font-bold text-slate-600">
-            Ação realizada
+  const { windowWidth } = useWindowSize()
+  console.log(createAt)
+  if (windowWidth > 768) {
+    return (
+      <Table.Row columns={['auto', '1fr', '2fr', 'auto']} className={style}>
+        <Table.Cell>
+          <Checkbox
+            checked={checked}
+            className="border-blue-500 data-[state=checked]:bg-blue-500"
+            onCheckedChange={(value) => {
+              onCheckedChange && onCheckedChange(value)
+            }}
+          />
+        </Table.Cell>
+        <Table.Cell>{title}</Table.Cell>
+        <Table.Cell>{message}</Table.Cell>
+        <Table.Cell className="w-full text-end">21 de Fev.</Table.Cell>
+        {actions}
+        {actionNeeded && actions ? (
+          <span className="whitespace-nowrap rounded bg-white p-1 text-end text-xs font-bold text-blue-800">
+            Ação necessária
           </span>
-        )
-      )}
-    </Table.Row>
-  )
+        ) : (
+          actions && (
+            <span className="whitespace-nowrap rounded bg-white p-1 text-end text-xs font-bold text-slate-600">
+              Ação realizada
+            </span>
+          )
+        )}
+      </Table.Row>
+    )
+  } else {
+    return (
+      <Table.Row columns={['auto', '1fr', 'auto']} className={style}>
+        <Table.Cell>
+          <Checkbox
+            checked={checked}
+            className="border-blue-500 data-[state=checked]:bg-blue-500"
+            onCheckedChange={(value) => {
+              onCheckedChange && onCheckedChange(value)
+            }}
+          />
+        </Table.Cell>
+        <Table.Cell>{title}</Table.Cell>
+        <Table.Cell className="w-full text-end">21 de Fev.</Table.Cell>
+        <Table.Cell className="col-span-full">{message}</Table.Cell>
+
+        {actions}
+        {actionNeeded && actions ? (
+          <span className="whitespace-nowrap rounded bg-white p-1 text-end text-xs font-bold text-blue-800">
+            Ação necessária
+          </span>
+        ) : (
+          actions && (
+            <span className="whitespace-nowrap rounded bg-white p-1 text-end text-xs font-bold text-slate-600">
+              Ação realizada
+            </span>
+          )
+        )}
+      </Table.Row>
+    )
+  }
 }
 
 type generateNotificationItemProps = Omit<NotificationItemProps, 'actions'>
@@ -131,8 +170,20 @@ function generateNotificationItem({
         }}
       />
     ),
-    default: <div></div>,
-    undo: <div></div>,
+    undoExam: (
+      <NotificationUndoExamItem
+        {...props}
+        actions={{
+          undoExam: {
+            params: {
+              patientId: params.patientId,
+              id: params.id,
+            },
+          },
+        }}
+      />
+    ),
+    default: <NotificationBaseItem {...props} />,
   }
 
   const result = notificationHashType[type ?? 'default'] ?? (

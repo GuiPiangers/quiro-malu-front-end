@@ -23,7 +23,6 @@ export function useSSE<T>(url: string) {
       })
 
       eventSource.onMessage<T>((data) => {
-        console.log('📩 Mensagem recebida:', data)
         setEvents(data)
       })
     }
