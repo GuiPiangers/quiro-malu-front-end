@@ -8,6 +8,7 @@ import { notificationType } from '@/services/notification/notification'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import useWindowSize from '@/hooks/useWindowSize'
 import { NotificationUndoExamItem } from './NotificationUndoExamItem'
+import DateTime from '@/utils/Date'
 
 export const NotificationItemStyle = tv({
   variants: {
@@ -68,7 +69,7 @@ export type NotificationItemProps = {
   actionNeeded?: boolean
   params?: any
   checked?: boolean
-  createAt?: string
+  createdAt?: string
   onCheckedChange?(checked: CheckedState): void
 }
 
@@ -80,11 +81,10 @@ export function NotificationBaseItem({
   actionNeeded,
   checked,
   onCheckedChange,
-  createAt,
+  createdAt,
 }: NotificationItemProps) {
   const style = NotificationItemStyle({ action: actionNeeded, notRead })
   const { windowWidth } = useWindowSize()
-  console.log(createAt)
   if (windowWidth > 768) {
     return (
       <Table.Row columns={['auto', '1fr', '2fr', 'auto']} className={style}>
@@ -99,7 +99,9 @@ export function NotificationBaseItem({
         </Table.Cell>
         <Table.Cell>{title}</Table.Cell>
         <Table.Cell>{message}</Table.Cell>
-        <Table.Cell className="w-full text-end">21 de Fev.</Table.Cell>
+        <Table.Cell className="w-full text-end text-sm">
+          {createdAt && DateTime.getLocaleDate(createdAt)}
+        </Table.Cell>
         {actions}
         {actionNeeded && actions ? (
           <span className="whitespace-nowrap rounded bg-white p-1 text-end text-xs font-bold text-blue-800">
@@ -127,7 +129,9 @@ export function NotificationBaseItem({
           />
         </Table.Cell>
         <Table.Cell>{title}</Table.Cell>
-        <Table.Cell className="w-full text-end">21 de Fev.</Table.Cell>
+        <Table.Cell className="w-full text-end text-sm">
+          {createdAt && DateTime.getLocaleDate(createdAt)}
+        </Table.Cell>
         <Table.Cell className="col-span-full">{message}</Table.Cell>
 
         {actions}

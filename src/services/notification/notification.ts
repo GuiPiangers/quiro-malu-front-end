@@ -13,6 +13,7 @@ export type NotificationDTO<T = undefined> = {
   type: notificationType
   actionNeeded?: boolean
   params?: T
+  createdAt?: string
 }
 
 export async function subscribeNotification(subscription: string) {
