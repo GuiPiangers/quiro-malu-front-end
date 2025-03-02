@@ -5,6 +5,7 @@ import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { NotificationMessageItem } from './NotificationMessageItem'
 import { notificationType } from '@/services/notification/notification'
+import { CheckedState } from '@radix-ui/react-checkbox'
 
 export const NotificationItemStyle = tv({
   variants: {
@@ -62,6 +63,8 @@ export type NotificationItemProps = {
   notRead?: boolean
   actionNeeded?: boolean
   params?: any
+  checked?: boolean
+  onCheckedChange?(checked: CheckedState): void
 }
 
 export function NotificationBaseItem({
@@ -70,13 +73,21 @@ export function NotificationBaseItem({
   actions,
   notRead,
   actionNeeded,
+  checked,
+  onCheckedChange,
 }: NotificationItemProps) {
   const style = NotificationItemStyle({ action: actionNeeded, notRead })
 
   return (
     <Table.Row columns={['auto', '1fr', '2fr', 'auto']} className={style}>
       <Table.Cell>
-        <Checkbox className="border-blue-500 data-[state=checked]:bg-blue-500" />
+        <Checkbox
+          checked={checked}
+          className="border-blue-500 data-[state=checked]:bg-blue-500"
+          onCheckedChange={(value) => {
+            onCheckedChange && onCheckedChange(value)
+          }}
+        />
       </Table.Cell>
       <Table.Cell>{title}</Table.Cell>
       <Table.Cell>{message}</Table.Cell>
@@ -99,22 +110,14 @@ export function NotificationBaseItem({
 
 type generateNotificationItemProps = Omit<NotificationItemProps, 'actions'>
 function generateNotificationItem({
-  message,
-  title,
-  actionNeeded,
-  notRead,
   type,
   params,
-  id,
+  ...props
 }: generateNotificationItemProps) {
   const notificationHashType: Record<notificationType, JSX.Element> = {
     sendMessage: (
       <NotificationMessageItem
-        notRead={notRead}
-        actionNeeded={actionNeeded}
-        message={message}
-        title={title}
-        id={id}
+        {...props}
         actions={{
           sendMessage: {
             params: {
@@ -133,13 +136,7 @@ function generateNotificationItem({
   }
 
   const result = notificationHashType[type ?? 'default'] ?? (
-    <NotificationBaseItem
-      id={id}
-      notRead={notRead}
-      actionNeeded={actionNeeded}
-      message={message}
-      title={title}
-    />
+    <NotificationBaseItem {...props} />
   )
 
   return result

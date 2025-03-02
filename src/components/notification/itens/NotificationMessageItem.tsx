@@ -19,34 +19,22 @@ type generateNotificationItemProps = Omit<NotificationItemProps, 'actions'> & {
   }
 }
 
-export function NotificationMessageItem({
-  message,
-  title,
-  actionNeeded,
-  actions,
-  notRead,
-  id,
-}: generateNotificationItemProps) {
-  const actionData = actions?.sendMessage
-  console.log(id)
+export function NotificationMessageItem(props: generateNotificationItemProps) {
+  const actionData = props.actions?.sendMessage
 
   if (actionData) {
     const { params } = actionData
     const codeMessage = encodeURIComponent(params.templateMessage)
     return (
       <NotificationBaseItem
-        id={id}
-        notRead={notRead}
-        actionNeeded={actionNeeded}
-        message={message}
-        title={title}
+        {...props}
         actions={
           <NotificationActions>
-            {actionNeeded ? (
-              <Button disabled={!actionNeeded} size="small" asChild>
+            {props.actionNeeded ? (
+              <Button disabled={!props.actionNeeded} size="small" asChild>
                 <Link
                   onClick={async () => {
-                    await setActionDoneNotification({ id })
+                    await setActionDoneNotification({ id: props.id })
                   }}
                   target="_blank"
                   href={`https://wa.me/55${Phone.unformat(
@@ -57,7 +45,7 @@ export function NotificationMessageItem({
                 </Link>
               </Button>
             ) : (
-              <Button disabled={!actionNeeded} size="small">
+              <Button disabled={!props.actionNeeded} size="small">
                 Enviar mensagem
               </Button>
             )}
