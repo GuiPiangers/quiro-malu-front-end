@@ -19,6 +19,7 @@ import { IoChevronDown } from 'react-icons/io5'
 import StopPropagation from '@/components/StopPropagation'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import { generatePatientPDF } from '@/services/patientPDF/patientPDF'
+import CheckGroup from '@/components/ui/checkGroup'
 
 type CreatePatientPDFModalProps = {
   children?: React.ReactNode
@@ -45,21 +46,7 @@ function CheckAllGroup({ children, isChecked, onClick }: CheckAllProps) {
   return (
     <div className="flex w-full flex-col">
       <Input.Root className="flex-row items-center">
-        <StopPropagation>
-          <span
-            onClick={() => {
-              onClick && onClick()
-            }}
-            className="flex items-center justify-center rounded-sm  border border-blue-500 data-[checked=true]:bg-blue-500"
-            data-checked={isChecked}
-          >
-            {isChecked ? (
-              <FaMinus className="h-4.5 w-4.5 grid place-content-center text-white" />
-            ) : (
-              <FaPlus className="h-4.5 w-4.5 grid place-content-center text-blue-900" />
-            )}
-          </span>
-        </StopPropagation>
+        <CheckGroup isChecked={isChecked} onClick={onClick} />
         <h3 className="flex items-center gap-2 text-lg">
           {children}{' '}
           <IoChevronDown className="group-aria-[expanded=true]:rotate-180"></IoChevronDown>

@@ -24,7 +24,7 @@ export default async function middleware(request: NextRequest) {
     if (newToken.status !== 200) {
       return NextResponse.redirect(signURL)
     }
-    response.cookies.set('quiro-token', await newToken.json(), {
+    response.cookies.set('quiro-token', (await newToken.json()).token, {
       maxAge: 60 * 15, // 15 min
     })
   }
