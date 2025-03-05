@@ -39,7 +39,12 @@ export function NavItem({
         className={navItemStyle()}
         data-active={active}
       >
-        {Icon && <Icon size={24} className={navIconStyle()} />}
+        {Icon && (
+          <Icon
+            size={24}
+            className={navIconStyle({ className: 'font-bold' })}
+          />
+        )}
         {children}
       </Link>
     </ul>
