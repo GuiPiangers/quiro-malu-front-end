@@ -11,6 +11,12 @@ export type MessageResponse = {
   endDate?: string
 }
 
+export type ListMessageResponse = {
+  messageCampaigns: MessageResponse[]
+  total: number
+  limit: number
+}
+
 export async function listMessageCampaigns() {
-  return await api<MessageResponse[]>('/messageCampaigns')
+  return await api<ListMessageResponse>('/messageCampaigns')
 }
