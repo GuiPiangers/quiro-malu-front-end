@@ -9,6 +9,7 @@ export type MessageResponse = {
   active: boolean
   initialDate?: string
   endDate?: string
+  triggers: { event: string; delayOperatorInMinutes?: number }[]
 }
 
 export type ListMessageResponse = {
