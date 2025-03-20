@@ -10,8 +10,8 @@ import { z } from 'zod'
 import { sectionStyles } from '../form/Styles'
 import Form, { FormProps } from '../form/Form'
 import { MessageResponse } from '@/services/message/message'
-import { Switch } from '../ui/switch'
-import Button from '../Button'
+import { MessageEventSelect, MessageSelectTrigger } from './MessageEventSelect'
+import { useState } from 'react'
 
 export const setMessageSchema = z.object({
   name: z.string().min(1, 'Campo obrigatório'),
@@ -40,6 +40,10 @@ export default function MessageForm({
   const { active, endDate, id, initialDate, name, templateMessage } =
     formData || {}
   const { handleMessage } = useSnackbarContext()
+  const [trigger, setTrigger] = useState<MessageSelectTrigger>({
+    event: 'selectedDate',
+    config: {},
+  })
 
   const setMessageForm = useForm<setMessageData>({
     resolver: zodResolver(setMessageSchema),
@@ -87,7 +91,9 @@ export default function MessageForm({
           <Input.Label required notSave={dirtyFields.name}>
             Nome
           </Input.Label>
+
           <Input.Field
+            placeholder="Ex. Lembrete de consulta"
             autoComplete="off"
             disabled={isSubmitting}
             defaultValue={name}
@@ -100,11 +106,14 @@ export default function MessageForm({
           )}
         </Input.Root>
 
+        <MessageEventSelect setTrigger={setTrigger} trigger={trigger} />
+
         <Input.Root>
           <Input.Label required notSave={dirtyFields.templateMessage}>
             Template da mensagem
           </Input.Label>
           <Input.Field
+            placeholder="Ex. Bom dia {{nome_paciente}}, estou passando para lembrar da sua consulta de {{consulta_servico}} agendada às {{consulta_horario}} do dia {{consulta_dia}}."
             multiline
             minRows={6}
             autoComplete="off"
@@ -122,13 +131,6 @@ export default function MessageForm({
         </Input.Root>
 
         <button className="text-main">+ Adicionar Template</button>
-
-        <Input.Root>
-          <Input.Label>Enviar quando</Input.Label>
-          <Input.Select>
-            <Input.Option value={'opcção'}>Opção 1</Input.Option>
-          </Input.Select>
-        </Input.Root>
 
         <Input.Root>
           <Input.Label>Permitir envio para</Input.Label>
