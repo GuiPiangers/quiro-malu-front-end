@@ -20,7 +20,9 @@ function WithDelay({ setTrigger, trigger }: MessageEventSelectProps) {
             const value = e.target.value
             setTrigger((oldValue) => ({
               ...oldValue,
-              delayOperator: +value,
+              config: {
+                delay: +value,
+              },
             }))
           }}
         />
@@ -35,7 +37,7 @@ function WithDelay({ setTrigger, trigger }: MessageEventSelectProps) {
             setTrigger((oldValue) => ({
               ...oldValue,
               config: {
-                delayUnitOfTime: value,
+                delayUnit: value,
               },
             }))
           }}
@@ -91,11 +93,13 @@ function WithDynamicDate({ setTrigger, trigger }: MessageEventSelectProps) {
           type="time"
           className=" overflow-hidden"
           onChange={(e) => {
-            // const value = e.target.value
-            // setTrigger((oldValue) => ({
-            //   ...oldValue,
-            //   delayOperator: +value,
-            // }))
+            const value = e.target.value
+            setTrigger((oldValue) => ({
+              ...oldValue,
+              config: {
+                date: value,
+              },
+            }))
           }}
         />
       </Input.Root>
