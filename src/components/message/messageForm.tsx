@@ -5,17 +5,15 @@ import { Validate } from '@/services/api/Validate'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { responseError } from '@/services/api/api'
 import { z } from 'zod'
-import { sectionStyles } from '../form/Styles'
+import { sectionStyles, titleStyles } from '../form/Styles'
 import Form, { FormProps } from '../form/Form'
-import { MessageResponse } from '@/services/message/message'
-import { MessageEventSelect, MessageSelectTrigger } from './MessageEventSelect'
+import { MessageResponse, TriggerDTO } from '@/services/message/message'
+import { MessageEventSelect } from './MessageEventSelect'
 import { useState } from 'react'
 
 export const setMessageSchema = z.object({
   name: z.string().min(1, 'Campo obrigatório'),
-  active: z.boolean(),
   templateMessage: z.string(),
   initialDate: z.string().optional(),
   endDate: z.string().optional(),
@@ -24,9 +22,7 @@ export const setMessageSchema = z.object({
 export type setMessageData = z.infer<typeof setMessageSchema>
 
 type MessageFormProps = {
-  action(
-    data: MessageResponse | setMessageData,
-  ): Promise<MessageResponse | responseError>
+  action(data: MessageResponse | setMessageData): Promise<unknown>
   formData?: Partial<MessageResponse>
   afterValidation?(): void
 } & FormProps
@@ -40,7 +36,7 @@ export default function MessageForm({
   const { active, endDate, id, initialDate, name, templateMessage } =
     formData || {}
   const { handleMessage } = useSnackbarContext()
-  const [trigger, setTrigger] = useState<MessageSelectTrigger>({
+  const [trigger, setTrigger] = useState<TriggerDTO<any>>({
     event: 'selectedDate',
     config: {},
   })
@@ -48,7 +44,6 @@ export default function MessageForm({
   const setMessageForm = useForm<setMessageData>({
     resolver: zodResolver(setMessageSchema),
     defaultValues: {
-      active,
       endDate,
       initialDate,
       name,
@@ -68,6 +63,7 @@ export default function MessageForm({
     const res = await action({
       id,
       ...data,
+      triggers: [trigger],
     })
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
@@ -75,7 +71,7 @@ export default function MessageForm({
       reset({ ...data }, { keepValues: true })
       if (afterValidation) afterValidation()
       handleMessage({
-        title: 'Serviço salvo com sucesso!',
+        title: 'Campanha de mensagem salva com sucesso!',
         type: 'success',
       })
     }
@@ -84,9 +80,13 @@ export default function MessageForm({
   return (
     <Form onSubmit={handleSubmit(setMessage)} {...formProps}>
       <section
-        aria-label="Novo registro Messageiro"
+        aria-label="Nova campanha de mensagem"
         className={sectionStyles()}
       >
+        <h2 id="new-message-campaign" className={titleStyles()}>
+          Nova campanha de mensagens
+        </h2>
+
         <Input.Root>
           <Input.Label required notSave={dirtyFields.name}>
             Nome
@@ -128,15 +128,6 @@ export default function MessageForm({
               {errors.templateMessage.message}
             </Input.Message>
           )}
-        </Input.Root>
-
-        <button className="text-main">+ Adicionar Template</button>
-
-        <Input.Root>
-          <Input.Label>Permitir envio para</Input.Label>
-          <Input.Select>
-            <Input.Option value={'opcção'}>Opção 1</Input.Option>
-          </Input.Select>
         </Input.Root>
       </section>
     </Form>

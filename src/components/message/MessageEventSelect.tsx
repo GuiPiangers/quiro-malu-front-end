@@ -1,17 +1,10 @@
 import { Dispatch, SetStateAction } from 'react'
 import { Input } from '../input'
-
-export type MessageSelectTrigger = {
-  event: string
-  config: {
-    delayOperator?: number
-    delayUnitOfTime?: 'minutes' | 'hours' | 'days'
-  }
-}
+import { TriggerDTO } from '@/services/message/message'
 
 type MessageEventSelectProps = {
-  trigger: MessageSelectTrigger
-  setTrigger: Dispatch<SetStateAction<MessageSelectTrigger>>
+  trigger: TriggerDTO<any>
+  setTrigger: Dispatch<SetStateAction<TriggerDTO>>
 }
 
 function WithDelay({ setTrigger, trigger }: MessageEventSelectProps) {
@@ -36,12 +29,14 @@ function WithDelay({ setTrigger, trigger }: MessageEventSelectProps) {
       <Input.Root>
         <Input.Label>Unidade</Input.Label>
         <Input.Select
-          value={trigger.config.delayUnitOfTime}
+          value={trigger.config?.delayUnitOfTime}
           onChange={(e, inputValue) => {
             const value = inputValue as 'hours' | 'minutes' | 'days'
             setTrigger((oldValue) => ({
               ...oldValue,
-              delayUnitOfTime: value,
+              config: {
+                delayUnitOfTime: value,
+              },
             }))
           }}
         >
@@ -72,7 +67,9 @@ function WithDelay({ setTrigger, trigger }: MessageEventSelectProps) {
 
             setTrigger((oldValue) => ({
               ...oldValue,
-              delayOperator: value,
+              config: {
+                delayOperator: value,
+              },
             }))
           }}
         >
