@@ -1,10 +1,11 @@
+import { removeNotNumbers } from './removeNotNumbers'
 import { validateRegex } from './validateRegex'
 
 export default class Cpf {
   private static _pattern = '???.???.???-??'
 
-  static format(valor: string): string {
-    const nums = Cpf.unformat(valor).split('')
+  static format(value: string): string {
+    const nums = Cpf.unformat(value).split('')
     return nums
       .reduce((formatted: string, num: string) => {
         return formatted.replace('?', num)
@@ -13,8 +14,8 @@ export default class Cpf {
       .replace(/[-.]$/, '')
   }
 
-  static unformat(valor: string): string {
-    return valor.replace(/[^0-9]+/g, '')
+  static unformat(value: string): string {
+    return removeNotNumbers(value)
   }
 
   static validate(value: string): boolean {
