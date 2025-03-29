@@ -11,11 +11,14 @@ type SearchAddressByCepSuccess = {
   bairro: string
   localidade: string
   estado: string
+  uf: string
 }
 
 type SearchAddressByCepResponse =
   | SearchAddressByCepError
   | SearchAddressByCepSuccess
+
+export type listStatesResponse = { uf: string; name: string }[]
 
 export async function searchAddressByCep(
   cep: string,
@@ -45,6 +48,7 @@ export async function searchAddressByCep(
       cep: Cep.format(result.cep),
       neighborhood: result.bairro,
       address: result.logradouro,
+      uf: result.uf,
     } as LocationDTO
   } catch (error: any) {
     return {
@@ -52,6 +56,55 @@ export async function searchAddressByCep(
       message: error.message,
       statusCode: 400,
       type: 'cep',
+    } as responseError
+  }
+}
+
+export async function listStates(): Promise<
+  listStatesResponse | responseError
+> {
+  try {
+    const response = await fetch(
+      `https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome`,
+    )
+
+    const states = await response.json()
+
+    return states.map((state: { sigla: string; nome: string }) => {
+      return {
+        uf: state.sigla,
+        name: state.nome,
+      }
+    })
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error.message,
+      statusCode: 400,
+      type: 'location.state',
+    } as responseError
+  }
+}
+
+export async function listCities(uf: string) {
+  try {
+    if (uf.length !== 2) throw new Error('O UF informado está incorreto')
+
+    const response = await fetch(
+      `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf.toUpperCase()}/municipios`,
+    )
+
+    const states = await response.json()
+
+    return states.map((state: { nome: string }) => {
+      return state.nome
+    })
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error.message,
+      statusCode: 400,
+      type: 'location.state',
     } as responseError
   }
 }
