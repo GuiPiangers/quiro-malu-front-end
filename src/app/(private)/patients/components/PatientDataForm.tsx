@@ -17,7 +17,11 @@ import { responseError } from '@/services/api/api'
 import { validateRegex } from '@/utils/validateRegex'
 import Cep from '@/utils/Cep'
 import { useDebouncing } from '@/hooks/useDebouncing'
-import { searchAddressByCep } from '@/services/cep/cep'
+import {
+  listStatesResponse,
+  searchAddressByCep,
+} from '@/services/location/location'
+import StateSelect from '@/components/input/select/StateSelect'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
@@ -134,6 +138,7 @@ export default function PatientDataForm({
 }: PatientDataForm) {
   const { handleMessage } = useSnackbarContext()
   const [debouncedCep, setDebouncedCep] = useDebouncing()
+  const [state, setState] = useState<{ name: string; uf: string }>()
 
   const createPatientForm = useForm<CreatePatientData>({
     resolver: zodResolver(createPatientSchema),
@@ -173,7 +178,7 @@ export default function PatientDataForm({
 
   const handleAction = async (data: CreatePatientData) => {
     const hasDirtyFields = Object.keys(dirtyFields).length > 0
-
+    console.log(data.location)
     const res = hasDirtyFields ? await action(data) : undefined
 
     if (Validate.isError(res)) {
@@ -445,13 +450,27 @@ export default function PatientDataForm({
             <Input.Label notSave={dirtyFields.location?.state}>
               Estado
             </Input.Label>
-            <Input.Field
+
+            <StateSelect
               error={!!errors.location?.state}
-              {...register('location.state')}
-              disabled={isSubmitting}
               defaultValue={data?.location?.state}
+              disabled={isSubmitting}
               notSave={dirtyFields.location?.state}
+              value={state}
+              onInitialize={(value) => {
+                setState(value)
+                value && setValue('location.state', value.name)
+              }}
+              onChange={(_, value) => {
+                const stateValue = value as { name: string; uf: string }
+                setState(stateValue)
+                setValue('location.state', stateValue?.name, {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }}
             />
+
             {errors.location?.state && (
               <Input.Message error>
                 {errors.location?.state.message}
