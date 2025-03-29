@@ -2,6 +2,7 @@
 
 import { responseError } from '../api/api'
 import Cep from '@/utils/Cep'
+import { LocationDTO } from '../patient/patient'
 
 type SearchAddressByCepError = { error: boolean }
 type SearchAddressByCepSuccess = {
@@ -16,13 +17,17 @@ type SearchAddressByCepResponse =
   | SearchAddressByCepError
   | SearchAddressByCepSuccess
 
-export async function searchAddressByCep(cep: string) {
+export async function searchAddressByCep(
+  cep: string,
+): Promise<LocationDTO | responseError> {
   try {
     const validateSearchAddressByCepError = (
       response: SearchAddressByCepResponse,
     ): response is SearchAddressByCepError => {
       return Object.hasOwn(result, 'error')
     }
+
+    if (!Cep.validate(cep)) throw new Error('Cep está formatado incorretamente')
 
     const value = Cep.unformat(cep)
 
@@ -34,7 +39,13 @@ export async function searchAddressByCep(cep: string) {
     if (validateSearchAddressByCepError(result))
       throw new Error('Cep não encontrado')
 
-    return result
+    return {
+      state: result.estado,
+      city: result.localidade,
+      cep: Cep.format(result.cep),
+      neighborhood: result.bairro,
+      address: result.logradouro,
+    } as LocationDTO
   } catch (error: any) {
     return {
       error: true,

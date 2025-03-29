@@ -4,17 +4,20 @@ import { Input } from '@/components/input'
 
 import Phone from '@/utils/Phone'
 import { useForm } from 'react-hook-form'
-import { object, z } from 'zod'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Cpf from '@/utils/Cpf'
 import { PatientResponse } from '@/services/patient/patient'
 import Form from '@/components/form/Form'
 import { sectionStyles, titleStyles } from '@/components/form/Styles'
-import { ChangeEvent, ReactNode } from 'react'
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import { validateRegex } from '@/utils/validateRegex'
+import Cep from '@/utils/Cep'
+import { useDebouncing } from '@/hooks/useDebouncing'
+import { searchAddressByCep } from '@/services/cep/cep'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
@@ -130,6 +133,7 @@ export default function PatientDataForm({
   data,
 }: PatientDataForm) {
   const { handleMessage } = useSnackbarContext()
+  const [debouncedCep, setDebouncedCep] = useDebouncing()
 
   const createPatientForm = useForm<CreatePatientData>({
     resolver: zodResolver(createPatientSchema),
@@ -190,6 +194,14 @@ export default function PatientDataForm({
       }
     }
   }
+
+  useEffect(() => {
+    searchAddressByCep(debouncedCep).then((res) => {
+      if (Validate.isOk(res)) {
+        setValue('location', res)
+      }
+    })
+  }, [debouncedCep])
 
   return (
     <Form
@@ -411,7 +423,14 @@ export default function PatientDataForm({
           <Input.Label notSave={dirtyFields.location?.cep}>CEP</Input.Label>
           <Input.Field
             error={!!errors.location?.cep}
-            {...register('location.cep')}
+            {...register('location.cep', {
+              onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                e.target.value = Cep.format(e.target.value)
+              },
+              onBlur(e) {
+                setDebouncedCep(e.target.value)
+              },
+            })}
             disabled={isSubmitting}
             defaultValue={data?.location?.cep}
             notSave={dirtyFields.location?.cep}
