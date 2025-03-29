@@ -1,6 +1,5 @@
 'use service'
 
-import { removeNotNumbers } from '@/utils/removeNotNumbers'
 import { responseError } from '../api/api'
 import Cep from '@/utils/Cep'
 
