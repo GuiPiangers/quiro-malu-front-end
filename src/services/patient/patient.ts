@@ -9,6 +9,7 @@ export type LocationDTO = {
   city?: string
   neighborhood?: string
   address?: string
+  uf?: string
 }
 
 export type PatientResponse = {
