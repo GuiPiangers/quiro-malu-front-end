@@ -216,6 +216,7 @@ export default function SchedulingList({
       </AccordionTable.Root>
 
       <SchedulingModalContent
+        form={modalData?.id ? 'scheduling' : undefined}
         ref={modalRef}
         formData={modalData}
       ></SchedulingModalContent>

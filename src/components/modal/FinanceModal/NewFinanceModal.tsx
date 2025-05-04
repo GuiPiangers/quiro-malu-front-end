@@ -23,7 +23,7 @@ type ModalProps = {
 } & ButtonPropsVariants & { asChild?: boolean }
 
 export default forwardRef<ModalHandles, ModalProps>(
-  function SchedulingModalContent(
+  function FinanceModalContent(
     { formData, className, children, color, buttons, ...props },
     ref,
   ) {

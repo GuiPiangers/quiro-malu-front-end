@@ -16,7 +16,6 @@ import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import {
   PatientResponse,
-  PatientsListResponse,
   createPatient,
   getPatient,
   listPatient,
@@ -26,6 +25,8 @@ import DateTime from '@/utils/Date'
 
 import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { useQuery } from '@tanstack/react-query'
+import { Nav } from '@/components/navigation'
+import { navStyles } from '@/components/navigation/Style'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
