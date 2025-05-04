@@ -20,6 +20,7 @@ import { twMerge } from 'tailwind-merge'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
 import Form from '@/components/form/Form'
+import EventForm from '@/components/form/scheduling/EventForm'
 
 type ModalProps = {
   className?: string
@@ -76,7 +77,13 @@ export default forwardRef<ModalHandles, ModalProps>(
       >
         <HeaderForm
           handleClose={closeModal}
-          title={formData?.id ? 'Editar agendamento' : 'Novo agendamento'}
+          title={
+            selectedForm === 'event'
+              ? 'Evento'
+              : formData?.id
+              ? 'Editar agendamento'
+              : 'Novo agendamento'
+          }
         />
         {!formData?.id && (
           <Nav.root className="m-auto max-w-screen-lg items-center justify-between">
@@ -112,7 +119,7 @@ export default forwardRef<ModalHandles, ModalProps>(
             afterValidation={afterSubmit}
           />
         ) : (
-          <Form>formulário</Form>
+          <EventForm></EventForm>
         )}
       </Modal>
     )

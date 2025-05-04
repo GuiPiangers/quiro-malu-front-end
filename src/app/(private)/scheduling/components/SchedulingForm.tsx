@@ -25,8 +25,6 @@ import DateTime from '@/utils/Date'
 
 import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { useQuery } from '@tanstack/react-query'
-import { Nav } from '@/components/navigation'
-import { navStyles } from '@/components/navigation/Style'
 
 const setSchedulingSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
