@@ -8,6 +8,13 @@ export type SchedulingStatus =
   | 'Atrasado'
   | 'Cancelado'
 
+export type BlockScheduleResponse = {
+  id: string
+  startDate: string
+  endDate: string
+  description?: string
+}
+
 export type SchedulingResponse = {
   id?: string
   patientId: string
@@ -16,8 +23,18 @@ export type SchedulingResponse = {
   status: SchedulingStatus
   date: string
 }
+
+type SchedulingWithPatient = SchedulingResponse & {
+  patient: string
+  phone: string
+}
+
 export type SchedulingListResponse = {
-  schedules: (SchedulingResponse & { patient: string; phone: string })[]
+  schedules: SchedulingWithPatient[]
+}
+
+export type EventsResponse = {
+  data: (BlockScheduleResponse | SchedulingWithPatient)[]
 }
 
 export async function createScheduling({
@@ -74,11 +91,17 @@ export async function listSchedules({
   page?: string
 }) {
   const res = await api<SchedulingListResponse>(
-    `/Schedules?page=${page}&date=${date}`,
+    `/schedules?page=${page}&date=${date}`,
     {
       method: 'GET',
     },
   )
+  return res
+}
+export async function listEvents({ date }: { date: string }) {
+  const res = await api<SchedulingListResponse>(`/events?date=${date}`, {
+    method: 'GET',
+  })
   return res
 }
 
