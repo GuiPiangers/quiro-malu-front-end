@@ -5,6 +5,9 @@ export type GenerateWorkHoursProps = {
   workTimeIncrement: number
 }
 
+type durationEvent = { date: string; duration: number }
+type endDateEvent = { date: string; endDate: string }
+
 export class GenerateWorkHours {
   readonly workSchedules: Array<{ start: string; end: string }>
   readonly workHours: Array<string>
@@ -36,14 +39,18 @@ export class GenerateWorkHours {
     this.workHours = Array.from(times.values())
   }
 
-  generate<T>(data: Array<{ date: string; duration: number } & T>) {
+  generate<T>(data: Array<(durationEvent | endDateEvent) & T>) {
     const allTimes = new Map<string, null | T>()
     const newArray = [...this.workHours, ...data]
       .filter((value) => {
         return !data.some((scheduling) => {
           const startTime = DateTime.getTime(new Date(scheduling.date))
-          const end = new Date(scheduling.date)
-          end.setSeconds(scheduling.duration)
+          const end = this._hasDurationProp(scheduling)
+            ? new Date(scheduling.date)
+            : new Date(scheduling.endDate)
+
+          if (this._hasDurationProp(scheduling))
+            end.setSeconds(scheduling.duration)
           const endTime = DateTime.getTime(end)
 
           return startTime <= value && value < endTime
@@ -63,5 +70,11 @@ export class GenerateWorkHours {
     date.setHours(+time.substring(0, 2))
     date.setMinutes(+time.substring(3, 5))
     return date
+  }
+
+  private _hasDurationProp<T>(
+    data: (durationEvent | endDateEvent) & T,
+  ): data is durationEvent & T {
+    return Object.hasOwn(data, 'duration')
   }
 }
