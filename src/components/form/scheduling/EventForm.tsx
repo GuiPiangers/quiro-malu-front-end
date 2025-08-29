@@ -51,7 +51,7 @@ export default function EventForm({
     <Form onSubmit={handleSubmit(setEvent)} {...formProps}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
-          <Input.Label required>Nome do evento</Input.Label>
+          <Input.Label>Nome do evento</Input.Label>
           <Input.Field autoComplete="off" {...register('description')} />
           {errors.description && (
             <Input.Message error>{errors.description.message}</Input.Message>

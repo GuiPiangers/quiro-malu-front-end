@@ -9,7 +9,11 @@ import {
   useState,
 } from 'react'
 import SchedulingForm from '../../../app/(private)/scheduling/components/SchedulingForm'
-import { SchedulingResponse } from '@/services/scheduling/scheduling'
+import {
+  BlockScheduleResponse,
+  SchedulingResponse,
+  SchedulingWithPatient,
+} from '@/services/scheduling/scheduling'
 import { responseError } from '@/services/api/api'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { useRouter } from 'next/navigation'
@@ -23,9 +27,7 @@ import EventForm from '@/components/form/scheduling/EventForm'
 
 type ModalProps = {
   className?: string
-  formData?: Partial<
-    SchedulingResponse & { patient: string; patientPhone: string }
-  >
+  formData?: Partial<SchedulingWithPatient | BlockScheduleResponse>
   form?: 'scheduling' | 'event'
 }
 
@@ -118,7 +120,17 @@ export default forwardRef<ModalHandles, ModalProps>(
             afterValidation={afterSubmit}
           />
         ) : (
-          <EventForm></EventForm>
+          <EventForm
+            formData={{
+              date: formData?.date,
+              endDate: formData?.date
+                ? new Date(
+                    new Date(formData.date).getTime() + 60 * 60 * 1000,
+                  ).toISOString()
+                : undefined,
+              ...formData,
+            }}
+          ></EventForm>
         )}
       </Modal>
     )
