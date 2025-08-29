@@ -10,7 +10,7 @@ export type SchedulingStatus =
 
 export type BlockScheduleResponse = {
   id: string
-  startDate: string
+  date: string
   endDate: string
   description?: string
 }
@@ -24,7 +24,7 @@ export type SchedulingResponse = {
   date: string
 }
 
-type SchedulingWithPatient = SchedulingResponse & {
+export type SchedulingWithPatient = SchedulingResponse & {
   patient: string
   phone: string
 }
@@ -90,16 +90,18 @@ export async function listSchedules({
   date: string
   page?: string
 }) {
-  const res = await api<SchedulingListResponse>(
-    `/schedules?page=${page}&date=${date}`,
-    {
-      method: 'GET',
-    },
-  )
+  const res = await api<{
+    id: string
+    date: string
+    endDate: string
+    description?: string
+  }>(`/schedules?page=${page}&date=${date}`, {
+    method: 'GET',
+  })
   return res
 }
 export async function listEvents({ date }: { date: string }) {
-  const res = await api<SchedulingListResponse>(`/events?date=${date}`, {
+  const res = await api<EventsResponse>(`/events?date=${date}`, {
     method: 'GET',
   })
   return res
