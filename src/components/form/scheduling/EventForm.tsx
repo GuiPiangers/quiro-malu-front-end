@@ -9,6 +9,9 @@ import { useForm } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 import DateTime from '@/utils/Date'
+import { responseError } from '@/services/api/api'
+import { SaveBlockEvent } from '@/services/scheduling/scheduling'
+import { Validate } from '@/services/api/Validate'
 
 const setEventSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
@@ -21,10 +24,14 @@ export type setEventData = z.infer<typeof setEventSchema>
 type EventFormProps = {
   formData?: Partial<setEventData>
   afterValidation?(): void
+  action(
+    data: SaveBlockEvent | (SaveBlockEvent & { id: string }),
+  ): Promise<{ message: string } | responseError>
 } & FormProps
 
 export default function EventForm({
   formData,
+  action,
   afterValidation,
   ...formProps
 }: EventFormProps) {
@@ -39,12 +46,30 @@ export default function EventForm({
     handleSubmit,
     formState: { isSubmitting, errors, dirtyFields },
     register,
+    setError,
     reset,
   } = setEventForm
 
   const setEvent = async (data: setEventData) => {
     console.log(data)
-    handleMessage({ title: 'Evento salvo com sucesso!', type: 'success' })
+    const res = await action(data)
+
+    if (Validate.isError(res)) {
+      if (res.type) {
+        setError(res.type as keyof setEventData, {
+          message: res.message,
+        })
+      } else
+        handleMessage({
+          title: 'Erro!',
+          description: res.message,
+          type: 'error',
+        })
+    } else {
+      reset({ ...data }, { keepValues: true })
+      if (afterValidation) afterValidation()
+      handleMessage({ title: 'Evento salvo com sucesso!', type: 'success' })
+    }
   }
 
   return (

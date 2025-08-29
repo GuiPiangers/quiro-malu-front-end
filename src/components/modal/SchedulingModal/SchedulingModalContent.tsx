@@ -11,6 +11,7 @@ import {
 import SchedulingForm from '../../../app/(private)/scheduling/components/SchedulingForm'
 import {
   BlockScheduleResponse,
+  saveBlockEvent,
   SchedulingResponse,
   SchedulingWithPatient,
 } from '@/services/scheduling/scheduling'
@@ -121,6 +122,7 @@ export default forwardRef<ModalHandles, ModalProps>(
           />
         ) : (
           <EventForm
+            action={async (data) => saveBlockEvent(data)}
             formData={{
               date: formData?.date,
               endDate: formData?.date
