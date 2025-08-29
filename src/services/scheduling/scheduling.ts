@@ -1,7 +1,6 @@
 'use server'
 
 import { api } from '@/services/api/api'
-import exp from 'constants'
 
 export type SchedulingStatus =
   | 'Agendado'
@@ -10,7 +9,7 @@ export type SchedulingStatus =
   | 'Cancelado'
 
 export type BlockScheduleResponse = {
-  id: string
+  id?: string
   date: string
   endDate: string
   description?: string

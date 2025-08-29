@@ -1,7 +1,6 @@
 import {
   updateScheduling,
   SchedulingResponse,
-  SchedulingListResponse,
   EventsResponse,
 } from '@/services/scheduling/scheduling'
 import DateTime from '@/utils/Date'
@@ -66,7 +65,7 @@ export function useUpdateScheduling() {
             return launch
           })
 
-          return { ...oldQuery, schedules: updatedLaunches }
+          return { ...oldQuery, data: updatedLaunches }
         },
       )
       return { previousLaunches }
