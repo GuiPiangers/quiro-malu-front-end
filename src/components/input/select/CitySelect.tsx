@@ -41,14 +41,6 @@ export default forwardRef(function CitySelect(
     })
     if (!value) return
     setSelectedCity(result)
-    console.log(
-      'cidade',
-      value,
-      'valor interno',
-      selectedCity,
-      'result',
-      result,
-    )
   }, [data, value])
 
   return (

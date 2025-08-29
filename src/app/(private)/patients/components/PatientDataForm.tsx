@@ -205,11 +205,9 @@ export default function PatientDataForm({
         setValue('location', res)
         setSelectedState(res.state)
         setSelectedCity(res.city)
-        // console.log(res)
       }
     })
   }, [debouncedCep])
-  // console.log(selectedState)
   return (
     <Form
       onSubmit={handleSubmit(handleAction)}

@@ -28,8 +28,6 @@ export async function listMessageCampaigns() {
 }
 
 export async function createMessageCampaigns(data: MessageResponse) {
-  console.log('message camapaign está sendo criada')
-  console.log('message camapaign data', data)
   return await api('/messageCampaigns', {
     method: 'POST',
     body: JSON.stringify(data),

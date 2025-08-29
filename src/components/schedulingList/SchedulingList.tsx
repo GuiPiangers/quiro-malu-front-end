@@ -70,8 +70,6 @@ export default function SchedulingList({
     Validate.isOk(data) && data ? data.data : schedules,
   )
 
-  console.log(table)
-
   if (!DateTime.validateDate(date))
     throw new Error('A data informada está incorreta')
 
