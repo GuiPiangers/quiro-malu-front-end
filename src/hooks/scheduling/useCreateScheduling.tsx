@@ -1,7 +1,7 @@
 import {
   createScheduling,
-  SchedulingListResponse,
-  SchedulingResponse,
+  EventsResponse,
+  SchedulingWithPatient,
 } from '@/services/scheduling/scheduling'
 import DateTime from '@/utils/Date'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -13,13 +13,11 @@ export function useCreateScheduling() {
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: (
-      newScheduling: SchedulingResponse & { patient: string; phone: string },
-    ) => {
+    mutationFn: (newScheduling: SchedulingWithPatient) => {
       return createScheduling(newScheduling)
     },
     onMutate: async (scheduling) => {
-      const previousLaunches = queryClient.getQueryData<SchedulingResponse[]>([
+      const previousLaunches = queryClient.getQueryData<EventsResponse>([
         'listSchedules',
         date,
       ])
@@ -42,21 +40,18 @@ export function useCreateScheduling() {
         : scheduling.status
 
       const newScheduling = {
-        ...(scheduling as SchedulingResponse & {
-          patient: string
-          phone: string
-        }),
+        ...(scheduling as SchedulingWithPatient),
         status,
       }
 
-      queryClient.setQueryData<SchedulingListResponse>(
+      queryClient.setQueryData<EventsResponse>(
         ['listSchedules', date],
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
           return {
             ...oldQuery,
-            schedules: [...oldQuery.schedules, newScheduling],
+            schedules: [...oldQuery.data, newScheduling],
           }
         },
       )
