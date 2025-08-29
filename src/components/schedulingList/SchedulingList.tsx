@@ -117,11 +117,11 @@ export default function SchedulingList({
           }
 
           return (
-            <Button key={hour} className="contents text-slate-500">
+            <Button key={hour} className="contents text-slate-400">
               <Table.Row
                 clickable
                 columns={['auto', '1fr']}
-                className="group bg-slate-200"
+                className="group bg-slate-50"
               >
                 <Table.Cell>{hour}</Table.Cell>
                 <Table.Cell className="w-full">
