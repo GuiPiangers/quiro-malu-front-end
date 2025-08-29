@@ -2,8 +2,10 @@ import {
   updateScheduling,
   SchedulingResponse,
   SchedulingListResponse,
+  EventsResponse,
 } from '@/services/scheduling/scheduling'
 import DateTime from '@/utils/Date'
+import { isSchedulingEvent } from '@/utils/eventValidator'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
@@ -33,18 +35,21 @@ export function useUpdateScheduling() {
         queryKey: ['listSchedules', date],
       })
 
-      const previousLaunches = queryClient.getQueryData<SchedulingResponse[]>([
+      const previousLaunches = queryClient.getQueryData<EventsResponse>([
         'listSchedules',
         date,
       ])
 
-      queryClient.setQueryData<SchedulingListResponse>(
+      queryClient.setQueryData<EventsResponse>(
         ['listSchedules', date],
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          const updatedLaunches = oldQuery.schedules.map((launch) => {
-            if (launch.id === updateSchedulingData.id) {
+          const updatedLaunches = oldQuery.data.map((launch) => {
+            if (
+              launch.id === updateSchedulingData.id &&
+              isSchedulingEvent(launch)
+            ) {
               const updateStatus = isAppointed
                 ? isLate
                   ? 'Atrasado'
