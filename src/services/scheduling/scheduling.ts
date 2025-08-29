@@ -1,6 +1,7 @@
 'use server'
 
 import { api } from '@/services/api/api'
+import exp from 'constants'
 
 export type SchedulingStatus =
   | 'Agendado'
@@ -36,6 +37,8 @@ export type SchedulingListResponse = {
 export type EventsResponse = {
   data: (BlockScheduleResponse | SchedulingWithPatient)[]
 }
+
+export type SaveBlockEvent = Omit<BlockScheduleResponse, 'id'>
 
 export async function createScheduling({
   date,
@@ -104,6 +107,19 @@ export async function listEvents({ date }: { date: string }) {
   const res = await api<EventsResponse>(`/events?date=${date}`, {
     method: 'GET',
   })
+  return res
+}
+
+export async function saveBlockEvent({
+  date,
+  endDate,
+  description,
+}: SaveBlockEvent) {
+  const res = await api<{ message: string }>('/blockSchedules', {
+    method: 'POST',
+    body: JSON.stringify({ date, endDate, description }),
+  })
+
   return res
 }
 
