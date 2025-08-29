@@ -1,6 +1,5 @@
 import {
-  SchedulingListResponse,
-  SchedulingResponse,
+  EventsResponse,
   deleteScheduling,
 } from '@/services/scheduling/scheduling'
 import DateTime from '@/utils/Date'
@@ -26,17 +25,17 @@ export function useDeleteScheduling() {
         queryKey: ['listSchedules', date],
       })
 
-      const previousLaunches = queryClient.getQueryData<SchedulingResponse[]>([
+      const previousLaunches = queryClient.getQueryData<EventsResponse>([
         'listSchedules',
         date,
       ])
 
-      queryClient.setQueryData<SchedulingListResponse>(
+      queryClient.setQueryData<EventsResponse>(
         ['listSchedules', date],
         (oldQuery) => {
           if (!oldQuery) return oldQuery
 
-          const updatedLaunches = oldQuery.schedules.filter(
+          const updatedLaunches = oldQuery.data.filter(
             (launch) => launch.id !== deleteSchedulingData.id,
           )
 
