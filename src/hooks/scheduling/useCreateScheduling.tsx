@@ -51,7 +51,7 @@ export function useCreateScheduling() {
 
           return {
             ...oldQuery,
-            schedules: [...oldQuery.data, newScheduling],
+            data: [...oldQuery.data, newScheduling],
           }
         },
       )

@@ -25,6 +25,7 @@ import { twMerge } from 'tailwind-merge'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
 import EventForm from '@/components/form/scheduling/EventForm'
+import { useCreateBlockEvent } from '@/hooks/scheduling/useCreateBlockEvent'
 
 type ModalProps = {
   className?: string
@@ -44,6 +45,7 @@ export default forwardRef<ModalHandles, ModalProps>(
     const router = useRouter()
     const updateScheduling = useUpdateScheduling()
     const createScheduling = useCreateScheduling()
+    const createBlockEvent = useCreateBlockEvent()
 
     const openModal = () => {
       setNavForm('scheduling')
@@ -122,7 +124,11 @@ export default forwardRef<ModalHandles, ModalProps>(
           />
         ) : (
           <EventForm
-            action={async (data) => saveBlockEvent(data)}
+            action={async (data) => {
+              const result = await createBlockEvent.mutateAsync(data)
+              return result
+            }}
+            afterValidation={closeModal}
             formData={{
               date: formData?.date,
               endDate: formData?.date
