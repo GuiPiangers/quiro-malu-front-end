@@ -19,7 +19,6 @@ import { useCreateScheduling } from '@/hooks/scheduling/useCreateScheduling'
 import { twMerge } from 'tailwind-merge'
 import { Nav } from '@/components/navigation'
 import { navStyles } from '@/components/navigation/Style'
-import Form from '@/components/form/Form'
 import EventForm from '@/components/form/scheduling/EventForm'
 
 type ModalProps = {

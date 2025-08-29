@@ -11,9 +11,9 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import DateTime from '@/utils/Date'
 
 const setEventSchema = z.object({
-  dateStart: z.string().min(1, { message: 'Campo obrigatório' }),
-  dateEnd: z.string().min(1, { message: 'Campo obrigatório' }),
-  eventName: z.string(),
+  date: z.string().min(1, { message: 'Campo obrigatório' }),
+  endDate: z.string().min(1, { message: 'Campo obrigatório' }),
+  description: z.string(),
 })
 
 export type setEventData = z.infer<typeof setEventSchema>
@@ -28,7 +28,7 @@ export default function EventForm({
   afterValidation,
   ...formProps
 }: EventFormProps) {
-  const { dateStart, dateEnd } = formData || {}
+  const { date, endDate } = formData || {}
   const { handleMessage } = useSnackbarContext()
 
   const setEventForm = useForm<setEventData>({
@@ -52,45 +52,45 @@ export default function EventForm({
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label required>Nome do evento</Input.Label>
-          <Input.Field autoComplete="off" {...register('eventName')} />
-          {errors.eventName && (
-            <Input.Message error>{errors.eventName.message}</Input.Message>
+          <Input.Field autoComplete="off" {...register('description')} />
+          {errors.description && (
+            <Input.Message error>{errors.description.message}</Input.Message>
           )}
         </Input.Root>
 
         <Input.Root>
-          <Input.Label required notSave={dirtyFields.dateStart}>
+          <Input.Label required notSave={dirtyFields.date}>
             Data de início
           </Input.Label>
           <Input.Field
             type="datetime-local"
             autoComplete="off"
-            defaultValue={dateStart ? DateTime.getIsoDateTime(dateStart) : ''}
+            defaultValue={date ? DateTime.getIsoDateTime(date) : ''}
             disabled={isSubmitting}
-            error={!!errors.dateStart}
-            {...register('dateStart')}
-            notSave={dirtyFields.dateStart}
+            error={!!errors.date}
+            {...register('date')}
+            notSave={dirtyFields.date}
           />
-          {errors.dateStart && (
-            <Input.Message error>{errors.dateStart.message}</Input.Message>
+          {errors.date && (
+            <Input.Message error>{errors.date.message}</Input.Message>
           )}
         </Input.Root>
 
         <Input.Root>
-          <Input.Label required notSave={dirtyFields.dateEnd}>
+          <Input.Label required notSave={dirtyFields.endDate}>
             Data final
           </Input.Label>
           <Input.Field
             type="datetime-local"
             autoComplete="off"
-            defaultValue={dateEnd ? DateTime.getIsoDateTime(dateEnd) : ''}
+            defaultValue={endDate ? DateTime.getIsoDateTime(endDate) : ''}
             disabled={isSubmitting}
-            error={!!errors.dateEnd}
-            {...register('dateEnd')}
-            notSave={dirtyFields.dateEnd}
+            error={!!errors.endDate}
+            {...register('endDate')}
+            notSave={dirtyFields.endDate}
           />
-          {errors.dateEnd && (
-            <Input.Message error>{errors.dateEnd.message}</Input.Message>
+          {errors.endDate && (
+            <Input.Message error>{errors.endDate.message}</Input.Message>
           )}
         </Input.Root>
       </section>
