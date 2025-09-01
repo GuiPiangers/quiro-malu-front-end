@@ -1,17 +1,10 @@
 'use client'
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react'
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import SchedulingForm from '../../../app/(private)/scheduling/components/SchedulingForm'
 import {
   BlockScheduleResponse,
-  saveBlockEvent,
   SchedulingResponse,
   SchedulingWithPatient,
 } from '@/services/scheduling/scheduling'

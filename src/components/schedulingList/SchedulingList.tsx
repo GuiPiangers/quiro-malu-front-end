@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  BlockScheduleResponse,
   SchedulingResponse,
   SchedulingWithPatient,
   listEvents,
@@ -28,6 +29,7 @@ import { ModalHandles } from '../modal/Modal'
 import SchedulingModalContent from '../modal/SchedulingModal/SchedulingModalContent'
 import Phone from '@/utils/Phone'
 import { isSchedulingEvent } from '@/utils/eventValidator'
+import UpdateEventModalContent from '../modal/UpdateEventModal/UpdateEventModalContent'
 
 type SchedulingListProps = {
   date: string
@@ -61,9 +63,14 @@ export default function SchedulingList({
   })
 
   const modalRef = useRef<ModalHandles>(null)
+  const updateEventModalRef = useRef<ModalHandles>(null)
 
   const openModal = modalRef.current?.openModal
+  const openUpdateEventModal = updateEventModalRef.current?.openModal
+
   const [modalData, setModalData] = useState<Partial<SchedulingWithPatient>>()
+  const [eventModalData, setEventModalData] =
+    useState<Partial<BlockScheduleResponse>>()
 
   const generateWorkHours = new GenerateWorkHours(workHours)
   const table = generateWorkHours.generate(
@@ -115,7 +122,14 @@ export default function SchedulingList({
           }
 
           return (
-            <Button key={hour} className="contents text-slate-400">
+            <Button
+              key={hour}
+              className="contents text-slate-400"
+              onClick={() => {
+                openUpdateEventModal && openUpdateEventModal()
+                setEventModalData(scheduling)
+              }}
+            >
               <Table.Row
                 clickable
                 columns={['auto', '1fr']}
@@ -135,7 +149,12 @@ export default function SchedulingList({
         form={modalData?.id ? 'scheduling' : undefined}
         ref={modalRef}
         formData={modalData}
-      ></SchedulingModalContent>
+      />
+
+      <UpdateEventModalContent
+        ref={updateEventModalRef}
+        formData={eventModalData}
+      />
     </>
   )
 }
