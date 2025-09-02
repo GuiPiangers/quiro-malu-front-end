@@ -25,7 +25,7 @@ export default async function Scheduling({
 
   const schedulesResp = await listSchedules({ date })
   const table = {
-    workTimeIncrement: 30,
+    workTimeIncrementInMinutes: 30,
     workSchedules: [
       { start: '07:00', end: '11:00' },
       { start: '13:00', end: '19:00' },

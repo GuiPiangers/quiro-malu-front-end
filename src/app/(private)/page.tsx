@@ -22,7 +22,7 @@ export default async function Home() {
             <SchedulingList
               date={date}
               workHours={{
-                workTimeIncrement: 30,
+                workTimeIncrementInMinutes: 30,
                 workSchedules: [{ start: '01:00', end: '00:00' }],
               }}
               schedules={

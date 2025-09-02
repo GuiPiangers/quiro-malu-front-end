@@ -93,14 +93,12 @@ export async function listSchedules({
   date: string
   page?: string
 }) {
-  const res = await api<{
-    id: string
-    date: string
-    endDate: string
-    description?: string
-  }>(`/schedules?page=${page}&date=${date}`, {
-    method: 'GET',
-  })
+  const res = await api<SchedulingListResponse>(
+    `/schedules?page=${page}&date=${date}`,
+    {
+      method: 'GET',
+    },
+  )
   return res
 }
 export async function listEvents({ date }: { date: string }) {

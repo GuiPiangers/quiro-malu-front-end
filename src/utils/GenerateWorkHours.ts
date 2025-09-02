@@ -1,27 +1,30 @@
 import DateTime from './Date'
 
+type workSchedules = Array<{
+  start: string // pattern HH:mm
+  end: string // pattern HH:mm
+}>
+
 export type GenerateWorkHoursProps = {
-  workSchedules: Array<{ start: string; end: string }>
-  workTimeIncrement: number
+  workSchedules: workSchedules
+  workTimeIncrementInMinutes: number
 }
 
 type durationEvent = { date: string; duration: number }
 type endDateEvent = { date: string; endDate: string }
 
 export class GenerateWorkHours {
-  readonly workSchedules: Array<{ start: string; end: string }>
+  readonly workSchedules: workSchedules
+
   readonly workHours: Array<string>
-  readonly workTimeIncrement: number
+  readonly workTimeIncrementInMinutes: number
 
   constructor({
     workSchedules,
-    workTimeIncrement,
-  }: {
-    workSchedules: Array<{ start: string; end: string }>
-    workTimeIncrement: number
-  }) {
+    workTimeIncrementInMinutes,
+  }: GenerateWorkHoursProps) {
     this.workSchedules = workSchedules
-    this.workTimeIncrement = workTimeIncrement
+    this.workTimeIncrementInMinutes = workTimeIncrementInMinutes
 
     const times = new Set<string>()
 
@@ -32,14 +35,19 @@ export class GenerateWorkHours {
       // eslint-disable-next-line no-unmodified-loop-condition
       while (currentTime <= endTime) {
         times.add(DateTime.getTime(currentTime))
-        currentTime.setMinutes(currentTime.getMinutes() + workTimeIncrement)
+        currentTime.setMinutes(
+          currentTime.getMinutes() + workTimeIncrementInMinutes,
+        )
       }
     })
 
     this.workHours = Array.from(times.values())
   }
 
-  generate<T>(data: Array<(durationEvent | endDateEvent) & T>) {
+  generate<T>(
+    data: Array<(durationEvent | endDateEvent) & T>,
+    date?: string, // pattern yyyy-MM-dd
+  ) {
     const allTimes = new Map<string, null | T>()
     const newArray = [...this.workHours, ...data]
       .filter((value) => {
@@ -76,5 +84,28 @@ export class GenerateWorkHours {
     data: (durationEvent | endDateEvent) & T,
   ): data is durationEvent & T {
     return Object.hasOwn(data, 'duration')
+  }
+
+  private configureBlockEventHours(event: endDateEvent, date: string) {
+    const endDateWithoutHours = DateTime.getIsoDate(event.endDate)
+    const startDateWithoutHours = DateTime.getIsoDate(event.date)
+
+    const isNotSameDate = startDateWithoutHours !== endDateWithoutHours
+    const tableEvent: endDateEvent & {
+      realEndDate: string
+      realStartDate: string
+    } = { ...event, realStartDate: event.date, realEndDate: event.endDate }
+
+    if (isNotSameDate) {
+      if (endDateWithoutHours !== date)
+        tableEvent.endDate = `${endDateWithoutHours}T23:59`
+
+      if (startDateWithoutHours !== date)
+        tableEvent.date = `${endDateWithoutHours}T00:00`
+
+      return tableEvent
+    }
+
+    return event
   }
 }
