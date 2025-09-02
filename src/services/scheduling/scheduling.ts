@@ -38,6 +38,7 @@ export type EventsResponse = {
 }
 
 export type SaveBlockEvent = Omit<BlockScheduleResponse, 'id'>
+export type UpdateBlockEvent = Partial<BlockScheduleResponse> & { id: string }
 
 export async function createScheduling({
   date,
@@ -117,6 +118,15 @@ export async function saveBlockEvent({
   const res = await api<{ message: string }>('/blockSchedules', {
     method: 'POST',
     body: JSON.stringify({ date, endDate, description }),
+  })
+
+  return res
+}
+
+export async function updateBlockEvent({ id, ...data }: UpdateBlockEvent) {
+  const res = await api<{ message: string }>(`/blockSchedules/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
   })
 
   return res
