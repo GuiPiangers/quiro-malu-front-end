@@ -29,7 +29,6 @@ import SchedulingModalContent from '../modal/SchedulingModal/SchedulingModalCont
 import Phone from '@/utils/Phone'
 import { isSchedulingEvent } from '@/utils/eventValidator'
 import UpdateEventModalContent from '../modal/UpdateEventModal/UpdateEventModalContent'
-import { configureBlockEventHours } from '@/utils/configureBlockEventHours'
 
 type SchedulingListProps = {
   date: string
@@ -75,13 +74,8 @@ export default function SchedulingList({
   const generateWorkHours = new GenerateWorkHours(workHours)
 
   const table = generateWorkHours.generate(
-    Validate.isOk(data) && data
-      ? data.data.map((event) => {
-          if (!isSchedulingEvent(event))
-            return configureBlockEventHours(event, date)
-          return event
-        })
-      : schedules,
+    Validate.isOk(data) && data ? data.data : schedules,
+    date,
   )
 
   if (!DateTime.validateDate(date))

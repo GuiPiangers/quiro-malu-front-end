@@ -51,18 +51,29 @@ export class GenerateWorkHours {
     const allTimes = new Map<string, null | T>()
     const newArray = [...this.workHours, ...data]
       .filter((value) => {
-        return !data.some((scheduling) => {
-          const startTime = DateTime.getTime(new Date(scheduling.date))
-          const end = this._hasDurationProp(scheduling)
-            ? new Date(scheduling.date)
-            : new Date(scheduling.endDate)
+        return !data
+          .map((event) => {
+            const startDate = DateTime.getIsoDateTime(new Date(event.date))
+            const end = this._hasDurationProp(event)
+              ? new Date(event.date)
+              : new Date(event.endDate)
 
-          if (this._hasDurationProp(scheduling))
-            end.setSeconds(scheduling.duration)
-          const endTime = DateTime.getTime(end)
+            if (this._hasDurationProp(event)) end.setSeconds(event.duration)
+            const endDate = DateTime.getIsoDateTime(end)
 
-          return startTime <= value && value < endTime
-        })
+            return this._configureBlockHours(
+              {
+                date: startDate,
+                endDate,
+              },
+              date || DateTime.getIsoDateTime(new Date()),
+            )
+          })
+          .some((event) => {
+            const startTime = DateTime.getTime(new Date(event.date))
+            const endTime = DateTime.getTime(event.endDate)
+            return startTime <= value && value < endTime
+          })
       })
       .sort()
     newArray.forEach((item) => {
@@ -86,15 +97,12 @@ export class GenerateWorkHours {
     return Object.hasOwn(data, 'duration')
   }
 
-  private configureBlockEventHours(event: endDateEvent, date: string) {
+  private _configureBlockHours(event: endDateEvent, date: string) {
     const endDateWithoutHours = DateTime.getIsoDate(event.endDate)
     const startDateWithoutHours = DateTime.getIsoDate(event.date)
 
     const isNotSameDate = startDateWithoutHours !== endDateWithoutHours
-    const tableEvent: endDateEvent & {
-      realEndDate: string
-      realStartDate: string
-    } = { ...event, realStartDate: event.date, realEndDate: event.endDate }
+    const tableEvent: endDateEvent = { ...event }
 
     if (isNotSameDate) {
       if (endDateWithoutHours !== date)
