@@ -48,40 +48,53 @@ export class GenerateWorkHours {
     data: Array<(durationEvent | endDateEvent) & T>,
     date?: string, // pattern yyyy-MM-dd
   ) {
-    const allTimes = new Map<string, null | T>()
-    const newArray = [...this.workHours, ...data]
-      .filter((value) => {
-        return !data
-          .map((event) => {
-            const startDate = DateTime.getIsoDateTime(new Date(event.date))
-            const end = this._hasDurationProp(event)
-              ? new Date(event.date)
-              : new Date(event.endDate)
+    const allTimes = new Map<
+      string,
+      null | ((durationEvent | endDateEvent) & T)
+    >()
+    const newArray = [...this.workHours, ...data].filter((value) => {
+      return !data
+        .map((event) => {
+          const startDate = DateTime.getIsoDateTime(new Date(event.date))
+          const end = this._hasDurationProp(event)
+            ? new Date(event.date)
+            : new Date(event.endDate)
 
-            if (this._hasDurationProp(event)) end.setSeconds(event.duration)
-            const endDate = DateTime.getIsoDateTime(end)
+          if (this._hasDurationProp(event)) end.setSeconds(event.duration)
+          const endDate = DateTime.getIsoDateTime(end)
 
-            return this._configureBlockHours(
-              {
-                date: startDate,
-                endDate,
-              },
-              date || DateTime.getIsoDateTime(new Date()),
-            )
-          })
-          .some((event) => {
-            const startTime = DateTime.getTime(new Date(event.date))
-            const endTime = DateTime.getTime(event.endDate)
-            return startTime <= value && value < endTime
-          })
-      })
-      .sort()
+          return this._configureBlockHours(
+            {
+              date: startDate,
+              endDate,
+            },
+            date || DateTime.getIsoDateTime(new Date()),
+          )
+        })
+        .some((event) => {
+          const startTime = DateTime.getTime(new Date(event.date))
+          const endTime = DateTime.getTime(event.endDate)
+          return startTime <= value && value < endTime
+        })
+    })
     newArray.forEach((item) => {
       if (typeof item === 'string') allTimes.set(item, null)
       else allTimes.set(DateTime.getTime(item.date), item)
     })
 
-    return Array.from(allTimes).sort()
+    return Array.from(allTimes).sort((a, b) => {
+      const comparisonDate = date || DateTime.getIsoDate(new Date())
+
+      const dateA = a[1]?.date
+        ? new Date(a[1].date)
+        : new Date(`${comparisonDate}T${a[0]}`)
+
+      const dateB = b[1]?.date
+        ? new Date(b[1].date)
+        : new Date(`${comparisonDate}T${b[0]}`)
+
+      return dateA.getTime() - dateB.getTime()
+    })
   }
 
   private _convertTime(time = '00:00') {
