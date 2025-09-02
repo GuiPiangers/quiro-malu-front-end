@@ -10,7 +10,6 @@ export function useUpdateEvent() {
 
   const mutation = useMutation({
     mutationFn: async (data: UpdateBlockEvent) => {
-      console.log('Chegou aqui')
       return await updateBlockEvent(data)
     },
 

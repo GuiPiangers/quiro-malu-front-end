@@ -2,7 +2,7 @@
 
 import {
   BlockScheduleResponse,
-  SchedulingResponse,
+  EventsResponse,
   SchedulingWithPatient,
   listEvents,
 } from '@/services/scheduling/scheduling'
@@ -33,12 +33,7 @@ import UpdateEventModalContent from '../modal/UpdateEventModal/UpdateEventModalC
 type SchedulingListProps = {
   date: string
   workHours: GenerateWorkHoursProps
-  schedules: Array<
-    { date: string; duration: number } & SchedulingResponse & {
-        patient: string
-        phone: string
-      }
-  >
+  schedules: EventsResponse
 }
 
 const statusColors = {
@@ -74,7 +69,7 @@ export default function SchedulingList({
   const generateWorkHours = new GenerateWorkHours(workHours)
 
   const table = generateWorkHours.generate(
-    Validate.isOk(data) && data ? data.data : schedules,
+    Validate.isOk(data) && data ? data.data : schedules.data,
     date,
   )
 
