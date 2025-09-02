@@ -136,7 +136,31 @@ export default function SchedulingList({
                 columns={['auto', '1fr']}
                 className="group bg-slate-50"
               >
-                <Table.Cell>{hour}</Table.Cell>
+                {DateTime.getLocaleDate(scheduling.date) !==
+                DateTime.getLocaleDate(scheduling.endDate) ? (
+                  <Table.Cell>
+                    <div className="flex flex-col gap-2">
+                      <span>
+                        {DateTime.getTime(scheduling.date)}
+                        {' - '}
+                        {DateTime.getLocaleDate(scheduling.date)}
+                      </span>
+                      <span>
+                        {DateTime.getTime(scheduling.endDate)}
+                        {' - '}
+                        {DateTime.getLocaleDate(scheduling.endDate)}
+                      </span>
+                    </div>
+                  </Table.Cell>
+                ) : (
+                  <Table.Cell>
+                    <span>
+                      {DateTime.getTime(scheduling.date)}
+                      {' - '}
+                      {DateTime.getTime(scheduling.endDate)}
+                    </span>
+                  </Table.Cell>
+                )}
                 <Table.Cell className="w-full">
                   {scheduling.description}
                 </Table.Cell>
