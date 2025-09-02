@@ -1,6 +1,5 @@
 import {
   EventsResponse,
-  BlockScheduleResponse,
   saveBlockEvent,
   SaveBlockEvent,
 } from '@/services/scheduling/scheduling'
