@@ -118,8 +118,7 @@ export default forwardRef<ModalHandles, ModalProps>(
         ) : (
           <EventForm
             action={async (data) => {
-              const result = await createBlockEvent.mutateAsync(data)
-              return result
+              return await createBlockEvent.mutateAsync(data)
             }}
             afterValidation={closeModal}
             formData={{

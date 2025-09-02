@@ -6,7 +6,7 @@ import { BlockScheduleResponse } from '@/services/scheduling/scheduling'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { twMerge } from 'tailwind-merge'
 import EventForm from '@/components/form/scheduling/EventForm'
-import { useCreateBlockEvent } from '@/hooks/scheduling/useCreateBlockEvent'
+import { useUpdateEvent } from '@/hooks/scheduling/useUpdateEvent'
 
 type ModalProps = {
   className?: string
@@ -16,7 +16,7 @@ type ModalProps = {
 export default forwardRef<ModalHandles, ModalProps>(
   function UpdateEventModalContent({ formData, className }, ref) {
     const modalRef = useRef<ModalHandles>(null)
-    const createBlockEvent = useCreateBlockEvent()
+    const updateBlockEvent = useUpdateEvent()
 
     const openModal = () => {
       modalRef.current?.openModal()
@@ -37,8 +37,12 @@ export default forwardRef<ModalHandles, ModalProps>(
 
         <EventForm
           action={async (data) => {
-            const result = await createBlockEvent.mutateAsync(data)
-            return result
+            if (!data.id) return
+            const res = await updateBlockEvent.mutateAsync({
+              id: data.id,
+              ...data,
+            })
+            return res
           }}
           afterValidation={closeModal}
           formData={{
