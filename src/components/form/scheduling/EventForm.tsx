@@ -22,11 +22,11 @@ const setEventSchema = z.object({
 export type setEventData = z.infer<typeof setEventSchema>
 
 type EventFormProps = {
-  formData?: Partial<setEventData>
+  formData?: Partial<setEventData & { id: string }>
   afterValidation?(): void
   action(
-    data: SaveBlockEvent | (SaveBlockEvent & { id: string }),
-  ): Promise<{ message: string } | responseError>
+    data: SaveBlockEvent & { id?: string },
+  ): Promise<unknown | responseError>
 } & FormProps
 
 export default function EventForm({
@@ -51,8 +51,7 @@ export default function EventForm({
   } = setEventForm
 
   const setEvent = async (data: setEventData) => {
-    console.log(data)
-    const res = await action(data)
+    const res = await action({ ...data, id: formData?.id })
 
     if (Validate.isError(res)) {
       if (res.type) {
@@ -68,7 +67,10 @@ export default function EventForm({
     } else {
       reset({ ...data }, { keepValues: true })
       if (afterValidation) afterValidation()
-      handleMessage({ title: 'Evento salvo com sucesso!', type: 'success' })
+      handleMessage({
+        title: 'Evento atualizado com sucesso!',
+        type: 'success',
+      })
     }
   }
 
@@ -77,7 +79,11 @@ export default function EventForm({
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label>Nome do evento</Input.Label>
-          <Input.Field autoComplete="off" {...register('description')} />
+          <Input.Field
+            defaultValue={formData?.description}
+            autoComplete="off"
+            {...register('description')}
+          />
           {errors.description && (
             <Input.Message error>{errors.description.message}</Input.Message>
           )}
