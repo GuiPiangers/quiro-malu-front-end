@@ -7,6 +7,10 @@ import HeaderForm from '@/components/modal/HeaderModal'
 import { twMerge } from 'tailwind-merge'
 import EventForm from '@/components/form/scheduling/EventForm'
 import { useUpdateEvent } from '@/hooks/scheduling/useUpdateEvent'
+import Button from '@/components/Button'
+import { useDeleteEvent } from '@/hooks/scheduling/useDeleteEvent'
+import { Validate } from '@/services/api/Validate'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 type ModalProps = {
   className?: string
@@ -16,7 +20,30 @@ type ModalProps = {
 export default forwardRef<ModalHandles, ModalProps>(
   function UpdateEventModalContent({ formData, className }, ref) {
     const modalRef = useRef<ModalHandles>(null)
+    const { handleMessage } = useSnackbarContext()
+
     const updateBlockEvent = useUpdateEvent()
+    const deleteBlockEvent = useDeleteEvent()
+
+    const handleDeleteFinance = async () => {
+      if (!formData?.id) return
+
+      const response = await deleteBlockEvent.mutateAsync({ id: formData?.id })
+
+      if (Validate.isOk(response)) {
+        closeModal()
+        handleMessage({
+          type: 'success',
+          title: 'Evento deletado com sucesso!',
+        })
+        return
+      }
+
+      handleMessage({
+        type: 'error',
+        title: 'Falha ao deletar o evento!',
+      })
+    }
 
     const openModal = () => {
       modalRef.current?.openModal()
@@ -36,6 +63,22 @@ export default forwardRef<ModalHandles, ModalProps>(
         <HeaderForm handleClose={closeModal} title={'Editar Evento'} />
 
         <EventForm
+          btWrapperClassName="justify-between"
+          buttons={
+            <>
+              <Button color="green" type="submit">
+                Salvar
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                color="red"
+                onClick={handleDeleteFinance}
+              >
+                Excluir
+              </Button>
+            </>
+          }
           action={async (data) => {
             if (!data.id) return
             const res = await updateBlockEvent.mutateAsync({
