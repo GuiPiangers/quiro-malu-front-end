@@ -4,7 +4,6 @@ type LogoTextProps = {
 }
 
 export function LogoText({ color }: LogoTextProps) {
-
   // const srcLogo = () => {
   //   if (color === 'white') return logoEscritoWhite
   //   return logoEscrito
