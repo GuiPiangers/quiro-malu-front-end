@@ -1,4 +1,3 @@
-import { AnamnesisResponse } from '@/services/patient/patient'
 import { SubTitle } from './PatientPdf'
 import { Text, View } from '@react-pdf/renderer'
 import { styles } from './Styles'

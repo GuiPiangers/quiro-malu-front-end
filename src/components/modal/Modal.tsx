@@ -56,7 +56,7 @@ const Backdrop = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement> & { open: boolean }
 >((props, ref) => {
-  const { open, className, ...other } = props
+  const { ...other } = props
   return (
     <div
       className={'fixed inset-0 -z-10 bg-black bg-opacity-50 '}

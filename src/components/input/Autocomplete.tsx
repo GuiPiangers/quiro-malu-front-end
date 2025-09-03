@@ -28,7 +28,6 @@ export default forwardRef(function Autocomplete(
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [highlightOption, setHighlightOption] = useState<undefined | string>()
-  const [limitCount, setLimitCount] = useState(1)
 
   const {
     disableClearable = false,
@@ -56,7 +55,7 @@ export default forwardRef(function Autocomplete(
     groupedOptions,
   } = useAutocomplete({
     ...props,
-    onHighlightChange(event, option, reason) {
+    onHighlightChange(event, option) {
       setHighlightOption(option?.id)
     },
     isOptionEqualToValue(option, value) {

@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getUser, logoutUser } from '@/services/user/user'
+import { getUser } from '@/services/user/user'
 import { Validate } from '@/services/api/Validate'
 import Image from 'next/image'
 import LogoutButton from '@/components/LogoutButton'

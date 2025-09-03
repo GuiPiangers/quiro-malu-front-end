@@ -9,10 +9,6 @@ import {
 import { NotificationItem } from '../itens/NotificationItem'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import NotificationTypeSelect, {
-  notificationsSelectTypes,
-  NotificationTypeSelectProps,
-} from '../notificationTypeSelect/NotificationTypeSelect'
 import CheckGroup from '@/components/ui/checkGroup'
 import Button from '@/components/Button'
 
@@ -21,7 +17,6 @@ export default function NotificationTable({
 }: {
   notifications: NotificationDTO[]
 }) {
-  const [selectedType, setSelectedType] = useState<notificationsSelectTypes>()
   const notificationsChecked = useMemo(
     () =>
       notifications.reduce<Record<string, boolean>>((acc, notification) => {
