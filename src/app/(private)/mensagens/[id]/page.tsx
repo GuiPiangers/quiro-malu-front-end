@@ -3,12 +3,7 @@ import { Table } from '@/components/table'
 
 export type ParamsType = { id: string }
 
-export default function messageCampaignPage({
-  params,
-}: {
-  params: ParamsType
-}) {
-  const id = params.id
+export default function messageCampaignPage() {
   return (
     <Box className="w-full max-w-lg">
       <Table.Root>

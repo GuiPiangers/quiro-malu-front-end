@@ -1,13 +1,9 @@
-import Image from 'next/image'
-
 type LogoTextProps = {
   className?: string
   color?: 'white' | 'default'
 }
 
-export function LogoText({ className, color }: LogoTextProps) {
-  const logoEscrito = '/logo/Logo-escrito.svg'
-  const logoEscritoWhite = '/logo/Logo-escrito-white.svg'
+export function LogoText({ color }: LogoTextProps) {
 
   // const srcLogo = () => {
   //   if (color === 'white') return logoEscritoWhite

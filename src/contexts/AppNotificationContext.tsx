@@ -2,7 +2,6 @@
 
 import useNotificationSSE from '@/hooks/sse/useNotificationSSE'
 import { NotificationDTO } from '@/services/notification/notification'
-import { revalidatePath, revalidateTag } from 'next/cache'
 import { usePathname, useRouter } from 'next/navigation'
 
 import { ReactNode, createContext, useEffect } from 'react'

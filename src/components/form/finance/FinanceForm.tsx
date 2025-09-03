@@ -45,8 +45,7 @@ export default function FinanceForm({
   action,
   ...formProps
 }: FinanceFormProps) {
-  const { date, description, patientId, paymentMethod, type, id, value } =
-    formData || {}
+  const { date, description, paymentMethod, type, id, value } = formData || {}
   const { handleMessage } = useSnackbarContext()
 
   const setFinanceForm = useForm<setFinanceData>({

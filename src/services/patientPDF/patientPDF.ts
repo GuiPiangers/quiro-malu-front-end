@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { AvailablePatientPdf, PatientPdfProps } from './patientPdfTypes'
+import { AvailablePatientPdf } from './patientPdfTypes'
 
 export async function generatePatientPDF({
   patientId,

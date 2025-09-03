@@ -83,7 +83,7 @@ function WithDelay({ setTrigger, trigger }: MessageEventSelectProps) {
   )
 }
 
-function WithDynamicDate({ setTrigger, trigger }: MessageEventSelectProps) {
+function WithDynamicDate({ setTrigger }: MessageEventSelectProps) {
   return (
     <div className="flex gap-4">
       <Input.Root>
