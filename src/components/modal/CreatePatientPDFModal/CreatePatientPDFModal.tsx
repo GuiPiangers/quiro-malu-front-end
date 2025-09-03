@@ -13,10 +13,8 @@ import HeaderForm from '../HeaderModal'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/input'
 
-import { FaMinus, FaPlus } from 'react-icons/fa6'
 import { Accordion } from '@/components/accordion'
 import { IoChevronDown } from 'react-icons/io5'
-import StopPropagation from '@/components/StopPropagation'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import { generatePatientPDF } from '@/services/patientPDF/patientPDF'
 import CheckGroup from '@/components/ui/checkGroup'
@@ -85,6 +83,7 @@ const defaultCheckedLocation = {
   city: true,
   neighborhood: true,
   address: true,
+  uf: true,
 }
 
 const defaultCheckedAnamnesis = {
