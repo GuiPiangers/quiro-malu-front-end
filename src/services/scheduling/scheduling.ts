@@ -130,6 +130,14 @@ export async function updateBlockEvent({ id, ...data }: UpdateBlockEvent) {
   return res
 }
 
+export async function deleteBlockEvent({ id }: { id: string }) {
+  const res = await api<{ message: string }>(`/blockSchedules/${id}`, {
+    method: 'DELETE',
+  })
+
+  return res
+}
+
 export async function getQtdSchedulesByDay({
   month,
   year,
