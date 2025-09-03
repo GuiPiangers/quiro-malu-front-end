@@ -24,7 +24,7 @@ describe('GenerateWorkHours', () => {
 
       const instance = new GenerateWorkHours({
         workSchedules,
-        workTimeIncrement: schedulingDuration,
+        workTimeIncrementInMinutes: schedulingDuration,
       })
 
       expect(instance.workHours).toEqual([
@@ -44,7 +44,7 @@ describe('GenerateWorkHours', () => {
 
       const instance = new GenerateWorkHours({
         workSchedules,
-        workTimeIncrement: schedulingDuration,
+        workTimeIncrementInMinutes: schedulingDuration,
       })
 
       const existingSchedules = [
@@ -70,7 +70,7 @@ describe('GenerateWorkHours', () => {
 
       const instance = new GenerateWorkHours({
         workSchedules,
-        workTimeIncrement: schedulingDuration,
+        workTimeIncrementInMinutes: schedulingDuration,
       })
 
       const existingSchedules = [
@@ -94,7 +94,7 @@ describe('GenerateWorkHours', () => {
 
       const instance = new GenerateWorkHours({
         workSchedules,
-        workTimeIncrement: schedulingDuration,
+        workTimeIncrementInMinutes: schedulingDuration,
       })
 
       const existingSchedules: any[] = []

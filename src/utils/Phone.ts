@@ -1,3 +1,5 @@
+import { removeNotNumbers } from './removeNotNumbers'
+
 export default class Phone {
   private static _pattern = '(??) ????? ????'
 
@@ -13,6 +15,6 @@ export default class Phone {
   }
 
   static unformat(value: string): string {
-    return value && value.replace(/[^0-9]+/g, '')
+    return value && removeNotNumbers(value)
   }
 }

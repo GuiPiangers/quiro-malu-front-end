@@ -8,6 +8,13 @@ export type SchedulingStatus =
   | 'Atrasado'
   | 'Cancelado'
 
+export type BlockScheduleResponse = {
+  id?: string
+  date: string
+  endDate: string
+  description?: string
+}
+
 export type SchedulingResponse = {
   id?: string
   patientId: string
@@ -16,9 +23,22 @@ export type SchedulingResponse = {
   status: SchedulingStatus
   date: string
 }
-export type SchedulingListResponse = {
-  schedules: (SchedulingResponse & { patient: string; phone: string })[]
+
+export type SchedulingWithPatient = SchedulingResponse & {
+  patient: string
+  phone: string
 }
+
+export type SchedulingListResponse = {
+  schedules: SchedulingWithPatient[]
+}
+
+export type EventsResponse = {
+  data: (BlockScheduleResponse | SchedulingWithPatient)[]
+}
+
+export type SaveBlockEvent = Omit<BlockScheduleResponse, 'id'>
+export type UpdateBlockEvent = Partial<BlockScheduleResponse> & { id: string }
 
 export async function createScheduling({
   date,
@@ -74,11 +94,47 @@ export async function listSchedules({
   page?: string
 }) {
   const res = await api<SchedulingListResponse>(
-    `/Schedules?page=${page}&date=${date}`,
+    `/schedules?page=${page}&date=${date}`,
     {
       method: 'GET',
     },
   )
+  return res
+}
+export async function listEvents({ date }: { date: string }) {
+  const res = await api<EventsResponse>(`/events?date=${date}`, {
+    method: 'GET',
+  })
+  return res
+}
+
+export async function saveBlockEvent({
+  date,
+  endDate,
+  description,
+}: SaveBlockEvent) {
+  const res = await api<{ message: string }>('/blockSchedules', {
+    method: 'POST',
+    body: JSON.stringify({ date, endDate, description }),
+  })
+
+  return res
+}
+
+export async function updateBlockEvent({ id, ...data }: UpdateBlockEvent) {
+  const res = await api<{ message: string }>(`/blockSchedules/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+
+  return res
+}
+
+export async function deleteBlockEvent({ id }: { id: string }) {
+  const res = await api<{ message: string }>(`/blockSchedules/${id}`, {
+    method: 'DELETE',
+  })
+
   return res
 }
 

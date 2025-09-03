@@ -4,7 +4,7 @@ import { GenerateWorkHours } from '@/utils/GenerateWorkHours'
 
 export default function SchedulingSkeleton() {
   const workHours = {
-    workTimeIncrement: 30,
+    workTimeIncrementInMinutes: 30,
     workSchedules: [{ start: '07:00', end: '19:00' }],
   }
 

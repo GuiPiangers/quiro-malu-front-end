@@ -1,22 +1,22 @@
 import {
-  createScheduling,
   EventsResponse,
-  SchedulingWithPatient,
+  saveBlockEvent,
+  SaveBlockEvent,
 } from '@/services/scheduling/scheduling'
 import DateTime from '@/utils/Date'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 
-export function useCreateScheduling() {
+export function useCreateBlockEvent() {
   const searchParams = useSearchParams()
   const date = searchParams.get('date') || DateTime.getIsoDate(new Date())
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: (newScheduling: SchedulingWithPatient) => {
-      return createScheduling(newScheduling)
+    mutationFn: (newEvent: SaveBlockEvent & { id?: string }) => {
+      return saveBlockEvent(newEvent)
     },
-    onMutate: async (scheduling) => {
+    onMutate: async (event) => {
       const previousLaunches = queryClient.getQueryData<EventsResponse>([
         'listSchedules',
         date,
@@ -26,24 +26,6 @@ export function useCreateScheduling() {
         queryKey: ['listSchedules', date],
       })
 
-      const isLate =
-        scheduling.date &&
-        new Date().toISOString() > new Date(scheduling.date).toISOString()
-
-      const isAppointed =
-        scheduling.status === 'Atrasado' || scheduling.status === 'Agendado'
-
-      const status = isAppointed
-        ? isLate
-          ? 'Atrasado'
-          : 'Agendado'
-        : scheduling.status
-
-      const newScheduling = {
-        ...(scheduling as SchedulingWithPatient),
-        status,
-      }
-
       queryClient.setQueryData<EventsResponse>(
         ['listSchedules', date],
         (oldQuery) => {
@@ -51,7 +33,7 @@ export function useCreateScheduling() {
 
           return {
             ...oldQuery,
-            data: [...oldQuery.data, newScheduling],
+            data: [...oldQuery.data, event],
           }
         },
       )

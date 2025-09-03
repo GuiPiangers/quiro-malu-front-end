@@ -16,7 +16,6 @@ import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import {
   PatientResponse,
-  PatientsListResponse,
   createPatient,
   getPatient,
   listPatient,

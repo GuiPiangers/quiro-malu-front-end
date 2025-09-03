@@ -1,17 +1,17 @@
 import { removeNotNumbers } from './removeNotNumbers'
 import { validateRegex } from './validateRegex'
 
-export default class Cpf {
-  private static _pattern = '???.???.???-??'
+export default class Cep {
+  private static _pattern = '?????-???'
 
   static format(value: string): string {
-    const nums = Cpf.unformat(value).split('')
+    const nums = Cep.unformat(value).split('')
     return nums
       .reduce((formatted: string, num: string) => {
         return formatted.replace('?', num)
-      }, Cpf._pattern)
+      }, Cep._pattern)
       .split('?')[0]
-      .replace(/[-.]$/, '')
+      .replace(/[-]$/, '')
   }
 
   static unformat(value: string): string {
@@ -19,9 +19,6 @@ export default class Cpf {
   }
 
   static validate(value: string): boolean {
-    return (
-      value.length > 0 &&
-      validateRegex(value, /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/)
-    )
+    return value.length > 0 && validateRegex(value, /^[0-9]{5}-[0-9]{3}$/)
   }
 }

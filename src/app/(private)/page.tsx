@@ -3,11 +3,11 @@ import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { Validate } from '@/services/api/Validate'
 import { Box } from '@/components/box/Box'
 import Link from 'next/link'
-import { listSchedules } from '@/services/scheduling/scheduling'
+import { listEvents } from '@/services/scheduling/scheduling'
 
 export default async function Home() {
   const date = DateTime.getIsoDate(new Date())
-  const schedulesResp = await listSchedules({ date })
+  const schedulesResp = await listEvents({ date })
 
   return (
     <section className="flex w-full justify-center">
@@ -17,16 +17,15 @@ export default async function Home() {
             Agendamentos de hoje -{' '}
             <strong>{DateTime.getLocaleDate(date)}</strong>
           </h2>
-          {Validate.isOk(schedulesResp) &&
-          schedulesResp.schedules.length > 0 ? (
+          {Validate.isOk(schedulesResp) && schedulesResp.data.length > 0 ? (
             <SchedulingList
               date={date}
               workHours={{
-                workTimeIncrement: 30,
+                workTimeIncrementInMinutes: 30,
                 workSchedules: [{ start: '01:00', end: '00:00' }],
               }}
               schedules={
-                Validate.isOk(schedulesResp) ? schedulesResp.schedules : []
+                Validate.isOk(schedulesResp) ? schedulesResp : { data: [] }
               }
             />
           ) : (

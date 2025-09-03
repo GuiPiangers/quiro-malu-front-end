@@ -4,17 +4,23 @@ import { Input } from '@/components/input'
 
 import Phone from '@/utils/Phone'
 import { useForm } from 'react-hook-form'
-import { object, z } from 'zod'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Cpf from '@/utils/Cpf'
 import { PatientResponse } from '@/services/patient/patient'
 import Form from '@/components/form/Form'
 import { sectionStyles, titleStyles } from '@/components/form/Styles'
-import { ChangeEvent, ReactNode } from 'react'
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import { validateRegex } from '@/utils/validateRegex'
+import Cep from '@/utils/Cep'
+import { useDebouncing } from '@/hooks/useDebouncing'
+import { searchAddressByCep } from '@/services/location/cep'
+import StateSelect from '@/components/input/select/StateSelect'
+import CitySelect from '@/components/input/select/CitySelect'
+import { getStateAcronym } from '@/services/location/state'
 
 const validateName = (value: string) => {
   if (value.length > 0) {
@@ -130,6 +136,9 @@ export default function PatientDataForm({
   data,
 }: PatientDataForm) {
   const { handleMessage } = useSnackbarContext()
+  const [debouncedCep, setDebouncedCep] = useDebouncing()
+  const [selectedState, setSelectedState] = useState<string>()
+  const [selectedCity, setSelectedCity] = useState<string>()
 
   const createPatientForm = useForm<CreatePatientData>({
     resolver: zodResolver(createPatientSchema),
@@ -169,7 +178,6 @@ export default function PatientDataForm({
 
   const handleAction = async (data: CreatePatientData) => {
     const hasDirtyFields = Object.keys(dirtyFields).length > 0
-
     const res = hasDirtyFields ? await action(data) : undefined
 
     if (Validate.isError(res)) {
@@ -191,6 +199,15 @@ export default function PatientDataForm({
     }
   }
 
+  useEffect(() => {
+    searchAddressByCep(debouncedCep).then((res) => {
+      if (Validate.isOk(res)) {
+        setValue('location', res)
+        setSelectedState(res.state)
+        setSelectedCity(res.city)
+      }
+    })
+  }, [debouncedCep])
   return (
     <Form
       onSubmit={handleSubmit(handleAction)}
@@ -411,7 +428,15 @@ export default function PatientDataForm({
           <Input.Label notSave={dirtyFields.location?.cep}>CEP</Input.Label>
           <Input.Field
             error={!!errors.location?.cep}
-            {...register('location.cep')}
+            {...register('location.cep', {
+              onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                e.target.value = Cep.format(e.target.value)
+                setDebouncedCep(e.target.value)
+              },
+              onBlur(e) {
+                setDebouncedCep(e.target.value)
+              },
+            })}
             disabled={isSubmitting}
             defaultValue={data?.location?.cep}
             notSave={dirtyFields.location?.cep}
@@ -426,13 +451,23 @@ export default function PatientDataForm({
             <Input.Label notSave={dirtyFields.location?.state}>
               Estado
             </Input.Label>
-            <Input.Field
+
+            <StateSelect
               error={!!errors.location?.state}
-              {...register('location.state')}
-              disabled={isSubmitting}
               defaultValue={data?.location?.state}
+              value={selectedState}
+              disabled={isSubmitting}
               notSave={dirtyFields.location?.state}
+              onChange={(_, value) => {
+                const valueState = value as string
+                setValue('location.state', valueState as string, {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+                setSelectedState(valueState)
+              }}
             />
+
             {errors.location?.state && (
               <Input.Message error>
                 {errors.location?.state.message}
@@ -441,6 +476,35 @@ export default function PatientDataForm({
           </Input.Root>
 
           <Input.Root>
+            <Input.Label notSave={dirtyFields.location?.city}>
+              Cidade
+            </Input.Label>
+
+            <CitySelect
+              uf={selectedState ? getStateAcronym(selectedState) : ''}
+              error={!!errors.location?.city}
+              defaultValue={data?.location?.city}
+              disabled={isSubmitting}
+              notSave={dirtyFields.location?.city}
+              value={selectedCity}
+              onChange={(_, value) => {
+                const cityValue = value as string
+                setValue('location.city', cityValue, {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+                setSelectedCity(cityValue)
+              }}
+            />
+
+            {errors.location?.state && (
+              <Input.Message error>
+                {errors.location?.state.message}
+              </Input.Message>
+            )}
+          </Input.Root>
+
+          {/* <Input.Root>
             <Input.Label notSave={dirtyFields.location?.city}>
               Cidade
             </Input.Label>
@@ -456,7 +520,7 @@ export default function PatientDataForm({
                 {errors.location?.city.message}
               </Input.Message>
             )}
-          </Input.Root>
+          </Input.Root> */}
 
           <Input.Root>
             <Input.Label notSave={dirtyFields.location?.neighborhood}>

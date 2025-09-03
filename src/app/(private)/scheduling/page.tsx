@@ -6,7 +6,7 @@ import SchedulingModal from '../../../components/modal/SchedulingModal/Schedulin
 import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
-import { listSchedules } from '@/services/scheduling/scheduling'
+import { listEvents } from '@/services/scheduling/scheduling'
 
 export default async function Scheduling({
   searchParams,
@@ -23,9 +23,9 @@ export default async function Scheduling({
     +date.substring(8, 10),
   )
 
-  const schedulesResp = await listSchedules({ date })
+  const schedulesResp = await listEvents({ date })
   const table = {
-    workTimeIncrement: 30,
+    workTimeIncrementInMinutes: 30,
     workSchedules: [
       { start: '07:00', end: '11:00' },
       { start: '13:00', end: '19:00' },
@@ -69,7 +69,7 @@ export default async function Scheduling({
           date={date}
           workHours={table}
           schedules={
-            Validate.isOk(schedulesResp) ? schedulesResp.schedules : []
+            Validate.isOk(schedulesResp) ? schedulesResp : { data: [] }
           }
         />
       </Box>

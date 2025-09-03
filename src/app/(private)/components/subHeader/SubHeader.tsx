@@ -18,6 +18,8 @@ const routes = [
   { name: 'Financeiro', path: '/finance' },
   { name: 'Notificações', path: '/notifications' },
   { name: 'Arquivos', path: '/arquivos' },
+  { name: 'Mensagens', path: '/mensagens' },
+  { name: 'Nova Campanha', path: '/mensagens/criar' },
 ]
 
 export default function SubHeader() {
