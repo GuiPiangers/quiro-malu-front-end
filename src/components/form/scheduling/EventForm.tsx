@@ -90,6 +90,18 @@ export default function EventForm({
         </Input.Root>
 
         <Input.Root>
+          <Input.Label>Teste</Input.Label>
+          <Input.AsyncAutocomplete
+            searchTerm={async () => {
+              return [{ label: 'teste', data: 'teste' }]
+            }}
+          />
+          {errors.description && (
+            <Input.Message error>{errors.description.message}</Input.Message>
+          )}
+        </Input.Root>
+
+        <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data de início
           </Input.Label>

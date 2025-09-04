@@ -5,6 +5,7 @@ import InputMessage from './Message'
 import Autocomplete from './Autocomplete'
 import { SelectField } from './select/SelectField'
 import { Option } from './select/Option'
+import { AsyncAutocomplete } from './AsyncAutocomplete'
 
 export const Input = {
   Root: InputRoot,
@@ -13,5 +14,6 @@ export const Input = {
   Message: InputMessage,
   Select: SelectField,
   Autocomplete,
+  AsyncAutocomplete,
   Option,
 }
