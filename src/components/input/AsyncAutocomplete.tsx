@@ -220,4 +220,7 @@ function AsyncAutocompleteInner<T>(
   )
 }
 
-export const AsyncAutocomplete = forwardRef(AsyncAutocompleteInner)
+export const AsyncAutocomplete = forwardRef(AsyncAutocompleteInner) as <T>(
+  // eslint-disable-next-line no-use-before-define
+  props: AsyncAutocompleteProps<T> & { ref?: ForwardedRef<HTMLDivElement> },
+) => ReturnType<typeof AsyncAutocompleteInner>
