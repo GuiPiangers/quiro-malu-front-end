@@ -8,6 +8,7 @@ import {
   ForwardedRef,
   KeyboardEvent,
   ComponentPropsWithoutRef,
+  useEffect,
 } from 'react'
 import { Popper } from '@mui/base/Popper'
 import { RxCross2 } from 'react-icons/rx'
@@ -65,6 +66,10 @@ function AsyncAutocompleteInner<T>(
       fetchOptions()
     },
   })
+
+  useEffect(() => {
+    setInputValue(inputProps.defaultValue?.toString() || '')
+  }, [])
 
   // --- handlers ---
   const handleInputChange = (value: string) => {
