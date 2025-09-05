@@ -25,6 +25,7 @@ type SearchResult<T> = { label: string; data: T }
 interface AsyncAutocompleteProps<T> extends ComponentPropsWithoutRef<'input'> {
   searchTerm(term: string): Promise<SearchResult<T>[]>
   onLastOptionView?(): void
+  onSelectOption?(option: SearchResult<T>): void
   condition?: boolean
   disabled?: boolean
   readOnly?: boolean
@@ -37,6 +38,7 @@ function AsyncAutocompleteInner<T>(
   {
     searchTerm,
     onLastOptionView,
+    onSelectOption,
     condition,
     disabled = false,
     readOnly = false,
@@ -81,6 +83,7 @@ function AsyncAutocompleteInner<T>(
     setSelected(option)
     setInputValue(option.label)
     setOpen(false)
+    onSelectOption?.(option)
   }
 
   const handleClear = () => {
