@@ -13,8 +13,10 @@ import { responseError } from '@/services/api/api'
 import {
   listEventSuggestions,
   SaveBlockEvent,
+  EventsSuggestion,
 } from '@/services/scheduling/scheduling'
 import { Validate } from '@/services/api/Validate'
+import { useEffect, useState } from 'react'
 
 const setEventSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
@@ -51,7 +53,28 @@ export default function EventForm({
     register,
     setError,
     reset,
+    watch,
+    setValue,
   } = setEventForm
+
+  const [selectedEvent, setSelectedEvent] = useState<{
+    data: EventsSuggestion
+  } | null>(null)
+  const dateValue = watch('date')
+
+  useEffect(() => {
+    if (dateValue) {
+      const newEndDate = new Date(dateValue)
+      if (selectedEvent) {
+        newEndDate.setMinutes(
+          newEndDate.getMinutes() + selectedEvent?.data?.durationInMinutes,
+        )
+      } else {
+        newEndDate.setHours(newEndDate.getHours() + 1)
+      }
+      setValue('endDate', DateTime.getIsoDateTime(newEndDate.toISOString()))
+    }
+  }, [dateValue, selectedEvent, setValue])
 
   const setEvent = async (data: setEventData) => {
     const res = await action({ ...data, id: formData?.id })
@@ -89,6 +112,11 @@ export default function EventForm({
             disabled={isSubmitting}
             error={!!errors.description}
             notSave={dirtyFields.description}
+            onSelectOption={(
+              option: { data: EventsSuggestion; label: string } | null,
+            ) => {
+              setSelectedEvent(option)
+            }}
             searchTerm={async () => {
               const res = await listEventSuggestions()
 
