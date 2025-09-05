@@ -7,6 +7,7 @@ import {
   useCallback,
   ForwardedRef,
   KeyboardEvent,
+  ComponentPropsWithoutRef,
 } from 'react'
 import { Popper } from '@mui/base/Popper'
 import { RxCross2 } from 'react-icons/rx'
@@ -20,7 +21,7 @@ import { useDebouncing } from '@/hooks/useDebouncing'
 
 type SearchResult<T> = { label: string; data: T }
 
-interface AsyncAutocompleteProps<T> {
+interface AsyncAutocompleteProps<T> extends ComponentPropsWithoutRef<'input'> {
   searchTerm(term: string): Promise<SearchResult<T>[]>
   onLastOptionView?(): void
   condition?: boolean
@@ -41,6 +42,7 @@ function AsyncAutocompleteInner<T>(
     disableClearable = false,
     error,
     notSave,
+    ...inputProps
   }: AsyncAutocompleteProps<T>,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -130,16 +132,27 @@ function AsyncAutocompleteInner<T>(
     <>
       <div ref={rootRef} className={inputWrapperStyle()}>
         <input
+          {...inputProps}
           id={contextId}
           disabled={disabled}
           readOnly={readOnly}
           value={selected?.label ?? value}
-          onChange={(e) => handleInputChange(e.target.value)}
-          onFocus={() => {
-            setOpen(true)
+          onChange={(e) => {
+            handleInputChange(e.target.value)
+            inputProps.onChange?.(e)
           }}
-          onBlur={() => setOpen(false)}
-          onKeyDown={handleKeyDown}
+          onFocus={(e) => {
+            setOpen(true)
+            inputProps.onFocus?.(e)
+          }}
+          onBlur={(e) => {
+            setOpen(false)
+            inputProps.onBlur?.(e)
+          }}
+          onKeyDown={(e) => {
+            handleKeyDown(e)
+            inputProps.onKeyDown?.(e)
+          }}
           className={inputFieldStyle()}
         />
         {!disableClearable && !disabled && debouncedValue && !readOnly && (
