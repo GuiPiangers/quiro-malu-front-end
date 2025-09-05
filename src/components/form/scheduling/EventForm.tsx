@@ -10,7 +10,10 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 import DateTime from '@/utils/Date'
 import { responseError } from '@/services/api/api'
-import { SaveBlockEvent } from '@/services/scheduling/scheduling'
+import {
+  listEventSuggestions,
+  SaveBlockEvent,
+} from '@/services/scheduling/scheduling'
 import { Validate } from '@/services/api/Validate'
 
 const setEventSchema = z.object({
@@ -78,22 +81,25 @@ export default function EventForm({
     <Form onSubmit={handleSubmit(setEvent)} {...formProps}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
-          <Input.Label>Nome do evento</Input.Label>
-          <Input.Field
+          <Input.Label notSave={dirtyFields.description}>Descrição</Input.Label>
+          <Input.AsyncAutocomplete
+            {...register('description')}
             defaultValue={formData?.description}
             autoComplete="off"
-            {...register('description')}
-          />
-          {errors.description && (
-            <Input.Message error>{errors.description.message}</Input.Message>
-          )}
-        </Input.Root>
-
-        <Input.Root>
-          <Input.Label>Teste</Input.Label>
-          <Input.AsyncAutocomplete
+            disabled={isSubmitting}
+            error={!!errors.description}
+            notSave={dirtyFields.description}
             searchTerm={async () => {
-              return [{ label: 'teste', data: 'teste' }]
+              const res = await listEventSuggestions()
+
+              if (Validate.isError(res)) {
+                return []
+              }
+
+              return res.data.map((item) => ({
+                label: item.description,
+                data: item,
+              }))
             }}
           />
           {errors.description && (
