@@ -17,7 +17,7 @@ export function useDebouncing({
     }, delay)
 
     return () => clearTimeout(timer)
-  }, [value, delay, onDebounce])
+  }, [value, delay])
 
   return [debouncedValue, setValue, value] as [
     string,
