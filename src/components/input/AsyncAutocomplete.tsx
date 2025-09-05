@@ -1,3 +1,5 @@
+'use client'
+
 import {
   forwardRef,
   useState,
@@ -5,7 +7,6 @@ import {
   useCallback,
   ForwardedRef,
   KeyboardEvent,
-  useEffect,
 } from 'react'
 import { Popper } from '@mui/base/Popper'
 import { RxCross2 } from 'react-icons/rx'
@@ -62,34 +63,10 @@ function AsyncAutocompleteInner<T>(
         }
         const results = await searchTerm(value)
         setOptions(results)
-        setOpen(true)
-        setHighlightIndex(results.length > 0 ? 0 : -1)
       }
       fetchOptions()
     },
   })
-
-  // fecha ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node
-      if (
-        anchorEl.current &&
-        !anchorEl.current.contains(target) &&
-        popperRef.current &&
-        !popperRef.current.contains(target)
-      ) {
-        setOpen(false)
-      }
-    }
-
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [open])
 
   // --- handlers ---
   const handleInputChange = (value: string) => {
@@ -99,8 +76,8 @@ function AsyncAutocompleteInner<T>(
 
   const handleSelect = (option: SearchResult<T>) => {
     setSelected(option)
-    setInputValue(option.label) // seta label direto no input
-    setOpen(false) // fecha no select
+    setInputValue(option.label)
+    setOpen(false)
   }
 
   const handleClear = () => {
@@ -162,16 +139,20 @@ function AsyncAutocompleteInner<T>(
           readOnly={readOnly}
           value={selected?.label ?? value}
           onChange={(e) => handleInputChange(e.target.value)}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setOpen(true)
+          }}
+          onBlur={() => setOpen(false)}
           onKeyDown={handleKeyDown}
           className={inputFieldStyle()}
         />
         {!disableClearable && !disabled && debouncedValue && !readOnly && (
           <Button
+            type="button"
             onClick={handleClear}
             className="mr-2 self-center rounded-[4px] border-0 bg-transparent p-0.5 shadow-none outline-0 hover:cursor-pointer hover:bg-violet-100"
           >
-            <RxCross2 />
+            <RxCross2 className="text-black" />
           </Button>
         )}
       </div>
