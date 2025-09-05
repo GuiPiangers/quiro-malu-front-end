@@ -40,6 +40,17 @@ export type EventsResponse = {
 export type SaveBlockEvent = Omit<BlockScheduleResponse, 'id'>
 export type UpdateBlockEvent = Partial<BlockScheduleResponse> & { id: string }
 
+export type EventsSuggestion = {
+  id?: string
+  description: string
+  durationInMinutes: number
+  frequency: number
+}
+
+export type EventsSuggestionsResponse = {
+  data: EventsSuggestion[]
+}
+
 export async function createScheduling({
   date,
   duration,
@@ -103,6 +114,13 @@ export async function listSchedules({
 }
 export async function listEvents({ date }: { date: string }) {
   const res = await api<EventsResponse>(`/events?date=${date}`, {
+    method: 'GET',
+  })
+  return res
+}
+
+export async function listEventSuggestions() {
+  const res = await api<EventsSuggestionsResponse>(`/event-suggestions`, {
     method: 'GET',
   })
   return res
