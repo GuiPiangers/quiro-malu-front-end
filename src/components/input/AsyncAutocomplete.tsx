@@ -57,10 +57,6 @@ function AsyncAutocompleteInner<T>(
   const [debouncedValue, setInputValue, value] = useDebouncing({
     onDebounce({ value }) {
       const fetchOptions = async () => {
-        if (!value) {
-          setOptions([])
-          return
-        }
         const results = await searchTerm(value)
         setOptions(results)
       }
