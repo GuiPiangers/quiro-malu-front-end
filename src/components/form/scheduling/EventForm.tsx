@@ -45,6 +45,9 @@ export default function EventForm({
 
   const setEventForm = useForm<setEventData>({
     resolver: zodResolver(setEventSchema),
+    defaultValues: {
+      description: formData?.description || '',
+    },
   })
 
   const {
@@ -93,10 +96,6 @@ export default function EventForm({
     } else {
       reset({ ...data }, { keepValues: true })
       if (afterValidation) afterValidation()
-      handleMessage({
-        title: 'Evento atualizado com sucesso!',
-        type: 'success',
-      })
     }
   }
 
@@ -117,8 +116,8 @@ export default function EventForm({
             ) => {
               setSelectedEvent(option)
             }}
-            searchTerm={async () => {
-              const res = await listEventSuggestions()
+            searchTerm={async (value) => {
+              const res = await listEventSuggestions({ filter: value })
 
               if (Validate.isError(res)) {
                 return []

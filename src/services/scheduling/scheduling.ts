@@ -119,10 +119,15 @@ export async function listEvents({ date }: { date: string }) {
   return res
 }
 
-export async function listEventSuggestions() {
-  const res = await api<EventsSuggestionsResponse>(`/event-suggestions`, {
-    method: 'GET',
-  })
+export async function listEventSuggestions({
+  filter,
+}: { filter?: string } = {}) {
+  const res = await api<EventsSuggestionsResponse>(
+    `/event-suggestions?filter=${filter}`,
+    {
+      method: 'GET',
+    },
+  )
   return res
 }
 

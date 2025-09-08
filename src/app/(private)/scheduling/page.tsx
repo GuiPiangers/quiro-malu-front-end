@@ -7,6 +7,7 @@ import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { listEvents } from '@/services/scheduling/scheduling'
+import CreateEventModal from '@/components/modal/createEventModal/CreateEventModal'
 
 export default async function Scheduling({
   searchParams,
@@ -73,8 +74,16 @@ export default async function Scheduling({
           }
         />
       </Box>
-      <Box className="w-full place-self-start">
+      <Box className="flex w-full flex-col gap-4 place-self-start">
         <SchedulingCalendar />
+        <CreateEventModal
+          size="small"
+          color="black"
+          className="w-full"
+          variant="outline"
+        >
+          Bloquear Agenda
+        </CreateEventModal>
       </Box>
     </div>
   )
