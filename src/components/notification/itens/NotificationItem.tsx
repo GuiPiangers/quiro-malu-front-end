@@ -91,7 +91,7 @@ export function NotificationBaseItem({
         <Table.Cell>
           <Checkbox
             checked={checked}
-            className="border-blue-500 data-[state=checked]:bg-blue-500"
+            color="blue"
             onCheckedChange={(value) => {
               onCheckedChange && onCheckedChange(value)
             }}
@@ -122,7 +122,7 @@ export function NotificationBaseItem({
         <Table.Cell>
           <Checkbox
             checked={checked}
-            className="border-blue-500 data-[state=checked]:bg-blue-500"
+            color="blue"
             onCheckedChange={(value) => {
               onCheckedChange && onCheckedChange(value)
             }}
