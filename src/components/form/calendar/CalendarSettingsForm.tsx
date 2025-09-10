@@ -10,6 +10,8 @@ import Form from '@/components/form/Form'
 import { Input } from '@/components/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import Button from '@/components/Button'
+import { setCalendarConfiguration } from '@/services/config/calendarConfiguration'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 const workScheduleSchema = z.object({
   start: z.string().min(1, 'Obrigatório'),
@@ -18,10 +20,11 @@ const workScheduleSchema = z.object({
 
 const dayConfigurationSchema = z.object({
   workSchedules: z.array(workScheduleSchema),
-  isActive: z.boolean().default(false),
+  isActive: z.boolean().default(false).optional(),
 })
 
 const calendarConfigurationSchema = z.object({
+  workTimeIncrementInMinutes: z.coerce.number().optional(),
   domingo: dayConfigurationSchema.optional(), // Domingo
   segunda: dayConfigurationSchema.optional(), // Segunda
   terca: dayConfigurationSchema.optional(), // Terça
@@ -43,7 +46,7 @@ const weekDays = [
   'Sábado',
 ]
 
-const getWeekDayKey = (index: number): keyof CalendarConfigurationData => {
+const getWeekDayKey = (index: number) => {
   const weekDays = [
     'domingo',
     'segunda',
@@ -53,10 +56,17 @@ const getWeekDayKey = (index: number): keyof CalendarConfigurationData => {
     'sexta',
     'sabado',
   ]
-  return weekDays[index] as keyof CalendarConfigurationData
+  return weekDays[index] as keyof Omit<
+    CalendarConfigurationData,
+    'workTimeIncrementInMinutes'
+  >
 }
 
-export default function CalendarSettingsForm() {
+export default function CalendarSettingsForm({
+  formData,
+}: {
+  formData?: CalendarConfigurationData
+}) {
   const {
     register,
     handleSubmit,
@@ -67,10 +77,27 @@ export default function CalendarSettingsForm() {
     formState: { errors },
   } = useForm<CalendarConfigurationData>({
     resolver: zodResolver(calendarConfigurationSchema),
+    defaultValues: formData,
   })
 
-  const onSubmit = (data: CalendarConfigurationData) => {
-    console.log('Form Data:', data)
+  const { handleMessage } = useSnackbarContext()
+
+  const onSubmit = async (data: CalendarConfigurationData) => {
+    try {
+      await setCalendarConfiguration({
+        ...data,
+      })
+      handleMessage({
+        type: 'success',
+        title: 'configurações salvas com sucesso!',
+      })
+    } catch (error) {
+      console.error(error)
+      handleMessage({
+        type: 'error',
+        title: 'Erro ao salvar as configurações de horário',
+      })
+    }
   }
 
   const handleReplicate = (dayIndex: number) => {
@@ -92,6 +119,21 @@ export default function CalendarSettingsForm() {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-2 p-4">
+        <Input.Root>
+          <Input.Label>Intervalo entre horários</Input.Label>
+          <Input.Field
+            endAdornment={<span className="-translate-x-full px-4">min</span>}
+            error={!!errors?.workTimeIncrementInMinutes}
+            type="number"
+            slotProps={{
+              input: {
+                min: 1,
+                className: 'max-w-[160px]',
+              },
+            }}
+            {...register('workTimeIncrementInMinutes')}
+          />
+        </Input.Root>
         {weekDays.map((day, dayIndex) => {
           const { fields, append, remove } = useFieldArray({
             control,
