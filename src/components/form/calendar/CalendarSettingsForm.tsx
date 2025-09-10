@@ -129,9 +129,9 @@ export default function CalendarSettingsForm({
           return (
             <div
               key={dayIndex}
-              className="rounded-lg border border-slate-200 p-4 transition-all duration-300 dark:border-slate-800"
+              className="rounded-lg border border-slate-200 p-4 transition-all duration-300 dark:border-slate-800 "
             >
-              <div className="flex items-center gap-3">
+              <div className="flex max-w-lg items-center gap-3 ">
                 <Controller
                   name={`${getWeekDayKey(dayIndex)}.isActive`}
                   control={control}
@@ -153,7 +153,7 @@ export default function CalendarSettingsForm({
               </div>
 
               {isActive && (
-                <div className="mt-4 space-y-4 pl-6">
+                <div className="mt-4 max-w-lg space-y-4 pl-6 ">
                   {fields.map((field, index) => (
                     <div
                       key={field.id}
@@ -204,14 +204,14 @@ export default function CalendarSettingsForm({
                     <Button
                       type="button"
                       variant="outline"
-                      size="small"
+                      className="px-7 sm:w-fit"
                       onClick={() => append({ start: '', end: '' })}
                     >
                       <PlusCircle className="mr-2 h-4 w-4" />
                       Adicionar Horário
                     </Button>
                     <button
-                      className="text-sm text-blue-500 hover:text-blue-700"
+                      className="text-left text-sm text-blue-500 hover:text-blue-700"
                       type="button"
                       onClick={() => handleReplicate(dayIndex)}
                     >
