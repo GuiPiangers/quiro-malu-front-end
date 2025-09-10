@@ -170,7 +170,7 @@ export default function SchedulingList({
                   </Table.Cell>
                 )}
                 <Table.Cell className="w-full">
-                  {scheduling.description ?? 'Agenda bloqueada'}
+                  {scheduling.description || 'Agenda bloqueada'}
                 </Table.Cell>
               </Table.Row>
             </Button>
