@@ -10,8 +10,13 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 
 import DateTime from '@/utils/Date'
 import { responseError } from '@/services/api/api'
-import { SaveBlockEvent } from '@/services/scheduling/scheduling'
+import {
+  listEventSuggestions,
+  SaveBlockEvent,
+  EventsSuggestion,
+} from '@/services/scheduling/scheduling'
 import { Validate } from '@/services/api/Validate'
+import { useEffect, useState } from 'react'
 
 const setEventSchema = z.object({
   date: z.string().min(1, { message: 'Campo obrigatório' }),
@@ -40,6 +45,9 @@ export default function EventForm({
 
   const setEventForm = useForm<setEventData>({
     resolver: zodResolver(setEventSchema),
+    defaultValues: {
+      description: formData?.description || '',
+    },
   })
 
   const {
@@ -48,7 +56,28 @@ export default function EventForm({
     register,
     setError,
     reset,
+    watch,
+    setValue,
   } = setEventForm
+
+  const [selectedEvent, setSelectedEvent] = useState<{
+    data: EventsSuggestion
+  } | null>(null)
+  const dateValue = watch('date')
+
+  useEffect(() => {
+    if (dateValue) {
+      const newEndDate = new Date(dateValue)
+      if (selectedEvent) {
+        newEndDate.setMinutes(
+          newEndDate.getMinutes() + selectedEvent?.data?.durationInMinutes,
+        )
+      } else {
+        newEndDate.setHours(newEndDate.getHours() + 1)
+      }
+      setValue('endDate', DateTime.getIsoDateTime(newEndDate.toISOString()))
+    }
+  }, [dateValue, selectedEvent, setValue])
 
   const setEvent = async (data: setEventData) => {
     const res = await action({ ...data, id: formData?.id })
@@ -67,10 +96,6 @@ export default function EventForm({
     } else {
       reset({ ...data }, { keepValues: true })
       if (afterValidation) afterValidation()
-      handleMessage({
-        title: 'Evento atualizado com sucesso!',
-        type: 'success',
-      })
     }
   }
 
@@ -78,11 +103,31 @@ export default function EventForm({
     <Form onSubmit={handleSubmit(setEvent)} {...formProps}>
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
-          <Input.Label>Nome do evento</Input.Label>
-          <Input.Field
+          <Input.Label notSave={dirtyFields.description}>Descrição</Input.Label>
+          <Input.AsyncAutocomplete
+            {...register('description')}
             defaultValue={formData?.description}
             autoComplete="off"
-            {...register('description')}
+            disabled={isSubmitting}
+            error={!!errors.description}
+            notSave={dirtyFields.description}
+            onSelectOption={(
+              option: { data: EventsSuggestion; label: string } | null,
+            ) => {
+              setSelectedEvent(option)
+            }}
+            searchTerm={async (value) => {
+              const res = await listEventSuggestions({ filter: value })
+
+              if (Validate.isError(res)) {
+                return []
+              }
+
+              return res.data.map((item) => ({
+                label: item.description,
+                data: item,
+              }))
+            }}
           />
           {errors.description && (
             <Input.Message error>{errors.description.message}</Input.Message>

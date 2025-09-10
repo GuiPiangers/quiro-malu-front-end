@@ -25,6 +25,14 @@ export default forwardRef<ModalHandles, ModalProps>(
     const updateBlockEvent = useUpdateEvent()
     const deleteBlockEvent = useDeleteEvent()
 
+    const afterSubmit = () => {
+      closeModal()
+      handleMessage({
+        title: 'Evento atualizado com sucesso!',
+        type: 'success',
+      })
+    }
+
     const handleDeleteFinance = async () => {
       if (!formData?.id) return
 
@@ -87,7 +95,7 @@ export default forwardRef<ModalHandles, ModalProps>(
             })
             return res
           }}
-          afterValidation={closeModal}
+          afterValidation={afterSubmit}
           formData={{
             date: formData?.date,
             endDate: formData?.date

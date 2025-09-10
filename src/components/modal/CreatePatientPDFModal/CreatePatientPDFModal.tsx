@@ -55,13 +55,10 @@ function CheckAllGroup({ children, isChecked, onClick }: CheckAllProps) {
   )
 }
 
-function CheckComponent({ children, ...props }: CheckComponentProps) {
+function CheckComponent({ children, color, ...props }: CheckComponentProps) {
   return (
     <Input.Root className="flex-row">
-      <Checkbox
-        className="border-blue-500 data-[state=checked]:bg-blue-500"
-        {...props}
-      />
+      <Checkbox color="blue" {...props} />
       <Input.Label>{children}</Input.Label>
     </Input.Root>
   )
@@ -248,11 +245,7 @@ export default forwardRef<ModalRef, CreatePatientPDFModalProps>(
                 <Accordion.Content>
                   <div className="ml-6">
                     <Input.Root className="flex-row">
-                      <Checkbox
-                        checked
-                        disabled
-                        className="border-blue-500 data-[state=checked]:bg-blue-500"
-                      />
+                      <Checkbox checked disabled color="blue" />
                       <Input.Label>Nome</Input.Label>
                     </Input.Root>
 
@@ -338,8 +331,8 @@ export default forwardRef<ModalRef, CreatePatientPDFModalProps>(
                   <div className="ml-6">
                     <Input.Root className="flex-row">
                       <Checkbox
+                        color="blue"
                         checked={checkedLocation.cep}
-                        className="border-blue-500 data-[state=checked]:bg-blue-500"
                         onCheckedChange={(value) =>
                           handleSetCheckedLocation('cep', !!value)
                         }
@@ -403,7 +396,7 @@ export default forwardRef<ModalRef, CreatePatientPDFModalProps>(
                     <Input.Root className="flex-row">
                       <Checkbox
                         checked={checkedAnamnesis.mainProblem}
-                        className="border-blue-500 data-[state=checked]:bg-blue-500"
+                        color="blue"
                         onCheckedChange={(value) =>
                           handleSetCheckedAnamnesis('mainProblem', !!value)
                         }

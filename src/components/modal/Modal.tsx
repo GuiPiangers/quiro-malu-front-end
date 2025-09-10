@@ -45,7 +45,7 @@ export default forwardRef<ModalHandles, ModalProps>(function Modal(
       slots={{ backdrop: Backdrop }}
       disablePortal
     >
-      <div className={twMerge('rounded-lg bg-white p-4', className)}>
+      <div className={twMerge('rounded-lg bg-white p-4 shadow-md', className)}>
         {children}
       </div>
     </BaseModal>

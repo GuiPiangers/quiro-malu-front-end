@@ -22,7 +22,7 @@ export default function SearchInput({
   const searchParamsObject = convertEntriesToObject(
     Array.from(searchParams.entries()),
   )
-  const [debouncedSearch, setValue] = useDebouncing(300)
+  const [debouncedSearch, setValue] = useDebouncing()
   const searchValue = searchParams.get(searchParam) ?? ''
 
   useEffect(() => {
