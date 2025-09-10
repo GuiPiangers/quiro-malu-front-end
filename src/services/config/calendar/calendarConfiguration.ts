@@ -1,5 +1,7 @@
 'use server'
 import { api } from '@/services/api/api'
+import { Validate } from '@/services/api/Validate'
+import { defaultConfiguration } from './calendarUtils'
 
 export type WorkSchedule = {
   start: string
@@ -23,11 +25,17 @@ export type CalendarConfigurationDTO = {
 }
 
 export async function getCalendarConfiguration() {
-  return await api<CalendarConfigurationDTO>('/calendar-configuration')
+  const result = await api<CalendarConfigurationDTO>('/calendar-configuration')
+
+  if ((Validate.isOk(result) && !result) || Validate.isError(result)) {
+    return defaultConfiguration
+  }
+
+  return result
 }
 
 export async function setCalendarConfiguration(data: CalendarConfigurationDTO) {
-  return await api<CalendarConfigurationDTO>('/calendar-configuration', {
+  return await api('/calendar-configuration', {
     method: 'PUT',
     body: JSON.stringify(data),
   })
