@@ -10,8 +10,9 @@ import Form from '@/components/form/Form'
 import { Input } from '@/components/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import Button from '@/components/Button'
-import { setCalendarConfiguration } from '@/services/config/calendarConfiguration'
+import { setCalendarConfiguration } from '@/services/config/calendar/calendarConfiguration'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
+import { getWeekDayKey } from '@/services/config/calendar/calendarUtils'
 
 const workScheduleSchema = z.object({
   start: z.string().min(1, 'Obrigatório'),
@@ -45,22 +46,6 @@ const weekDays = [
   'Sexta-feira',
   'Sábado',
 ]
-
-const getWeekDayKey = (index: number) => {
-  const weekDays = [
-    'domingo',
-    'segunda',
-    'terca',
-    'quarta',
-    'quinta',
-    'sexta',
-    'sabado',
-  ]
-  return weekDays[index] as keyof Omit<
-    CalendarConfigurationData,
-    'workTimeIncrementInMinutes'
-  >
-}
 
 export default function CalendarSettingsForm({
   formData,

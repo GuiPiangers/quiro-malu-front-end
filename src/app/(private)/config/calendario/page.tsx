@@ -1,6 +1,6 @@
 import CalendarSettingsForm from '@/components/form/calendar/CalendarSettingsForm'
 import { Validate } from '@/services/api/Validate'
-import { getCalendarConfiguration } from '@/services/config/calendarConfiguration'
+import { getCalendarConfiguration } from '@/services/config/calendar/calendarConfiguration'
 
 export default async function CalendarPage() {
   const calendarConfiguration = await getCalendarConfiguration().then((res) =>

@@ -8,6 +8,8 @@ import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { listEvents } from '@/services/scheduling/scheduling'
 import CreateEventModal from '@/components/modal/createEventModal/CreateEventModal'
+import { getCalendarConfiguration } from '@/services/config/calendar/calendarConfiguration'
+import { getWeekDayKey } from '@/services/config/calendar/calendarUtils'
 
 export default async function Scheduling({
   searchParams,
@@ -25,7 +27,23 @@ export default async function Scheduling({
   )
 
   const schedulesResp = await listEvents({ date })
-  const table = {
+  const table = (await getCalendarConfiguration().then((res) => {
+    if (Validate.isOk(res) && res) {
+      const dayOfWeek = newDate.getDay()
+      const dayKey = getWeekDayKey(dayOfWeek)
+
+      if (!res[dayKey]?.isActive)
+        return {
+          workSchedules: [],
+          workTimeIncrementInMinutes: 30,
+        }
+
+      return {
+        workSchedules: res[dayKey]?.workSchedules || [],
+        workTimeIncrementInMinutes: res.workTimeIncrementInMinutes || 30,
+      }
+    }
+  })) || {
     workTimeIncrementInMinutes: 30,
     workSchedules: [
       { start: '07:00', end: '11:00' },
