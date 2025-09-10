@@ -10,6 +10,7 @@ import { listEvents } from '@/services/scheduling/scheduling'
 import CreateEventModal from '@/components/modal/createEventModal/CreateEventModal'
 import { getCalendarConfiguration } from '@/services/config/calendar/calendarConfiguration'
 import { getWeekDayKey } from '@/services/config/calendar/calendarUtils'
+import Link from 'next/link'
 
 export default async function Scheduling({
   searchParams,
@@ -27,29 +28,21 @@ export default async function Scheduling({
   )
 
   const schedulesResp = await listEvents({ date })
-  const table = (await getCalendarConfiguration().then((res) => {
-    if (Validate.isOk(res) && res) {
-      const dayOfWeek = newDate.getDay()
-      const dayKey = getWeekDayKey(dayOfWeek)
+  const table = await getCalendarConfiguration().then((res) => {
+    const dayOfWeek = newDate.getDay()
+    const dayKey = getWeekDayKey(dayOfWeek)
 
-      if (!res[dayKey]?.isActive)
-        return {
-          workSchedules: [],
-          workTimeIncrementInMinutes: 30,
-        }
-
+    if (!res[dayKey]?.isActive)
       return {
-        workSchedules: res[dayKey]?.workSchedules || [],
-        workTimeIncrementInMinutes: res.workTimeIncrementInMinutes || 30,
+        workSchedules: [],
+        workTimeIncrementInMinutes: 30,
       }
+
+    return {
+      workSchedules: res[dayKey]?.workSchedules || [],
+      workTimeIncrementInMinutes: res.workTimeIncrementInMinutes || 30,
     }
-  })) || {
-    workTimeIncrementInMinutes: 30,
-    workSchedules: [
-      { start: '07:00', end: '11:00' },
-      { start: '13:00', end: '19:00' },
-    ],
-  }
+  })
 
   const incDate = (number: number) =>
     `?date=${DateTime.getIsoDate(
@@ -62,7 +55,7 @@ export default async function Scheduling({
 
   return (
     <div className="flex w-full max-w-screen-xl flex-col-reverse gap-4 md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px]">
-      <Box className="">
+      <Box className="h-fit">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex gap-1">
             <RouteReplace route={incDate(-1)}>
@@ -102,6 +95,12 @@ export default async function Scheduling({
         >
           Bloquear Agenda
         </CreateEventModal>
+        <Link
+          href={'/config/calendario'}
+          className="rounded-md border border-dashed px-4 py-1 text-center text-xs font-bold text-blue-600"
+        >
+          Alterar configurações de horário
+        </Link>
       </Box>
     </div>
   )

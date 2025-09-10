@@ -78,6 +78,19 @@ export default function SchedulingList({
 
   return (
     <>
+      {!table.length && (
+        <div className="flex h-full flex-col items-center justify-center gap-4">
+          <span className="text-slate-500">
+            Nenhum horário configurado para hoje
+          </span>
+          <Link
+            href={'/config/calendario'}
+            className="rounded-md border border-dashed px-4 py-1 text-blue-600"
+          >
+            Alterar configurações de horário
+          </Link>
+        </div>
+      )}
       <AccordionTable.Root>
         {table.map((item) => {
           const [hour, scheduling] = item
