@@ -61,6 +61,12 @@ export type DiagnosticResponse = {
   diagnostic?: string
   treatmentPlan?: string
 }
+
+type PainScale = {
+  description: string
+  painLevel: number
+}
+
 export type ProgressResponse = {
   id: string
   patientId: string
@@ -71,6 +77,7 @@ export type ProgressResponse = {
   schedulingId?: string
   createAt?: string
   updateAt?: string
+  painScales?: PainScale[]
 }
 export type ProgressListResponse = {
   progress: ProgressResponse[]
