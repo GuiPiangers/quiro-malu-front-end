@@ -5,7 +5,7 @@ import Form, { FormProps } from '../../../../../../components/form/Form'
 import { sectionStyles } from '../../../../../../components/form/Styles'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { ProgressResponse } from '@/services/patient/patient'
 import DateTime from '@/utils/Date'
@@ -15,12 +15,21 @@ import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { TextEditor } from '@/components/TextEditor'
+import Button from '@/components/Button'
+import PainScale from '@/components/painScale/PainScale'
+import { Trash } from 'lucide-react'
+
+const painScaleSchema = z.object({
+  description: z.string(),
+  painLevel: z.number(),
+})
 
 export const setProgressSchema = z.object({
   actualProblem: z.string(),
   procedures: z.string(),
   service: z.string().min(1, { message: 'Campo obrigatório' }),
   date: z.string().min(1, { message: 'Campo obrigatório' }),
+  painScales: z.array(painScaleSchema).optional(),
 })
 
 export type setProgressData = z.infer<typeof setProgressSchema>
@@ -50,6 +59,7 @@ export default function ProgressForm({
       service: formData.service ?? '',
       id: formData.id ?? '',
       patientId: formData.patientId ?? '',
+      painScales: formData.painScales ?? [],
     },
   })
 
@@ -58,10 +68,18 @@ export default function ProgressForm({
     formState: { isSubmitting, errors, dirtyFields },
     register,
     setValue,
+    control,
   } = setProgressForm
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'painScales',
+  })
 
   const setProgress = async (data: setProgressData) => {
     const hasDirtyFields = Object.keys(dirtyFields).length > 0
+
+    console.log(data)
 
     const res = hasDirtyFields
       ? await formAction({
@@ -86,7 +104,12 @@ export default function ProgressForm({
 
   return (
     <Form onSubmit={handleSubmit(setProgress)} {...formProps}>
-      <section aria-label="Evolução do paciente" className={sectionStyles()}>
+      <section
+        aria-label="Evolução do paciente"
+        className={sectionStyles({
+          className: 'max-h-[80lvh] overflow-y-auto',
+        })}
+      >
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data
@@ -164,6 +187,53 @@ export default function ProgressForm({
             <Input.Message error>{errors.procedures.message}</Input.Message>
           )}
         </Input.Root>
+        <div className="mt-4 space-y-4">
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="relative flex flex-col gap-4 rounded-lg border p-4"
+            >
+              <Button
+                type="button"
+                variant="ghost"
+                color="red"
+                className="absolute right-2 top-2 h-auto p-1"
+                onClick={() => remove(index)}
+              >
+                <Trash size={18} />
+              </Button>
+              <Input.Root>
+                <Input.Label>Descrição da dor</Input.Label>
+                <Input.Field
+                  {...register(`painScales.${index}.description`)}
+                  placeholder="Ex: Dor na lombar"
+                />
+              </Input.Root>
+
+              <Controller
+                control={control}
+                name={`painScales.${index}.painLevel`}
+                defaultValue={field.painLevel}
+                render={({ field: { onChange, value } }) => (
+                  <PainScale
+                    value={value}
+                    onChange={onChange}
+                    defaultValue={5}
+                  />
+                )}
+              />
+            </div>
+          ))}
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => append({ description: '', painLevel: 5 })}
+          className="mt-4"
+        >
+          Adicionar escala de dor
+        </Button>
       </section>
     </Form>
   )
