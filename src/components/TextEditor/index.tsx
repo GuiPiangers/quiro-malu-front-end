@@ -29,7 +29,8 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
     },
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert prose-sm focus:outline-none w-full',
+        class:
+          'prose dark:prose-invert prose-sm focus:outline-none w-full prose-p:my-1',
       },
     },
   })
