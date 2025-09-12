@@ -52,11 +52,11 @@ const PainScale: FC<PainScaleProps> = ({
           onChange={handleChange}
           className="
                 absolute bottom-0 h-2 w-full cursor-pointer appearance-none bg-transparent
-                [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-slate-600 [&::-moz-range-thumb]:bg-white [&::-moz-range-track]:h-2 [&::-moz-range-track]:w-full
+                [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-slate-600 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-track]:h-2 [&::-moz-range-track]:w-full
                 [&::-moz-range-track]:cursor-pointer [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-gradient-to-r [&::-moz-range-track]:from-lime-300 [&::-moz-range-track]:via-amber-400 [&::-moz-range-track]:to-orange-600 [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:w-full
 
                 [&::-webkit-slider-runnable-track]:cursor-pointer [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-gradient-to-r [&::-webkit-slider-runnable-track]:from-lime-300 [&::-webkit-slider-runnable-track]:via-amber-400 [&::-webkit-slider-runnable-track]:to-orange-600 [&::-webkit-slider-thumb]:mt-[-6px] [&::-webkit-slider-thumb]:h-5
-                [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-slate-600 [&::-webkit-slider-thumb]:bg-white
+                [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-slate-600 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md
               "
           {...props}
         />
