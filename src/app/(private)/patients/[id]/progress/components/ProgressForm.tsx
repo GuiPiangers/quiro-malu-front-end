@@ -14,6 +14,7 @@ import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
 import ServiceSelect from '@/components/input/select/ServiceSelect'
+import { TextEditor } from '@/components/TextEditor'
 
 export const setProgressSchema = z.object({
   actualProblem: z.string(),
@@ -138,15 +139,11 @@ export default function ProgressForm({
           <Input.Label notSave={dirtyFields.actualProblem}>
             Problema atual
           </Input.Label>
-          <Input.Field
-            autoComplete="off"
-            multiline
-            minRows={4}
-            disabled={isSubmitting}
-            defaultValue={actualProblem}
-            error={!!errors.actualProblem}
-            {...register('actualProblem')}
-            notSave={dirtyFields.actualProblem}
+          <TextEditor
+            content={actualProblem}
+            onChange={(html) => {
+              setValue('actualProblem', html, { shouldDirty: true })
+            }}
           />
           {errors.actualProblem && (
             <Input.Message error>{errors.actualProblem.message}</Input.Message>
@@ -157,15 +154,11 @@ export default function ProgressForm({
           <Input.Label notSave={dirtyFields.procedures}>
             Procedimentos
           </Input.Label>
-          <Input.Field
-            autoComplete="off"
-            multiline
-            minRows={4}
-            disabled={isSubmitting}
-            defaultValue={procedures}
-            error={!!errors.procedures}
-            {...register('procedures')}
-            notSave={dirtyFields.procedures}
+          <TextEditor
+            content={procedures}
+            onChange={(html) => {
+              setValue('procedures', html, { shouldDirty: true })
+            }}
           />
           {errors.procedures && (
             <Input.Message error>{errors.procedures.message}</Input.Message>

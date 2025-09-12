@@ -7,6 +7,7 @@ import Pagination from '@/components/pagination/Pagination'
 import NoDataFound from '@/components/notFound/NoDataFound'
 import { Validate } from '@/services/api/Validate'
 import { listProgress } from '@/services/patient/patient'
+import SafeHtml from '@/components/SafeHTML'
 
 export default async function Progress({
   params,
@@ -40,8 +41,18 @@ export default async function Progress({
                   <p className="text-sm">{progress.service}</p>
                 </div>
                 <div>
+                  <h4 className="font-semibold text-main">Problema atual</h4>
+                  <SafeHtml
+                    html={progress.actualProblem}
+                    className="prose prose-sm prose-p:my-1"
+                  />
+                </div>
+                <div>
                   <h4 className="font-semibold text-main">Procedimentos</h4>
-                  <p className="text-sm">{progress.procedures}</p>
+                  <SafeHtml
+                    html={progress.procedures}
+                    className="prose prose-sm prose-p:my-1"
+                  />
                 </div>
               </div>
               <div className="grid place-content-end gap-3 sm:grid-cols-2">
