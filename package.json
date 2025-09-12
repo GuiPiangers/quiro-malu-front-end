@@ -36,6 +36,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookies-next": "^4.1.1",
+    "isomorphic-dompurify": "^2.26.0",
+    "jsdom": "^26.1.0",
     "lucide-react": "^0.468.0",
     "next": "^14.2.16",
     "nookies": "^2.5.2",
