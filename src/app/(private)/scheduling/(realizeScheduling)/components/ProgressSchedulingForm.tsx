@@ -53,6 +53,7 @@ export function ProgressSchedulingForm({
         queryClient.invalidateQueries({ queryKey: ['listSchedules'] })
       }}
       formAction={async (data) => {
+        console.log(data)
         const progressRes = await setProgress({
           ...data,
           schedulingId,
@@ -71,6 +72,7 @@ export function ProgressSchedulingForm({
         service: progressData?.service ?? service,
         actualProblem: progressData?.actualProblem,
         procedures: progressData?.procedures,
+        painScales: progressData?.painScales,
       }}
     />
   )

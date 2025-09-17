@@ -62,7 +62,7 @@ export type DiagnosticResponse = {
   treatmentPlan?: string
 }
 
-type PainScale = {
+export type PainScale = {
   description: string
   painLevel: number
 }
