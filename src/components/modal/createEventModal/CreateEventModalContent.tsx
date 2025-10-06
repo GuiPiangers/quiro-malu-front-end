@@ -48,12 +48,7 @@ export default forwardRef<ModalHandles, ModalProps>(
 
         <EventForm
           action={async (data) => {
-            if (!data.id) return
-            const res = await createBlockEvent.mutateAsync({
-              id: data.id,
-              ...data,
-            })
-            return res
+            return await createBlockEvent.mutateAsync(data)
           }}
           afterValidation={afterSubmit}
           formData={{
