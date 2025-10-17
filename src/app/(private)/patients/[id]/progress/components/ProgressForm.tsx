@@ -18,6 +18,8 @@ import { TextEditor } from '@/components/TextEditor'
 import Button from '@/components/Button'
 import PainScale from '@/components/painScale/PainScale'
 import { Trash } from 'lucide-react'
+import { AudioRecorder } from '@/components/AudioRecorder'
+import { useAudioTranscriber } from '@/hooks/useAudioTranscriber'
 
 const painScaleSchema = z.object({
   description: z.string(),
@@ -48,8 +50,28 @@ export default function ProgressForm({
 }: ProgressFormProps) {
   const { patientId, actualProblem, date, procedures, service, id } = formData
   const [serviceData, setService] = useState<ServiceResponse>()
+  const {
+    isPending: isActualProblemTranscribing,
+    data: actualProblemTranscription,
+    mutate: actualProblemTranscribe,
+  } = useAudioTranscriber({
+    onSuccess: (data) => {
+      setValue('actualProblem', data.text, { shouldDirty: true })
+    },
+  })
+
+  const {
+    isPending: isProceduresTranscribing,
+    data: proceduresTranscription,
+    mutate: proceduresTranscribe,
+  } = useAudioTranscriber({
+    onSuccess: (data) => {
+      setValue('procedures', data.text, { shouldDirty: true })
+    },
+  })
 
   const { handleMessage } = useSnackbarContext()
+
   const setProgressForm = useForm<ProgressResponse>({
     resolver: zodResolver(setProgressSchema),
     values: {
@@ -79,8 +101,6 @@ export default function ProgressForm({
   const setProgress = async (data: setProgressData) => {
     const hasDirtyFields = Object.keys(dirtyFields).length > 0
 
-    console.log(data)
-
     const res = hasDirtyFields
       ? await formAction({
           id: id!,
@@ -100,6 +120,15 @@ export default function ProgressForm({
         })
       }
     }
+  }
+
+  const getActualProblemValue = () => {
+    if (isActualProblemTranscribing) return 'Transcrevendo áudio...'
+    return actualProblemTranscription?.text ?? actualProblem
+  }
+  const getProceduresValue = () => {
+    if (isProceduresTranscribing) return 'Transcrevendo áudio...'
+    return proceduresTranscription?.text ?? procedures
   }
 
   return (
@@ -163,11 +192,21 @@ export default function ProgressForm({
             Problema atual
           </Input.Label>
           <TextEditor
-            content={actualProblem}
+            disabled={isActualProblemTranscribing}
+            content={getActualProblemValue()}
             onChange={(html) => {
               setValue('actualProblem', html, { shouldDirty: true })
             }}
-          />
+          >
+            <div className="flex w-full items-center justify-end gap-2 p-3">
+              <AudioRecorder
+                disabled={isActualProblemTranscribing}
+                onRecordComplete={(blob) => {
+                  actualProblemTranscribe(blob)
+                }}
+              />
+            </div>
+          </TextEditor>
           {errors.actualProblem && (
             <Input.Message error>{errors.actualProblem.message}</Input.Message>
           )}
@@ -178,11 +217,21 @@ export default function ProgressForm({
             Procedimentos
           </Input.Label>
           <TextEditor
-            content={procedures}
+            content={getProceduresValue()}
+            disabled={isProceduresTranscribing}
             onChange={(html) => {
               setValue('procedures', html, { shouldDirty: true })
             }}
-          />
+          >
+            <div className="flex w-full items-center justify-end gap-2 p-3">
+              <AudioRecorder
+                disabled={isProceduresTranscribing}
+                onRecordComplete={(blob) => {
+                  proceduresTranscribe(blob)
+                }}
+              />
+            </div>
+          </TextEditor>
           {errors.procedures && (
             <Input.Message error>{errors.procedures.message}</Input.Message>
           )}

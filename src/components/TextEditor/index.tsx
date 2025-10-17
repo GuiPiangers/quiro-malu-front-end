@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import UnderlineExtension from '@tiptap/extension-underline'
@@ -8,13 +8,23 @@ import Heading from '@tiptap/extension-heading'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { Bold, Italic, Underline } from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { cn } from '@/lib/utils'
 
 interface TextEditorProps {
   content?: string
   onChange?: (richText: string) => void
+  className?: string
+  children?: ReactNode
+  disabled?: boolean
 }
 
-export function TextEditor({ content, onChange }: TextEditorProps) {
+export function TextEditor({
+  content,
+  onChange,
+  className,
+  children,
+  disabled,
+}: TextEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -23,6 +33,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
       TextStyle,
     ],
     immediatelyRender: true,
+    editable: true,
     content,
     onUpdate({ editor }) {
       onChange?.(editor.getHTML())
@@ -34,6 +45,21 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
       },
     },
   })
+
+  useEffect(() => {
+    editor?.setEditable(!disabled)
+  }, [disabled, editor])
+
+  useEffect(() => {
+    if (!editor) return
+    const current = editor.getHTML()
+
+    if (content && content !== current) {
+      editor.commands.setContent(content, {
+        emitUpdate: false,
+      })
+    }
+  }, [content, editor])
 
   const [activeMarks, setActiveMarks] = useState({
     bold: false,
@@ -53,7 +79,6 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
       underline: editor.isActive('underline'),
     }
 
-    // bloco atual: checa heading level ou paragraph
     let nextBlock: typeof activeBlock = 'paragraph'
     if (editor.isActive('heading', { level: 1 })) nextBlock = 'h1'
     else if (editor.isActive('heading', { level: 2 })) nextBlock = 'h2'
@@ -124,7 +149,13 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
   }
 
   return (
-    <div className="border-input rounded-md border">
+    <div
+      className={cn(
+        'border-input rounded-md border',
+        disabled ? 'cursor-not-allowed bg-gray-100 opacity-70' : 'bg-white',
+        className,
+      )}
+    >
       {editor && (
         <div className="flex flex-col gap-2 border-b p-2">
           <div className="flex items-center gap-2">
@@ -180,6 +211,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
       >
         <EditorContent editor={editor} />
       </div>
+      {children}
     </div>
   )
 }
