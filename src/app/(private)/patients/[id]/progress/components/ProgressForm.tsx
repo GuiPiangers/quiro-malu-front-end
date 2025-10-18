@@ -9,7 +9,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { ProgressResponse } from '@/services/patient/patient'
 import DateTime from '@/utils/Date'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
@@ -27,8 +27,8 @@ const painScaleSchema = z.object({
 })
 
 export const setProgressSchema = z.object({
-  actualProblem: z.string(),
-  procedures: z.string(),
+  actualProblem: z.string().optional(),
+  procedures: z.string().optional(),
   service: z.string().min(1, { message: 'Campo obrigatório' }),
   date: z.string().min(1, { message: 'Campo obrigatório' }),
   painScales: z.array(painScaleSchema).optional(),
@@ -48,15 +48,26 @@ export default function ProgressForm({
   afterValidation,
   ...formProps
 }: ProgressFormProps) {
-  const { patientId, actualProblem, date, procedures, service, id } = formData
+  const { patientId, date, service, id } = formData
+  const [actualProblem, setActualProblem] = useState<string>(
+    formData?.actualProblem ?? '',
+  )
+  const [procedures, setProcedures] = useState<string>(
+    formData?.procedures ?? '',
+  )
+
   const [serviceData, setService] = useState<ServiceResponse>()
   const {
     isPending: isActualProblemTranscribing,
     data: actualProblemTranscription,
-    mutate: actualProblemTranscribe,
+    mutateAsync: actualProblemTranscribe,
   } = useAudioTranscriber({
     onSuccess: (data) => {
-      setValue('actualProblem', data.text, { shouldDirty: true })
+      setActualProblem(data.text)
+      setValue('actualProblem', data.text, {
+        shouldDirty: true,
+        shouldTouch: true,
+      })
     },
   })
 
@@ -64,11 +75,7 @@ export default function ProgressForm({
     isPending: isProceduresTranscribing,
     data: proceduresTranscription,
     mutate: proceduresTranscribe,
-  } = useAudioTranscriber({
-    onSuccess: (data) => {
-      setValue('procedures', data.text, { shouldDirty: true })
-    },
-  })
+  } = useAudioTranscriber()
 
   const { handleMessage } = useSnackbarContext()
 
@@ -122,14 +129,22 @@ export default function ProgressForm({
     }
   }
 
-  const getActualProblemValue = () => {
-    if (isActualProblemTranscribing) return 'Transcrevendo áudio...'
-    return actualProblemTranscription?.text ?? actualProblem
-  }
-  const getProceduresValue = () => {
-    if (isProceduresTranscribing) return 'Transcrevendo áudio...'
-    return proceduresTranscription?.text ?? procedures
-  }
+  useEffect(() => {
+    const newText = actualProblemTranscription?.text
+    setActualProblem(newText)
+    setValue('actualProblem', newText, {
+      shouldDirty: true,
+    })
+  }, [actualProblemTranscription])
+
+  useEffect(() => {
+    const newText = proceduresTranscription?.text
+
+    setProcedures(newText)
+    setValue('procedures', newText, {
+      shouldDirty: true,
+    })
+  }, [proceduresTranscription])
 
   return (
     <Form onSubmit={handleSubmit(setProgress)} {...formProps}>
@@ -188,17 +203,25 @@ export default function ProgressForm({
         </Input.Root>
 
         <Input.Root>
-          <Input.Label notSave={dirtyFields.actualProblem}>
-            Problema atual
-          </Input.Label>
-          <TextEditor
+          <Input.Label>Problema atual</Input.Label>
+          <TextEditor.Root
             disabled={isActualProblemTranscribing}
-            content={getActualProblemValue()}
+            content={actualProblem}
             onChange={(html) => {
               setValue('actualProblem', html, { shouldDirty: true })
+              setActualProblem(html)
             }}
           >
-            <div className="flex w-full items-center justify-end gap-2 p-3">
+            <TextEditor.Header />
+            {isActualProblemTranscribing && (
+              <div className="prose prose-sm p-3">
+                <p>Transcrevendo áudio...</p>
+              </div>
+            )}
+            <TextEditor.Editor
+              className={isActualProblemTranscribing ? `invisible` : ''}
+            />
+            <div className="flex w-full items-center justify-end gap-2 px-3 pb-3">
               <AudioRecorder
                 disabled={isActualProblemTranscribing}
                 onRecordComplete={(blob) => {
@@ -206,23 +229,30 @@ export default function ProgressForm({
                 }}
               />
             </div>
-          </TextEditor>
+          </TextEditor.Root>
           {errors.actualProblem && (
             <Input.Message error>{errors.actualProblem.message}</Input.Message>
           )}
         </Input.Root>
 
         <Input.Root>
-          <Input.Label notSave={dirtyFields.procedures}>
-            Procedimentos
-          </Input.Label>
-          <TextEditor
-            content={getProceduresValue()}
+          <Input.Label>Procedimentos</Input.Label>
+          <TextEditor.Root
+            content={procedures}
             disabled={isProceduresTranscribing}
             onChange={(html) => {
               setValue('procedures', html, { shouldDirty: true })
             }}
           >
+            <TextEditor.Header />
+            {isProceduresTranscribing && (
+              <div className="prose prose-sm p-3">
+                <p>Transcrevendo áudio...</p>
+              </div>
+            )}
+            <TextEditor.Editor
+              className={isProceduresTranscribing ? `invisible` : ''}
+            />
             <div className="flex w-full items-center justify-end gap-2 p-3">
               <AudioRecorder
                 disabled={isProceduresTranscribing}
@@ -231,7 +261,7 @@ export default function ProgressForm({
                 }}
               />
             </div>
-          </TextEditor>
+          </TextEditor.Root>
           {errors.procedures && (
             <Input.Message error>{errors.procedures.message}</Input.Message>
           )}
