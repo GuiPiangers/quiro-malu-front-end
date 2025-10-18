@@ -71,8 +71,8 @@ export type ProgressResponse = {
   id: string
   patientId: string
   service: string
-  actualProblem: string
-  procedures: string
+  actualProblem?: string
+  procedures?: string
   date: string
   schedulingId?: string
   createAt?: string

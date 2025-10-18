@@ -43,14 +43,14 @@ export default async function Progress({
                 <div>
                   <h4 className="font-semibold text-main">Problema atual</h4>
                   <SafeHtml
-                    html={progress.actualProblem}
+                    html={progress.actualProblem || ''}
                     className="prose prose-sm prose-p:my-1"
                   />
                 </div>
                 <div>
                   <h4 className="font-semibold text-main">Procedimentos</h4>
                   <SafeHtml
-                    html={progress.procedures}
+                    html={progress.procedures || ''}
                     className="prose prose-sm prose-p:my-1"
                   />
                 </div>
