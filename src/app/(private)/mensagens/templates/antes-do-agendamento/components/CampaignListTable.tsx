@@ -1,0 +1,65 @@
+'use client'
+
+import { Table } from '@/components/table'
+import { BeforeScheduleMessageResponse } from '@/services/message/message'
+import { useRouter } from 'next/navigation'
+
+type CampaignListTableProps = {
+  campaigns: BeforeScheduleMessageResponse[]
+}
+
+export default function CampaignListTable({
+  campaigns,
+}: CampaignListTableProps) {
+  const router = useRouter()
+
+  if (campaigns.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 py-12 text-center text-slate-500">
+        <p>Nenhuma campanha cadastrada ainda.</p>
+        <p className="text-sm">
+          Clique em &quot;Nova Campanha&quot; para começar.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-full max-w-screen-lg">
+      <Table.Root>
+        <Table.Row columns={['1fr', 'auto']}>
+          <Table.Head>Nome da Campanha</Table.Head>
+          <Table.Head>Status</Table.Head>
+        </Table.Row>
+
+        {campaigns.map((campaign) => (
+          <Table.Row
+            key={campaign.id}
+            columns={['1fr', 'auto']}
+            clickable
+            handleOnClick={() =>
+              router.push(
+                `/mensagens/templates/antes-do-agendamento/${campaign.id}`,
+              )
+            }
+          >
+            <Table.Cell className="font-medium text-slate-800">
+              {campaign.name}
+            </Table.Cell>
+            <Table.Cell>
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                  campaign.active
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-slate-100 text-slate-500'
+                }`}
+              >
+                {campaign.active ? 'Ativo' : 'Inativo'}
+              </span>
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Root>
+    </div>
+  )
+}
