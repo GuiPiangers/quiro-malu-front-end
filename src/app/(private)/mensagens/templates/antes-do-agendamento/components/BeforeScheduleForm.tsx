@@ -15,13 +15,44 @@ import {
 import { Copy, User, Phone, Calendar, Clock, Stethoscope } from 'lucide-react'
 import { useState } from 'react'
 import Button from '@/components/Button'
+import { useRouter } from 'next/navigation'
 
 // ── Schema ────────────────────────────────────────────────────────────────────
+
+const TIME_UNITS = ['minutes', 'hours', 'days'] as const
+type TimeUnit = (typeof TIME_UNITS)[number]
+
+const UNIT_MULTIPLIER: Record<TimeUnit, number> = {
+  minutes: 1,
+  hours: 60,
+  days: 1440,
+}
+
+const UNIT_LABELS: Record<TimeUnit, string> = {
+  minutes: 'minutos',
+  hours: 'horas',
+  days: 'dias',
+}
+
+function deriveTimeFields(minutes?: number): {
+  timeValue: number
+  timeUnit: TimeUnit
+} {
+  if (!minutes) return { timeValue: 24, timeUnit: 'hours' }
+  if (minutes % 1440 === 0)
+    return { timeValue: minutes / 1440, timeUnit: 'days' }
+  if (minutes % 60 === 0) return { timeValue: minutes / 60, timeUnit: 'hours' }
+  return { timeValue: minutes, timeUnit: 'minutes' }
+}
 
 const schema = z.object({
   name: z.string().min(1, 'Campo obrigatório'),
   templateMessage: z.string().min(1, 'Campo obrigatório'),
   active: z.boolean(),
+  timeValue: z
+    .number({ invalid_type_error: 'Campo obrigatório' })
+    .min(1, 'Deve ser maior que 0'),
+  timeUnit: z.enum(TIME_UNITS),
 })
 
 type FormData = z.infer<typeof schema>
@@ -104,6 +135,10 @@ export default function BeforeScheduleForm({
 }: BeforeScheduleFormProps) {
   const { handleMessage } = useSnackbarContext()
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const router = useRouter()
+
+  const { timeValue: defaultTimeValue, timeUnit: defaultTimeUnit } =
+    deriveTimeFields(defaultValues?.minutesBeforeSchedule)
 
   const {
     handleSubmit,
@@ -117,6 +152,8 @@ export default function BeforeScheduleForm({
       name: defaultValues?.name ?? '',
       templateMessage: defaultValues?.templateMessage ?? '',
       active: defaultValues?.active ?? true,
+      timeValue: defaultTimeValue,
+      timeUnit: defaultTimeUnit,
     },
   })
 
@@ -124,9 +161,15 @@ export default function BeforeScheduleForm({
   const isActive = useWatch({ control, name: 'active' })
 
   const onSubmit = async (data: FormData) => {
+    const minutesBeforeSchedule =
+      data.timeValue * UNIT_MULTIPLIER[data.timeUnit]
+
     const payload: BeforeScheduleMessageResponse = {
       ...defaultValues,
-      ...data,
+      name: data.name,
+      templateMessage: data.templateMessage,
+      active: data.active,
+      minutesBeforeSchedule,
     }
 
     const res = defaultValues?.id
@@ -140,6 +183,8 @@ export default function BeforeScheduleForm({
         title: 'Template salvo com sucesso!',
         type: 'success',
       })
+      router.push('/mensagens/templates/antes-do-agendamento')
+      router.refresh()
     }
   }
 
@@ -200,6 +245,48 @@ export default function BeforeScheduleForm({
               onCheckedChange={(val) => setValue('active', val)}
               className="data-[state=checked]:bg-main"
             />
+          </div>
+
+          {/* Time before schedule */}
+          <div className="mt-5">
+            <p className="mb-1.5 text-sm font-medium text-slate-700">
+              Antecedência de envio <span className="text-red-500">*</span>
+            </p>
+            <p className="mb-3 text-xs text-slate-500">
+              Com quanto tempo de antecedência a mensagem será disparada
+            </p>
+            <div className="flex items-start gap-2">
+              <div className="w-28">
+                <Input.Root>
+                  <Input.Field
+                    type="number"
+                    min={1}
+                    placeholder="Ex. 24"
+                    disabled={isSubmitting}
+                    error={!!errors.timeValue}
+                    notSave={dirtyFields.timeValue}
+                    {...register('timeValue', { valueAsNumber: true })}
+                  />
+                </Input.Root>
+              </div>
+              <select
+                disabled={isSubmitting}
+                {...register('timeUnit')}
+                className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm focus:border-main focus:outline-none focus:ring-1 focus:ring-main disabled:opacity-50"
+              >
+                {TIME_UNITS.map((unit) => (
+                  <option key={unit} value={unit}>
+                    {UNIT_LABELS[unit]}
+                  </option>
+                ))}
+              </select>
+              <span className="flex h-10 items-center text-sm text-slate-600">
+                antes do agendamento
+              </span>
+            </div>
+            {errors.timeValue && (
+              <Input.Message error>{errors.timeValue.message}</Input.Message>
+            )}
           </div>
         </div>
 
@@ -282,7 +369,7 @@ export default function BeforeScheduleForm({
           {/* WhatsApp bubble */}
           <div className="rounded-xl bg-[#ECE5DD] p-4">
             <div className="relative max-w-xs rounded-lg rounded-tl-none bg-white px-4 py-3 shadow-sm">
-              <p className="whitespace-pre-wrap break-words text-sm text-slate-800 leading-relaxed">
+              <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-slate-800">
                 {previewLines.length > 0 && previewLines[0] !== '' ? (
                   previewLines.map((line, i) => (
                     <span key={i}>
