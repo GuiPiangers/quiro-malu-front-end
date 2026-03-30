@@ -1,6 +1,7 @@
 'use server'
 
 import { api } from '../api/api'
+import { Validate } from '../api/Validate'
 
 export type TriggerDTO<T = unknown> = {
   event: string
@@ -41,27 +42,65 @@ export type BeforeScheduleMessageResponse = {
   name: string
   templateMessage: string
   active: boolean
-  /** Delay in minutes before the schedule. Negative values mean "before". */
   delay?: number
   delayUnit?: 'minutes' | 'hours' | 'days'
+  minutesBeforeSchedule?: number
 }
 
-export type ListBeforeScheduleMessagesResponse = {
-  beforeScheduleMessages: BeforeScheduleMessageResponse[]
-  total: number
-  limit: number
+// Helper para mapear requisições do front-end para o DTO do backend
+function mapToBackendDTO(data: BeforeScheduleMessageResponse) {
+  return {
+    id: data.id,
+    minutesBeforeSchedule: data.minutesBeforeSchedule ?? 1440, // default 24h
+    isActive: data.active,
+    messageTemplate: {
+      textTemplate: data.templateMessage,
+    },
+  }
+}
+
+// Helper para mapear respostas do backend para o formato do front-end
+function mapToFrontendResponse(dto: any): BeforeScheduleMessageResponse {
+  // O backend não salva name, então criamos um nome baseado no tempo
+  const minutes = dto.minutesBeforeSchedule || 0
+  const name =
+    minutes >= 1440
+      ? `Lembrete ${Math.floor(minutes / 1440)} dia(s) antes`
+      : minutes >= 60
+      ? `Lembrete ${Math.floor(minutes / 60)} hora(s) antes`
+      : `Lembrete ${minutes} minuto(s) antes`
+
+  return {
+    id: dto.id,
+    name,
+    templateMessage: dto.messageTemplate?.textTemplate ?? '',
+    active: dto.isActive ?? true,
+    minutesBeforeSchedule: dto.minutesBeforeSchedule,
+  }
 }
 
 export async function listBeforeScheduleMessages() {
-  return await api<ListBeforeScheduleMessagesResponse>(
-    '/beforeScheduleMessages',
-  )
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const res = await api<any[]>('/beforeScheduleMessages')
+  if (Validate.isOk(res) && Array.isArray(res)) {
+    return {
+      beforeScheduleMessages: res.map(mapToFrontendResponse),
+      total: res.length,
+      limit: 100,
+    }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return res as any
 }
 
 export async function getBeforeScheduleMessage(id: string) {
-  return await api<BeforeScheduleMessageResponse>(
-    `/beforeScheduleMessages/${id}`,
-  )
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const res = await api<any>(`/beforeScheduleMessages/${id}`)
+  if (Validate.isOk(res) && !res.error) {
+    return mapToFrontendResponse(res)
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return res as any
 }
 
 export async function createBeforeScheduleMessage(
@@ -69,7 +108,7 @@ export async function createBeforeScheduleMessage(
 ) {
   return await api('/beforeScheduleMessages', {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify(mapToBackendDTO(data)),
   })
 }
 
@@ -78,7 +117,7 @@ export async function updateBeforeScheduleMessage(
   data: BeforeScheduleMessageResponse,
 ) {
   return await api(`/beforeScheduleMessages/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
+    method: 'PATCH',
+    body: JSON.stringify(mapToBackendDTO(data)),
   })
 }
