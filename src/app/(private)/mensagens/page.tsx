@@ -41,8 +41,7 @@ const templateCards: TemplateCard[] = [
   {
     icon: <CalendarClock className="h-6 w-6 text-slate-400" />,
     title: 'Mensagem em data específica',
-    description:
-      'Programe mensagens para serem enviadas em datas específicas.',
+    description: 'Programe mensagens para serem enviadas em datas específicas.',
     available: false,
   },
 ]
@@ -96,7 +95,9 @@ export default function MessageTemplatesPage() {
             {/* Content */}
             <div className="flex flex-col gap-1">
               <h2
-                className={`font-semibold ${card.available ? 'text-slate-800' : 'text-slate-600'}`}
+                className={`font-semibold ${
+                  card.available ? 'text-slate-800' : 'text-slate-600'
+                }`}
               >
                 {card.title}
               </h2>
