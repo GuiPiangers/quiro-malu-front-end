@@ -47,10 +47,17 @@ export type BeforeScheduleMessageResponse = {
   minutesBeforeSchedule?: number
 }
 
+export type ListBeforeScheduleMessagesResponse = {
+  beforeScheduleMessages: BeforeScheduleMessageResponse[]
+  total: number
+  limit: number
+}
+
 // Helper para mapear requisições do front-end para o DTO do backend
 function mapToBackendDTO(data: BeforeScheduleMessageResponse) {
   return {
     id: data.id,
+    name: data.name,
     minutesBeforeSchedule: data.minutesBeforeSchedule ?? 1440, // default 24h
     isActive: data.active,
     messageTemplate: {
@@ -59,20 +66,28 @@ function mapToBackendDTO(data: BeforeScheduleMessageResponse) {
   }
 }
 
+function fallbackNameFromMinutes(minutes: number): string {
+  if (minutes >= 1440) {
+    return `Lembrete ${Math.floor(minutes / 1440)} dia(s) antes`
+  }
+  if (minutes >= 60) {
+    return `Lembrete ${Math.floor(minutes / 60)} hora(s) antes`
+  }
+  return `Lembrete ${minutes} minuto(s) antes`
+}
+
 // Helper para mapear respostas do backend para o formato do front-end
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapToFrontendResponse(dto: any): BeforeScheduleMessageResponse {
-  // O backend não salva name, então criamos um nome baseado no tempo
   const minutes = dto.minutesBeforeSchedule || 0
-  const name =
-    minutes >= 1440
-      ? `Lembrete ${Math.floor(minutes / 1440)} dia(s) antes`
-      : minutes >= 60
-      ? `Lembrete ${Math.floor(minutes / 60)} hora(s) antes`
-      : `Lembrete ${minutes} minuto(s) antes`
+  const fromApi =
+    typeof dto.name === 'string' && dto.name.trim() !== ''
+      ? dto.name.trim()
+      : null
 
   return {
     id: dto.id,
-    name,
+    name: fromApi ?? fallbackNameFromMinutes(minutes),
     templateMessage: dto.messageTemplate?.textTemplate ?? '',
     active: dto.isActive ?? true,
     minutesBeforeSchedule: dto.minutesBeforeSchedule,
@@ -119,5 +134,11 @@ export async function updateBeforeScheduleMessage(
   return await api(`/beforeScheduleMessages/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(mapToBackendDTO(data)),
+  })
+}
+
+export async function deleteBeforeScheduleMessage(id: string) {
+  return await api(`/beforeScheduleMessages/${id}`, {
+    method: 'DELETE',
   })
 }

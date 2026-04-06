@@ -3,6 +3,7 @@
 import { Table } from '@/components/table'
 import { BeforeScheduleMessageResponse } from '@/services/message/message'
 import { useRouter } from 'next/navigation'
+import DeleteBeforeScheduleCampaign from './DeleteBeforeScheduleCampaign'
 
 type CampaignListTableProps = {
   campaigns: BeforeScheduleMessageResponse[]
@@ -27,15 +28,16 @@ export default function CampaignListTable({
   return (
     <div className="w-full max-w-screen-lg">
       <Table.Root>
-        <Table.Row columns={['1fr', 'auto']}>
+        <Table.Row columns={['1fr', 'auto', 'auto']}>
           <Table.Head>Nome da Campanha</Table.Head>
           <Table.Head>Status</Table.Head>
+          <Table.Head className="text-right">Ações</Table.Head>
         </Table.Row>
 
         {campaigns.map((campaign) => (
           <Table.Row
             key={campaign.id}
-            columns={['1fr', 'auto']}
+            columns={['1fr', 'auto', 'auto']}
             clickable
             handleOnClick={() =>
               router.push(
@@ -56,6 +58,18 @@ export default function CampaignListTable({
               >
                 {campaign.active ? 'Ativo' : 'Inativo'}
               </span>
+            </Table.Cell>
+            <Table.Cell
+              className="flex justify-end"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              {campaign.id ? (
+                <DeleteBeforeScheduleCampaign
+                  id={campaign.id}
+                  campaignName={campaign.name}
+                />
+              ) : null}
             </Table.Cell>
           </Table.Row>
         ))}
