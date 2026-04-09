@@ -4,6 +4,7 @@ import Button from '@/components/Button'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import {
+  disconnectWhatsApp,
   getWhatsAppStatus,
   registerWhatsApp,
   type WhatsAppConnectionStatus,
@@ -26,6 +27,7 @@ export default function WhatsAppConnectionCard({
   const [qrCode, setQrCode] = useState<string | null>(null)
   const [instanceName, setInstanceName] = useState<string | null>(null)
   const [isRegistering, setIsRegistering] = useState(false)
+  const [isDisconnecting, setIsDisconnecting] = useState(false)
   const [connectingTimedOut, setConnectingTimedOut] = useState(false)
 
   const connectingNoQrSinceRef = useRef<number | null>(null)
@@ -114,13 +116,34 @@ export default function WhatsAppConnectionCard({
     }
   }, [handleMessage, refreshStatus])
 
+  const handleDisconnect = useCallback(async () => {
+    setIsDisconnecting(true)
+    try {
+      const res = await disconnectWhatsApp()
+      if (Validate.isError(res)) {
+        handleMessage({
+          title: 'Erro!',
+          description: res.message,
+          type: 'error',
+        })
+        return
+      }
+      setInstanceName(null)
+      await refreshStatus()
+      handleMessage({
+        title: 'WhatsApp desconectado',
+        description: res.message,
+        type: 'success',
+      })
+    } finally {
+      setIsDisconnecting(false)
+    }
+  }, [handleMessage, refreshStatus])
+
   const showRegisterAction =
     status === 'NOT_REGISTERED' ||
     status === 'DISCONNECTED' ||
     (status === 'CONNECTING' && connectingTimedOut)
-
-  const showConnecting =
-    status === 'CONNECTING' && !connectingTimedOut && !showRegisterAction
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -134,8 +157,7 @@ export default function WhatsAppConnectionCard({
               WhatsApp da clínica
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              Conecte o WhatsApp para enviar mensagens automáticas aos
-              pacientes. Um registro por clínica.
+              Conecte o WhatsApp para enviar mensagens automáticas aos pacientes
             </p>
             {status === 'CONNECTED' && instanceName ? (
               <p className="mt-2 text-xs text-slate-400">
@@ -149,28 +171,39 @@ export default function WhatsAppConnectionCard({
           <span className="shrink-0 self-start rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
             Conectado
           </span>
-        ) : null}
+        ) : status === 'CONNECTING' ? (
+          <span className="flex shrink-0 items-center gap-1.5 self-start rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-900">
+            <Loader2 className="h-3 w-3 animate-spin text-yellow-800" />
+            Conectando...
+          </span>
+        ) : (
+          <span className="shrink-0 self-start rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">
+            Desconectado
+          </span>
+        )}
       </div>
 
       <div className="mt-6 border-t border-slate-100 pt-6">
         {status === 'CONNECTED' ? (
-          <p className="text-sm text-slate-600">
-            A conexão com o WhatsApp está ativa. Os templates de mensagem
-            poderão ser enviados quando configurados.
-          </p>
-        ) : null}
-
-        {showConnecting ? (
-          <div className="flex flex-col items-start gap-3">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-              <Loader2 className="h-4 w-4 animate-spin text-main" />
-              Conectando...
-            </div>
-            <p className="text-sm text-slate-500">
-              Aguarde enquanto preparamos a conexão. O status será atualizado
-              automaticamente.
-            </p>
-          </div>
+          <Button
+            type="button"
+            color="red"
+            variant="outline"
+            disabled={isDisconnecting}
+            className="w-fit"
+            onClick={() => {
+              handleDisconnect()
+            }}
+          >
+            {isDisconnecting ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Desconectando...
+              </>
+            ) : (
+              'Desconectar'
+            )}
+          </Button>
         ) : null}
 
         {showRegisterAction ? (

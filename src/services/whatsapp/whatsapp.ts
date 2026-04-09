@@ -17,6 +17,10 @@ export type WhatsAppStatusResponse = {
   status: WhatsAppConnectionStatus
 }
 
+export type WhatsAppDisconnectResponse = {
+  message: string
+}
+
 export async function registerWhatsApp() {
   return await api<WhatsAppRegisterResponse>('/whatsapp/register', {
     method: 'POST',
@@ -25,4 +29,10 @@ export async function registerWhatsApp() {
 
 export async function getWhatsAppStatus() {
   return await api<WhatsAppStatusResponse>('/whatsapp/status')
+}
+
+export async function disconnectWhatsApp() {
+  return await api<WhatsAppDisconnectResponse>('/whatsapp/disconnect', {
+    method: 'DELETE',
+  })
 }
