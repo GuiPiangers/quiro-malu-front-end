@@ -61,20 +61,7 @@ export default async function MessageTemplatesPage() {
 
   return (
     <div className="w-full max-w-screen-lg space-y-6">
-      <div>
-        <h1 className="flex items-center gap-2 text-2xl font-semibold text-main">
-          <span className="text-main">📋</span>
-          Templates de Mensagens
-        </h1>
-        <p className="mt-1 text-slate-500">
-          Configure templates de mensagens automáticas para WhatsApp. Selecione
-          o tipo de mensagem que deseja configurar.
-        </p>
-      </div>
-
-      <div>
-        <WhatsAppConnectionCard initialStatus={initialStatus} />
-      </div>
+      <WhatsAppConnectionCard initialStatus={initialStatus} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         {templateCards.map((card) => (
