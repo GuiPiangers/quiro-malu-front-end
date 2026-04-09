@@ -12,7 +12,16 @@ import {
   createBeforeScheduleMessage,
   updateBeforeScheduleMessage,
 } from '@/services/message/message'
-import { Copy, User, Phone, Calendar, Clock, Stethoscope } from 'lucide-react'
+import {
+  Copy,
+  User,
+  Phone,
+  Calendar,
+  Clock,
+  Stethoscope,
+  Users,
+  ListChecks,
+} from 'lucide-react'
 import { useState } from 'react'
 import Button from '@/components/Button'
 import { useRouter } from 'next/navigation'
@@ -73,28 +82,34 @@ const VARIABLES = [
     sample: '(11) 99999-9999',
   },
   {
-    key: '{{data_agendamento}}',
-    label: '{{data_agendamento}}',
+    key: '{{genero_paciente}}',
+    label: '{{genero_paciente}}',
+    icon: <Users className="h-3.5 w-3.5" />,
+    sample: 'Feminino',
+  },
+  {
+    key: '{{data_consulta}}',
+    label: '{{data_consulta}}',
     icon: <Calendar className="h-3.5 w-3.5" />,
     sample: '29/03/2026',
   },
   {
-    key: '{{hora_agendamento}}',
-    label: '{{hora_agendamento}}',
+    key: '{{horario_consulta}}',
+    label: '{{horario_consulta}}',
     icon: <Clock className="h-3.5 w-3.5" />,
     sample: '10:00',
   },
   {
-    key: '{{nome_servico}}',
-    label: '{{nome_servico}}',
+    key: '{{servico_consulta}}',
+    label: '{{servico_consulta}}',
     icon: <Stethoscope className="h-3.5 w-3.5" />,
     sample: 'Quiropraxia',
   },
   {
-    key: '{{nome_profissional}}',
-    label: '{{nome_profissional}}',
-    icon: <User className="h-3.5 w-3.5" />,
-    sample: 'Dra. Malu',
+    key: '{{status_consulta}}',
+    label: '{{status_consulta}}',
+    icon: <ListChecks className="h-3.5 w-3.5" />,
+    sample: 'Confirmada',
   },
 ]
 
@@ -255,9 +270,9 @@ export default function BeforeScheduleForm({
             <p className="mb-3 text-xs text-slate-500">
               Com quanto tempo de antecedência a mensagem será disparada
             </p>
-            <div className="flex items-start gap-2">
-              <div className="w-28">
-                <Input.Root>
+            <div className="flex min-w-0 items-start gap-2">
+              <div className="w-28 shrink-0">
+                <Input.Root className="max-w-full">
                   <Input.Field
                     type="number"
                     min={1}
@@ -265,6 +280,14 @@ export default function BeforeScheduleForm({
                     disabled={isSubmitting}
                     error={!!errors.timeValue}
                     notSave={dirtyFields.timeValue}
+                    slotProps={{
+                      root: {
+                        className: 'w-full min-w-0 max-w-full overflow-hidden',
+                      },
+                      input: {
+                        className: 'min-w-0 max-w-full !flex-grow-0 basis-full',
+                      },
+                    }}
                     {...register('timeValue', { valueAsNumber: true })}
                   />
                 </Input.Root>
@@ -308,7 +331,7 @@ export default function BeforeScheduleForm({
             <Input.Field
               multiline
               minRows={7}
-              placeholder={`Ex. Olá {{nome_paciente}}! 👋\n\nEste é um lembrete da sua consulta agendada para *{{data_agendamento}}* às *{{hora_agendamento}}*.`}
+              placeholder={`Ex. Olá {{nome_paciente}}! 👋\n\nLembrete da sua consulta em *{{data_consulta}}* às *{{horario_consulta}}* — {{servico_consulta}} ({{status_consulta}}).`}
               autoComplete="off"
               disabled={isSubmitting}
               error={!!errors.templateMessage}
