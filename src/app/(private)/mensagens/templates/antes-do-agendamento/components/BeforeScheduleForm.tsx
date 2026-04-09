@@ -1,0 +1,455 @@
+'use client'
+
+import { Input } from '@/components/input'
+import { Validate } from '@/services/api/Validate'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Controller, useForm, useWatch } from 'react-hook-form'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
+import { z } from 'zod'
+import { Switch } from '@/components/ui/switch'
+import {
+  BeforeScheduleMessageResponse,
+  createBeforeScheduleMessage,
+  updateBeforeScheduleMessage,
+} from '@/services/message/message'
+import {
+  Copy,
+  User,
+  Phone,
+  Calendar,
+  Clock,
+  Stethoscope,
+  Users,
+  ListChecks,
+} from 'lucide-react'
+import { useState } from 'react'
+import Button from '@/components/Button'
+import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
+import { useRouter } from 'next/navigation'
+
+// ── Schema ────────────────────────────────────────────────────────────────────
+
+const TIME_UNITS = ['minutes', 'hours', 'days'] as const
+type TimeUnit = (typeof TIME_UNITS)[number]
+
+const UNIT_MULTIPLIER: Record<TimeUnit, number> = {
+  minutes: 1,
+  hours: 60,
+  days: 1440,
+}
+
+const UNIT_LABELS: Record<TimeUnit, string> = {
+  minutes: 'minutos',
+  hours: 'horas',
+  days: 'dias',
+}
+
+function deriveTimeFields(minutes?: number): {
+  timeValue: number
+  timeUnit: TimeUnit
+} {
+  if (!minutes) return { timeValue: 24, timeUnit: 'hours' }
+  if (minutes % 1440 === 0)
+    return { timeValue: minutes / 1440, timeUnit: 'days' }
+  if (minutes % 60 === 0) return { timeValue: minutes / 60, timeUnit: 'hours' }
+  return { timeValue: minutes, timeUnit: 'minutes' }
+}
+
+const schema = z.object({
+  name: z.string().min(1, 'Campo obrigatório'),
+  templateMessage: z.string().min(1, 'Campo obrigatório'),
+  active: z.boolean(),
+  timeValue: z
+    .number({ invalid_type_error: 'Campo obrigatório' })
+    .min(1, 'Deve ser maior que 0'),
+  timeUnit: z.enum(TIME_UNITS),
+})
+
+type FormData = z.infer<typeof schema>
+
+// ── Available variables ───────────────────────────────────────────────────────
+
+const VARIABLES = [
+  {
+    key: '{{nome_paciente}}',
+    label: '{{nome_paciente}}',
+    icon: <User className="h-3.5 w-3.5" />,
+    sample: 'Maria Silva',
+  },
+  {
+    key: '{{telefone_paciente}}',
+    label: '{{telefone_paciente}}',
+    icon: <Phone className="h-3.5 w-3.5" />,
+    sample: '(11) 99999-9999',
+  },
+  {
+    key: '{{genero_paciente}}',
+    label: '{{genero_paciente}}',
+    icon: <Users className="h-3.5 w-3.5" />,
+    sample: 'Feminino',
+  },
+  {
+    key: '{{data_consulta}}',
+    label: '{{data_consulta}}',
+    icon: <Calendar className="h-3.5 w-3.5" />,
+    sample: '29/03/2026',
+  },
+  {
+    key: '{{horario_consulta}}',
+    label: '{{horario_consulta}}',
+    icon: <Clock className="h-3.5 w-3.5" />,
+    sample: '10:00',
+  },
+  {
+    key: '{{servico_consulta}}',
+    label: '{{servico_consulta}}',
+    icon: <Stethoscope className="h-3.5 w-3.5" />,
+    sample: 'Quiropraxia',
+  },
+  {
+    key: '{{status_consulta}}',
+    label: '{{status_consulta}}',
+    icon: <ListChecks className="h-3.5 w-3.5" />,
+    sample: 'Confirmada',
+  },
+]
+
+const TEMPLATE_VARIABLE_OPTIONS = VARIABLES.map(({ key, label }) => ({
+  value: key,
+  label,
+}))
+
+// ── Preview renderer ──────────────────────────────────────────────────────────
+
+function renderPreview(template: string): string {
+  let result = template
+  for (const { key, sample } of VARIABLES) {
+    result = result.split(key).join(sample)
+  }
+  return result
+}
+
+/** Renders WhatsApp-style *bold* markdown */
+function WhatsAppText({ text }: { text: string }) {
+  const parts = text.split(/(\*[^*]+\*)/)
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.startsWith('*') && part.endsWith('*') ? (
+          <strong key={i}>{part.slice(1, -1)}</strong>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
+      )}
+    </>
+  )
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
+type BeforeScheduleFormProps = {
+  defaultValues?: Partial<BeforeScheduleMessageResponse>
+}
+
+export default function BeforeScheduleForm({
+  defaultValues,
+}: BeforeScheduleFormProps) {
+  const { handleMessage } = useSnackbarContext()
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const router = useRouter()
+
+  const { timeValue: defaultTimeValue, timeUnit: defaultTimeUnit } =
+    deriveTimeFields(defaultValues?.minutesBeforeSchedule)
+
+  const {
+    handleSubmit,
+    register,
+    control,
+    setValue,
+    formState: { isSubmitting, errors, dirtyFields },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: defaultValues?.name ?? '',
+      templateMessage: defaultValues?.templateMessage ?? '',
+      active: defaultValues?.active ?? true,
+      timeValue: defaultTimeValue,
+      timeUnit: defaultTimeUnit,
+    },
+  })
+
+  const templateMessage = useWatch({ control, name: 'templateMessage' })
+  const isActive = useWatch({ control, name: 'active' })
+
+  const onSubmit = async (data: FormData) => {
+    const minutesBeforeSchedule =
+      data.timeValue * UNIT_MULTIPLIER[data.timeUnit]
+
+    const payload: BeforeScheduleMessageResponse = {
+      ...defaultValues,
+      name: data.name,
+      templateMessage: data.templateMessage,
+      active: data.active,
+      minutesBeforeSchedule,
+    }
+
+    const res = defaultValues?.id
+      ? await updateBeforeScheduleMessage(defaultValues.id, payload)
+      : await createBeforeScheduleMessage(payload)
+
+    if (Validate.isError(res)) {
+      handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
+    } else {
+      handleMessage({
+        title: 'Template salvo com sucesso!',
+        type: 'success',
+      })
+      router.push('/mensagens/templates/antes-do-agendamento')
+      router.refresh()
+    }
+  }
+
+  const copyToClipboard = (key: string) => {
+    navigator.clipboard.writeText(key)
+    setCopiedKey(key)
+    setTimeout(() => setCopiedKey(null), 1500)
+  }
+
+  const previewLines = renderPreview(templateMessage ?? '').split('\n')
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="grid w-full max-w-screen-lg gap-6 lg:grid-cols-[1fr_360px]"
+    >
+      {/* ── Left column ─────────────────────────────────────────── */}
+      <div className="flex flex-col gap-6">
+        {/* Section: Dados do Template */}
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-1 text-lg font-semibold text-main">
+            Dados do Template
+          </h2>
+          <p className="mb-5 text-sm text-slate-500">
+            Configure o nome e status do template de mensagem
+          </p>
+
+          {/* Name */}
+          <Input.Root>
+            <Input.Label required notSave={dirtyFields.name}>
+              Nome
+            </Input.Label>
+            <Input.Field
+              placeholder="Ex. Lembrete de Consulta"
+              autoComplete="off"
+              disabled={isSubmitting}
+              error={!!errors.name}
+              notSave={dirtyFields.name}
+              {...register('name')}
+            />
+            {errors.name && (
+              <Input.Message error>{errors.name.message}</Input.Message>
+            )}
+          </Input.Root>
+
+          {/* Active toggle */}
+          <div className="mt-5 flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <div>
+              <p className="text-sm font-medium text-slate-700">
+                Template ativo
+              </p>
+              <p className="text-xs text-slate-500">
+                Quando ativo, as mensagens serão enviadas automaticamente
+              </p>
+            </div>
+            <Switch
+              checked={isActive}
+              onCheckedChange={(val) => setValue('active', val)}
+              className="data-[state=checked]:bg-main"
+            />
+          </div>
+
+          {/* Time before schedule */}
+          <div className="mt-5">
+            <p className="mb-1.5 text-sm font-medium text-slate-700">
+              Antecedência de envio <span className="text-red-500">*</span>
+            </p>
+            <p className="mb-3 text-xs text-slate-500">
+              Com quanto tempo de antecedência a mensagem será disparada
+            </p>
+            <div className="flex min-w-0 items-start gap-2">
+              <div className="w-28 shrink-0">
+                <Input.Root className="max-w-full">
+                  <Input.Field
+                    type="number"
+                    min={1}
+                    placeholder="Ex. 24"
+                    disabled={isSubmitting}
+                    error={!!errors.timeValue}
+                    notSave={dirtyFields.timeValue}
+                    slotProps={{
+                      root: {
+                        className: 'w-full min-w-0 max-w-full overflow-hidden',
+                      },
+                      input: {
+                        className: 'min-w-0 max-w-full !flex-grow-0 basis-full',
+                      },
+                    }}
+                    {...register('timeValue', { valueAsNumber: true })}
+                  />
+                </Input.Root>
+              </div>
+              <select
+                disabled={isSubmitting}
+                {...register('timeUnit')}
+                className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm focus:border-main focus:outline-none focus:ring-1 focus:ring-main disabled:opacity-50"
+              >
+                {TIME_UNITS.map((unit) => (
+                  <option key={unit} value={unit}>
+                    {UNIT_LABELS[unit]}
+                  </option>
+                ))}
+              </select>
+              <span className="flex h-10 items-center text-sm text-slate-600">
+                antes do agendamento
+              </span>
+            </div>
+            {errors.timeValue && (
+              <Input.Message error>{errors.timeValue.message}</Input.Message>
+            )}
+          </div>
+        </div>
+
+        {/* Section: Conteúdo do Template */}
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-1 text-lg font-semibold text-main">
+            Conteúdo do Template
+          </h2>
+          <p className="mb-5 text-sm text-slate-500">
+            Escreva a mensagem que será enviada aos pacientes. Use as variáveis
+            para personalizar.
+          </p>
+
+          {/* Template textarea */}
+          <Input.Root>
+            <Input.Label required notSave={dirtyFields.templateMessage}>
+              Mensagem
+            </Input.Label>
+            <Controller
+              name="templateMessage"
+              control={control}
+              render={({ field }) => {
+                const { ref, ...fieldProps } = field
+                return (
+                  <BraceAutocompleteTextarea
+                    {...fieldProps}
+                    options={TEMPLATE_VARIABLE_OPTIONS}
+                    minRows={7}
+                    placeholder={`Ex. Olá {{nome_paciente}}! 👋\n\nLembrete da sua consulta em *{{data_consulta}}* às *{{horario_consulta}}* — {{servico_consulta}} ({{status_consulta}}).`}
+                    autoComplete="off"
+                    disabled={isSubmitting}
+                    error={!!errors.templateMessage}
+                    notSave={dirtyFields.templateMessage}
+                    slotProps={{
+                      input: { ref },
+                    }}
+                  />
+                )
+              }}
+            />
+            {errors.templateMessage && (
+              <Input.Message error>
+                {errors.templateMessage.message}
+              </Input.Message>
+            )}
+          </Input.Root>
+
+          {/* Variables panel */}
+          <div className="mt-4 rounded-lg border border-purple-100 bg-purple-50 p-4">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-main">
+              Variáveis disponíveis
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {VARIABLES.map(({ key, label, icon }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => copyToClipboard(key)}
+                  className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-xs text-slate-600 transition hover:border-main hover:text-main"
+                >
+                  <span className="flex items-center gap-1.5">
+                    {icon}
+                    <span className="font-mono">{label}</span>
+                  </span>
+                  <Copy
+                    className={`h-3.5 w-3.5 shrink-0 transition ${
+                      copiedKey === key ? 'text-green-500' : 'text-slate-400'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-slate-400">
+              Digite <span className="font-mono">{'{{'}</span> na mensagem para
+              sugerir variáveis, ou clique para copiar. Use{' '}
+              <span className="font-mono">*texto*</span> para negrito no
+              WhatsApp.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Right column: Preview ────────────────────────────────── */}
+      <div className="flex flex-col gap-4">
+        <div className="sticky top-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-main">
+            <span>👁️</span> Pré-visualização
+          </h2>
+          <p className="mb-5 text-sm text-slate-500">
+            Veja como a mensagem ficará para o paciente
+          </p>
+
+          {/* WhatsApp bubble */}
+          <div className="rounded-xl bg-[#ECE5DD] p-4">
+            <div className="relative max-w-xs rounded-lg rounded-tl-none bg-white px-4 py-3 shadow-sm">
+              <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-slate-800">
+                {previewLines.length > 0 && previewLines[0] !== '' ? (
+                  previewLines.map((line, i) => (
+                    <span key={i}>
+                      <WhatsAppText text={line} />
+                      {i < previewLines.length - 1 && <br />}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-slate-400">
+                    Digite sua mensagem para visualizar a pré-visualização...
+                  </span>
+                )}
+              </p>
+              <p className="mt-1 text-right text-[10px] text-slate-400">
+                14:30
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-2 text-center text-xs text-slate-400">
+            Exemplo com dados fictícios
+          </p>
+        </div>
+      </div>
+
+      {/* ── Save button ──────────────────────────────────────────── */}
+      <div className="lg:col-span-2">
+        <div className="flex rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <Button
+            type="submit"
+            color="green"
+            disabled={isSubmitting}
+            className="flex items-center gap-2"
+          >
+            Salvar
+          </Button>
+        </div>
+      </div>
+    </form>
+  )
+}

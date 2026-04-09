@@ -1,20 +1,29 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import UnderlineExtension from '@tiptap/extension-underline'
 import Heading from '@tiptap/extension-heading'
 import { TextStyle } from '@tiptap/extension-text-style'
-import { Bold, Italic, Underline } from 'lucide-react'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { cn } from '@/lib/utils'
+import { ActiveBlock, TextEditorContext } from '@/contexts/TextEditorContext'
 
-interface TextEditorProps {
+interface TextEditorRootProps {
   content?: string
   onChange?: (richText: string) => void
+  className?: string
+  children?: ReactNode
+  disabled?: boolean
 }
 
-export function TextEditor({ content, onChange }: TextEditorProps) {
+export function TextEditorRoot({
+  content,
+  onChange,
+  className,
+  children,
+  disabled,
+}: TextEditorRootProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -23,6 +32,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
       TextStyle,
     ],
     immediatelyRender: true,
+    editable: !disabled,
     content,
     onUpdate({ editor }) {
       onChange?.(editor.getHTML())
@@ -35,15 +45,28 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
     },
   })
 
+  useEffect(() => {
+    editor?.setEditable(!disabled)
+  }, [disabled, editor])
+
+  useEffect(() => {
+    if (!editor) return
+    const current = editor.getHTML()
+
+    if (content && content !== current) {
+      editor.commands.setContent(content, {
+        emitUpdate: false,
+      })
+    }
+  }, [content, editor])
+
   const [activeMarks, setActiveMarks] = useState({
     bold: false,
     italic: false,
     underline: false,
   })
 
-  const [activeBlock, setActiveBlock] = useState<
-    'paragraph' | 'h1' | 'h2' | 'h3'
-  >('paragraph')
+  const [activeBlock, setActiveBlock] = useState<ActiveBlock>('paragraph')
 
   const updateStates = useCallback(() => {
     if (!editor) return
@@ -53,8 +76,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
       underline: editor.isActive('underline'),
     }
 
-    // bloco atual: checa heading level ou paragraph
-    let nextBlock: typeof activeBlock = 'paragraph'
+    let nextBlock: ActiveBlock = 'paragraph'
     if (editor.isActive('heading', { level: 1 })) nextBlock = 'h1'
     else if (editor.isActive('heading', { level: 2 })) nextBlock = 'h2'
     else if (editor.isActive('heading', { level: 3 })) nextBlock = 'h3'
@@ -112,7 +134,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
     }
 
   const handleSetBlock = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const block = e.target.value as 'paragraph' | 'h1' | 'h2' | 'h3'
+    const block = e.target.value as ActiveBlock
     if (!editor) return
     if (block === 'paragraph') {
       editor.chain().focus().setNode('paragraph').run()
@@ -124,62 +146,18 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
   }
 
   return (
-    <div className="border-input rounded-md border">
-      {editor && (
-        <div className="flex flex-col gap-2 border-b p-2">
-          <div className="flex items-center gap-2">
-            <ToggleGroup
-              type="multiple"
-              value={Object.entries(activeMarks)
-                .filter(([_, v]) => v)
-                .map(([k]) => k)}
-            >
-              <ToggleGroupItem
-                value="bold"
-                aria-label="Bold"
-                onMouseDown={handleToggle('toggleBold')}
-              >
-                <Bold className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem
-                value="italic"
-                aria-label="Italic"
-                onMouseDown={handleToggle('toggleItalic')}
-              >
-                <Italic className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem
-                value="underline"
-                aria-label="Underline"
-                onMouseDown={handleToggle('toggleUnderline')}
-              >
-                <Underline className="h-4 w-4" />
-              </ToggleGroupItem>
-            </ToggleGroup>
-
-            <div className="ml-4">
-              <label className="sr-only">Tipo de bloco</label>
-              <select
-                value={activeBlock}
-                onChange={handleSetBlock}
-                className="cursor-pointer rounded-md border-none bg-transparent px-2 py-1 text-sm font-medium ring-offset-white transition-colors hover:bg-slate-200"
-              >
-                <option value="paragraph">Parágrafo</option>
-                <option value="h1">Título 1</option>
-                <option value="h2">Título 2</option>
-                <option value="h3">Título 3</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      )}
-
+    <TextEditorContext.Provider
+      value={{ editor, activeMarks, activeBlock, handleToggle, handleSetBlock }}
+    >
       <div
-        className="min-h-[120px] w-full px-3 py-3"
-        onClick={() => editor?.commands.focus()}
+        className={cn(
+          'border-input rounded-md border',
+          disabled ? 'cursor-not-allowed bg-gray-100 opacity-70' : 'bg-white',
+          className,
+        )}
       >
-        <EditorContent editor={editor} />
+        {children}
       </div>
-    </div>
+    </TextEditorContext.Provider>
   )
 }

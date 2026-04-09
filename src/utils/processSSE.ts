@@ -1,6 +1,7 @@
 export class ProcessSEE {
   private dataStream?: ReadableStream<unknown>
   private abortController: AbortController | null = null
+  private connectActions: ((data: Response) => void)[] = []
 
   async connect(url: string, init: RequestInit) {
     try {
@@ -10,6 +11,8 @@ export class ProcessSEE {
         signal: this.abortController.signal,
         ...init,
       })
+
+      this.connectActions.forEach((cb) => cb(data))
 
       if (!data.ok || !data.body) {
         console.error('Falha ao conectar ao SSE')
@@ -34,6 +37,10 @@ export class ProcessSEE {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  onConnect(cb: (data: Response) => void) {
+    this.connectActions.push(cb)
   }
 
   onMessage<T>(cb: (data: T) => void) {
