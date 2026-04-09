@@ -3,7 +3,7 @@
 import { Input } from '@/components/input'
 import { Validate } from '@/services/api/Validate'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { z } from 'zod'
 import { Switch } from '@/components/ui/switch'
@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import Button from '@/components/Button'
+import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
 import { useRouter } from 'next/navigation'
 
 // ── Schema ────────────────────────────────────────────────────────────────────
@@ -112,6 +113,11 @@ const VARIABLES = [
     sample: 'Confirmada',
   },
 ]
+
+const TEMPLATE_VARIABLE_OPTIONS = VARIABLES.map(({ key, label }) => ({
+  value: key,
+  label,
+}))
 
 // ── Preview renderer ──────────────────────────────────────────────────────────
 
@@ -328,15 +334,27 @@ export default function BeforeScheduleForm({
             <Input.Label required notSave={dirtyFields.templateMessage}>
               Mensagem
             </Input.Label>
-            <Input.Field
-              multiline
-              minRows={7}
-              placeholder={`Ex. Olá {{nome_paciente}}! 👋\n\nLembrete da sua consulta em *{{data_consulta}}* às *{{horario_consulta}}* — {{servico_consulta}} ({{status_consulta}}).`}
-              autoComplete="off"
-              disabled={isSubmitting}
-              error={!!errors.templateMessage}
-              notSave={dirtyFields.templateMessage}
-              {...register('templateMessage')}
+            <Controller
+              name="templateMessage"
+              control={control}
+              render={({ field }) => {
+                const { ref, ...fieldProps } = field
+                return (
+                  <BraceAutocompleteTextarea
+                    {...fieldProps}
+                    options={TEMPLATE_VARIABLE_OPTIONS}
+                    minRows={7}
+                    placeholder={`Ex. Olá {{nome_paciente}}! 👋\n\nLembrete da sua consulta em *{{data_consulta}}* às *{{horario_consulta}}* — {{servico_consulta}} ({{status_consulta}}).`}
+                    autoComplete="off"
+                    disabled={isSubmitting}
+                    error={!!errors.templateMessage}
+                    notSave={dirtyFields.templateMessage}
+                    slotProps={{
+                      input: { ref },
+                    }}
+                  />
+                )
+              }}
             />
             {errors.templateMessage && (
               <Input.Message error>
@@ -371,7 +389,8 @@ export default function BeforeScheduleForm({
               ))}
             </div>
             <p className="mt-3 text-xs text-slate-400">
-              Clique em uma variável para copiá-la. Use{' '}
+              Digite <span className="font-mono">{'{{'}</span> na mensagem para
+              sugerir variáveis, ou clique para copiar. Use{' '}
               <span className="font-mono">*texto*</span> para negrito no
               WhatsApp.
             </p>
