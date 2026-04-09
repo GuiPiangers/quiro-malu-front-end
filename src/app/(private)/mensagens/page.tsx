@@ -6,6 +6,12 @@ import {
   CalendarClock,
   ArrowRight,
 } from 'lucide-react'
+import WhatsAppConnectionCard from './components/WhatsAppConnectionCard'
+import { Validate } from '@/services/api/Validate'
+import {
+  getWhatsAppStatus,
+  type WhatsAppConnectionStatus,
+} from '@/services/whatsapp/whatsapp'
 
 type TemplateCard = {
   icon: React.ReactNode
@@ -46,7 +52,13 @@ const templateCards: TemplateCard[] = [
   },
 ]
 
-export default function MessageTemplatesPage() {
+export default async function MessageTemplatesPage() {
+  const statusRes = await getWhatsAppStatus()
+  const initialStatus: WhatsAppConnectionStatus =
+    Validate.isOk(statusRes) && 'status' in statusRes
+      ? statusRes.status
+      : 'NOT_REGISTERED'
+
   return (
     <div className="w-full max-w-screen-lg space-y-6">
       <div>
@@ -58,6 +70,10 @@ export default function MessageTemplatesPage() {
           Configure templates de mensagens automáticas para WhatsApp. Selecione
           o tipo de mensagem que deseja configurar.
         </p>
+      </div>
+
+      <div>
+        <WhatsAppConnectionCard initialStatus={initialStatus} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
