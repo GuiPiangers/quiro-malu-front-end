@@ -1,13 +1,32 @@
+import type { ComponentProps } from 'react'
 import Link from 'next/link'
 import { Clock, ArrowLeft, MessageSquare, Settings } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
 import { getBeforeScheduleMessage } from '@/services/message/message'
+import { getMessageLogs } from '@/services/message/messageLogs'
+import { getPatient } from '@/services/patient/patient'
 import BeforeScheduleForm from '../components/BeforeScheduleForm'
 import SentMessagesList from '../components/SentMessagesList'
 
 type PageProps = {
   params: { id: string }
-  searchParams: { aba?: string }
+  searchParams: { aba?: string; page?: string }
+}
+
+async function patientNamesForLogs(
+  patientIds: string[],
+): Promise<Record<string, string>> {
+  const unique = Array.from(new Set(patientIds))
+  const map: Record<string, string> = {}
+  await Promise.all(
+    unique.map(async (id) => {
+      const res = await getPatient(id)
+      if (Validate.isOk(res) && res?.name) {
+        map[id] = res.name
+      }
+    }),
+  )
+  return map
 }
 
 export default async function EditBeforeScheduleCampaignPage({
@@ -19,6 +38,45 @@ export default async function EditBeforeScheduleCampaignPage({
   const messageData = await getBeforeScheduleMessage(params.id).then((res) =>
     Validate.isOk(res) ? res : undefined,
   )
+
+  const logsPage = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1)
+  const logsLimit = 20
+
+  let sentLogsProps: ComponentProps<typeof SentMessagesList> | null = null
+
+  if (activeTab === 'mensagens-enviadas') {
+    const logsRes = await getMessageLogs({
+      beforeScheduleMessageId: params.id,
+      page: logsPage,
+      limit: logsLimit,
+    })
+
+    if (Validate.isOk(logsRes) && 'items' in logsRes) {
+      const items = logsRes.items ?? []
+      const patientNames = await patientNamesForLogs(
+        items.map((i) => i.patientId),
+      )
+      sentLogsProps = {
+        campaignId: params.id,
+        logs: items,
+        total: logsRes.total ?? 0,
+        page: logsRes.page ?? logsPage,
+        limit: logsRes.limit ?? logsLimit,
+        patientNames,
+        fetchError: false,
+      }
+    } else {
+      sentLogsProps = {
+        campaignId: params.id,
+        logs: [],
+        total: 0,
+        page: logsPage,
+        limit: logsLimit,
+        patientNames: {},
+        fetchError: true,
+      }
+    }
+  }
 
   return (
     <div className="w-full max-w-screen-lg space-y-6">
@@ -74,9 +132,9 @@ export default async function EditBeforeScheduleCampaignPage({
       {/* Tab content */}
       {activeTab === 'configuracao' ? (
         <BeforeScheduleForm defaultValues={messageData} />
-      ) : (
-        <SentMessagesList /> /* Pass fetching logic if available in the future */
-      )}
+      ) : sentLogsProps ? (
+        <SentMessagesList {...sentLogsProps} />
+      ) : null}
     </div>
   )
 }
