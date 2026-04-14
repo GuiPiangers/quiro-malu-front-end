@@ -27,6 +27,7 @@ import Button from '@/components/Button'
 import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
 import { WhatsAppMessageBubble } from '@/components/message/WhatsAppMessageBubble'
 import { useRouter } from 'next/navigation'
+import { Box } from '@/components/box/Box'
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 
@@ -208,7 +209,7 @@ export default function BeforeScheduleForm({
       {/* ── Left column ─────────────────────────────────────────── */}
       <div className="flex flex-col gap-6">
         {/* Section: Dados do Template */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <Box>
           <h2 className="mb-1 text-lg font-semibold text-main">
             Dados do Template
           </h2>
@@ -300,10 +301,10 @@ export default function BeforeScheduleForm({
               <Input.Message error>{errors.timeValue.message}</Input.Message>
             )}
           </div>
-        </div>
+        </Box>
 
         {/* Section: Conteúdo do Template */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <Box>
           <h2 className="mb-1 text-lg font-semibold text-main">
             Conteúdo do Template
           </h2>
@@ -378,12 +379,12 @@ export default function BeforeScheduleForm({
               WhatsApp.
             </p>
           </div>
-        </div>
+        </Box>
       </div>
 
       {/* ── Right column: Preview ────────────────────────────────── */}
       <div className="flex flex-col gap-4">
-        <div className="sticky top-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <Box className="sticky top-4">
           <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-main">
             Pré-visualização
           </h2>
@@ -400,12 +401,12 @@ export default function BeforeScheduleForm({
           <p className="mt-2 text-center text-xs text-slate-400">
             Exemplo com dados fictícios
           </p>
-        </div>
+        </Box>
       </div>
 
       {/* ── Save button ──────────────────────────────────────────── */}
       <div className="lg:col-span-2">
-        <div className="flex rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <Box>
           <Button
             type="submit"
             color="green"
@@ -414,7 +415,7 @@ export default function BeforeScheduleForm({
           >
             Salvar
           </Button>
-        </div>
+        </Box>
       </div>
     </form>
   )

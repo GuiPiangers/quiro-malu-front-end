@@ -1,5 +1,6 @@
 'use client'
 
+import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
@@ -146,7 +147,7 @@ export default function WhatsAppConnectionCard({
     (status === 'CONNECTING' && connectingTimedOut)
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <Box>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-50">
@@ -251,6 +252,6 @@ export default function WhatsAppConnectionCard({
           </div>
         ) : null}
       </div>
-    </div>
+    </Box>
   )
 }

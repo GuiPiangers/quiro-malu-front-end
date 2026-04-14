@@ -12,6 +12,7 @@ import {
   getWhatsAppStatus,
   type WhatsAppConnectionStatus,
 } from '@/services/whatsapp/whatsapp'
+import { Box } from '@/components/box/Box'
 
 type TemplateCard = {
   icon: React.ReactNode
@@ -65,9 +66,9 @@ export default async function MessageTemplatesPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {templateCards.map((card) => (
-          <div
+          <Box
             key={card.title}
-            className={`relative flex flex-col gap-3 rounded-xl border bg-white p-6 shadow-sm transition ${
+            className={`relative cursor-pointer transition ${
               card.available
                 ? 'border-slate-200 hover:border-main hover:shadow-md'
                 : 'border-slate-200 opacity-70'
@@ -118,7 +119,7 @@ export default async function MessageTemplatesPage() {
             ) : (
               <p className="mt-1 text-sm text-slate-400">Em desenvolvimento</p>
             )}
-          </div>
+          </Box>
         ))}
       </div>
     </div>

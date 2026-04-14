@@ -10,7 +10,7 @@ export function Box({ children, className, asChild, ...props }: BoxProps) {
     <Element
       {...props}
       className={twMerge(
-        'rounded-xl bg-white p-4 shadow-md shadow-slate-200',
+        'rounded-xl border border-slate-200 bg-white p-6 shadow-sm',
         className,
       )}
     >

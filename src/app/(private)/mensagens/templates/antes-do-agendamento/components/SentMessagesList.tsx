@@ -4,6 +4,7 @@ import type {
   WhatsAppMessageLogDTO,
   WhatsAppMessageLogStatus,
 } from '@/services/message/messageLogs'
+import { Box } from '@/components/box/Box'
 import { WhatsAppMessageBubble } from '@/components/message/WhatsAppMessageBubble'
 import Phone from '@/utils/Phone'
 
@@ -117,10 +118,7 @@ export default function SentMessagesList({
           `Paciente ${log.patientId.slice(0, 8)}…`
 
         return (
-          <div
-            key={log.id}
-            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-          >
+          <Box key={log.id}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 flex-1 space-y-1">
                 <p className="font-medium text-slate-800">{patientName}</p>
@@ -159,7 +157,7 @@ export default function SentMessagesList({
                 />
               </div>
             </details>
-          </div>
+          </Box>
         )
       })}
 

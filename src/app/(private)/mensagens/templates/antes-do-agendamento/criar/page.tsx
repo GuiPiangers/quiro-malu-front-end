@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import { ArrowLeft, Clock } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import BeforeScheduleForm from '../components/BeforeScheduleForm'
 
 export default function CreateBeforeScheduleCampaignPage() {
