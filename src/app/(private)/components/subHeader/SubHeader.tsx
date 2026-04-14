@@ -2,42 +2,34 @@
 
 import PreviousButton from '../PreviousButton'
 import { usePathname } from 'next/navigation'
+import { composeRouteTitle, type RouteTitleEntry } from './composeRouteTitle'
 
-const routes = [
+const routes: RouteTitleEntry[] = [
   { name: 'Home', path: '/' },
   { name: 'Agenda', path: '/scheduling' },
   { name: 'Pacientes', path: '/patients' },
   { name: 'Novo Paciente', path: '/patients/create' },
-  { name: 'Ficha do paciente', path: '/patients/*' },
   { name: 'Evolução', path: '/patients/*/progress' },
   { name: 'Anamnese', path: '/patients/*/anamnesis' },
   { name: 'Exames', path: '/patients/*/exams' },
   { name: 'Diagnóstico', path: '/patients/*/diagnostic' },
   { name: 'Financeiro', path: '/patients/*/finance' },
+  { name: 'Ficha do paciente', path: '/patients/*' },
   { name: 'Serviços', path: '/services' },
   { name: 'Financeiro', path: '/finance' },
   { name: 'Notificações', path: '/notifications' },
   { name: 'Arquivos', path: '/arquivos' },
-  { name: 'Mensagens', path: '/mensagens' },
-  { name: 'Nova Campanha', path: '/mensagens/criar' },
+  {
+    name: 'Nova Campanha',
+    path: '/mensagens/templates/antes-do-agendamento/criar',
+  },
+  { name: 'Mensagens', path: '/mensagens/**' },
 ]
 
 export default function SubHeader() {
   const path = usePathname()
-  const title = routes.find((route) => {
-    const routeArray = route.path.split('/')
-    const pathArray = path.split('/')
-    const index = routeArray.findIndex((route) => route === '*')
+  const title = composeRouteTitle(path, routes)
 
-    if (index >= 0) {
-      const routeSliced = routeArray.filter((_, i) => i !== index)
-      const pathSliced = pathArray.filter((_, i) => i !== index)
-
-      return routeSliced.join('/') === pathSliced.join('/')
-    }
-
-    return path === route.path
-  })?.name
   return (
     <div className="flex w-full gap-6 border-b border-slate-300 px-8 py-2">
       <PreviousButton />
