@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft, Clock, Plus } from 'lucide-react'
+import { Clock, Plus } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
 import { listBeforeScheduleMessages } from '@/services/message/message'
 import CampaignListTable from './components/CampaignListTable'

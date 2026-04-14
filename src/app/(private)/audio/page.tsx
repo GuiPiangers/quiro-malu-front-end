@@ -7,12 +7,9 @@ import { useAudioTranscriber } from '@/hooks/useAudioTranscriber'
 import { useState } from 'react'
 
 export default function AudioPage() {
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
-  const {
-    isPending: isTranscribing,
-    data: transcription,
-    mutate: sendAudioForTranscription,
-  } = useAudioTranscriber()
+  const [audioBlob] = useState<Blob | null>(null)
+  const { data: transcription, mutate: sendAudioForTranscription } =
+    useAudioTranscriber()
 
   return (
     <div className="min-h-screen flex-col items-center justify-center gap-6 bg-gray-100 p-4">

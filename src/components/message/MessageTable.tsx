@@ -3,12 +3,11 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '../ui/card'
 import { Calendar } from 'lucide-react'
-import { PiChatCircle, PiChatCircleThin } from 'react-icons/pi'
+import { PiChatCircleThin } from 'react-icons/pi'
 
 type MessageTableProps = {
   messageCampaignsData?: ListMessageResponse
@@ -19,20 +18,6 @@ export default function MessageTable({
 }: MessageTableProps) {
   const { messageCampaigns } = messageCampaignsData ?? {}
   return (
-    // <Table.Root>
-    //   <Table.Row columns={['1fr', 'auto']}>
-    //     <Table.Head>Nome</Table.Head>
-    //     <Table.Head>Status</Table.Head>
-    //   </Table.Row>
-    //   {messageCampaigns &&
-    //     messageCampaigns.map(({ active, name, id }) => (
-    //       <Table.Row columns={['1fr', 'auto']} key={id}>
-    //         <Table.Cell>{name}</Table.Cell>
-
-    //         <Table.Cell>{active ? 'Ativo' : 'Inativo'}</Table.Cell>
-    //       </Table.Row>
-    //     ))}
-    // </Table.Root>
     <div className="grid gap-4 sm:grid-cols-2">
       {messageCampaigns &&
         messageCampaigns.map((messageCampaign) => (
@@ -65,7 +50,6 @@ export default function MessageTable({
                 </p>
               </div>
             </CardContent>
-            {/* <CardFooter className="flex justify-between pt-0"></CardFooter> */}
           </Card>
         ))}
     </div>

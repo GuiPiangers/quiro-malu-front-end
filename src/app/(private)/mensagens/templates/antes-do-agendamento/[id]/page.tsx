@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react'
 import Link from 'next/link'
-import { Clock, ArrowLeft, MessageSquare, Settings } from 'lucide-react'
+import { Clock, MessageSquare, Settings } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
 import { getBeforeScheduleMessage } from '@/services/message/message'
 import { getMessageLogs } from '@/services/message/messageLogs'
