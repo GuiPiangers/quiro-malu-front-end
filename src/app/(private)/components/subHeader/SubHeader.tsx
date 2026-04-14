@@ -142,7 +142,7 @@ export default function SubHeader() {
   const previousLabel = composePreviousLabel(path, routes)
 
   return (
-    <div className="flex w-full gap-6 border-b border-slate-300 px-8 py-2">
+    <div className="flex w-full flex-row-reverse justify-between gap-0 border-b border-slate-300 px-8 py-2 md:flex-row md:justify-start md:gap-6">
       <PreviousButton href={previousHref} previousLabel={previousLabel} />
       <h1 className="text-2xl font-bold text-main">{title}</h1>
     </div>
