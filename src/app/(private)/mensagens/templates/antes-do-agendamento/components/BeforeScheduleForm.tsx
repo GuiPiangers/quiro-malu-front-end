@@ -25,6 +25,7 @@ import {
 import { useState } from 'react'
 import Button from '@/components/Button'
 import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
+import { WhatsAppMessageBubble } from '@/components/message/WhatsAppMessageBubble'
 import { useRouter } from 'next/navigation'
 
 // ── Schema ────────────────────────────────────────────────────────────────────
@@ -129,22 +130,6 @@ function renderPreview(template: string): string {
   return result
 }
 
-/** Renders WhatsApp-style *bold* markdown */
-function WhatsAppText({ text }: { text: string }) {
-  const parts = text.split(/(\*[^*]+\*)/)
-  return (
-    <>
-      {parts.map((part, i) =>
-        part.startsWith('*') && part.endsWith('*') ? (
-          <strong key={i}>{part.slice(1, -1)}</strong>
-        ) : (
-          <span key={i}>{part}</span>
-        ),
-      )}
-    </>
-  )
-}
-
 // ── Component ─────────────────────────────────────────────────────────────────
 
 type BeforeScheduleFormProps = {
@@ -214,8 +199,6 @@ export default function BeforeScheduleForm({
     setCopiedKey(key)
     setTimeout(() => setCopiedKey(null), 1500)
   }
-
-  const previewLines = renderPreview(templateMessage ?? '').split('\n')
 
   return (
     <form
@@ -402,34 +385,17 @@ export default function BeforeScheduleForm({
       <div className="flex flex-col gap-4">
         <div className="sticky top-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-main">
-            <span>👁️</span> Pré-visualização
+            Pré-visualização
           </h2>
           <p className="mb-5 text-sm text-slate-500">
             Veja como a mensagem ficará para o paciente
           </p>
 
-          {/* WhatsApp bubble */}
-          <div className="rounded-xl bg-[#ECE5DD] p-4">
-            <div className="relative max-w-xs rounded-lg rounded-tl-none bg-white px-4 py-3 shadow-sm">
-              <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-slate-800">
-                {previewLines.length > 0 && previewLines[0] !== '' ? (
-                  previewLines.map((line, i) => (
-                    <span key={i}>
-                      <WhatsAppText text={line} />
-                      {i < previewLines.length - 1 && <br />}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-slate-400">
-                    Digite sua mensagem para visualizar a pré-visualização...
-                  </span>
-                )}
-              </p>
-              <p className="mt-1 text-right text-[10px] text-slate-400">
-                14:30
-              </p>
-            </div>
-          </div>
+          <WhatsAppMessageBubble
+            text={renderPreview(templateMessage ?? '')}
+            timestamp="14:30"
+            emptyPlaceholder="Digite sua mensagem para visualizar a pré-visualização..."
+          />
 
           <p className="mt-2 text-center text-xs text-slate-400">
             Exemplo com dados fictícios
