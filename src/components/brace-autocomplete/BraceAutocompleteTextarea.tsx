@@ -10,8 +10,14 @@ import {
 } from '@/lib/brace-autocomplete'
 import { getTextareaCaretViewportPosition } from '@/lib/textarea-caret-position'
 import type { InputProps } from '@mui/base/Input'
-import type { ChangeEvent, ComponentProps, KeyboardEvent } from 'react'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { ChangeEvent, KeyboardEvent } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { createPortal } from 'react-dom'
 
 const PANEL_WIDTH = 288
@@ -144,12 +150,7 @@ export function BraceAutocompleteTextarea({
         setOpen(false)
         return
       }
-      const list = filterBraceOptions(
-        options,
-        ctx.query,
-        openToken,
-        closeToken,
-      )
+      const list = filterBraceOptions(options, ctx.query, openToken, closeToken)
       setFiltered(list)
       setActiveIndex(0)
       setOpen(list.length > 0)
@@ -166,8 +167,7 @@ export function BraceAutocompleteTextarea({
       const ctx = getActiveBraceQuery(value, cursor, openToken, closeToken)
       if (!ctx) return
 
-      const next =
-        value.slice(0, ctx.start) + opt.value + value.slice(cursor)
+      const next = value.slice(0, ctx.start) + opt.value + value.slice(cursor)
 
       const ev = {
         target: { value: next, name: name ?? '' },
@@ -294,7 +294,9 @@ export function BraceAutocompleteTextarea({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <InputField {...(fieldProps as React.ComponentProps<typeof InputField>)} />
+      <InputField
+        {...(fieldProps as React.ComponentProps<typeof InputField>)}
+      />
       {typeof document !== 'undefined' && list
         ? createPortal(list, document.body)
         : null}

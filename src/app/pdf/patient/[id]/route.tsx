@@ -1,13 +1,10 @@
 import PatientPdf from '@/pdf/patientPdf/PatientPdf'
 import { Validate } from '@/services/api/Validate'
 import {
-  AnamnesisResponse,
-  DiagnosticResponse,
   getAnamnesis,
   getDiagnostic,
   getPatient,
   LocationDTO,
-  PatientResponse,
 } from '@/services/patient/patient'
 import {
   anamnesisPDFData,
