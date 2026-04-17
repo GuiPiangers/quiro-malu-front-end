@@ -2,22 +2,11 @@
 
 import { api, type responseError } from '../api/api'
 import { Validate } from '../api/Validate'
-
-export type AfterScheduleMessageResponse = {
-  id?: string
-  name: string
-  templateMessage: string
-  active: boolean
-  delay?: number
-  delayUnit?: 'minutes' | 'hours' | 'days'
-  minutesAfterSchedule?: number
-}
-
-export type ListAfterScheduleMessagesResponse = {
-  afterScheduleMessages: AfterScheduleMessageResponse[]
-  total: number
-  limit: number
-}
+import type {
+  AfterScheduleMessageDTO,
+  AfterScheduleMessageResponse,
+  ListAfterScheduleMessagesOutput,
+} from './afterScheduleMessageTypes'
 
 type ProfileDTO = {
   id?: string
@@ -63,60 +52,53 @@ function mapToPatchBody(data: AfterScheduleMessageResponse) {
   return body
 }
 
-function fallbackNameFromMinutes(minutes: number): string {
-  if (minutes >= 1440) {
-    return `Mensagem ${Math.floor(minutes / 1440)} dia(s) após`
-  }
-  if (minutes >= 60) {
-    return `Mensagem ${Math.floor(minutes / 60)} hora(s) após`
-  }
-  return `Mensagem ${minutes} minuto(s) após o agendamento`
+function isListAfterScheduleMessagesOutput(
+  value: ListAfterScheduleMessagesOutput | responseError,
+): value is ListAfterScheduleMessagesOutput {
+  if (Validate.isError(value)) return false
+  return (
+    typeof value === 'object' && value !== null && Array.isArray(value.items)
+  )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapToFrontendResponse(dto: any): AfterScheduleMessageResponse {
-  const minutes = dto.minutesAfterSchedule ?? 0
-  const fromApi =
-    typeof dto.name === 'string' && dto.name.trim() !== ''
-      ? dto.name.trim()
-      : null
+export async function listAfterScheduleMessages(): Promise<
+  ListAfterScheduleMessagesOutput | responseError
+> {
+  const res = await api<ListAfterScheduleMessagesOutput | responseError>(
+    '/afterScheduleMessages',
+  )
 
-  return {
-    id: dto.id,
-    name: fromApi ?? fallbackNameFromMinutes(minutes),
-    templateMessage: dto.messageTemplate?.textTemplate ?? '',
-    active: dto.isActive ?? true,
-    minutesAfterSchedule: dto.minutesAfterSchedule,
+  if (Validate.isError(res)) {
+    return res
   }
-}
 
-export async function listAfterScheduleMessages() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const res = await api<any[]>('/afterScheduleMessages')
-  if (Validate.isOk(res) && Array.isArray(res)) {
+  if (!isListAfterScheduleMessagesOutput(res)) {
     return {
-      afterScheduleMessages: res.map(mapToFrontendResponse),
-      total: res.length,
-      limit: 100,
-    }
+      error: true,
+      message: 'Resposta inválida da listagem de mensagens após agendamento.',
+      statusCode: 500,
+      type: 'parse',
+    } satisfies responseError
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return res as any
+
+  return res
 }
 
-export async function getAfterScheduleMessage(id: string) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const res = await api<any>(`/afterScheduleMessages/${id}`)
-  if (Validate.isOk(res) && !res.error) {
-    return mapToFrontendResponse(res)
+export async function getAfterScheduleMessage(
+  id: string,
+): Promise<AfterScheduleMessageDTO | responseError> {
+  const res = await api<AfterScheduleMessageDTO | responseError>(
+    `/afterScheduleMessages/${id}`,
+  )
+  if (Validate.isError(res)) {
+    return res
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return res as any
+  return res
 }
 
 export async function createAfterScheduleMessage(
   data: AfterScheduleMessageResponse,
-) {
+): Promise<AfterScheduleMessageDTO | responseError> {
   const userId = await resolveUserId()
   if (!userId) {
     return {
@@ -127,24 +109,30 @@ export async function createAfterScheduleMessage(
       type: 'auth',
     } satisfies responseError
   }
-  return await api('/afterScheduleMessages', {
-    method: 'POST',
-    body: JSON.stringify(mapToCreateBody(data, userId)),
-  })
+  return await api<AfterScheduleMessageDTO | responseError>(
+    '/afterScheduleMessages',
+    {
+      method: 'POST',
+      body: JSON.stringify(mapToCreateBody(data, userId)),
+    },
+  )
 }
 
 export async function updateAfterScheduleMessage(
   id: string,
   data: AfterScheduleMessageResponse,
-) {
-  return await api(`/afterScheduleMessages/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(mapToPatchBody(data)),
-  })
+): Promise<AfterScheduleMessageDTO | responseError> {
+  return await api<AfterScheduleMessageDTO | responseError>(
+    `/afterScheduleMessages/${id}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(mapToPatchBody(data)),
+    },
+  )
 }
 
-export async function deleteAfterScheduleMessage(id: string) {
-  return await api(`/afterScheduleMessages/${id}`, {
+export async function deleteAfterScheduleMessage(id: string): Promise<unknown> {
+  return await api<unknown>(`/afterScheduleMessages/${id}`, {
     method: 'DELETE',
   })
 }

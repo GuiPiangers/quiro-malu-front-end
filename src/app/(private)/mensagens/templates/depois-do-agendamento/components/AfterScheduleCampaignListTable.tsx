@@ -1,7 +1,7 @@
 'use client'
 
 import { Table } from '@/components/table'
-import type { AfterScheduleMessageResponse } from '@/services/message/afterScheduleMessage'
+import type { AfterScheduleMessageResponse } from '@/services/message/afterScheduleMessageTypes'
 import { useRouter } from 'next/navigation'
 import DeleteAfterScheduleCampaign from './DeleteAfterScheduleCampaign'
 

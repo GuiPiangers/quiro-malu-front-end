@@ -8,10 +8,10 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { z } from 'zod'
 import { Switch } from '@/components/ui/switch'
 import {
-  type AfterScheduleMessageResponse,
   createAfterScheduleMessage,
   updateAfterScheduleMessage,
 } from '@/services/message/afterScheduleMessage'
+import type { AfterScheduleMessageResponse } from '@/services/message/afterScheduleMessageTypes'
 import {
   Copy,
   User,

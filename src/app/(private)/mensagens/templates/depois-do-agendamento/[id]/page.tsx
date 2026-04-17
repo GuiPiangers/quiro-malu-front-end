@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { CalendarCheck, MessageSquare, Settings } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
 import { getAfterScheduleMessage } from '@/services/message/afterScheduleMessage'
+import { mapAfterScheduleDtoToResponse } from '@/services/message/afterScheduleMessageMapper'
 import { getMessageLogs } from '@/services/message/messageLogs'
 import { getPatient } from '@/services/patient/patient'
 import AfterScheduleForm from '../components/AfterScheduleForm'
@@ -37,9 +38,12 @@ export default async function EditAfterScheduleCampaignPage({
 }: PageProps) {
   const activeTab = searchParams.aba ?? 'configuracao'
 
-  const messageData = await getAfterScheduleMessage(params.id).then((res) =>
+  const messageDto = await getAfterScheduleMessage(params.id).then((res) =>
     Validate.isOk(res) ? res : undefined,
   )
+  const messageData = messageDto
+    ? mapAfterScheduleDtoToResponse(messageDto)
+    : undefined
 
   const logsPage = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1)
   const logsLimit = 20

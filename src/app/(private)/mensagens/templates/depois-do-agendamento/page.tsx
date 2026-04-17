@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CalendarCheck, Plus } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
 import { listAfterScheduleMessages } from '@/services/message/afterScheduleMessage'
+import { mapAfterScheduleDtoToResponse } from '@/services/message/afterScheduleMessageMapper'
 import AfterScheduleCampaignListTable from './components/AfterScheduleCampaignListTable'
 import Button from '@/components/Button'
 import { Box } from '@/components/box/Box'
@@ -14,7 +15,9 @@ export default async function AfterScheduleTemplatesListPage() {
     Validate.isOk(res) ? res : undefined,
   )
 
-  const campaigns = listData?.afterScheduleMessages ?? []
+  const campaigns = listData
+    ? listData.items.map((dto) => mapAfterScheduleDtoToResponse(dto))
+    : []
 
   return (
     <div className="w-full max-w-screen-lg space-y-6">
