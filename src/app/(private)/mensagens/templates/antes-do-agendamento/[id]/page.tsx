@@ -2,7 +2,8 @@ import type { ComponentProps } from 'react'
 import Link from 'next/link'
 import { Clock, MessageSquare, Settings } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
-import { getBeforeScheduleMessage } from '@/services/message/message'
+import { getBeforeScheduleMessage } from '@/services/message/beforeScheduleMessage'
+import { mapBeforeScheduleDtoToResponse } from '@/services/message/beforeScheduleMessageMapper'
 import { getMessageLogs } from '@/services/message/messageLogs'
 import { getPatient } from '@/services/patient/patient'
 import BeforeScheduleForm from '../components/BeforeScheduleForm'
@@ -35,9 +36,12 @@ export default async function EditBeforeScheduleCampaignPage({
 }: PageProps) {
   const activeTab = searchParams.aba ?? 'configuracao'
 
-  const messageData = await getBeforeScheduleMessage(params.id).then((res) =>
+  const messageDto = await getBeforeScheduleMessage(params.id).then((res) =>
     Validate.isOk(res) ? res : undefined,
   )
+  const messageData = messageDto
+    ? mapBeforeScheduleDtoToResponse(messageDto)
+    : undefined
 
   const logsPage = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1)
   const logsLimit = 20

@@ -1,7 +1,7 @@
 'use client'
 
 import { Table } from '@/components/table'
-import { BeforeScheduleMessageResponse } from '@/services/message/message'
+import type { BeforeScheduleMessageResponse } from '@/services/message/beforeScheduleMessageTypes'
 import { useRouter } from 'next/navigation'
 import DeleteBeforeScheduleCampaign from './DeleteBeforeScheduleCampaign'
 

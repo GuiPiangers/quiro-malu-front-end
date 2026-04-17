@@ -6,7 +6,7 @@ import ConfirmationModal, {
 } from '@/components/modal/ConfirmationModal'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
-import { deleteBeforeScheduleMessage } from '@/services/message/message'
+import { deleteBeforeScheduleMessage } from '@/services/message/beforeScheduleMessage'
 import { Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef, useState } from 'react'

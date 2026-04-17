@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { Clock, Plus } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
-import { listBeforeScheduleMessages } from '@/services/message/message'
+import { listBeforeScheduleMessages } from '@/services/message/beforeScheduleMessage'
+import { mapBeforeScheduleDtoToResponse } from '@/services/message/beforeScheduleMessageMapper'
 import CampaignListTable from './components/CampaignListTable'
 import Button from '@/components/Button'
 import { Box } from '@/components/box/Box'
@@ -14,7 +15,9 @@ export default async function BeforeScheduleTemplatesListPage() {
     Validate.isOk(res) ? res : undefined,
   )
 
-  const campaigns = listData?.beforeScheduleMessages ?? []
+  const campaigns = listData
+    ? listData.items.map((dto) => mapBeforeScheduleDtoToResponse(dto))
+    : []
 
   return (
     <div className="w-full max-w-screen-lg space-y-6">
