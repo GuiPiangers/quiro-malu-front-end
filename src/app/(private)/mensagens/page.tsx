@@ -39,11 +39,12 @@ const templateCards: TemplateCard[] = [
     available: false,
   },
   {
-    icon: <CalendarCheck className="h-6 w-6 text-slate-400" />,
+    icon: <CalendarCheck className="h-6 w-6 text-main" />,
     title: 'Mensagem após agendamento',
     description:
       'Envie confirmações e informações após o paciente agendar uma consulta.',
-    available: false,
+    available: true,
+    href: '/mensagens/templates/depois-do-agendamento',
   },
   {
     icon: <CalendarClock className="h-6 w-6 text-slate-400" />,
