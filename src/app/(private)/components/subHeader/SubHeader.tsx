@@ -96,10 +96,34 @@ const routes: RouteTitleEntry[] = [
     previousLabel: 'Lembrete consulta',
   },
   {
+    name: 'Nova Campanha',
+    path: '/mensagens/templates/depois-do-agendamento/criar',
+    previousPath: '/mensagens/templates/depois-do-agendamento',
+    previousLabel: 'Após agendamento',
+  },
+  {
     name: 'Mensagens',
-    path: '/mensagens/templates/*/*',
-    previousPath: '/mensagens/templates/*',
+    path: '/mensagens/templates/antes-do-agendamento/*/*',
+    previousPath: '/mensagens/templates/antes-do-agendamento/*',
     previousLabel: 'Lembrete consulta',
+  },
+  {
+    name: 'Mensagens',
+    path: '/mensagens/templates/depois-do-agendamento/*/*',
+    previousPath: '/mensagens/templates/depois-do-agendamento/*',
+    previousLabel: 'Após agendamento',
+  },
+  {
+    name: 'Mensagens',
+    path: '/mensagens/templates/antes-do-agendamento',
+    previousPath: '/mensagens',
+    previousLabel: 'Mensagens',
+  },
+  {
+    name: 'Mensagens',
+    path: '/mensagens/templates/depois-do-agendamento',
+    previousPath: '/mensagens',
+    previousLabel: 'Mensagens',
   },
   {
     name: 'Mensagens',
