@@ -46,7 +46,7 @@ export default async function EditBeforeScheduleCampaignPage({
 
   if (activeTab === 'mensagens-enviadas') {
     const logsRes = await getMessageLogs({
-      beforeScheduleMessageId: params.id,
+      scheduleMessageConfigId: params.id,
       page: logsPage,
       limit: logsLimit,
     })
