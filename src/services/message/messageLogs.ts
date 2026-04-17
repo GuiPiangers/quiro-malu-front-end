@@ -1,6 +1,9 @@
 'use server'
 
 import { api } from '../api/api'
+import type { ScheduleMessageType } from './scheduleMessageTypes'
+
+export type { ScheduleMessageType } from './scheduleMessageTypes'
 
 export type WhatsAppMessageLogStatus =
   | 'PENDING'
@@ -14,7 +17,8 @@ export type WhatsAppMessageLogDTO = {
   userId: string
   patientId: string
   schedulingId: string
-  beforeScheduleMessageId: string
+  scheduleMessageConfigId: string
+  scheduleMessageType: ScheduleMessageType
   message: string
   toPhone: string
   instanceName: string
@@ -42,7 +46,7 @@ export type GetMessageLogsParams = {
   page?: number
   limit?: number
   patientId?: string
-  beforeScheduleMessageId?: string
+  scheduleMessageConfigId?: string
   status?: WhatsAppMessageLogStatus
 }
 
@@ -51,8 +55,8 @@ export async function getMessageLogs(params: GetMessageLogsParams = {}) {
   if (params.page != null) sp.set('page', String(params.page))
   if (params.limit != null) sp.set('limit', String(params.limit))
   if (params.patientId) sp.set('patientId', params.patientId)
-  if (params.beforeScheduleMessageId)
-    sp.set('beforeScheduleMessageId', params.beforeScheduleMessageId)
+  if (params.scheduleMessageConfigId)
+    sp.set('scheduleMessageConfigId', params.scheduleMessageConfigId)
   if (params.status) sp.set('status', params.status)
 
   const qs = sp.toString()
