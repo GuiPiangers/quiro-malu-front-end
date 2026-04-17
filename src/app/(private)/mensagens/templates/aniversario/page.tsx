@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Cake, Plus } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
 import { listBirthdayMessages } from '@/services/message/birthdayMessage'
+import { mapBirthdayDtoToResponse } from '@/services/message/birthdayMessageMapper'
 import BirthdayCampaignListTable from './components/BirthdayCampaignListTable'
 import Button from '@/components/Button'
 import { Box } from '@/components/box/Box'
@@ -14,7 +15,9 @@ export default async function BirthdayTemplatesListPage() {
     Validate.isOk(res) ? res : undefined,
   )
 
-  const campaigns = listData?.items ?? []
+  const campaigns = listData
+    ? listData.items.map((dto) => mapBirthdayDtoToResponse(dto))
+    : []
 
   return (
     <div className="w-full max-w-screen-lg space-y-6">

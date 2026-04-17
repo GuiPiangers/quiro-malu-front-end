@@ -1,7 +1,7 @@
 'use client'
 
 import { Table } from '@/components/table'
-import type { BirthdayMessageResponse } from '@/services/message/birthdayMessage'
+import type { BirthdayMessageResponse } from '@/services/message/birthdayMessageTypes'
 import { useRouter } from 'next/navigation'
 import DeleteBirthdayCampaign from './DeleteBirthdayCampaign'
 

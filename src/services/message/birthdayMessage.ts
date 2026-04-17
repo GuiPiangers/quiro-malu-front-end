@@ -1,34 +1,28 @@
 'use server'
 
-import { api } from '../api/api'
+import { api, type responseError } from '../api/api'
 import { Validate } from '../api/Validate'
+import { DEFAULT_BIRTHDAY_SEND_TIME } from './birthdayMessageConstants'
+import type {
+  BirthdayMessageDTO,
+  BirthdayMessageResponse,
+  ListBirthdayMessagesDTO,
+  ListBirthdayMessagesOutput,
+} from './birthdayMessageTypes'
 
-/** Item retornado pelo GET `/birthdayMessages` (antes do mapeamento para o form). */
-export type BirthdayMessageDTO = {
+type ProfileDTO = {
   id?: string
-  name: string
-  isActive?: boolean
-  sendTime?: string | number
-  messageTemplate?: { textTemplate?: string }
+  userId?: string
 }
 
-export type BirthdayMessageResponse = {
-  id?: string
-  name: string
-  templateMessage: string
-  active: boolean
-  /** HH:mm (ex.: 09:00) */
-  sendTime?: string
+async function resolveUserId(): Promise<string | undefined> {
+  const res = await api<ProfileDTO>('/profile', {
+    method: 'GET',
+    cache: 'no-store',
+  })
+  if (!Validate.isOk(res)) return undefined
+  return res.id ?? res.userId
 }
-
-export type ListBirthdayMessagesResponse = {
-  items: BirthdayMessageResponse[]
-  total: number
-  page: number
-  limit: number
-}
-
-const DEFAULT_SEND_TIME = '09:00'
 
 function sendTimeToMinutes(hhmm: string): number {
   const [h, m] = hhmm.split(':').map((x) => parseInt(x, 10))
@@ -36,38 +30,11 @@ function sendTimeToMinutes(hhmm: string): number {
   return (h % 24) * 60 + (m % 60)
 }
 
-function minutesToSendTime(total: number): string {
-  const t = ((total % (24 * 60)) + 24 * 60) % (24 * 60)
-  const h = Math.floor(t / 60)
-  const m = t % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-}
-
-function normalizeSendTimeFromDto(dto: unknown): string {
-  if (dto == null || typeof dto !== 'object') return DEFAULT_SEND_TIME
-  const v = (dto as { sendTime?: unknown }).sendTime
-  if (typeof v === 'string' && /\d{1,2}:\d{2}/.test(v)) {
-    const raw = v.trim().slice(0, 8)
-    const [hs, ms] = raw.split(':')
-    const hh = String(
-      Math.min(23, Math.max(0, parseInt(hs, 10) || 0)),
-    ).padStart(2, '0')
-    const mm = String(
-      Math.min(59, Math.max(0, parseInt(ms ?? '0', 10) || 0)),
-    ).padStart(2, '0')
-    return `${hh}:${mm}`
-  }
-  if (typeof v === 'number' && Number.isFinite(v)) {
-    return minutesToSendTime(Math.round(v))
-  }
-  return DEFAULT_SEND_TIME
-}
-
 function mapToCreateBody(data: BirthdayMessageResponse) {
   return {
     name: data.name,
     isActive: data.active,
-    sendTime: data.sendTime ?? DEFAULT_SEND_TIME,
+    sendTime: data.sendTime ?? DEFAULT_BIRTHDAY_SEND_TIME,
     messageTemplate: {
       textTemplate: data.templateMessage,
     },
@@ -92,55 +59,70 @@ function mapToPatchBody(data: BirthdayMessageResponse) {
   return body
 }
 
-function mapToFrontendResponse(
-  dto: BirthdayMessageDTO,
-): BirthdayMessageResponse {
-  return {
-    id: dto.id,
-    name: typeof dto.name === 'string' ? dto.name.trim() : '',
-    templateMessage: dto.messageTemplate?.textTemplate ?? '',
-    active: dto.isActive ?? true,
-    sendTime: normalizeSendTimeFromDto(dto),
-  }
+function isListBirthdayMessagesOutput(
+  value: ListBirthdayMessagesOutput | responseError,
+): value is ListBirthdayMessagesOutput {
+  if (Validate.isError(value)) return false
+  return (
+    typeof value === 'object' && value !== null && Array.isArray(value.items)
+  )
 }
 
-type BirthdayMessagesListApi = {
-  items: BirthdayMessageDTO[]
-  total: number
-  page: number
-  limit: number
-}
-
-export async function listBirthdayMessages() {
-  const res = await api<BirthdayMessagesListApi>('/birthdayMessages')
-  if (
-    Validate.isOk(res) &&
-    res &&
-    typeof res === 'object' &&
-    Array.isArray(res.items)
-  ) {
+export async function listBirthdayMessages(
+  params?: Partial<ListBirthdayMessagesDTO>,
+): Promise<ListBirthdayMessagesOutput | responseError> {
+  const userId = params?.userId ?? (await resolveUserId())
+  if (!userId) {
     return {
-      items: res.items.map(mapToFrontendResponse),
-      total: res.total ?? 0,
-      page: res.page ?? 1,
-      limit: res.limit ?? res.items.length,
-    }
+      error: true,
+      message:
+        'Não foi possível identificar o usuário. Verifique se o perfil retorna id.',
+      statusCode: 401,
+      type: 'auth',
+    } satisfies responseError
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return res as any
+
+  const sp = new URLSearchParams()
+  sp.set('userId', userId)
+  if (params?.page != null) sp.set('page', String(params.page))
+  if (params?.limit != null) sp.set('limit', String(params.limit))
+
+  const res = await api<ListBirthdayMessagesOutput | responseError>(
+    `/birthdayMessages?${sp.toString()}`,
+  )
+
+  if (Validate.isError(res)) {
+    return res
+  }
+
+  if (!isListBirthdayMessagesOutput(res)) {
+    return {
+      error: true,
+      message: 'Resposta inválida da listagem de aniversários.',
+      statusCode: 500,
+      type: 'parse',
+    } satisfies responseError
+  }
+
+  return res
 }
 
-export async function getBirthdayMessage(id: string) {
-  const res = await api<BirthdayMessageDTO>(`/birthdayMessages/${id}`)
-  if (Validate.isOk(res)) {
-    return mapToFrontendResponse(res)
+export async function getBirthdayMessage(
+  id: string,
+): Promise<BirthdayMessageDTO | responseError> {
+  const res = await api<BirthdayMessageDTO | responseError>(
+    `/birthdayMessages/${id}`,
+  )
+  if (Validate.isError(res)) {
+    return res
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return res as any
+  return res
 }
 
-export async function createBirthdayMessage(data: BirthdayMessageResponse) {
-  return await api('/birthdayMessages', {
+export async function createBirthdayMessage(
+  data: BirthdayMessageResponse,
+): Promise<BirthdayMessageDTO | responseError> {
+  return await api<BirthdayMessageDTO | responseError>('/birthdayMessages', {
     method: 'POST',
     body: JSON.stringify(mapToCreateBody(data)),
   })
@@ -149,15 +131,18 @@ export async function createBirthdayMessage(data: BirthdayMessageResponse) {
 export async function updateBirthdayMessage(
   id: string,
   data: BirthdayMessageResponse,
-) {
-  return await api(`/birthdayMessages/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(mapToPatchBody(data)),
-  })
+): Promise<BirthdayMessageDTO | responseError> {
+  return await api<BirthdayMessageDTO | responseError>(
+    `/birthdayMessages/${id}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(mapToPatchBody(data)),
+    },
+  )
 }
 
-export async function deleteBirthdayMessage(id: string) {
-  return await api(`/birthdayMessages/${id}`, {
+export async function deleteBirthdayMessage(id: string): Promise<unknown> {
+  return await api<unknown>(`/birthdayMessages/${id}`, {
     method: 'DELETE',
   })
 }

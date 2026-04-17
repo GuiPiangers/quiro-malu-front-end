@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Cake, MessageSquare, Settings } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
 import { getBirthdayMessage } from '@/services/message/birthdayMessage'
+import { mapBirthdayDtoToResponse } from '@/services/message/birthdayMessageMapper'
 import { getMessageLogs } from '@/services/message/messageLogs'
 import { getPatient } from '@/services/patient/patient'
 import BirthdayMessageForm from '../components/BirthdayMessageForm'
@@ -37,9 +38,12 @@ export default async function EditBirthdayCampaignPage({
 }: PageProps) {
   const activeTab = searchParams.aba ?? 'configuracao'
 
-  const messageData = await getBirthdayMessage(params.id).then((res) =>
+  const messageDto = await getBirthdayMessage(params.id).then((res) =>
     Validate.isOk(res) ? res : undefined,
   )
+  const messageData = messageDto
+    ? mapBirthdayDtoToResponse(messageDto)
+    : undefined
 
   const logsPage = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1)
   const logsLimit = 20

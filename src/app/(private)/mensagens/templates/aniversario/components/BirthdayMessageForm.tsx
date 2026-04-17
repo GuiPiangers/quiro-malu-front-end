@@ -8,10 +8,11 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { z } from 'zod'
 import { Switch } from '@/components/ui/switch'
 import {
-  type BirthdayMessageResponse,
   createBirthdayMessage,
   updateBirthdayMessage,
 } from '@/services/message/birthdayMessage'
+import type { BirthdayMessageResponse } from '@/services/message/birthdayMessageTypes'
+import { DEFAULT_BIRTHDAY_SEND_TIME } from '@/services/message/birthdayMessageConstants'
 import { Copy, User, Phone, Calendar } from 'lucide-react'
 import { useState } from 'react'
 import Button from '@/components/Button'
@@ -19,8 +20,6 @@ import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
 import { WhatsAppMessageBubble } from '@/components/message/WhatsAppMessageBubble'
 import { useRouter } from 'next/navigation'
 import { Box } from '@/components/box/Box'
-
-const DEFAULT_SEND_TIME = '09:00'
 
 const schema = z.object({
   name: z.string().min(1, 'Campo obrigatório'),
@@ -88,7 +87,7 @@ export default function BirthdayMessageForm({
       name: defaultValues?.name ?? '',
       templateMessage: defaultValues?.templateMessage ?? '',
       active: defaultValues?.active ?? true,
-      sendTime: defaultValues?.sendTime ?? DEFAULT_SEND_TIME,
+      sendTime: defaultValues?.sendTime ?? DEFAULT_BIRTHDAY_SEND_TIME,
     },
   })
 
@@ -128,7 +127,9 @@ export default function BirthdayMessageForm({
   }
 
   const previewClock =
-    sendTime && /^\d{2}:\d{2}$/.test(sendTime) ? sendTime : DEFAULT_SEND_TIME
+    sendTime && /^\d{2}:\d{2}$/.test(sendTime)
+      ? sendTime
+      : DEFAULT_BIRTHDAY_SEND_TIME
 
   return (
     <form
