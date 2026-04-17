@@ -102,6 +102,12 @@ const routes: RouteTitleEntry[] = [
     previousLabel: 'Após agendamento',
   },
   {
+    name: 'Nova Campanha',
+    path: '/mensagens/templates/aniversario/criar',
+    previousPath: '/mensagens/templates/aniversario',
+    previousLabel: 'Aniversário',
+  },
+  {
     name: 'Mensagens',
     path: '/mensagens/templates/antes-do-agendamento/*/*',
     previousPath: '/mensagens/templates/antes-do-agendamento/*',
@@ -115,6 +121,12 @@ const routes: RouteTitleEntry[] = [
   },
   {
     name: 'Mensagens',
+    path: '/mensagens/templates/aniversario/*/*',
+    previousPath: '/mensagens/templates/aniversario/*',
+    previousLabel: 'Aniversário',
+  },
+  {
+    name: 'Mensagens',
     path: '/mensagens/templates/antes-do-agendamento',
     previousPath: '/mensagens',
     previousLabel: 'Mensagens',
@@ -122,6 +134,12 @@ const routes: RouteTitleEntry[] = [
   {
     name: 'Mensagens',
     path: '/mensagens/templates/depois-do-agendamento',
+    previousPath: '/mensagens',
+    previousLabel: 'Mensagens',
+  },
+  {
+    name: 'Mensagens',
+    path: '/mensagens/templates/aniversario',
     previousPath: '/mensagens',
     previousLabel: 'Mensagens',
   },

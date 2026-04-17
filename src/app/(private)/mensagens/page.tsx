@@ -32,11 +32,12 @@ const templateCards: TemplateCard[] = [
     href: '/mensagens/templates/antes-do-agendamento',
   },
   {
-    icon: <Cake className="h-6 w-6 text-slate-400" />,
+    icon: <Cake className="h-6 w-6 text-main" />,
     title: 'Mensagem de aniversário',
     description:
       'Parabenize seus pacientes automaticamente no dia do aniversário.',
-    available: false,
+    available: true,
+    href: '/mensagens/templates/aniversario',
   },
   {
     icon: <CalendarCheck className="h-6 w-6 text-main" />,
