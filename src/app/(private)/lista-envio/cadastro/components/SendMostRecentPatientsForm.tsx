@@ -107,8 +107,8 @@ export default function SendMostRecentPatientsForm(
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
-        <Input.Root className="min-w-0 flex-1 sm:min-w-[12rem]">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:items-end sm:gap-4">
+        <Input.Root className="w-full min-w-0">
           <Input.Label>Nome da lista</Input.Label>
           <Input.Field
             name="name"
@@ -128,38 +128,36 @@ export default function SendMostRecentPatientsForm(
             </Input.Message>
           ) : null}
         </Input.Root>
-        <div className="w-full min-w-0 shrink-0 sm:w-44">
-          <Input.Root className="max-w-full">
-            <Input.Label>Quantidade de pacientes</Input.Label>
-            <Input.Field
-              name="amount"
-              type="number"
-              value={amount}
-              onChange={(e) => {
-                setAmount(e.target.value)
-                setAmountError(undefined)
-              }}
-              placeholder="0"
-              disabled={submitting}
-              error={!!amountError}
-              slotProps={{
-                root: {
-                  className: 'w-full min-w-0 max-w-full overflow-hidden',
-                },
-                input: {
-                  min: 0,
-                  step: 1,
-                  className: 'min-w-0 max-w-full !flex-grow-0 basis-full',
-                },
-              }}
-            />
-            {amountError ? (
-              <Input.Message error role="alert">
-                {amountError}
-              </Input.Message>
-            ) : null}
-          </Input.Root>
-        </div>
+        <Input.Root className="w-full min-w-0">
+          <Input.Label>Quantidade de pacientes</Input.Label>
+          <Input.Field
+            name="amount"
+            type="number"
+            value={amount}
+            onChange={(e) => {
+              setAmount(e.target.value)
+              setAmountError(undefined)
+            }}
+            placeholder="0"
+            disabled={submitting}
+            error={!!amountError}
+            slotProps={{
+              root: {
+                className: 'w-full min-w-0 max-w-full overflow-hidden',
+              },
+              input: {
+                min: 0,
+                step: 1,
+                className: 'min-w-0 max-w-full !flex-grow-0 basis-full',
+              },
+            }}
+          />
+          {amountError ? (
+            <Input.Message error role="alert">
+              {amountError}
+            </Input.Message>
+          ) : null}
+        </Input.Root>
       </div>
       <Button
         type="submit"
