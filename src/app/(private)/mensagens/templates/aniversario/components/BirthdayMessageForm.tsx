@@ -11,6 +11,7 @@ import {
   createBirthdayMessage,
   updateBirthdayMessage,
 } from '@/services/message/birthdayMessage'
+import { bindSendListCampaigns } from '@/services/message/sendList'
 import type { BirthdayMessageResponse } from '@/services/message/birthdayMessageTypes'
 import { DEFAULT_BIRTHDAY_SEND_TIME } from '@/services/message/birthdayMessageConstants'
 import { Copy, User, Phone, Calendar } from 'lucide-react'
@@ -20,6 +21,9 @@ import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
 import { WhatsAppMessageBubble } from '@/components/message/WhatsAppMessageBubble'
 import { useRouter } from 'next/navigation'
 import { Box } from '@/components/box/Box'
+import MessageTemplateSendListPicker, {
+  type SendListSelection,
+} from '@/app/(private)/mensagens/components/MessageTemplateSendListPicker'
 
 const schema = z.object({
   name: z.string().min(1, 'Campo obrigatório'),
@@ -73,6 +77,7 @@ export default function BirthdayMessageForm({
 }: BirthdayMessageFormProps) {
   const { handleMessage } = useSnackbarContext()
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [sendList, setSendList] = useState<SendListSelection | null>(null)
   const router = useRouter()
 
   const {
@@ -110,14 +115,37 @@ export default function BirthdayMessageForm({
 
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
-    } else {
-      handleMessage({
-        title: 'Template salvo com sucesso!',
-        type: 'success',
-      })
-      router.push('/mensagens/templates/aniversario')
-      router.refresh()
+      return
     }
+
+    const campaignId = res.id ?? defaultValues?.id
+    if (sendList) {
+      if (!campaignId) {
+        handleMessage({
+          title: 'Erro!',
+          description:
+            'Template salvo, mas não foi possível obter o identificador da campanha para vincular a lista.',
+          type: 'error',
+        })
+        return
+      }
+      const bindRes = await bindSendListCampaigns(sendList.id, [campaignId])
+      if (Validate.isError(bindRes)) {
+        handleMessage({
+          title: 'Erro ao vincular lista',
+          description: bindRes.message,
+          type: 'error',
+        })
+        return
+      }
+    }
+
+    handleMessage({
+      title: 'Template salvo com sucesso!',
+      type: 'success',
+    })
+    router.push('/mensagens/templates/aniversario')
+    router.refresh()
   }
 
   const copyToClipboard = (key: string) => {
@@ -200,6 +228,12 @@ export default function BirthdayMessageForm({
               )}
             </Input.Root>
           </div>
+
+          <MessageTemplateSendListPicker
+            value={sendList}
+            onChange={setSendList}
+            disabled={isSubmitting}
+          />
         </Box>
 
         <Box>

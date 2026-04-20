@@ -11,6 +11,7 @@ import {
   createAfterScheduleMessage,
   updateAfterScheduleMessage,
 } from '@/services/message/afterScheduleMessage'
+import { bindSendListCampaigns } from '@/services/message/sendList'
 import type { AfterScheduleMessageResponse } from '@/services/message/afterScheduleMessageTypes'
 import {
   Copy,
@@ -28,6 +29,9 @@ import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
 import { WhatsAppMessageBubble } from '@/components/message/WhatsAppMessageBubble'
 import { useRouter } from 'next/navigation'
 import { Box } from '@/components/box/Box'
+import MessageTemplateSendListPicker, {
+  type SendListSelection,
+} from '@/app/(private)/mensagens/components/MessageTemplateSendListPicker'
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 
@@ -142,6 +146,7 @@ export default function AfterScheduleForm({
 }: AfterScheduleFormProps) {
   const { handleMessage } = useSnackbarContext()
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [sendList, setSendList] = useState<SendListSelection | null>(null)
   const router = useRouter()
 
   const { timeValue: defaultTimeValue, timeUnit: defaultTimeUnit } =
@@ -184,14 +189,37 @@ export default function AfterScheduleForm({
 
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
-    } else {
-      handleMessage({
-        title: 'Template salvo com sucesso!',
-        type: 'success',
-      })
-      router.push('/mensagens/templates/depois-do-agendamento')
-      router.refresh()
+      return
     }
+
+    const campaignId = res.id ?? defaultValues?.id
+    if (sendList) {
+      if (!campaignId) {
+        handleMessage({
+          title: 'Erro!',
+          description:
+            'Template salvo, mas não foi possível obter o identificador da campanha para vincular a lista.',
+          type: 'error',
+        })
+        return
+      }
+      const bindRes = await bindSendListCampaigns(sendList.id, [campaignId])
+      if (Validate.isError(bindRes)) {
+        handleMessage({
+          title: 'Erro ao vincular lista',
+          description: bindRes.message,
+          type: 'error',
+        })
+        return
+      }
+    }
+
+    handleMessage({
+      title: 'Template salvo com sucesso!',
+      type: 'success',
+    })
+    router.push('/mensagens/templates/depois-do-agendamento')
+    router.refresh()
   }
 
   const copyToClipboard = (key: string) => {
@@ -301,6 +329,12 @@ export default function AfterScheduleForm({
               <Input.Message error>{errors.timeValue.message}</Input.Message>
             )}
           </div>
+
+          <MessageTemplateSendListPicker
+            value={sendList}
+            onChange={setSendList}
+            disabled={isSubmitting}
+          />
         </Box>
 
         {/* Section: Conteúdo do Template */}

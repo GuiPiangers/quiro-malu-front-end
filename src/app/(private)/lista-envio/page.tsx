@@ -33,5 +33,5 @@ export default async function ListaEnvioPage() {
         <ListaEnvioContent initialData={initialData} />
       </Box>
     </div>
-  )
+  ) 
 }
