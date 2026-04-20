@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import Button from '@/components/Button'
 import { Input } from '@/components/input'
+import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import {
   createMessageSendStrategy,
@@ -35,28 +36,37 @@ export default function SendMostRecentPatientsForm(
 ) {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const { handleMessage } = useSnackbarContext()
   const [name, setName] = useState(() =>
     isEditProps(props) ? props.defaultName : '',
   )
   const [amount, setAmount] = useState(() =>
     isEditProps(props) ? props.defaultAmount : '',
   )
-  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [nameError, setNameError] = useState<string | undefined>(undefined)
+  const [amountError, setAmountError] = useState<string | undefined>(undefined)
   const [submitting, setSubmitting] = useState(false)
+
+  function clearFieldErrors() {
+    setNameError(undefined)
+    setAmountError(undefined)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitError(null)
+    clearFieldErrors()
     const n = name.trim()
     const a = Number(amount)
+    let hasClientError = false
     if (!n) {
-      setSubmitError('Informe o nome da lista.')
-      return
+      setNameError('Informe o nome da lista.')
+      hasClientError = true
     }
     if (!Number.isFinite(a) || a < 0) {
-      setSubmitError('Informe uma quantidade válida (número ≥ 0).')
-      return
+      setAmountError('Informe uma quantidade válida (número ≥ 0).')
+      hasClientError = true
     }
+    if (hasClientError) return
 
     setSubmitting(true)
     const res = isEditProps(props)
@@ -72,9 +82,21 @@ export default function SendMostRecentPatientsForm(
         })
     setSubmitting(false)
     if (Validate.isError(res)) {
-      setSubmitError(res.message)
+      handleMessage({
+        title: 'Erro!',
+        description: res.message,
+        type: 'error',
+      })
       return
     }
+
+    handleMessage({
+      title:
+        props.mode === 'edit'
+          ? 'Lista de envio atualizada com sucesso!'
+          : 'Lista de envio criada com sucesso!',
+      type: 'success',
+    })
     await queryClient.invalidateQueries({ queryKey: ['messageSendStrategies'] })
     router.push('/lista-envio')
     router.refresh()
@@ -91,11 +113,20 @@ export default function SendMostRecentPatientsForm(
           <Input.Field
             name="name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value)
+              setNameError(undefined)
+            }}
             placeholder="Ex.: Últimos atendimentos"
             autoComplete="off"
             disabled={submitting}
+            error={!!nameError}
           />
+          {nameError ? (
+            <Input.Message error role="alert">
+              {nameError}
+            </Input.Message>
+          ) : null}
         </Input.Root>
         <div className="w-full min-w-0 shrink-0 sm:w-44">
           <Input.Root className="max-w-full">
@@ -104,9 +135,13 @@ export default function SendMostRecentPatientsForm(
               name="amount"
               type="number"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => {
+                setAmount(e.target.value)
+                setAmountError(undefined)
+              }}
               placeholder="0"
               disabled={submitting}
+              error={!!amountError}
               slotProps={{
                 root: {
                   className: 'w-full min-w-0 max-w-full overflow-hidden',
@@ -118,6 +153,11 @@ export default function SendMostRecentPatientsForm(
                 },
               }}
             />
+            {amountError ? (
+              <Input.Message error role="alert">
+                {amountError}
+              </Input.Message>
+            ) : null}
           </Input.Root>
         </div>
       </div>
@@ -130,11 +170,6 @@ export default function SendMostRecentPatientsForm(
       >
         {submitting ? 'Salvando…' : submitLabel}
       </Button>
-      {submitError ? (
-        <Input.Message error role="alert">
-          {submitError}
-        </Input.Message>
-      ) : null}
     </form>
   )
 }
