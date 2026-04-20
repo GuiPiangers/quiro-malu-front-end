@@ -97,7 +97,7 @@ export const InputField = forwardRef<
         ...props.slotProps,
         root: (ownerState) => {
           const resolvedSlotProps = resolveSlotProps(
-            props.slotProps?.input,
+            props.slotProps?.root,
             ownerState,
           )
           return {
