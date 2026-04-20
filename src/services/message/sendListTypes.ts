@@ -20,3 +20,14 @@ export type CreateMessageSendStrategyDTO = {
   amount: number
   kind: string
 }
+
+export type BindableCampaignSource =
+  | 'before_schedule'
+  | 'after_schedule'
+  | 'birthday'
+
+export type BindableCampaignRow = {
+  id: string
+  name: string
+  source: BindableCampaignSource
+}

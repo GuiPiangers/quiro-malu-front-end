@@ -2,7 +2,11 @@
 
 import { api, type responseError } from '../api/api'
 import { Validate } from '../api/Validate'
+import { listAfterScheduleMessages } from './afterScheduleMessage'
+import { listBeforeScheduleMessages } from './beforeScheduleMessage'
+import { listBirthdayMessages } from './birthdayMessage'
 import type {
+  BindableCampaignRow,
   CreateMessageSendStrategyDTO,
   ListedMessageSendStrategyDTO,
   ListMessageSendStrategyOutput,
@@ -97,4 +101,34 @@ export async function createMessageSendStrategy(data: {
       body: JSON.stringify(body),
     },
   )
+}
+
+export async function bindSendListCampaigns(
+  strategyId: string,
+  campaignIds: string[],
+): Promise<responseError | { ok: true }> {
+  const trimmedId = strategyId.trim()
+  if (!trimmedId) {
+    return {
+      error: true,
+      message: 'Identificador da lista de envio inválido.',
+      statusCode: 400,
+      type: 'validation',
+    } satisfies responseError
+  }
+
+  const res = await api<responseError | Record<string, unknown>>(
+    `/messageSendStrategies/${encodeURIComponent(trimmedId)}/campaigns`,
+    {
+      method: 'PUT',
+      cache: 'no-store',
+      body: JSON.stringify({ campaignIds }),
+    },
+  )
+
+  if (Validate.isError(res)) {
+    return res
+  }
+
+  return { ok: true }
 }
