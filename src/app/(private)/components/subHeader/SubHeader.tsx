@@ -90,6 +90,18 @@ const routes: RouteTitleEntry[] = [
     previousLabel: 'Início',
   },
   {
+    name: 'Listas de envio',
+    path: '/lista-envio',
+    previousPath: '/',
+    previousLabel: 'Início',
+  },
+  {
+    name: 'Listas de envio',
+    path: '/lista-envio/**',
+    previousPath: '/lista-envio',
+    previousLabel: 'Listas de envio',
+  },
+  {
     name: 'Nova Campanha',
     path: '/mensagens/templates/antes-do-agendamento/criar',
     previousPath: '/mensagens/templates/antes-do-agendamento',

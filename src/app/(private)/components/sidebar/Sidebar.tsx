@@ -8,10 +8,9 @@ import {
   CiHome,
   CiFileOn,
 } from 'react-icons/ci'
-import { PiChatCircleThin } from 'react-icons/pi'
-
 import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
+import { NavMensagensGroup } from './NavMensagensGroup'
 import useToggleContext from '@/hooks/useToggleContext'
 
 type SidebarProps = { className?: string }
@@ -45,9 +44,7 @@ export default function Sidebar({ className }: SidebarProps) {
           <NavItem href="/arquivos" icon={CiFileOn}>
             arquivos
           </NavItem>
-          <NavItem href="/mensagens" icon={PiChatCircleThin}>
-            Mensagens
-          </NavItem>
+          <NavMensagensGroup />
         </li>
       </nav>
     </>
