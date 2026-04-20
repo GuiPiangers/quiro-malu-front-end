@@ -75,7 +75,11 @@ export default function ServiceForm({
   }
 
   return (
-    <Form onSubmit={handleSubmit(setService)} {...formProps}>
+    <Form
+      onSubmit={handleSubmit(setService)}
+      {...formProps}
+      className="border-none"
+    >
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label required notSave={dirtyFields.name}>
