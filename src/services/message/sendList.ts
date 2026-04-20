@@ -154,6 +154,43 @@ export async function getMessageSendStrategy(
   return res
 }
 
+export async function getMessageSendStrategyByCampaignId(
+  campaignId: string,
+): Promise<ListedMessageSendStrategyDTO | responseError> {
+  const trimmed = campaignId.trim()
+  if (!trimmed) {
+    return {
+      error: true,
+      message: 'Identificador da campanha inválido.',
+      statusCode: 400,
+      type: 'validation',
+    } satisfies responseError
+  }
+
+  const res = await api<ListedMessageSendStrategyDTO | responseError>(
+    `/messageSendStrategies/by-campaign/${encodeURIComponent(trimmed)}`,
+    {
+      method: 'GET',
+      cache: 'no-store',
+    },
+  )
+
+  if (Validate.isError(res)) {
+    return res
+  }
+
+  if (!isListedMessageSendStrategyDTO(res)) {
+    return {
+      error: true,
+      message: 'Resposta inválida da lista de envio vinculada à campanha.',
+      statusCode: 500,
+      type: 'parse',
+    } satisfies responseError
+  }
+
+  return res
+}
+
 export async function updateMessageSendStrategy(
   id: string,
   data: PatchMessageSendStrategyDTO,
