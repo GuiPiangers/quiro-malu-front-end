@@ -6,13 +6,41 @@ import { useQueryClient } from '@tanstack/react-query'
 import Button from '@/components/Button'
 import { Input } from '@/components/input'
 import { Validate } from '@/services/api/Validate'
-import { createMessageSendStrategy } from '@/services/message/sendList'
+import {
+  createMessageSendStrategy,
+  updateMessageSendStrategy,
+} from '@/services/message/sendList'
 
-export default function SendMostRecentPatientsForm() {
+export type SendMostRecentPatientsFormProps =
+  | {
+      mode: 'create'
+      kind: string
+    }
+  | {
+      mode: 'edit'
+      strategyId: string
+      kind: string
+      defaultName: string
+      defaultAmount: string
+    }
+
+function isEditProps(
+  props: SendMostRecentPatientsFormProps,
+): props is Extract<SendMostRecentPatientsFormProps, { mode: 'edit' }> {
+  return props.mode === 'edit'
+}
+
+export default function SendMostRecentPatientsForm(
+  props: SendMostRecentPatientsFormProps,
+) {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const [name, setName] = useState('')
-  const [amount, setAmount] = useState('')
+  const [name, setName] = useState(() =>
+    isEditProps(props) ? props.defaultName : '',
+  )
+  const [amount, setAmount] = useState(() =>
+    isEditProps(props) ? props.defaultAmount : '',
+  )
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -29,12 +57,19 @@ export default function SendMostRecentPatientsForm() {
       setSubmitError('Informe uma quantidade válida (número ≥ 0).')
       return
     }
+
     setSubmitting(true)
-    const res = await createMessageSendStrategy({
-      name: n,
-      amount: a,
-      kind: 'send_most_recent_patients',
-    })
+    const res = isEditProps(props)
+      ? await updateMessageSendStrategy(props.strategyId, {
+          kind: props.kind,
+          name: n,
+          params: { amount: a },
+        })
+      : await createMessageSendStrategy({
+          name: n,
+          amount: a,
+          kind: props.kind,
+        })
     setSubmitting(false)
     if (Validate.isError(res)) {
       setSubmitError(res.message)
@@ -44,6 +79,9 @@ export default function SendMostRecentPatientsForm() {
     router.push('/lista-envio')
     router.refresh()
   }
+
+  const submitLabel =
+    props.mode === 'edit' ? 'Salvar alterações' : 'Salvar lista'
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
@@ -90,7 +128,7 @@ export default function SendMostRecentPatientsForm() {
         disabled={submitting}
         className="self-start"
       >
-        {submitting ? 'Salvando…' : 'Salvar lista'}
+        {submitting ? 'Salvando…' : submitLabel}
       </Button>
       {submitError ? (
         <Input.Message error role="alert">

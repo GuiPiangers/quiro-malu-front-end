@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import useWindowSize from '@/hooks/useWindowSize'
 import { Box } from '@/components/box/Box'
@@ -30,6 +31,7 @@ const TABLE_BINDINGS_COLUMN_MIN_WIDTH = 768
 export default function ListaEnvioContent({
   initialData,
 }: ListaEnvioContentProps) {
+  const router = useRouter()
   const { windowWidth } = useWindowSize()
   const showBindingsColumn = windowWidth >= TABLE_BINDINGS_COLUMN_MIN_WIDTH
 
@@ -90,6 +92,11 @@ export default function ListaEnvioContent({
               {items.map((row) => (
                 <Table.Row
                   key={row.id}
+                  clickable
+                  className="cursor-pointer"
+                  handleOnClick={() =>
+                    router.push(`/lista-envio/${row.id}/editar`)
+                  }
                   columns={
                     showBindingsColumn ? ['2fr', '2fr', '1fr'] : ['2fr', '2fr']
                   }

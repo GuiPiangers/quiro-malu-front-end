@@ -14,12 +14,16 @@ export type ListMessageSendStrategyOutput = {
   limit: number
 }
 
-export type CreateMessageSendStrategyDTO = {
-  userId: string
-  name: string
-  amount: number
+/** Corpo de POST /messageSendStrategies e PATCH /messageSendStrategies/:id */
+export type MessageSendStrategyWriteBody = {
   kind: string
+  name: string
+  params: { amount: number }
 }
+
+export type CreateMessageSendStrategyDTO = MessageSendStrategyWriteBody
+
+export type PatchMessageSendStrategyDTO = MessageSendStrategyWriteBody
 
 export type BindableCampaignSource =
   | 'before_schedule'

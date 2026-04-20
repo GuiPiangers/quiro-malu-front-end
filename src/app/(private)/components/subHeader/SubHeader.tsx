@@ -102,6 +102,12 @@ const routes: RouteTitleEntry[] = [
     previousLabel: 'Listas de envio',
   },
   {
+    name: 'Editar lista de envio',
+    path: '/lista-envio/*/editar',
+    previousPath: '/lista-envio',
+    previousLabel: 'Listas de envio',
+  },
+  {
     name: 'Listas de envio',
     path: '/lista-envio/**',
     previousPath: '/lista-envio',

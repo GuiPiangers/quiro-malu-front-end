@@ -2,29 +2,12 @@
 
 import { api, type responseError } from '../api/api'
 import { Validate } from '../api/Validate'
-import { listAfterScheduleMessages } from './afterScheduleMessage'
-import { listBeforeScheduleMessages } from './beforeScheduleMessage'
-import { listBirthdayMessages } from './birthdayMessage'
 import type {
-  BindableCampaignRow,
   CreateMessageSendStrategyDTO,
   ListedMessageSendStrategyDTO,
   ListMessageSendStrategyOutput,
+  PatchMessageSendStrategyDTO,
 } from './sendListTypes'
-
-type ProfileDTO = {
-  id?: string
-  userId?: string
-}
-
-async function resolveUserId(): Promise<string | undefined> {
-  const res = await api<ProfileDTO>('/profile', {
-    method: 'GET',
-    cache: 'no-store',
-  })
-  if (!Validate.isOk(res)) return undefined
-  return res.id ?? res.userId
-}
 
 function isListMessageSendStrategyOutput(
   value: ListMessageSendStrategyOutput | responseError,
@@ -76,22 +59,10 @@ export async function createMessageSendStrategy(data: {
   amount: number
   kind: string
 }): Promise<ListedMessageSendStrategyDTO | responseError> {
-  const userId = await resolveUserId()
-  if (!userId) {
-    return {
-      error: true,
-      message:
-        'Não foi possível identificar o usuário. Verifique se o perfil retorna id.',
-      statusCode: 401,
-      type: 'auth',
-    } satisfies responseError
-  }
-
   const body: CreateMessageSendStrategyDTO = {
-    userId,
-    name: data.name.trim(),
-    amount: data.amount,
     kind: data.kind,
+    name: data.name.trim(),
+    params: { amount: data.amount },
   }
 
   return await api<ListedMessageSendStrategyDTO | responseError>(
@@ -131,4 +102,84 @@ export async function bindSendListCampaigns(
   }
 
   return { ok: true }
+}
+
+function isListedMessageSendStrategyDTO(
+  value: ListedMessageSendStrategyDTO | responseError,
+): value is ListedMessageSendStrategyDTO {
+  if (Validate.isError(value)) return false
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as ListedMessageSendStrategyDTO).id === 'string' &&
+    typeof (value as ListedMessageSendStrategyDTO).name === 'string' &&
+    typeof (value as ListedMessageSendStrategyDTO).kind === 'string'
+  )
+}
+
+export async function getMessageSendStrategy(
+  id: string,
+): Promise<ListedMessageSendStrategyDTO | responseError> {
+  const trimmed = id.trim()
+  if (!trimmed) {
+    return {
+      error: true,
+      message: 'Identificador da lista de envio inválido.',
+      statusCode: 400,
+      type: 'validation',
+    } satisfies responseError
+  }
+
+  const res = await api<ListedMessageSendStrategyDTO | responseError>(
+    `/messageSendStrategies/${encodeURIComponent(trimmed)}`,
+    {
+      method: 'GET',
+      cache: 'no-store',
+    },
+  )
+
+  if (Validate.isError(res)) {
+    return res
+  }
+
+  if (!isListedMessageSendStrategyDTO(res)) {
+    return {
+      error: true,
+      message: 'Resposta inválida da lista de envio.',
+      statusCode: 500,
+      type: 'parse',
+    } satisfies responseError
+  }
+
+  return res
+}
+
+export async function updateMessageSendStrategy(
+  id: string,
+  data: PatchMessageSendStrategyDTO,
+): Promise<ListedMessageSendStrategyDTO | responseError> {
+  const trimmed = id.trim()
+  if (!trimmed) {
+    return {
+      error: true,
+      message: 'Identificador da lista de envio inválido.',
+      statusCode: 400,
+      type: 'validation',
+    } satisfies responseError
+  }
+
+  const body: PatchMessageSendStrategyDTO = {
+    kind: data.kind,
+    name: data.name.trim(),
+    params: { amount: data.params.amount },
+  }
+
+  return await api<ListedMessageSendStrategyDTO | responseError>(
+    `/messageSendStrategies/${encodeURIComponent(trimmed)}`,
+    {
+      method: 'PATCH',
+      cache: 'no-store',
+      body: JSON.stringify(body),
+    },
+  )
 }

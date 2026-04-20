@@ -62,7 +62,7 @@ export default function CadastroListaEnvio() {
                   Lista com base nos pacientes com consulta mais recente. Defina
                   quantos pacientes deseja incluir a partir do mais recente.
                 </p>
-                <SendMostRecentPatientsForm />
+                <SendMostRecentPatientsForm mode="create" kind={selectedKind} />
               </div>
             ) : (
               <p className="text-sm text-slate-600">
