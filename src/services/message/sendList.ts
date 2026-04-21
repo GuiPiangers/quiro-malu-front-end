@@ -236,3 +236,31 @@ export async function updateMessageSendStrategy(
     },
   )
 }
+
+export async function deleteMessageSendStrategy(
+  id: string,
+): Promise<responseError | { ok: true }> {
+  const trimmed = id.trim()
+  if (!trimmed) {
+    return {
+      error: true,
+      message: 'Identificador da lista de envio inválido.',
+      statusCode: 400,
+      type: 'validation',
+    } satisfies responseError
+  }
+
+  const res = await api<responseError | undefined>(
+    `/messageSendStrategies/${encodeURIComponent(trimmed)}`,
+    {
+      method: 'DELETE',
+      cache: 'no-store',
+    },
+  )
+
+  if (Validate.isError(res)) {
+    return res
+  }
+
+  return { ok: true }
+}
