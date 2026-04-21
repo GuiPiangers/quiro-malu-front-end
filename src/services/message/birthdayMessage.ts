@@ -9,6 +9,7 @@ import type {
   ListBirthdayMessagesDTO,
   ListBirthdayMessagesOutput,
 } from './birthdayMessageTypes'
+import { normalizeSendTimeString } from './birthdayMessageMapper'
 import { getMessageSendStrategyByCampaignId } from './sendList'
 import { linkedMessageSendStrategyFromSettled } from './sendListGuards'
 import type { WithLinkedMessageSendStrategy } from './sendListTypes'
@@ -27,12 +28,6 @@ async function resolveUserId(): Promise<string | undefined> {
   return res.id ?? res.userId
 }
 
-function sendTimeToMinutes(hhmm: string): number {
-  const [h, m] = hhmm.split(':').map((x) => parseInt(x, 10))
-  if (Number.isNaN(h) || Number.isNaN(m)) return 9 * 60
-  return (h % 24) * 60 + (m % 60)
-}
-
 function mapToCreateBody(data: BirthdayMessageResponse) {
   return {
     name: data.name,
@@ -47,13 +42,13 @@ function mapToCreateBody(data: BirthdayMessageResponse) {
 function mapToPatchBody(data: BirthdayMessageResponse) {
   const body: {
     name?: string
-    sendTime?: number
+    sendTime?: string
     isActive?: boolean
     messageTemplate?: { textTemplate: string }
   } = {}
   if (data.name !== undefined) body.name = data.name
   if (data.sendTime !== undefined) {
-    body.sendTime = sendTimeToMinutes(data.sendTime)
+    body.sendTime = normalizeSendTimeString(String(data.sendTime))
   }
   if (data.active !== undefined) body.isActive = data.active
   if (data.templateMessage !== undefined) {

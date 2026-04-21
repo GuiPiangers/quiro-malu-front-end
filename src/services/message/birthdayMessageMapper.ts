@@ -4,7 +4,7 @@ import type {
   BirthdayMessageResponse,
 } from './birthdayMessageTypes'
 
-function normalizeSendTimeString(sendTime: string): string {
+export function normalizeSendTimeString(sendTime: string): string {
   const parts = sendTime.trim().split(':')
   if (parts.length >= 2) {
     const h = parseInt(parts[0], 10)
