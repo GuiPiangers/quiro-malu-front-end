@@ -11,7 +11,10 @@ import {
   createBirthdayMessage,
   updateBirthdayMessage,
 } from '@/services/message/birthdayMessage'
-import { bindSendListCampaigns } from '@/services/message/sendList'
+import {
+  bindSendListCampaigns,
+  unbindSendListCampaign,
+} from '@/services/message/sendList'
 import type { BirthdayMessageResponse } from '@/services/message/birthdayMessageTypes'
 import { DEFAULT_BIRTHDAY_SEND_TIME } from '@/services/message/birthdayMessageConstants'
 import { Copy, User, Phone, Calendar } from 'lucide-react'
@@ -138,6 +141,16 @@ export default function BirthdayMessageForm({
         handleMessage({
           title: 'Erro ao vincular lista',
           description: bindRes.message,
+          type: 'error',
+        })
+        return
+      }
+    } else if (campaignId) {
+      const unbindRes = await unbindSendListCampaign(campaignId)
+      if (Validate.isError(unbindRes)) {
+        handleMessage({
+          title: 'Erro ao remover vínculo da lista',
+          description: unbindRes.message,
           type: 'error',
         })
         return

@@ -11,7 +11,10 @@ import {
   createAfterScheduleMessage,
   updateAfterScheduleMessage,
 } from '@/services/message/afterScheduleMessage'
-import { bindSendListCampaigns } from '@/services/message/sendList'
+import {
+  bindSendListCampaigns,
+  unbindSendListCampaign,
+} from '@/services/message/sendList'
 import type { AfterScheduleMessageResponse } from '@/services/message/afterScheduleMessageTypes'
 import {
   Copy,
@@ -212,6 +215,16 @@ export default function AfterScheduleForm({
         handleMessage({
           title: 'Erro ao vincular lista',
           description: bindRes.message,
+          type: 'error',
+        })
+        return
+      }
+    } else if (campaignId) {
+      const unbindRes = await unbindSendListCampaign(campaignId)
+      if (Validate.isError(unbindRes)) {
+        handleMessage({
+          title: 'Erro ao remover vínculo da lista',
+          description: unbindRes.message,
           type: 'error',
         })
         return
