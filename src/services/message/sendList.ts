@@ -8,6 +8,7 @@ import type {
   ListMessageSendStrategyOutput,
   PatchMessageSendStrategyDTO,
 } from './sendListTypes'
+import { isListedMessageSendStrategyDTO } from './sendListGuards'
 
 function isListMessageSendStrategyOutput(
   value: ListMessageSendStrategyOutput | responseError,
@@ -102,19 +103,6 @@ export async function bindSendListCampaigns(
   }
 
   return { ok: true }
-}
-
-function isListedMessageSendStrategyDTO(
-  value: ListedMessageSendStrategyDTO | responseError,
-): value is ListedMessageSendStrategyDTO {
-  if (Validate.isError(value)) return false
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof (value as ListedMessageSendStrategyDTO).id === 'string' &&
-    typeof (value as ListedMessageSendStrategyDTO).name === 'string' &&
-    typeof (value as ListedMessageSendStrategyDTO).kind === 'string'
-  )
 }
 
 export async function getMessageSendStrategy(

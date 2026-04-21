@@ -9,6 +9,9 @@ import type {
   ListBirthdayMessagesDTO,
   ListBirthdayMessagesOutput,
 } from './birthdayMessageTypes'
+import { getMessageSendStrategyByCampaignId } from './sendList'
+import { linkedMessageSendStrategyFromSettled } from './sendListGuards'
+import type { WithLinkedMessageSendStrategy } from './sendListTypes'
 
 type ProfileDTO = {
   id?: string
@@ -109,14 +112,33 @@ export async function listBirthdayMessages(
 
 export async function getBirthdayMessage(
   id: string,
-): Promise<BirthdayMessageDTO | responseError> {
-  const res = await api<BirthdayMessageDTO | responseError>(
-    `/birthdayMessages/${id}`,
-  )
+): Promise<
+  (BirthdayMessageDTO & WithLinkedMessageSendStrategy) | responseError
+> {
+  const [messageSettled, sendListSettled] = await Promise.allSettled([
+    api<BirthdayMessageDTO | responseError>(`/birthdayMessages/${id}`),
+    getMessageSendStrategyByCampaignId(id),
+  ])
+
+  if (messageSettled.status === 'rejected') {
+    return {
+      error: true,
+      message: 'Falha ao carregar a mensagem de aniversário.',
+      statusCode: 500,
+      type: 'network',
+    } satisfies responseError
+  }
+
+  const res = messageSettled.value
   if (Validate.isError(res)) {
     return res
   }
-  return res
+
+  return {
+    ...res,
+    linkedMessageSendStrategy:
+      linkedMessageSendStrategyFromSettled(sendListSettled),
+  }
 }
 
 export async function createBirthdayMessage(

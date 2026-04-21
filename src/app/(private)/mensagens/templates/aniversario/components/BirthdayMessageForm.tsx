@@ -70,14 +70,18 @@ function renderPreview(template: string): string {
 
 type BirthdayMessageFormProps = {
   defaultValues?: Partial<BirthdayMessageResponse>
+  initialLinkedSendList?: SendListSelection | null
 }
 
 export default function BirthdayMessageForm({
   defaultValues,
+  initialLinkedSendList = null,
 }: BirthdayMessageFormProps) {
   const { handleMessage } = useSnackbarContext()
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
-  const [sendList, setSendList] = useState<SendListSelection | null>(null)
+  const [sendList, setSendList] = useState<SendListSelection | null>(
+    initialLinkedSendList,
+  )
   const router = useRouter()
 
   const {

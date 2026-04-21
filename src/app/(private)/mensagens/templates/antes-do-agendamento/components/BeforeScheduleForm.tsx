@@ -139,14 +139,18 @@ function renderPreview(template: string): string {
 
 type BeforeScheduleFormProps = {
   defaultValues?: Partial<BeforeScheduleMessageResponse>
+  initialLinkedSendList?: SendListSelection | null
 }
 
 export default function BeforeScheduleForm({
   defaultValues,
+  initialLinkedSendList = null,
 }: BeforeScheduleFormProps) {
   const { handleMessage } = useSnackbarContext()
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
-  const [sendList, setSendList] = useState<SendListSelection | null>(null)
+  const [sendList, setSendList] = useState<SendListSelection | null>(
+    initialLinkedSendList,
+  )
   const router = useRouter()
 
   const { timeValue: defaultTimeValue, timeUnit: defaultTimeUnit } =

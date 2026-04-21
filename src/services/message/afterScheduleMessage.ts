@@ -7,6 +7,9 @@ import type {
   AfterScheduleMessageResponse,
   ListAfterScheduleMessagesOutput,
 } from './afterScheduleMessageTypes'
+import { getMessageSendStrategyByCampaignId } from './sendList'
+import { linkedMessageSendStrategyFromSettled } from './sendListGuards'
+import type { WithLinkedMessageSendStrategy } from './sendListTypes'
 
 type ProfileDTO = {
   id?: string
@@ -86,14 +89,35 @@ export async function listAfterScheduleMessages(): Promise<
 
 export async function getAfterScheduleMessage(
   id: string,
-): Promise<AfterScheduleMessageDTO | responseError> {
-  const res = await api<AfterScheduleMessageDTO | responseError>(
-    `/afterScheduleMessages/${id}`,
-  )
+): Promise<
+  (AfterScheduleMessageDTO & WithLinkedMessageSendStrategy) | responseError
+> {
+  const [messageSettled, sendListSettled] = await Promise.allSettled([
+    api<AfterScheduleMessageDTO | responseError>(
+      `/afterScheduleMessages/${id}`,
+    ),
+    getMessageSendStrategyByCampaignId(id),
+  ])
+
+  if (messageSettled.status === 'rejected') {
+    return {
+      error: true,
+      message: 'Falha ao carregar a mensagem após agendamento.',
+      statusCode: 500,
+      type: 'network',
+    } satisfies responseError
+  }
+
+  const res = messageSettled.value
   if (Validate.isError(res)) {
     return res
   }
-  return res
+
+  return {
+    ...res,
+    linkedMessageSendStrategy:
+      linkedMessageSendStrategyFromSettled(sendListSettled),
+  }
 }
 
 export async function createAfterScheduleMessage(

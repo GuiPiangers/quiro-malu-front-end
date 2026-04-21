@@ -7,6 +7,9 @@ import type {
   BeforeScheduleMessageResponse,
   ListBeforeScheduleMessagesOutput,
 } from './beforeScheduleMessageTypes'
+import { getMessageSendStrategyByCampaignId } from './sendList'
+import { linkedMessageSendStrategyFromSettled } from './sendListGuards'
+import type { WithLinkedMessageSendStrategy } from './sendListTypes'
 
 export type TriggerDTO<T = unknown> = {
   event: string
@@ -89,14 +92,35 @@ export async function listBeforeScheduleMessages(): Promise<
 
 export async function getBeforeScheduleMessage(
   id: string,
-): Promise<BeforeScheduleMessageDTO | responseError> {
-  const res = await api<BeforeScheduleMessageDTO | responseError>(
-    `/beforeScheduleMessages/${id}`,
-  )
+): Promise<
+  (BeforeScheduleMessageDTO & WithLinkedMessageSendStrategy) | responseError
+> {
+  const [messageSettled, sendListSettled] = await Promise.allSettled([
+    api<BeforeScheduleMessageDTO | responseError>(
+      `/beforeScheduleMessages/${id}`,
+    ),
+    getMessageSendStrategyByCampaignId(id),
+  ])
+
+  if (messageSettled.status === 'rejected') {
+    return {
+      error: true,
+      message: 'Falha ao carregar a mensagem antes de agendamento.',
+      statusCode: 500,
+      type: 'network',
+    } satisfies responseError
+  }
+
+  const res = messageSettled.value
   if (Validate.isError(res)) {
     return res
   }
-  return res
+
+  return {
+    ...res,
+    linkedMessageSendStrategy:
+      linkedMessageSendStrategyFromSettled(sendListSettled),
+  }
 }
 
 export async function createBeforeScheduleMessage(

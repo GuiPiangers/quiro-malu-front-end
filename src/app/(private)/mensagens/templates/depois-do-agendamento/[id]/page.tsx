@@ -44,6 +44,12 @@ export default async function EditAfterScheduleCampaignPage({
   const messageData = messageDto
     ? mapAfterScheduleDtoToResponse(messageDto)
     : undefined
+  const initialLinkedSendList = messageDto?.linkedMessageSendStrategy
+    ? {
+        id: messageDto.linkedMessageSendStrategy.id,
+        name: messageDto.linkedMessageSendStrategy.name,
+      }
+    : null
 
   const logsPage = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1)
   const logsLimit = 20
@@ -128,7 +134,10 @@ export default async function EditAfterScheduleCampaignPage({
       </div>
 
       {activeTab === 'configuracao' ? (
-        <AfterScheduleForm defaultValues={messageData} />
+        <AfterScheduleForm
+          defaultValues={messageData}
+          initialLinkedSendList={initialLinkedSendList}
+        />
       ) : sentLogsProps ? (
         <SentMessagesList {...sentLogsProps} />
       ) : null}

@@ -7,6 +7,10 @@ export type ListedMessageSendStrategyDTO = {
   campaignBindingsCount: number
 }
 
+export type WithLinkedMessageSendStrategy = {
+  linkedMessageSendStrategy: ListedMessageSendStrategyDTO | null
+}
+
 export type ListMessageSendStrategyOutput = {
   items: ListedMessageSendStrategyDTO[]
   total: number
