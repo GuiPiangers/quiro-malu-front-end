@@ -12,6 +12,7 @@ import {
   MESSAGE_SEND_STRATEGY_KIND_LABELS,
   type MessageSendStrategyKind,
 } from '../kinds'
+import DeleteSendListStrategy from './DeleteSendListStrategy'
 
 type SendListContentProps = {
   initialData?: ListMessageSendStrategyOutput
@@ -60,17 +61,20 @@ export default function SendListContent({ initialData }: SendListContentProps) {
     )
   }
 
+  const rowColumns = showBindingsColumn
+    ? (['2fr', '2fr', '1fr', 'auto'] as const)
+    : (['2fr', '2fr', 'auto'] as const)
+
   return (
     <div className="mt-4">
       <Table.Root>
-        <Table.Row
-          columns={showBindingsColumn ? ['2fr', '2fr', '1fr'] : ['2fr', '2fr']}
-        >
+        <Table.Row columns={[...rowColumns]}>
           <Table.Head>Nome</Table.Head>
           <Table.Head>Tipo</Table.Head>
           {showBindingsColumn ? (
             <Table.Head>Campanhas vinculadas</Table.Head>
           ) : null}
+          <Table.Head className="text-right">Ações</Table.Head>
         </Table.Row>
         {items.map((row) => (
           <Table.Row
@@ -78,9 +82,7 @@ export default function SendListContent({ initialData }: SendListContentProps) {
             clickable
             className="cursor-pointer"
             handleOnClick={() => router.push(`/lista-envio/${row.id}/editar`)}
-            columns={
-              showBindingsColumn ? ['2fr', '2fr', '1fr'] : ['2fr', '2fr']
-            }
+            columns={[...rowColumns]}
           >
             <Table.Cell className="font-medium text-slate-800">
               {row.name || '—'}
@@ -95,6 +97,16 @@ export default function SendListContent({ initialData }: SendListContentProps) {
                   : '—'}
               </Table.Cell>
             ) : null}
+            <Table.Cell
+              className="flex justify-end"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              <DeleteSendListStrategy
+                id={row.id}
+                listName={row.name || 'lista'}
+              />
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Root>

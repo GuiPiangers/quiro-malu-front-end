@@ -3,7 +3,7 @@ import { Box } from '@/components/box/Box'
 import Button from '@/components/Button'
 import { Validate } from '@/services/api/Validate'
 import { listMessageSendStrategies } from '@/services/message/sendList'
-import ListaEnvioContent from './components/SendListContent'
+import SendListContent from './components/SendListContent'
 
 export default async function ListaEnvioPage() {
   const res = await listMessageSendStrategies({ page: 1, limit: 100 })
@@ -30,8 +30,8 @@ export default async function ListaEnvioPage() {
             <Link href="/lista-envio/cadastro">Adicionar</Link>
           </Button>
         </div>
-        <ListaEnvioContent initialData={initialData} />
+        <SendListContent initialData={initialData} />
       </Box>
     </div>
-  ) 
+  )
 }
