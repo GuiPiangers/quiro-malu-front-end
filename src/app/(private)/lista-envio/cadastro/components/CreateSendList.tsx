@@ -9,6 +9,7 @@ import {
 } from '../../kinds'
 import SendMostFrequencyPatientsForm from './SendMostFrequencyPatientsForm'
 import SendMostRecentPatientsForm from './SendMostRecentPatientsForm'
+import SendExcludePatientsListForm from './SendExcludePatientsListForm'
 import SendSelectedListForm from './SendSelectedListForm'
 
 export default function CadastroListaEnvio() {
@@ -28,7 +29,8 @@ export default function CadastroListaEnvio() {
               const implemented =
                 kind === 'send_most_recent_patients' ||
                 kind === 'send_most_frequency_patients' ||
-                kind === 'send_selected_list'
+                kind === 'send_selected_list' ||
+                kind === 'exclude_patients_list'
               return (
                 <button
                   key={kind}
@@ -85,6 +87,15 @@ export default function CadastroListaEnvio() {
                   de mensagens.
                 </p>
                 <SendSelectedListForm mode="create" />
+              </div>
+            ) : selectedKind === 'exclude_patients_list' ? (
+              <div>
+                <p className="text-sm text-slate-600">
+                  Marque os pacientes que <strong>não</strong> devem receber
+                  disparos automáticos quando esta lista estiver vinculada a uma
+                  campanha.
+                </p>
+                <SendExcludePatientsListForm mode="create" />
               </div>
             ) : (
               <p className="text-sm text-slate-600">

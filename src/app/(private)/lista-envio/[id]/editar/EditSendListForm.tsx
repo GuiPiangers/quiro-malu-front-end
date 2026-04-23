@@ -5,6 +5,7 @@ import { Box } from '@/components/box/Box'
 import type { ListedMessageSendStrategyDTO } from '@/services/message/sendListTypes'
 import SendMostFrequencyPatientsForm from '../../cadastro/components/SendMostFrequencyPatientsForm'
 import SendMostRecentPatientsForm from '../../cadastro/components/SendMostRecentPatientsForm'
+import SendExcludePatientsListForm from '../../cadastro/components/SendExcludePatientsListForm'
 import SendSelectedListForm, {
   type SelectedListPatientRow,
 } from '../../cadastro/components/SendSelectedListForm'
@@ -34,10 +35,11 @@ function labelForKind(kind: string) {
   return label ?? kind
 }
 
-function initialSelectedForSendList(
+function initialRowsPatientListKind(
   strategy: ListedMessageSendStrategyDTO,
+  listKind: 'send_selected_list' | 'exclude_patients_list',
 ): SelectedListPatientRow[] {
-  if (strategy.kind !== 'send_selected_list') return []
+  if (strategy.kind !== listKind) return []
   const ids = strategy.params.patientIdList ?? []
   const patients = strategy.patients ?? []
   return ids.map((id, i) => ({
@@ -75,7 +77,8 @@ export default function EditSendListForm({ strategy }: EditSendListFormProps) {
               const implemented =
                 k === 'send_most_recent_patients' ||
                 k === 'send_most_frequency_patients' ||
-                k === 'send_selected_list'
+                k === 'send_selected_list' ||
+                k === 'exclude_patients_list'
               return (
                 <button
                   key={k}
@@ -147,11 +150,28 @@ export default function EditSendListForm({ strategy }: EditSendListFormProps) {
                 mode="edit"
                 strategyId={strategy.id}
                 defaultName={strategy.name}
-                initialSelected={
-                  strategy.kind === 'send_selected_list'
-                    ? initialSelectedForSendList(strategy)
-                    : []
-                }
+                initialSelected={initialRowsPatientListKind(
+                  strategy,
+                  'send_selected_list',
+                )}
+              />
+            </div>
+          ) : kind === 'exclude_patients_list' ? (
+            <div>
+              <p className="text-sm text-slate-600">
+                Defina quais pacientes <strong>não</strong> devem receber
+                disparos automáticos quando esta lista de envio estiver
+                vinculada a uma campanha.
+              </p>
+              <SendExcludePatientsListForm
+                key={`${strategy.id}-${kind}`}
+                mode="edit"
+                strategyId={strategy.id}
+                defaultName={strategy.name}
+                initialSelected={initialRowsPatientListKind(
+                  strategy,
+                  'exclude_patients_list',
+                )}
               />
             </div>
           ) : (
