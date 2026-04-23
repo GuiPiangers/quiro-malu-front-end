@@ -28,6 +28,7 @@ import { ModalHandles } from '../modal/Modal'
 import SchedulingModalContent from '../modal/SchedulingModal/SchedulingModalContent'
 import Phone from '@/utils/Phone'
 import { isSchedulingEvent } from '@/utils/eventValidator'
+import { getDisplaySchedulingStatus } from '@/utils/schedulingDisplayStatus'
 import UpdateEventModalContent from '../modal/UpdateEventModal/UpdateEventModalContent'
 
 type SchedulingListProps = {
@@ -206,20 +207,21 @@ function SchedulingTableItem({
   openModal?: () => void
 }) {
   const durationString = new Time(scheduling.duration).getHoursAndMinutes()
+  const rowStatus = getDisplaySchedulingStatus(
+    scheduling.status,
+    scheduling.date,
+  )
+  const rowColor = statusColors[rowStatus]
+
   return (
     <AccordionTable.Item key={scheduling.id}>
       <AccordionTable.Row
         columns={['2fr', '2fr', '1fr']}
-        data-status={scheduling.status}
-        className={`${
-          statusColors[scheduling.status] === 'blue' && 'text-blue-600'
-        } ${statusColors[scheduling.status] === 'green' && 'text-green-600'} ${
-          statusColors[scheduling.status] === 'red' && 'text-red-600'
-        }
-      ${
-        statusColors[scheduling.status] === 'yellow' &&
-        'text-orange-600 opacity-60'
-      }
+        data-status={rowStatus}
+        className={`${rowColor === 'blue' && 'text-blue-600'} ${
+          rowColor === 'green' && 'text-green-600'
+        } ${rowColor === 'red' && 'text-red-600'}
+      ${rowColor === 'yellow' && 'text-orange-600 opacity-60'}
       `}
       >
         <AccordionTable.Cell>
@@ -236,7 +238,7 @@ function SchedulingTableItem({
               date={scheduling.date}
               schedulingId={scheduling.id || ''}
               status={scheduling.status}
-              color={statusColors[scheduling.status]}
+              color={rowColor}
             ></StatusSelect>
           </AccordionTable.Cell>
         </StopPropagation>
