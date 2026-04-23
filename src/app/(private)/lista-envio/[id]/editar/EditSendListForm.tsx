@@ -10,10 +10,17 @@ import {
   type MessageSendStrategyKind,
 } from '../../kinds'
 
-function amountFromParams(params: Record<string, unknown>) {
-  const v = params.amount
-  if (typeof v === 'number' && Number.isFinite(v)) return String(v)
-  if (typeof v === 'string' && v !== '') return v
+function amountStringFromListedStrategy(
+  strategy: ListedMessageSendStrategyDTO,
+): string {
+  if (
+    strategy.kind === 'send_most_recent_patients' ||
+    strategy.kind === 'send_most_frequency_patients'
+  ) {
+    const n = strategy.params.amount
+    if (typeof n === 'number' && Number.isFinite(n)) return String(n)
+    if (typeof n === 'string' && n !== '') return n
+  }
   return '0'
 }
 
@@ -30,8 +37,8 @@ type EditSendListFormProps = {
 export default function EditSendListForm({ strategy }: EditSendListFormProps) {
   const [kind, setKind] = useState(strategy.kind)
 
-  const kindOptions = useMemo(() => {
-    const base: string[] = [...MESSAGE_SEND_STRATEGY_KINDS]
+  const kindOptions = useMemo((): MessageSendStrategyKind[] => {
+    const base: MessageSendStrategyKind[] = [...MESSAGE_SEND_STRATEGY_KINDS]
     if (!base.includes(strategy.kind)) {
       base.unshift(strategy.kind)
     }
@@ -90,7 +97,7 @@ export default function EditSendListForm({ strategy }: EditSendListFormProps) {
                 strategyId={strategy.id}
                 kind={kind}
                 defaultName={strategy.name}
-                defaultAmount={amountFromParams(strategy.params)}
+                defaultAmount={amountStringFromListedStrategy(strategy)}
               />
             </div>
           ) : (
