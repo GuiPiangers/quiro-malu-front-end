@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import Button from '@/components/Button'
+import Form from '@/components/form/Form'
 import { Input } from '@/components/input'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
@@ -106,72 +107,78 @@ export default function SendMostRecentPatientsForm(
     router.refresh()
   }
 
-  const submitLabel =
-    props.mode === 'edit' ? 'Salvar alterações' : 'Salvar lista'
+  const submitLabel = props.mode === 'edit' ? 'Salvar' : 'Salvar lista'
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:items-end sm:gap-4">
-        <Input.Root className="w-full min-w-0">
-          <Input.Label>Nome da lista</Input.Label>
-          <Input.Field
-            name="name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value)
-              setNameError(undefined)
-            }}
-            placeholder="Ex.: Últimos atendimentos"
-            autoComplete="off"
-            disabled={submitting}
-            error={!!nameError}
-          />
-          {nameError ? (
-            <Input.Message error role="alert">
-              {nameError}
-            </Input.Message>
-          ) : null}
-        </Input.Root>
-        <Input.Root className="w-full min-w-0">
-          <Input.Label>Quantidade de pacientes</Input.Label>
-          <Input.Field
-            name="amount"
-            type="number"
-            value={amount}
-            onChange={(e) => {
-              setAmount(e.target.value)
-              setAmountError(undefined)
-            }}
-            placeholder="0"
-            disabled={submitting}
-            error={!!amountError}
-            slotProps={{
-              root: {
-                className: 'w-full min-w-0 max-w-full overflow-hidden',
-              },
-              input: {
-                min: 0,
-                step: 1,
-                className: 'min-w-0 max-w-full !flex-grow-0 basis-full',
-              },
-            }}
-          />
-          {amountError ? (
-            <Input.Message error role="alert">
-              {amountError}
-            </Input.Message>
-          ) : null}
-        </Input.Root>
+    <Form
+      onSubmit={handleSubmit}
+      className="m-0 mt-0 w-full max-w-none border-0 bg-transparent shadow-none"
+      buttons={
+        <Button
+          type="submit"
+          color="green"
+          variant="solid"
+          disabled={submitting}
+          className="w-40"
+        >
+          {submitting ? 'Salvando…' : submitLabel}
+        </Button>
+      }
+    >
+      <div className="flex flex-col gap-4 px-4 pb-6 pt-0">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:items-end sm:gap-4">
+          <Input.Root className="w-full min-w-0">
+            <Input.Label>Nome da lista</Input.Label>
+            <Input.Field
+              name="name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value)
+                setNameError(undefined)
+              }}
+              placeholder="Ex.: Últimos atendimentos"
+              autoComplete="off"
+              disabled={submitting}
+              error={!!nameError}
+            />
+            {nameError ? (
+              <Input.Message error role="alert">
+                {nameError}
+              </Input.Message>
+            ) : null}
+          </Input.Root>
+          <Input.Root className="w-full min-w-0">
+            <Input.Label>Quantidade de pacientes</Input.Label>
+            <Input.Field
+              name="amount"
+              type="number"
+              value={amount}
+              onChange={(e) => {
+                setAmount(e.target.value)
+                setAmountError(undefined)
+              }}
+              placeholder="0"
+              disabled={submitting}
+              error={!!amountError}
+              slotProps={{
+                root: {
+                  className: 'w-full min-w-0 max-w-full overflow-hidden',
+                },
+                input: {
+                  min: 0,
+                  step: 1,
+                  className: 'min-w-0 max-w-full !flex-grow-0 basis-full',
+                },
+              }}
+            />
+            {amountError ? (
+              <Input.Message error role="alert">
+                {amountError}
+              </Input.Message>
+            ) : null}
+          </Input.Root>
+        </div>
       </div>
-      <Button
-        type="submit"
-        color="green"
-        variant="solid"
-        disabled={submitting}
-        className="self-start"
-      >
-        {submitting ? 'Salvando…' : submitLabel}
-      </Button>
-    </form>
+    </Form>
   )
 }

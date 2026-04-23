@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Button from '@/components/Button'
+import Form from '@/components/form/Form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import {
@@ -194,73 +195,78 @@ export default function SendPatientIdListStrategyForm(
     router.refresh()
   }
 
-  const submitLabel =
-    props.mode === 'edit' ? 'Salvar alterações' : 'Salvar lista'
+  const submitLabel = props.mode === 'edit' ? 'Salvar' : 'Salvar lista'
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-6">
-      <StrategyPatientNameField
-        name={name}
-        onChange={(v) => {
-          setName(v)
-          setNameError(undefined)
-        }}
-        error={nameError}
-        placeholder={copy.namePlaceholder}
-        disabled={submitting}
-      />
-
-      {copy.hintBelowName ? (
-        <p className="text-xs text-slate-500">{copy.hintBelowName}</p>
-      ) : null}
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <StrategyPatientPickerPanel
-          title={copy.pickerTitle}
-          searchInput={searchInput}
-          onSearchChange={setSearchInput}
-          isPending={isPending}
-          patientPage={okPatientPage}
-          patientPageIsError={patientPageIsError}
-          availableRows={availableRows}
-          page={page}
-          totalPages={totalPages}
-          totalPatients={totalPatients}
-          onPrevPage={() => setPage((p) => Math.max(1, p - 1))}
-          onNextPage={() => setPage((p) => Math.min(totalPages, p + 1))}
-          selectedCount={selected.length}
-          maxSelected={STRATEGY_PATIENT_LIST_MAX_SELECTED}
-          submitting={submitting}
-          onAdd={addPatient}
-        />
-
-        <StrategyPatientSelectedPanel
-          title={copy.selectedTitle}
-          subtitle={copy.selectedSubtitle}
-          selected={selected}
-          maxSelected={STRATEGY_PATIENT_LIST_MAX_SELECTED}
-          submitting={submitting}
-          onRemove={removePatient}
-          emptyMessage={copy.emptySelectedMessage}
-        />
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button
-          type="submit"
-          color="green"
-          variant="solid"
+    <Form
+      onSubmit={handleSubmit}
+      className="m-0 mt-0 w-full max-w-none border-0 bg-transparent shadow-none"
+      buttons={
+        <>
+          <Button
+            type="submit"
+            color="green"
+            variant="solid"
+            disabled={submitting}
+            className="w-40 shrink-0"
+          >
+            {submitting ? 'Salvando…' : submitLabel}
+          </Button>
+          {selected.length >= STRATEGY_PATIENT_LIST_MAX_SELECTED ? (
+            <span className="self-center text-xs text-amber-700">
+              Limite de {STRATEGY_PATIENT_LIST_MAX_SELECTED} pacientes atingido.
+            </span>
+          ) : null}
+        </>
+      }
+    >
+      <div className="flex flex-col gap-6 px-4 pb-6 pt-0">
+        <StrategyPatientNameField
+          name={name}
+          onChange={(v) => {
+            setName(v)
+            setNameError(undefined)
+          }}
+          error={nameError}
+          placeholder={copy.namePlaceholder}
           disabled={submitting}
-          className="self-start"
-        >
-          {submitting ? 'Salvando…' : submitLabel}
-        </Button>
-        {selected.length >= STRATEGY_PATIENT_LIST_MAX_SELECTED ? (
-          <span className="text-xs text-amber-700">
-            Limite de {STRATEGY_PATIENT_LIST_MAX_SELECTED} pacientes atingido.
-          </span>
+        />
+
+        {copy.hintBelowName ? (
+          <p className="text-xs text-slate-500">{copy.hintBelowName}</p>
         ) : null}
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <StrategyPatientPickerPanel
+            title={copy.pickerTitle}
+            searchInput={searchInput}
+            onSearchChange={setSearchInput}
+            isPending={isPending}
+            patientPage={okPatientPage}
+            patientPageIsError={patientPageIsError}
+            availableRows={availableRows}
+            page={page}
+            totalPages={totalPages}
+            totalPatients={totalPatients}
+            onPrevPage={() => setPage((p) => Math.max(1, p - 1))}
+            onNextPage={() => setPage((p) => Math.min(totalPages, p + 1))}
+            selectedCount={selected.length}
+            maxSelected={STRATEGY_PATIENT_LIST_MAX_SELECTED}
+            submitting={submitting}
+            onAdd={addPatient}
+          />
+
+          <StrategyPatientSelectedPanel
+            title={copy.selectedTitle}
+            subtitle={copy.selectedSubtitle}
+            selected={selected}
+            maxSelected={STRATEGY_PATIENT_LIST_MAX_SELECTED}
+            submitting={submitting}
+            onRemove={removePatient}
+            emptyMessage={copy.emptySelectedMessage}
+          />
+        </div>
       </div>
-    </form>
+    </Form>
   )
 }
