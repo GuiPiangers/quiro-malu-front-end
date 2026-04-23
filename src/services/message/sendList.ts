@@ -55,15 +55,12 @@ export async function listMessageSendStrategies(params?: {
   return res
 }
 
-export async function createMessageSendStrategy(data: {
-  name: string
-  amount: number
-  kind: string
-}): Promise<ListedMessageSendStrategyDTO | responseError> {
+export async function createMessageSendStrategy(
+  data: CreateMessageSendStrategyDTO,
+): Promise<ListedMessageSendStrategyDTO | responseError> {
   const body: CreateMessageSendStrategyDTO = {
-    kind: data.kind,
+    ...data,
     name: data.name.trim(),
-    params: { amount: data.amount },
   }
 
   return await api<ListedMessageSendStrategyDTO | responseError>(
@@ -222,9 +219,8 @@ export async function updateMessageSendStrategy(
   }
 
   const body: PatchMessageSendStrategyDTO = {
-    kind: data.kind,
+    ...data,
     name: data.name.trim(),
-    params: { amount: data.params.amount },
   }
 
   return await api<ListedMessageSendStrategyDTO | responseError>(

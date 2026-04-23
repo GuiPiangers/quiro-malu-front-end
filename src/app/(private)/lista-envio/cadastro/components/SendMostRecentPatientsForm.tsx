@@ -71,14 +71,18 @@ export default function SendMostRecentPatientsForm(
     setSubmitting(true)
     const res = isEditProps(props)
       ? await updateMessageSendStrategy(props.strategyId, {
-          kind: props.kind,
+          kind: props.kind as
+            | 'send_most_recent_patients'
+            | 'send_most_frequency_patients',
           name: n,
           params: { amount: a },
         })
       : await createMessageSendStrategy({
+          kind: props.kind as
+            | 'send_most_recent_patients'
+            | 'send_most_frequency_patients',
           name: n,
-          amount: a,
-          kind: props.kind,
+          params: { amount: a },
         })
     setSubmitting(false)
     if (Validate.isError(res)) {

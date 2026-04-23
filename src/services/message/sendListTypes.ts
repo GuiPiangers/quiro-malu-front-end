@@ -31,6 +31,12 @@ export type ListedMessageSendStrategyParamsByKind = {
     : Record<string, unknown>
 }
 
+export type MessageSendStrategyPatientSnippet = {
+  name: string
+  phone: string
+  cpf?: string
+}
+
 export type ListedMessageSendStrategyDTOForKind<
   K extends MessageSendStrategyKind,
 > = {
@@ -40,6 +46,7 @@ export type ListedMessageSendStrategyDTOForKind<
   kind: K
   params: ListedMessageSendStrategyParamsByKind[K]
   campaignBindingsCount: number
+  patients?: MessageSendStrategyPatientSnippet[]
 }
 
 export type ListedMessageSendStrategyDTO = {
@@ -58,15 +65,19 @@ export type ListMessageSendStrategyOutput = {
 }
 
 /** Corpo de POST /messageSendStrategies e PATCH /messageSendStrategies/:id */
-export type MessageSendStrategyWriteBody = {
-  kind: string
-  name: string
-  params: { amount: number }
-}
+export type CreateMessageSendStrategyDTO =
+  | {
+      kind: ListedMessageSendStrategyAmountParamKinds
+      name: string
+      params: { amount: number }
+    }
+  | {
+      kind: ListedMessageSendStrategyPatientListParamKinds
+      name: string
+      params: { patientIdList: string[] }
+    }
 
-export type CreateMessageSendStrategyDTO = MessageSendStrategyWriteBody
-
-export type PatchMessageSendStrategyDTO = MessageSendStrategyWriteBody
+export type PatchMessageSendStrategyDTO = CreateMessageSendStrategyDTO
 
 export type BindableCampaignSource =
   | 'before_schedule'

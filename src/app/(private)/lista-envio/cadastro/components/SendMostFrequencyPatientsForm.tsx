@@ -76,9 +76,9 @@ export default function SendMostFrequencyPatientsForm(
           params: { amount: a },
         })
       : await createMessageSendStrategy({
-          name: n,
-          amount: a,
           kind: KIND,
+          name: n,
+          params: { amount: a },
         })
     setSubmitting(false)
     if (Validate.isError(res)) {

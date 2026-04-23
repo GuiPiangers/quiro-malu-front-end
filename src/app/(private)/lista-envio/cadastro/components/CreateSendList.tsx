@@ -9,6 +9,7 @@ import {
 } from '../../kinds'
 import SendMostFrequencyPatientsForm from './SendMostFrequencyPatientsForm'
 import SendMostRecentPatientsForm from './SendMostRecentPatientsForm'
+import SendSelectedListForm from './SendSelectedListForm'
 
 export default function CadastroListaEnvio() {
   const [selectedKind, setSelectedKind] =
@@ -26,7 +27,8 @@ export default function CadastroListaEnvio() {
               const selected = selectedKind === kind
               const implemented =
                 kind === 'send_most_recent_patients' ||
-                kind === 'send_most_frequency_patients'
+                kind === 'send_most_frequency_patients' ||
+                kind === 'send_selected_list'
               return (
                 <button
                   key={kind}
@@ -75,6 +77,14 @@ export default function CadastroListaEnvio() {
                   por frequência.
                 </p>
                 <SendMostFrequencyPatientsForm mode="create" />
+              </div>
+            ) : selectedKind === 'send_selected_list' ? (
+              <div>
+                <p className="text-sm text-slate-600">
+                  Escolha manualmente os pacientes que poderão receber o disparo
+                  de mensagens.
+                </p>
+                <SendSelectedListForm mode="create" />
               </div>
             ) : (
               <p className="text-sm text-slate-600">

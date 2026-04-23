@@ -5,6 +5,9 @@ import { Box } from '@/components/box/Box'
 import type { ListedMessageSendStrategyDTO } from '@/services/message/sendListTypes'
 import SendMostFrequencyPatientsForm from '../../cadastro/components/SendMostFrequencyPatientsForm'
 import SendMostRecentPatientsForm from '../../cadastro/components/SendMostRecentPatientsForm'
+import SendSelectedListForm, {
+  type SelectedListPatientRow,
+} from '../../cadastro/components/SendSelectedListForm'
 import {
   MESSAGE_SEND_STRATEGY_KIND_LABELS,
   MESSAGE_SEND_STRATEGY_KINDS,
@@ -29,6 +32,19 @@ function labelForKind(kind: string) {
   const label =
     MESSAGE_SEND_STRATEGY_KIND_LABELS[kind as MessageSendStrategyKind]
   return label ?? kind
+}
+
+function initialSelectedForSendList(
+  strategy: ListedMessageSendStrategyDTO,
+): SelectedListPatientRow[] {
+  if (strategy.kind !== 'send_selected_list') return []
+  const ids = strategy.params.patientIdList ?? []
+  const patients = strategy.patients ?? []
+  return ids.map((id, i) => ({
+    id,
+    name: patients[i]?.name ?? '—',
+    phone: patients[i]?.phone ?? '—',
+  }))
 }
 
 type EditSendListFormProps = {
@@ -58,7 +74,8 @@ export default function EditSendListForm({ strategy }: EditSendListFormProps) {
               const selected = kind === k
               const implemented =
                 k === 'send_most_recent_patients' ||
-                k === 'send_most_frequency_patients'
+                k === 'send_most_frequency_patients' ||
+                k === 'send_selected_list'
               return (
                 <button
                   key={k}
@@ -116,6 +133,25 @@ export default function EditSendListForm({ strategy }: EditSendListFormProps) {
                 strategyId={strategy.id}
                 defaultName={strategy.name}
                 defaultAmount={amountStringFromListedStrategy(strategy)}
+              />
+            </div>
+          ) : kind === 'send_selected_list' ? (
+            <div>
+              <p className="text-sm text-slate-600">
+                Monte a lista escolhendo os pacientes que receberão o disparo.
+                Busque por nome, adicione até 50 pacientes e remova quando
+                precisar.
+              </p>
+              <SendSelectedListForm
+                key={`${strategy.id}-${kind}`}
+                mode="edit"
+                strategyId={strategy.id}
+                defaultName={strategy.name}
+                initialSelected={
+                  strategy.kind === 'send_selected_list'
+                    ? initialSelectedForSendList(strategy)
+                    : []
+                }
               />
             </div>
           ) : (
