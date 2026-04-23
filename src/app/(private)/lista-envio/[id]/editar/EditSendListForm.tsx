@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { Box } from '@/components/box/Box'
 import type { ListedMessageSendStrategyDTO } from '@/services/message/sendListTypes'
+import SendMostFrequencyPatientsForm from '../../cadastro/components/SendMostFrequencyPatientsForm'
 import SendMostRecentPatientsForm from '../../cadastro/components/SendMostRecentPatientsForm'
 import {
   MESSAGE_SEND_STRATEGY_KIND_LABELS,
@@ -55,7 +56,9 @@ export default function EditSendListForm({ strategy }: EditSendListFormProps) {
           <div className="grid gap-3 sm:grid-cols-2">
             {kindOptions.map((k) => {
               const selected = kind === k
-              const implemented = k === 'send_most_recent_patients'
+              const implemented =
+                k === 'send_most_recent_patients' ||
+                k === 'send_most_frequency_patients'
               return (
                 <button
                   key={k}
@@ -100,10 +103,25 @@ export default function EditSendListForm({ strategy }: EditSendListFormProps) {
                 defaultAmount={amountStringFromListedStrategy(strategy)}
               />
             </div>
+          ) : kind === 'send_most_frequency_patients' ? (
+            <div>
+              <p className="text-sm text-slate-600">
+                Lista com base nos pacientes com maior frequência de consultas.
+                Defina quantos pacientes deseja incluir, ordenados por
+                frequência.
+              </p>
+              <SendMostFrequencyPatientsForm
+                key={`${strategy.id}-${kind}`}
+                mode="edit"
+                strategyId={strategy.id}
+                defaultName={strategy.name}
+                defaultAmount={amountStringFromListedStrategy(strategy)}
+              />
+            </div>
           ) : (
             <p className="text-sm text-slate-600">
-              O formulário de cadastro para este tipo ainda não está disponível.
-              Escolha &quot;Pacientes mais Recentes&quot; ou volte mais tarde.
+              O formulário de edição para este tipo ainda não está disponível.
+              Escolha um tipo com formulário disponível ou volte mais tarde.
             </p>
           )}
         </section>

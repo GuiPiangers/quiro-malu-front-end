@@ -7,6 +7,7 @@ import {
   MESSAGE_SEND_STRATEGY_KIND_LABELS,
   type MessageSendStrategyKind,
 } from '../../kinds'
+import SendMostFrequencyPatientsForm from './SendMostFrequencyPatientsForm'
 import SendMostRecentPatientsForm from './SendMostRecentPatientsForm'
 
 export default function CadastroListaEnvio() {
@@ -23,7 +24,9 @@ export default function CadastroListaEnvio() {
           <div className="grid gap-3 sm:grid-cols-2">
             {MESSAGE_SEND_STRATEGY_KINDS.map((kind) => {
               const selected = selectedKind === kind
-              const implemented = kind === 'send_most_recent_patients'
+              const implemented =
+                kind === 'send_most_recent_patients' ||
+                kind === 'send_most_frequency_patients'
               return (
                 <button
                   key={kind}
@@ -64,10 +67,19 @@ export default function CadastroListaEnvio() {
                 </p>
                 <SendMostRecentPatientsForm mode="create" kind={selectedKind} />
               </div>
+            ) : selectedKind === 'send_most_frequency_patients' ? (
+              <div>
+                <p className="text-sm text-slate-600">
+                  Lista com base nos pacientes com maior frequência de
+                  consultas. Defina quantos pacientes deseja incluir, ordenados
+                  por frequência.
+                </p>
+                <SendMostFrequencyPatientsForm mode="create" />
+              </div>
             ) : (
               <p className="text-sm text-slate-600">
                 O formulário de cadastro para este tipo ainda não está
-                disponível. Escolha &quot;Pacientes mais Recentes&quot; ou volte
+                disponível. Escolha um tipo com formulário disponível ou volte
                 mais tarde.
               </p>
             )}
