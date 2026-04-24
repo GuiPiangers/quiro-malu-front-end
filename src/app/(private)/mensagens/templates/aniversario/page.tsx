@@ -33,6 +33,11 @@ export default async function BirthdayTemplatesListPage() {
             </Link>
           </Button>
         </div>
+        <p className="mt-4 text-sm leading-relaxed text-slate-600">
+          Será enviada a primeira campanha ativa, caso uma mensagem de
+          aniversário já tenha sido enviada, as mensagens de outras campanhas
+          não serão disparadas.
+        </p>
       </Box>
 
       <Box>
