@@ -4,6 +4,7 @@ import { Metadata, Viewport } from 'next'
 import QueryClientContext from '@/contexts/QueryClientProvider'
 import { Toaster } from '@/components/ui/toaster'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const font = Poppins({
   subsets: ['latin'],
@@ -36,6 +37,7 @@ export default function RootLayout({
         <QueryClientContext>{children}</QueryClientContext>
         <Toaster />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
