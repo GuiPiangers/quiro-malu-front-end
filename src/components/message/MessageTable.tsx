@@ -1,4 +1,4 @@
-import { ListMessageResponse } from '@/services/message/message'
+import { ListMessageResponse } from '@/services/message/beforeScheduleMessage'
 import {
   Card,
   CardContent,

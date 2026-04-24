@@ -58,6 +58,8 @@ export async function api<T>(
 
   const data = await request(`${baseURL}${input}`, { ...init }, token)
 
+  if (data.status === 204) return undefined as T
+
   if (data.status === 401 && refreshToken) {
     const newToken = await revalidateToken({ refreshToken })
 

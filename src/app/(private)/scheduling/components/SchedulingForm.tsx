@@ -159,7 +159,11 @@ export default function SchedulingForm({
   }, [patientId, setValue])
 
   return (
-    <Form onSubmit={handleSubmit(setScheduling)} {...formProps}>
+    <Form
+      onSubmit={handleSubmit(setScheduling)}
+      {...formProps}
+      className="border-none"
+    >
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>

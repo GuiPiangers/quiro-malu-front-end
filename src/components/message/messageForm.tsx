@@ -8,7 +8,10 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { z } from 'zod'
 import { sectionStyles, titleStyles } from '../form/Styles'
 import Form, { FormProps } from '../form/Form'
-import { MessageResponse, TriggerDTO } from '@/services/message/message'
+import {
+  MessageResponse,
+  TriggerDTO,
+} from '@/services/message/beforeScheduleMessage'
 import { MessageEventSelect } from './MessageEventSelect'
 import { useState } from 'react'
 

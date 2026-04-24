@@ -100,7 +100,11 @@ export default function EventForm({
   }
 
   return (
-    <Form onSubmit={handleSubmit(setEvent)} {...formProps}>
+    <Form
+      onSubmit={handleSubmit(setEvent)}
+      {...formProps}
+      className="border-none"
+    >
       <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
         <Input.Root>
           <Input.Label notSave={dirtyFields.description}>Descrição</Input.Label>

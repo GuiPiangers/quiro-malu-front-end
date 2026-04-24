@@ -69,7 +69,10 @@ type SentMessagesListProps = {
   limit: number
   patientNames: Record<string, string>
   fetchError?: boolean
+  listBasePath?: string
 }
+
+const DEFAULT_LIST_BASE = '/mensagens/templates/antes-do-agendamento'
 
 export default function SentMessagesList({
   campaignId,
@@ -79,6 +82,7 @@ export default function SentMessagesList({
   limit,
   patientNames,
   fetchError,
+  listBasePath = DEFAULT_LIST_BASE,
 }: SentMessagesListProps) {
   if (fetchError) {
     return (
@@ -165,7 +169,7 @@ export default function SentMessagesList({
         <div className="flex flex-wrap items-center justify-center gap-2 border-t border-slate-100 pt-4 text-sm text-slate-600">
           {page > 1 ? (
             <Link
-              href={`/mensagens/templates/antes-do-agendamento/${campaignId}?${baseQuery}&page=${
+              href={`${listBasePath}/${campaignId}?${baseQuery}&page=${
                 page - 1
               }`}
               className="rounded-lg border border-slate-200 px-3 py-1.5 font-medium text-main hover:bg-purple-50"
@@ -180,7 +184,7 @@ export default function SentMessagesList({
           </span>
           {page < totalPages ? (
             <Link
-              href={`/mensagens/templates/antes-do-agendamento/${campaignId}?${baseQuery}&page=${
+              href={`${listBasePath}/${campaignId}?${baseQuery}&page=${
                 page + 1
               }`}
               className="rounded-lg border border-slate-200 px-3 py-1.5 font-medium text-main hover:bg-purple-50"

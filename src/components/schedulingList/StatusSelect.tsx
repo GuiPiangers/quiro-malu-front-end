@@ -4,6 +4,7 @@ import { SchedulingStatus } from '@/services/scheduling/scheduling'
 import Button from '../Button'
 import { Input } from '../input'
 import { useUpdateScheduling } from '@/hooks/scheduling/useUpdateScheduling'
+import { isSchedulingStartInPast } from '@/utils/schedulingDisplayStatus'
 
 export default function StatusSelect({
   status,
@@ -19,7 +20,7 @@ export default function StatusSelect({
   duration: number
 }) {
   const updateScheduling = useUpdateScheduling()
-  const isLate = new Date().toISOString() > new Date(date).toISOString()
+  const isPastSchedulingStart = isSchedulingStartInPast(date)
 
   const getSelectedStatus = (status: SchedulingStatus) => {
     return status === 'Agendado' || status === 'Atrasado' ? 'Agendado' : status
@@ -61,9 +62,9 @@ export default function StatusSelect({
         >
           <Input.Option
             value={'Agendado'}
-            className={`${isLate ? 'text-red-600' : 'text-blue-600'}`}
+            className={isPastSchedulingStart ? 'text-red-600' : 'text-blue-600'}
           >
-            {isLate ? 'Atrasado' : 'Agendado'}
+            {isPastSchedulingStart ? 'Atrasado' : 'Agendado'}
           </Input.Option>
           <Input.Option value={'Atendido'} className="text-green-600">
             Atendido

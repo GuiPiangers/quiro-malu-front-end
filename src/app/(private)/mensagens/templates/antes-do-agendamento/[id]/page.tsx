@@ -2,7 +2,8 @@ import type { ComponentProps } from 'react'
 import Link from 'next/link'
 import { Clock, MessageSquare, Settings } from 'lucide-react'
 import { Validate } from '@/services/api/Validate'
-import { getBeforeScheduleMessage } from '@/services/message/message'
+import { getBeforeScheduleMessage } from '@/services/message/beforeScheduleMessage'
+import { mapBeforeScheduleDtoToResponse } from '@/services/message/beforeScheduleMessageMapper'
 import { getMessageLogs } from '@/services/message/messageLogs'
 import { getPatient } from '@/services/patient/patient'
 import BeforeScheduleForm from '../components/BeforeScheduleForm'
@@ -35,9 +36,18 @@ export default async function EditBeforeScheduleCampaignPage({
 }: PageProps) {
   const activeTab = searchParams.aba ?? 'configuracao'
 
-  const messageData = await getBeforeScheduleMessage(params.id).then((res) =>
+  const messageDto = await getBeforeScheduleMessage(params.id).then((res) =>
     Validate.isOk(res) ? res : undefined,
   )
+  const messageData = messageDto
+    ? mapBeforeScheduleDtoToResponse(messageDto)
+    : undefined
+  const initialLinkedSendList = messageDto?.linkedMessageSendStrategy
+    ? {
+        id: messageDto.linkedMessageSendStrategy.id,
+        name: messageDto.linkedMessageSendStrategy.name,
+      }
+    : null
 
   const logsPage = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1)
   const logsLimit = 20
@@ -46,7 +56,7 @@ export default async function EditBeforeScheduleCampaignPage({
 
   if (activeTab === 'mensagens-enviadas') {
     const logsRes = await getMessageLogs({
-      beforeScheduleMessageId: params.id,
+      scheduleMessageConfigId: params.id,
       page: logsPage,
       limit: logsLimit,
     })
@@ -123,7 +133,10 @@ export default async function EditBeforeScheduleCampaignPage({
 
       {/* Tab content */}
       {activeTab === 'configuracao' ? (
-        <BeforeScheduleForm defaultValues={messageData} />
+        <BeforeScheduleForm
+          defaultValues={messageData}
+          initialLinkedSendList={initialLinkedSendList}
+        />
       ) : sentLogsProps ? (
         <SentMessagesList {...sentLogsProps} />
       ) : null}

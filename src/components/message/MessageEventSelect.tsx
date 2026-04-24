@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 import { Input } from '../input'
-import { TriggerDTO } from '@/services/message/message'
+import { TriggerDTO } from '@/services/message/beforeScheduleMessage'
 
 type MessageEventSelectProps = {
   trigger: TriggerDTO<any>

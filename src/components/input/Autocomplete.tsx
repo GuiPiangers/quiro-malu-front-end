@@ -172,7 +172,7 @@ export default forwardRef(function Autocomplete(
               )
             })}
             {groupedOptions.length === 0 && (
-              <li className="cursor-default list-none p-2">No results</li>
+              <li className="cursor-default list-none p-2">Nenhum resultado</li>
             )}
           </ul>
         </Popper>

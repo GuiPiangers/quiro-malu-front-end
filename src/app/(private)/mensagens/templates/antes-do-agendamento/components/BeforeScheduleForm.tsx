@@ -8,10 +8,14 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { z } from 'zod'
 import { Switch } from '@/components/ui/switch'
 import {
-  BeforeScheduleMessageResponse,
   createBeforeScheduleMessage,
   updateBeforeScheduleMessage,
-} from '@/services/message/message'
+} from '@/services/message/beforeScheduleMessage'
+import {
+  bindSendListCampaigns,
+  unbindSendListCampaign,
+} from '@/services/message/sendList'
+import type { BeforeScheduleMessageResponse } from '@/services/message/beforeScheduleMessageTypes'
 import {
   Copy,
   User,
@@ -28,6 +32,9 @@ import { BraceAutocompleteTextarea } from '@/components/brace-autocomplete'
 import { WhatsAppMessageBubble } from '@/components/message/WhatsAppMessageBubble'
 import { useRouter } from 'next/navigation'
 import { Box } from '@/components/box/Box'
+import MessageTemplateSendListPicker, {
+  type SendListSelection,
+} from '@/app/(private)/mensagens/components/MessageTemplateSendListPicker'
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 
@@ -135,13 +142,18 @@ function renderPreview(template: string): string {
 
 type BeforeScheduleFormProps = {
   defaultValues?: Partial<BeforeScheduleMessageResponse>
+  initialLinkedSendList?: SendListSelection | null
 }
 
 export default function BeforeScheduleForm({
   defaultValues,
+  initialLinkedSendList = null,
 }: BeforeScheduleFormProps) {
   const { handleMessage } = useSnackbarContext()
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [sendList, setSendList] = useState<SendListSelection | null>(
+    initialLinkedSendList,
+  )
   const router = useRouter()
 
   const { timeValue: defaultTimeValue, timeUnit: defaultTimeUnit } =
@@ -185,14 +197,47 @@ export default function BeforeScheduleForm({
 
     if (Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
-    } else {
-      handleMessage({
-        title: 'Template salvo com sucesso!',
-        type: 'success',
-      })
-      router.push('/mensagens/templates/antes-do-agendamento')
-      router.refresh()
+      return
     }
+
+    const campaignId = res.id ?? defaultValues?.id
+    if (sendList) {
+      if (!campaignId) {
+        handleMessage({
+          title: 'Erro!',
+          description:
+            'Template salvo, mas não foi possível obter o identificador da campanha para vincular a lista.',
+          type: 'error',
+        })
+        return
+      }
+      const bindRes = await bindSendListCampaigns(sendList.id, [campaignId])
+      if (Validate.isError(bindRes)) {
+        handleMessage({
+          title: 'Erro ao vincular lista',
+          description: bindRes.message,
+          type: 'error',
+        })
+        return
+      }
+    } else if (campaignId) {
+      const unbindRes = await unbindSendListCampaign(campaignId)
+      if (Validate.isError(unbindRes)) {
+        handleMessage({
+          title: 'Erro ao remover vínculo da lista',
+          description: unbindRes.message,
+          type: 'error',
+        })
+        return
+      }
+    }
+
+    handleMessage({
+      title: 'Template salvo com sucesso!',
+      type: 'success',
+    })
+    router.push('/mensagens/templates/antes-do-agendamento')
+    router.refresh()
   }
 
   const copyToClipboard = (key: string) => {
@@ -301,6 +346,12 @@ export default function BeforeScheduleForm({
               <Input.Message error>{errors.timeValue.message}</Input.Message>
             )}
           </div>
+
+          <MessageTemplateSendListPicker
+            value={sendList}
+            onChange={setSendList}
+            disabled={isSubmitting}
+          />
         </Box>
 
         {/* Section: Conteúdo do Template */}
