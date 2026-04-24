@@ -210,7 +210,9 @@ function AsyncAutocompleteInner<T>(
               })}
 
               {options.length === 0 && debouncedValue && (
-                <li className="cursor-default list-none p-2">Nenhum resultado</li>
+                <li className="cursor-default list-none p-2">
+                  Nenhum resultado
+                </li>
               )}
             </ul>
           </div>
