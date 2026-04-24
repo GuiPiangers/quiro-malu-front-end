@@ -1,7 +1,10 @@
 'use client'
 
 import SendPatientIdListStrategyForm from './strategyPatientList/SendPatientIdListStrategyForm'
-import type { SelectedListPatientRow, StrategyPatientListRow } from './strategyPatientList/types'
+import type {
+  SelectedListPatientRow,
+  StrategyPatientListRow,
+} from './strategyPatientList/types'
 
 export type { SelectedListPatientRow, StrategyPatientListRow }
 
