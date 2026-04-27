@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { redirect, RedirectType } from 'next/navigation'
 
 export type responseError = {
   message: string
@@ -36,7 +37,7 @@ export const revalidateToken = async ({
 }: {
   refreshToken: string
 }) => {
-  const { token } = await request(
+  const response = await request(
     `${process.env.NEXT_PUBLIC_HOST}/refresh-token`,
     {
       method: 'POST',
@@ -44,7 +45,7 @@ export const revalidateToken = async ({
     },
   ).then((res) => res.json())
 
-  return token
+  return response.token
 }
 
 export async function api<T>(
@@ -60,13 +61,17 @@ export async function api<T>(
 
   if (data.status === 204) return undefined as T
 
+  if (data.status === 418) redirect('/login', RedirectType.replace)
+
   if (data.status === 401 && refreshToken) {
     const newToken = await revalidateToken({ refreshToken })
 
-    if (!newToken) throw new Error('Falha de autenticação')
+    if (!newToken) redirect('/login', RedirectType.replace)
+
     const newData = await request(`${baseURL}${input}`, { ...init }, newToken)
 
     return await newData.json()
   }
+
   return data.json()
 }
