@@ -25,7 +25,7 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(signURL)
     }
     response.cookies.set('quiro-token', (await newToken.json()).token, {
-      maxAge: 60 * 15, // 15 min
+      maxAge: 60 * 60 * 5, // 5 hours
     })
   }
 
