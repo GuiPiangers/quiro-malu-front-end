@@ -42,6 +42,12 @@ const VARIABLES = [
     key: '{{nome_paciente}}',
     label: '{{nome_paciente}}',
     icon: <User className="h-3.5 w-3.5" />,
+    sample: 'Maria',
+  },
+  {
+    key: '{{nome_completo_paciente}}',
+    label: '{{nome_completo_paciente}}',
+    icon: <User className="h-3.5 w-3.5" />,
     sample: 'Maria Silva',
   },
   {

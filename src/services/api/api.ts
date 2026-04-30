@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers'
+import { cookies, headers as headerFn } from 'next/headers'
 import { redirect, RedirectType } from 'next/navigation'
 
 export type responseError = {
@@ -13,6 +13,18 @@ const request = async (
   init?: RequestInit & { noContentType?: boolean },
   token?: string,
 ) => {
+  const cookieStore = cookies()
+  const headerStore = headerFn()
+
+  const deviceId = cookieStore.get('x-device-id')?.value ?? ''
+  const userIp =
+    headerStore.get('x-forwarded-for')?.split(',')[0] ??
+    headerStore.get('x-real-ip') ??
+    ''
+  const userAgent = headerStore.get('user-agent') ?? ''
+
+  console.table({ deviceId, userIp, userAgent })
+
   const { noContentType, headers, ...initData } = init || {}
   const headersData: HeadersInit = noContentType
     ? {
@@ -22,6 +34,9 @@ const request = async (
     : {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
+        'X-Device-ID': deviceId,
+        'X-User-IP': userIp,
+        'X-User-Agent': userAgent,
         ...headers,
       }
 

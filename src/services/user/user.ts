@@ -33,9 +33,19 @@ export async function registerUser(data: CreateUserData) {
 }
 
 export async function loginUser(data: { email: string; password: string }) {
+  const cookieStore = cookies()
+  let deviceId = cookieStore.get('x-device-id')?.value
+
+  if (!deviceId) {
+    deviceId = crypto.randomUUID()
+  }
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Device-ID': deviceId,
+    },
     body: JSON.stringify(data),
   })
 
@@ -43,16 +53,21 @@ export async function loginUser(data: { email: string; password: string }) {
 
   if (Validate.isOk(auth)) {
     cookies().set('quiro-token', auth.token, {
-      maxAge: 60 * 15, // 15 min
+      maxAge: 60 * 15,
     })
     cookies().set('quiro-refresh-token', auth.refreshToken, {
-      maxAge: 60 * 60 * 24 * 15, // 15 dias
+      maxAge: 60 * 60 * 24 * 15,
+    })
+    cookies().set('x-device-id', deviceId, {
+      maxAge: 60 * 60 * 24 * 365, // 1 ano
+      path: '/',
+      sameSite: 'strict',
     })
     redirect('/')
   }
+
   return auth
 }
-
 export async function logoutUser(): Promise<void> {
   const refreshTokenId = cookies().get('quiro-refresh-token')
   await api<UserResponse>('/logout', {
