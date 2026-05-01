@@ -72,26 +72,30 @@ export async function createMessageSendStrategy(
   )
 }
 
-export async function bindSendListCampaigns(
-  strategyId: string,
-  campaignIds: string[],
+export async function bindCampaignSendStrategies(
+  campaignId: string,
+  strategyIds: string[],
 ): Promise<responseError | { ok: true }> {
-  const trimmedId = strategyId.trim()
-  if (!trimmedId) {
+  const trimmedCampaignId = campaignId.trim()
+  if (!trimmedCampaignId) {
     return {
       error: true,
-      message: 'Identificador da lista de envio inválido.',
+      message: 'Identificador da campanha inválido.',
       statusCode: 400,
       type: 'validation',
     } satisfies responseError
   }
 
+  const normalizedStrategyIds = Array.from(
+    new Set(strategyIds.map((id) => id.trim()).filter((id) => id.length > 0)),
+  )
+
   const res = await api<responseError | Record<string, unknown>>(
-    `/messageSendStrategies/${encodeURIComponent(trimmedId)}/campaigns`,
+    `/messageSendStrategies/campaigns/${encodeURIComponent(trimmedCampaignId)}`,
     {
       method: 'PUT',
       cache: 'no-store',
-      body: JSON.stringify({ campaignIds }),
+      body: JSON.stringify({ strategyIds: normalizedStrategyIds }),
     },
   )
 
@@ -167,9 +171,48 @@ export async function getMessageSendStrategy(
   return res
 }
 
-export async function getMessageSendStrategyByCampaignId(
+function isListedStrategyRow(
+  row: unknown,
+): row is ListedMessageSendStrategyDTO {
+  return isListedMessageSendStrategyDTO(
+    row as ListedMessageSendStrategyDTO | responseError,
+  )
+}
+
+function parseStrategiesByCampaignResponse(
+  res: unknown,
+): ListedMessageSendStrategyDTO[] | null {
+  if (Array.isArray(res)) {
+    const items = res.filter(isListedStrategyRow)
+    return items.length === res.length ? items : null
+  }
+  if (
+    typeof res === 'object' &&
+    res !== null &&
+    Array.isArray((res as { items?: unknown }).items)
+  ) {
+    const raw = (res as { items: unknown[] }).items
+    const items = raw.filter(isListedStrategyRow)
+    return items.length === raw.length ? items : null
+  }
+  if (
+    typeof res === 'object' &&
+    res !== null &&
+    Array.isArray((res as { strategies?: unknown }).strategies)
+  ) {
+    const raw = (res as { strategies: unknown[] }).strategies
+    const items = raw.filter(isListedStrategyRow)
+    return items.length === raw.length ? items : null
+  }
+  if (isListedMessageSendStrategyDTO(res as ListedMessageSendStrategyDTO)) {
+    return [res as ListedMessageSendStrategyDTO]
+  }
+  return null
+}
+
+export async function getMessageSendStrategiesByCampaignId(
   campaignId: string,
-): Promise<ListedMessageSendStrategyDTO | responseError> {
+): Promise<ListedMessageSendStrategyDTO[] | responseError> {
   const trimmed = campaignId.trim()
   if (!trimmed) {
     return {
@@ -180,7 +223,7 @@ export async function getMessageSendStrategyByCampaignId(
     } satisfies responseError
   }
 
-  const res = await api<ListedMessageSendStrategyDTO | responseError>(
+  const res = await api<unknown | responseError>(
     `/messageSendStrategies/by-campaign/${encodeURIComponent(trimmed)}`,
     {
       method: 'GET',
@@ -192,16 +235,17 @@ export async function getMessageSendStrategyByCampaignId(
     return res
   }
 
-  if (!isListedMessageSendStrategyDTO(res)) {
+  const parsed = parseStrategiesByCampaignResponse(res)
+  if (parsed === null) {
     return {
       error: true,
-      message: 'Resposta inválida da lista de envio vinculada à campanha.',
+      message: 'Resposta inválida das listas de envio vinculadas à campanha.',
       statusCode: 500,
       type: 'parse',
     } satisfies responseError
   }
 
-  return res
+  return parsed
 }
 
 export async function updateMessageSendStrategy(

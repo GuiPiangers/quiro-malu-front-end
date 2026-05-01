@@ -7,6 +7,7 @@ import { mapAfterScheduleDtoToResponse } from '@/services/message/afterScheduleM
 import { getMessageLogs } from '@/services/message/messageLogs'
 import { getPatient } from '@/services/patient/patient'
 import AfterScheduleForm from '../components/AfterScheduleForm'
+import type { SendListSelection } from '@/app/(private)/mensagens/components/MessageTemplateSendListPicker'
 import SentMessagesList from '../../antes-do-agendamento/components/SentMessagesList'
 
 type PageProps = {
@@ -44,12 +45,11 @@ export default async function EditAfterScheduleCampaignPage({
   const messageData = messageDto
     ? mapAfterScheduleDtoToResponse(messageDto)
     : undefined
-  const initialLinkedSendList = messageDto?.linkedMessageSendStrategy
-    ? {
-        id: messageDto.linkedMessageSendStrategy.id,
-        name: messageDto.linkedMessageSendStrategy.name,
-      }
-    : null
+  const initialLinkedSendStrategies: SendListSelection[] =
+    messageDto?.linkedMessageSendStrategies?.map((s) => ({
+      id: s.id,
+      name: s.name,
+    })) ?? []
 
   const logsPage = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1)
   const logsLimit = 20
@@ -136,7 +136,7 @@ export default async function EditAfterScheduleCampaignPage({
       {activeTab === 'configuracao' ? (
         <AfterScheduleForm
           defaultValues={messageData}
-          initialLinkedSendList={initialLinkedSendList}
+          initialLinkedSendStrategies={initialLinkedSendStrategies}
         />
       ) : sentLogsProps ? (
         <SentMessagesList {...sentLogsProps} />

@@ -10,9 +10,9 @@ import type {
   ListBirthdayMessagesOutput,
 } from './birthdayMessageTypes'
 import { normalizeSendTimeString } from './birthdayMessageMapper'
-import { getMessageSendStrategyByCampaignId } from './sendList'
-import { linkedMessageSendStrategyFromSettled } from './sendListGuards'
-import type { WithLinkedMessageSendStrategy } from './sendListTypes'
+import { getMessageSendStrategiesByCampaignId } from './sendList'
+import { linkedMessageSendStrategiesFromSettled } from './sendListGuards'
+import type { WithLinkedMessageSendStrategies } from './sendListTypes'
 
 type ProfileDTO = {
   id?: string
@@ -108,11 +108,11 @@ export async function listBirthdayMessages(
 export async function getBirthdayMessage(
   id: string,
 ): Promise<
-  (BirthdayMessageDTO & WithLinkedMessageSendStrategy) | responseError
+  (BirthdayMessageDTO & WithLinkedMessageSendStrategies) | responseError
 > {
   const [messageSettled, sendListSettled] = await Promise.allSettled([
     api<BirthdayMessageDTO | responseError>(`/birthdayMessages/${id}`),
-    getMessageSendStrategyByCampaignId(id),
+    getMessageSendStrategiesByCampaignId(id),
   ])
 
   if (messageSettled.status === 'rejected') {
@@ -131,8 +131,8 @@ export async function getBirthdayMessage(
 
   return {
     ...res,
-    linkedMessageSendStrategy:
-      linkedMessageSendStrategyFromSettled(sendListSettled),
+    linkedMessageSendStrategies:
+      linkedMessageSendStrategiesFromSettled(sendListSettled),
   }
 }
 

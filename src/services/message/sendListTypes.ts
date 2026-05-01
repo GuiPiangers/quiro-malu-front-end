@@ -53,8 +53,8 @@ export type ListedMessageSendStrategyDTO = {
   [K in MessageSendStrategyKind]: ListedMessageSendStrategyDTOForKind<K>
 }[MessageSendStrategyKind]
 
-export type WithLinkedMessageSendStrategy = {
-  linkedMessageSendStrategy: ListedMessageSendStrategyDTO | null
+export type WithLinkedMessageSendStrategies = {
+  linkedMessageSendStrategies: ListedMessageSendStrategyDTO[]
 }
 
 export type ListMessageSendStrategyOutput = {

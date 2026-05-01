@@ -1,0 +1,28 @@
+---
+description: Busca de dados assíncronos em componentes cliente com TanStack Query
+alwaysApply: true
+---
+
+# Dados assíncronos em componentes cliente (`'use client'`)
+
+## Regra
+
+Para **carregar dados do servidor** (chamadas a server actions, `fetch`, SDK, etc.) em componentes React com **`'use client'`**, use **TanStack Query** (`useQuery`, `useMutation`, `useInfiniteQuery`, etc.).
+
+**Não** implemente o fluxo de loading/erro/dados só com `useState` + `useEffect` (ou handlers que fazem `setLoading` / `setData` / `setError` manualmente), exceto quando for estado puramente local da UI (ex.: abrir modal, campo de formulário) sem relação com a busca.
+
+## Padrão esperado
+
+- Defina um **`queryKey`** estável e, quando fizer sentido, alinhado às chaves usadas em `invalidateQueries` (ex.: prefixo `['messageSendStrategies']` para listagens de estratégias de envio).
+- O **`queryFn`** deve retornar dados tipados; em erros de domínio (`Validate.isError`, etc.), **lance** `Error` (ou use `throwOnError`) para o TanStack marcar `isError` e mensagem de falha.
+- Use **`isFetching`**, **`isError`**, **`data`** (e variantes como `isPending`) para renderizar UI, em vez de estados paralelos de loading/erro.
+
+### Busca sob demanda (ex.: ao abrir modal)
+
+Use `enabled: false` e dispare `refetch()` quando o usuário abrir o fluxo que precisa dos dados — mantém cache e invalidação coerentes com o restante do app.
+
+## Referência no repositório
+
+Exemplo de `useQuery` com `queryKey` + `queryFn`: `src/components/schedulingList/SchedulingList.tsx`.
+
+Exemplo com `enabled: false` e `refetch` ao abrir modal: `src/app/(private)/mensagens/components/MessageTemplateSendListPicker.tsx`.

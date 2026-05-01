@@ -3,6 +3,7 @@ export const MESSAGE_SEND_STRATEGY_KINDS = [
   'send_most_frequency_patients',
   'send_selected_list',
   'exclude_patients_list',
+  'unique_send_by_patient',
 ] as const
 
 export type MessageSendStrategyKind =
@@ -16,4 +17,5 @@ export const MESSAGE_SEND_STRATEGY_KIND_LABELS: Record<
   send_most_frequency_patients: 'Pacientes mais Frequentes',
   send_selected_list: 'Pacientes selecionados',
   exclude_patients_list: 'Pacientes não selecionados',
+  unique_send_by_patient: 'Único por paciente',
 }

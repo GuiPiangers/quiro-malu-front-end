@@ -23,8 +23,6 @@ const request = async (
     ''
   const userAgent = headerStore.get('user-agent') ?? ''
 
-  console.table({ deviceId, userIp, userAgent })
-
   const { noContentType, headers, ...initData } = init || {}
   const headersData: HeadersInit = noContentType
     ? {

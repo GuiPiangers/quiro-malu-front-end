@@ -12,7 +12,7 @@ import {
   updateAfterScheduleMessage,
 } from '@/services/message/afterScheduleMessage'
 import {
-  bindSendListCampaigns,
+  bindCampaignSendStrategies,
   unbindSendListCampaign,
 } from '@/services/message/sendList'
 import type { AfterScheduleMessageResponse } from '@/services/message/afterScheduleMessageTypes'
@@ -148,18 +148,18 @@ function renderPreview(template: string): string {
 
 type AfterScheduleFormProps = {
   defaultValues?: Partial<AfterScheduleMessageResponse>
-  initialLinkedSendList?: SendListSelection | null
+  initialLinkedSendStrategies?: SendListSelection[]
 }
 
 export default function AfterScheduleForm({
   defaultValues,
-  initialLinkedSendList = null,
+  initialLinkedSendStrategies = [],
 }: AfterScheduleFormProps) {
   const { handleMessage } = useSnackbarContext()
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
-  const [sendList, setSendList] = useState<SendListSelection | null>(
-    initialLinkedSendList,
-  )
+  const [linkedSendStrategies, setLinkedSendStrategies] = useState<
+    SendListSelection[]
+  >(initialLinkedSendStrategies)
   const router = useRouter()
 
   const { timeValue: defaultTimeValue, timeUnit: defaultTimeUnit } =
@@ -206,20 +206,23 @@ export default function AfterScheduleForm({
     }
 
     const campaignId = res.id ?? defaultValues?.id
-    if (sendList) {
+    if (linkedSendStrategies.length > 0) {
       if (!campaignId) {
         handleMessage({
           title: 'Erro!',
           description:
-            'Template salvo, mas não foi possível obter o identificador da campanha para vincular a lista.',
+            'Template salvo, mas não foi possível obter o identificador da campanha para vincular as listas.',
           type: 'error',
         })
         return
       }
-      const bindRes = await bindSendListCampaigns(sendList.id, [campaignId])
+      const bindRes = await bindCampaignSendStrategies(
+        campaignId,
+        linkedSendStrategies.map((s) => s.id),
+      )
       if (Validate.isError(bindRes)) {
         handleMessage({
-          title: 'Erro ao vincular lista',
+          title: 'Erro ao vincular filtros',
           description: bindRes.message,
           type: 'error',
         })
@@ -229,7 +232,7 @@ export default function AfterScheduleForm({
       const unbindRes = await unbindSendListCampaign(campaignId)
       if (Validate.isError(unbindRes)) {
         handleMessage({
-          title: 'Erro ao remover vínculo da lista',
+          title: 'Erro ao remover vínculos das listas',
           description: unbindRes.message,
           type: 'error',
         })
@@ -354,8 +357,8 @@ export default function AfterScheduleForm({
           </div>
 
           <MessageTemplateSendListPicker
-            value={sendList}
-            onChange={setSendList}
+            value={linkedSendStrategies}
+            onChange={setLinkedSendStrategies}
             disabled={isSubmitting}
           />
         </Box>

@@ -7,9 +7,9 @@ import type {
   BeforeScheduleMessageResponse,
   ListBeforeScheduleMessagesOutput,
 } from './beforeScheduleMessageTypes'
-import { getMessageSendStrategyByCampaignId } from './sendList'
-import { linkedMessageSendStrategyFromSettled } from './sendListGuards'
-import type { WithLinkedMessageSendStrategy } from './sendListTypes'
+import { getMessageSendStrategiesByCampaignId } from './sendList'
+import { linkedMessageSendStrategiesFromSettled } from './sendListGuards'
+import type { WithLinkedMessageSendStrategies } from './sendListTypes'
 
 export type TriggerDTO<T = unknown> = {
   event: string
@@ -93,13 +93,13 @@ export async function listBeforeScheduleMessages(): Promise<
 export async function getBeforeScheduleMessage(
   id: string,
 ): Promise<
-  (BeforeScheduleMessageDTO & WithLinkedMessageSendStrategy) | responseError
+  (BeforeScheduleMessageDTO & WithLinkedMessageSendStrategies) | responseError
 > {
   const [messageSettled, sendListSettled] = await Promise.allSettled([
     api<BeforeScheduleMessageDTO | responseError>(
       `/beforeScheduleMessages/${id}`,
     ),
-    getMessageSendStrategyByCampaignId(id),
+    getMessageSendStrategiesByCampaignId(id),
   ])
 
   if (messageSettled.status === 'rejected') {
@@ -118,8 +118,8 @@ export async function getBeforeScheduleMessage(
 
   return {
     ...res,
-    linkedMessageSendStrategy:
-      linkedMessageSendStrategyFromSettled(sendListSettled),
+    linkedMessageSendStrategies:
+      linkedMessageSendStrategiesFromSettled(sendListSettled),
   }
 }
 

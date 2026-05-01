@@ -18,6 +18,8 @@ function listedStrategyParamsLookValid(
         Array.isArray(row.params.patientIdList) &&
         row.params.patientIdList.every((x) => typeof x === 'string')
       )
+    case 'unique_send_by_patient':
+      return typeof row.params === 'object' && row.params !== null
     default:
       return false
   }
@@ -39,11 +41,13 @@ export function isListedMessageSendStrategyDTO(
   return listedStrategyParamsLookValid(value as ListedMessageSendStrategyDTO)
 }
 
-export function linkedMessageSendStrategyFromSettled(
-  settled: PromiseSettledResult<ListedMessageSendStrategyDTO | responseError>,
-): ListedMessageSendStrategyDTO | null {
-  if (settled.status === 'rejected') return null
+export function linkedMessageSendStrategiesFromSettled(
+  settled: PromiseSettledResult<
+    ListedMessageSendStrategyDTO[] | responseError
+  >,
+): ListedMessageSendStrategyDTO[] {
+  if (settled.status === 'rejected') return []
   const v = settled.value
-  if (Validate.isError(v)) return null
-  return isListedMessageSendStrategyDTO(v) ? v : null
+  if (Validate.isError(v)) return []
+  return Array.isArray(v) ? v.filter(isListedMessageSendStrategyDTO) : []
 }

@@ -7,9 +7,9 @@ import type {
   AfterScheduleMessageResponse,
   ListAfterScheduleMessagesOutput,
 } from './afterScheduleMessageTypes'
-import { getMessageSendStrategyByCampaignId } from './sendList'
-import { linkedMessageSendStrategyFromSettled } from './sendListGuards'
-import type { WithLinkedMessageSendStrategy } from './sendListTypes'
+import { getMessageSendStrategiesByCampaignId } from './sendList'
+import { linkedMessageSendStrategiesFromSettled } from './sendListGuards'
+import type { WithLinkedMessageSendStrategies } from './sendListTypes'
 
 type ProfileDTO = {
   id?: string
@@ -90,13 +90,13 @@ export async function listAfterScheduleMessages(): Promise<
 export async function getAfterScheduleMessage(
   id: string,
 ): Promise<
-  (AfterScheduleMessageDTO & WithLinkedMessageSendStrategy) | responseError
+  (AfterScheduleMessageDTO & WithLinkedMessageSendStrategies) | responseError
 > {
   const [messageSettled, sendListSettled] = await Promise.allSettled([
     api<AfterScheduleMessageDTO | responseError>(
       `/afterScheduleMessages/${id}`,
     ),
-    getMessageSendStrategyByCampaignId(id),
+    getMessageSendStrategiesByCampaignId(id),
   ])
 
   if (messageSettled.status === 'rejected') {
@@ -115,8 +115,8 @@ export async function getAfterScheduleMessage(
 
   return {
     ...res,
-    linkedMessageSendStrategy:
-      linkedMessageSendStrategyFromSettled(sendListSettled),
+    linkedMessageSendStrategies:
+      linkedMessageSendStrategiesFromSettled(sendListSettled),
   }
 }
 
