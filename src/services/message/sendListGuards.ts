@@ -42,9 +42,7 @@ export function isListedMessageSendStrategyDTO(
 }
 
 export function linkedMessageSendStrategiesFromSettled(
-  settled: PromiseSettledResult<
-    ListedMessageSendStrategyDTO[] | responseError
-  >,
+  settled: PromiseSettledResult<ListedMessageSendStrategyDTO[] | responseError>,
 ): ListedMessageSendStrategyDTO[] {
   if (settled.status === 'rejected') return []
   const v = settled.value
