@@ -24,7 +24,7 @@ function isListMessageSendStrategyOutput(
   )
 }
 
-export async function listMessageSendStrategies(params?: {
+async function fetchListMessageSendStrategiesPage(params?: {
   page?: number
   limit?: number
 }): Promise<ListMessageSendStrategyOutput | responseError> {
@@ -53,6 +53,32 @@ export async function listMessageSendStrategies(params?: {
   }
 
   return res
+}
+
+/** Listagem bruta da API (inclui estratégias de sistema como `unique_send_by_patient`). */
+export async function listMessageSendOptions(params?: {
+  page?: number
+  limit?: number
+}): Promise<ListMessageSendStrategyOutput | responseError> {
+  return fetchListMessageSendStrategiesPage(params)
+}
+
+/** Listagem para formulários e telas de gestão: omite `unique_send_by_patient` (não editável pelo cliente). */
+export async function listMessageSendStrategies(params?: {
+  page?: number
+  limit?: number
+}): Promise<ListMessageSendStrategyOutput | responseError> {
+  const res = await fetchListMessageSendStrategiesPage(params)
+  if (Validate.isError(res)) {
+    return res
+  }
+  const items = res.items.filter((row) => row.kind !== 'unique_send_by_patient')
+  const dropped = res.items.length - items.length
+  return {
+    ...res,
+    items,
+    total: Math.max(0, res.total - dropped),
+  }
 }
 
 export async function createMessageSendStrategy(

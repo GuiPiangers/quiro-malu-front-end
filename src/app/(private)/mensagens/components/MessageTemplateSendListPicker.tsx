@@ -4,7 +4,7 @@ import Button from '@/components/Button'
 import HeaderForm from '@/components/modal/HeaderModal'
 import Modal, { type ModalHandles } from '@/components/modal/Modal'
 import { Validate } from '@/services/api/Validate'
-import { listMessageSendStrategies } from '@/services/message/sendList'
+import { listMessageSendOptions } from '@/services/message/sendList'
 import type {
   ListedMessageSendStrategyDTO,
   ListMessageSendStrategyOutput,
@@ -47,11 +47,11 @@ export default function MessageTemplateSendListPicker({
   const strategiesQuery = useQuery({
     queryKey: [
       'messageSendStrategies',
-      'list',
+      'options',
       { page: LIST_STRATEGIES_PAGE, limit: LIST_STRATEGIES_LIMIT },
     ] as const,
     queryFn: async (): Promise<ListMessageSendStrategyOutput> => {
-      const res = await listMessageSendStrategies({
+      const res = await listMessageSendOptions({
         page: LIST_STRATEGIES_PAGE,
         limit: LIST_STRATEGIES_LIMIT,
       })
@@ -74,7 +74,9 @@ export default function MessageTemplateSendListPicker({
 
   const handleOpenAdd = () => {
     openModal()
-    strategiesQuery.refetch()
+    strategiesQuery.refetch().catch(() => {
+      /* erros ficam em strategiesQuery (isError / error) */
+    })
   }
 
   const handlePick = (row: ListedMessageSendStrategyDTO) => {
