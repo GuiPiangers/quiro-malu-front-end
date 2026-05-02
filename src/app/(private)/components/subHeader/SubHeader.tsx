@@ -133,20 +133,20 @@ const routes: RouteTitleEntry[] = [
   },
   {
     name: 'Mensagens',
-    path: '/mensagens/templates/antes-do-agendamento/*/*',
-    previousPath: '/mensagens/templates/antes-do-agendamento/*',
+    path: '/mensagens/templates/antes-do-agendamento/*',
+    previousPath: '/mensagens/templates/antes-do-agendamento',
     previousLabel: 'Lembrete consulta',
   },
   {
     name: 'Mensagens',
-    path: '/mensagens/templates/depois-do-agendamento/*/*',
-    previousPath: '/mensagens/templates/depois-do-agendamento/*',
+    path: '/mensagens/templates/depois-do-agendamento/*',
+    previousPath: '/mensagens/templates/depois-do-agendamento',
     previousLabel: 'Após agendamento',
   },
   {
     name: 'Mensagens',
-    path: '/mensagens/templates/aniversario/*/*',
-    previousPath: '/mensagens/templates/aniversario/*',
+    path: '/mensagens/templates/aniversario/*',
+    previousPath: '/mensagens/templates/aniversario',
     previousLabel: 'Aniversário',
   },
   {
