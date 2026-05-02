@@ -23,11 +23,11 @@ export default async function BeforeScheduleTemplatesListPage() {
     <div className="w-full max-w-screen-lg space-y-6">
       {/* Header */}
       <Box>
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-main">
             <Clock /> Mensagens antes de agendamento
           </h2>
-          <Button color="green" asChild className="h-fit">
+          <Button color="green" asChild className="h-fit w-full md:w-auto">
             <Link href="/mensagens/templates/antes-do-agendamento/criar">
               <Plus className="h-4 w-4" />
               Nova Campanha
