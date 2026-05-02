@@ -30,6 +30,7 @@ import Phone from '@/utils/Phone'
 import { isSchedulingEvent } from '@/utils/eventValidator'
 import { getDisplaySchedulingStatus } from '@/utils/schedulingDisplayStatus'
 import UpdateEventModalContent from '../modal/UpdateEventModal/UpdateEventModalContent'
+import useWindowSize from '@/hooks/useWindowSize'
 
 type SchedulingListProps = {
   date: string
@@ -44,11 +45,17 @@ const statusColors = {
   [SchedulingStatusEnum.canceled]: 'yellow',
 } as Record<string, 'blue' | 'green' | 'red' | 'yellow'>
 
+const SCHEDULE_ROW_EXPAND_ICON_MIN_WIDTH = 768
+
 export default function SchedulingList({
   date,
   workHours,
   schedules,
 }: SchedulingListProps) {
+  const { windowWidth } = useWindowSize()
+  const showScheduleRowExpandIcon =
+    windowWidth > 0 && windowWidth >= SCHEDULE_ROW_EXPAND_ICON_MIN_WIDTH
+
   const { data } = useQuery({
     queryKey: ['listSchedules', date],
     queryFn: async () =>
@@ -127,6 +134,7 @@ export default function SchedulingList({
                 key={scheduling.id}
                 setModalData={setModalData}
                 openModal={openModal}
+                showExpandIcon={showScheduleRowExpandIcon}
               />
             )
           }
@@ -198,6 +206,7 @@ function SchedulingTableItem({
   scheduling,
   setModalData,
   openModal,
+  showExpandIcon = true,
 }: {
   scheduling: SchedulingWithPatient
   hour: string
@@ -205,6 +214,7 @@ function SchedulingTableItem({
     SetStateAction<Partial<SchedulingWithPatient> | undefined>
   >
   openModal?: () => void
+  showExpandIcon?: boolean
 }) {
   const durationString = new Time(scheduling.duration).getHoursAndMinutes()
   const rowStatus = getDisplaySchedulingStatus(
@@ -214,9 +224,10 @@ function SchedulingTableItem({
   const rowColor = statusColors[rowStatus]
 
   return (
-    <AccordionTable.Item key={scheduling.id}>
+    <AccordionTable.Item key={scheduling.id} className="text-sm">
       <AccordionTable.Row
         columns={['2fr', '2fr', '1fr']}
+        showExpandIcon={showExpandIcon}
         data-status={rowStatus}
         className={`${rowColor === 'blue' && 'text-blue-600'} ${
           rowColor === 'green' && 'text-green-600'
