@@ -31,7 +31,7 @@ const Button = React.forwardRef(function Button<
       {other.children}
       <RxCaretDown
         size={24}
-        className="transition duration-300 group-aria-expanded:rotate-180"
+        className="transition duration-300 group-aria-expanded/select:rotate-180"
       />
     </button>
   )
@@ -78,7 +78,7 @@ export const SelectField = React.forwardRef(function CustomSelect<
             className: inputWrapperStyle({
               focus: ownerState.focusVisible,
               className: twMerge(
-                'group w-full p-1.5 relative px-3 py-2 [&>svg]:text-base	[&>svg]:absolute [&>svg]:h-full [&>svg]:top-0 [&>svg]:right-2.5',
+                'group/select w-full p-1.5 relative px-3 py-2 [&>svg]:text-base	[&>svg]:absolute [&>svg]:h-full [&>svg]:top-0 [&>svg]:right-2.5',
                 resolvedSlotProps?.className,
               ),
             }),
