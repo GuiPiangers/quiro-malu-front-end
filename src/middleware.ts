@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import {
+  ACCESS_TOKEN_COOKIE_MAX_AGE,
+  postRefreshToken,
+  REFRESH_TOKEN_COOKIE_MAX_AGE,
+  type PostRefreshTokenJson,
+} from '@/services/api/refreshTokenRequest'
 
 export default async function middleware(request: NextRequest) {
   const token = request.cookies.get('quiro-token')?.value
@@ -10,23 +16,36 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(signURL)
   }
   if (!token) {
-    const newToken = await fetch(
-      `${process.env.NEXT_PUBLIC_HOST}/refresh-token`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ refreshTokenId: refreshToken }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    )
+    const deviceId = request.cookies.get('x-device-id')?.value ?? ''
+    const userIp =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+      request.headers.get('x-real-ip') ??
+      ''
+    const userAgent = request.headers.get('user-agent') ?? ''
 
-    if (newToken.status !== 200) {
+    const newTokenRes = await postRefreshToken({
+      baseUrl: process.env.NEXT_PUBLIC_HOST ?? '',
+      refreshTokenId: refreshToken,
+      deviceId,
+      userIp,
+      userAgent,
+    })
+
+    if (newTokenRes.status !== 200) {
       return NextResponse.redirect(signURL)
     }
-    response.cookies.set('quiro-token', (await newToken.json()).token, {
-      maxAge: 60 * 60 * 5, // 5 hours
+    const body = (await newTokenRes.json()) as PostRefreshTokenJson
+    if (!body.token) {
+      return NextResponse.redirect(signURL)
+    }
+    response.cookies.set('quiro-token', body.token, {
+      maxAge: ACCESS_TOKEN_COOKIE_MAX_AGE,
     })
+    if (body.refreshToken) {
+      response.cookies.set('quiro-refresh-token', body.refreshToken, {
+        maxAge: REFRESH_TOKEN_COOKIE_MAX_AGE,
+      })
+    }
   }
 
   return response

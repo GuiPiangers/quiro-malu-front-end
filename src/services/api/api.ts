@@ -1,5 +1,11 @@
 import { cookies, headers as headerFn } from 'next/headers'
 import { redirect, RedirectType } from 'next/navigation'
+import {
+  ACCESS_TOKEN_COOKIE_MAX_AGE,
+  REFRESH_TOKEN_COOKIE_MAX_AGE,
+  postRefreshToken,
+  type PostRefreshTokenJson,
+} from './refreshTokenRequest'
 
 export type responseError = {
   message: string
@@ -50,15 +56,38 @@ export const revalidateToken = async ({
 }: {
   refreshToken: string
 }) => {
-  const response = await request(
-    `${process.env.NEXT_PUBLIC_HOST}/refresh-token`,
-    {
-      method: 'POST',
-      body: JSON.stringify({ refreshTokenId: refreshToken }),
-    },
-  ).then((res) => res.json())
+  const cookieStore = cookies()
+  const headerStore = headerFn()
+  const deviceId = cookieStore.get('x-device-id')?.value ?? ''
+  const userIp =
+    headerStore.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    headerStore.get('x-real-ip') ??
+    ''
+  const userAgent = headerStore.get('user-agent') ?? ''
 
-  return response.token
+  const response = await postRefreshToken({
+    baseUrl: process.env.NEXT_PUBLIC_HOST ?? '',
+    refreshTokenId: refreshToken,
+    deviceId,
+    userIp,
+    userAgent,
+  })
+
+  const data = (await response.json()) as PostRefreshTokenJson
+  if (!data.token) {
+    return undefined
+  }
+
+  cookieStore.set('quiro-token', data.token, {
+    maxAge: ACCESS_TOKEN_COOKIE_MAX_AGE,
+  })
+  if (data.refreshToken) {
+    cookieStore.set('quiro-refresh-token', data.refreshToken, {
+      maxAge: REFRESH_TOKEN_COOKIE_MAX_AGE,
+    })
+  }
+
+  return data.token
 }
 
 export async function api<T>(
