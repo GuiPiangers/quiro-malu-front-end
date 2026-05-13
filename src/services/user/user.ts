@@ -2,6 +2,10 @@
 
 import { CreateUserData } from '@/app/(authentication)/register/page'
 import { api, responseError } from '@/services/api/api'
+import {
+  ACCESS_TOKEN_COOKIE_MAX_AGE,
+  REFRESH_TOKEN_COOKIE_MAX_AGE,
+} from '@/services/api/refreshTokenRequest'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Validate } from '../api/Validate'
@@ -53,10 +57,10 @@ export async function loginUser(data: { email: string; password: string }) {
 
   if (Validate.isOk(auth)) {
     cookies().set('quiro-token', auth.token, {
-      maxAge: 60 * 15,
+      maxAge: ACCESS_TOKEN_COOKIE_MAX_AGE,
     })
     cookies().set('quiro-refresh-token', auth.refreshToken, {
-      maxAge: 60 * 60 * 24 * 15,
+      maxAge: REFRESH_TOKEN_COOKIE_MAX_AGE,
     })
     cookies().set('x-device-id', deviceId, {
       maxAge: 60 * 60 * 24 * 365, // 1 ano
