@@ -47,7 +47,7 @@ export async function listService({
   search?: string
 }) {
   const res = await api<ServiceListResponse>(
-    `/services?page=${page}&search=${search ?? ''}`,
+    `/services?page=${page ?? '1'}&search=${search ?? ''}`,
     {
       method: 'GET',
     },
