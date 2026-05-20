@@ -103,7 +103,12 @@ export default function UserList({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <SearchInput className="flex-1 text-base" searchParam="pesquisa" />
             <Button asChild color="green">
-              <Link href="/configuracoes/usuarios/criar">Novo usuário</Link>
+              <Link
+                href="/configuracoes/usuarios/criar"
+                className="whitespace-nowrap"
+              >
+                Novo usuário
+              </Link>
             </Button>
           </div>
         </div>
