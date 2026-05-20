@@ -11,12 +11,10 @@ import { Validate } from '@/services/api/Validate'
 import Phone from '@/utils/Phone'
 import PasswordInput from '@/app/(authentication)/components/PasswordInput'
 import { Role } from '@/services/rbac/rbac'
-import {
-  clinicUserFormSchema,
-  ClinicUserFormData,
-} from '../clinicUserSchemas'
+import { clinicUserFormSchema, ClinicUserFormData } from '../clinicUserSchemas'
 import RoleSelect from './RoleSelect'
 import ClinicianServicesField from './ClinicianServicesField'
+import UserKindSelect from './UserKindSelect'
 
 type ClinicUserFormProps = {
   action(data: ClinicUserFormData): Promise<responseError | void>
@@ -81,24 +79,20 @@ export default function ClinicUserForm({
       <section aria-label="Tipo e dados do usuário" className={sectionStyles()}>
         <Input.Root>
           <Input.Label required>Tipo de usuário</Input.Label>
-          <Input.Select
+          <UserKindSelect
             value={userKind}
             disabled={isSubmitting}
             error={!!errors.userKind}
-            onChange={(_, value) => {
-              setValue('userKind', value as 'user' | 'clinician', {
+            onChange={(kind) => {
+              setValue('userKind', kind, {
                 shouldDirty: true,
                 shouldValidate: true,
               })
-              if (value === 'user') {
+              if (kind === 'user') {
                 setValue('serviceIds', [], { shouldDirty: true })
               }
             }}
-            slotProps={{ popper: { className: 'z-50' } }}
-          >
-            <Input.Option value="user">Usuário</Input.Option>
-            <Input.Option value="clinician">Clínico</Input.Option>
-          </Input.Select>
+          />
           {errors.userKind && (
             <Input.Message error>{errors.userKind.message}</Input.Message>
           )}
@@ -170,7 +164,10 @@ export default function ClinicUserForm({
           <RoleSelect
             value={roleId}
             onChange={(id) =>
-              setValue('roleId', id, { shouldDirty: true, shouldValidate: true })
+              setValue('roleId', id, {
+                shouldDirty: true,
+                shouldValidate: true,
+              })
             }
             disabled={isSubmitting}
             error={!!errors.roleId}

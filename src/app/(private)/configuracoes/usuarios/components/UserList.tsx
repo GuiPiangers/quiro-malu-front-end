@@ -14,7 +14,8 @@ import { listRoles, Role } from '@/services/rbac/rbac'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
-import CreateUserModal from './CreateUserModal'
+import Link from 'next/link'
+import Button from '@/components/Button'
 import UserListRow from './UserListRow'
 
 type UserListProps = {
@@ -101,7 +102,9 @@ export default function UserList({
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <SearchInput className="flex-1 text-base" searchParam="pesquisa" />
-            <CreateUserModal defaultRoles={roles}>Novo usuário</CreateUserModal>
+            <Button asChild color="green">
+              <Link href="/configuracoes/usuarios/criar">Novo usuário</Link>
+            </Button>
           </div>
         </div>
 
@@ -121,7 +124,7 @@ export default function UserList({
                 isClinician={clinicianIdSet.has(user.id)}
                 roleName={
                   user.roleId
-                    ? (roleNameById.get(user.roleId) ?? '—')
+                    ? roleNameById.get(user.roleId) ?? '—'
                     : 'Sem função'
                 }
               />
