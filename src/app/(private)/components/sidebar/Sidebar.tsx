@@ -7,6 +7,7 @@ import {
   CiUser,
   CiHome,
   CiFileOn,
+  CiSettings,
 } from 'react-icons/ci'
 import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
@@ -43,6 +44,9 @@ export default function Sidebar({ className }: SidebarProps) {
           </NavItem>
           <NavItem href="/arquivos" icon={CiFileOn}>
             arquivos
+          </NavItem>
+          <NavItem href="/configuracoes" icon={CiSettings}>
+            Configurações
           </NavItem>
           <NavMensagensGroup />
         </li>

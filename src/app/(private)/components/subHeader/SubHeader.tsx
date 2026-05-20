@@ -90,6 +90,30 @@ const routes: RouteTitleEntry[] = [
     previousLabel: 'Início',
   },
   {
+    name: 'Configurações',
+    path: '/configuracoes',
+    previousPath: '/',
+    previousLabel: 'Início',
+  },
+  {
+    name: 'Funções',
+    path: '/configuracoes/funcoes',
+    previousPath: '/configuracoes',
+    previousLabel: 'Configurações',
+  },
+  {
+    name: 'Usuários',
+    path: '/configuracoes/usuarios',
+    previousPath: '/configuracoes',
+    previousLabel: 'Configurações',
+  },
+  {
+    name: 'Calendário',
+    path: '/config/calendario',
+    previousPath: '/configuracoes',
+    previousLabel: 'Configurações',
+  },
+  {
     name: 'Listas de envio',
     path: '/lista-envio',
     previousPath: '/',
