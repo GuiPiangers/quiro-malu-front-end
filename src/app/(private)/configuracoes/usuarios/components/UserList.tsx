@@ -15,7 +15,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import CreateUserModal from './CreateUserModal'
-import UserDetailModal from './UserDetailModal'
+import UserListRow from './UserListRow'
 
 type UserListProps = {
   defaultUsers?: ClinicUserListItem[]
@@ -115,7 +115,7 @@ export default function UserList({
               <Table.Head>Tipo</Table.Head>
             </Table.Row>
             {filteredUsers.map((user) => (
-              <UserDetailModal
+              <UserListRow
                 key={user.id}
                 user={user}
                 isClinician={clinicianIdSet.has(user.id)}

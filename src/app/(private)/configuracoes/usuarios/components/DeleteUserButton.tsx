@@ -8,21 +8,25 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
 import { deleteClinicUser } from '@/services/clinicUsers/clinicUsers'
 import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
 import { useCallback, useRef, useState } from 'react'
 
 type DeleteUserButtonProps = {
   userId: string
   userName: string
   onDeleted?(): void
+  redirectTo?: string
 }
 
 export default function DeleteUserButton({
   userId,
   userName,
   onDeleted,
+  redirectTo,
 }: DeleteUserButtonProps) {
   const { handleMessage } = useSnackbarContext()
   const queryClient = useQueryClient()
+  const router = useRouter()
   const modalRef = useRef<ModalRef>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -45,6 +49,7 @@ export default function DeleteUserButton({
       await queryClient.invalidateQueries({ queryKey: ['clinicUsers'] })
       await queryClient.invalidateQueries({ queryKey: ['clinicians'] })
       onDeleted?.()
+      if (redirectTo) router.push(redirectTo)
       handleMessage({
         title: 'Usuário removido com sucesso!',
         type: 'success',
@@ -52,7 +57,7 @@ export default function DeleteUserButton({
     } finally {
       setIsDeleting(false)
     }
-  }, [handleMessage, onDeleted, queryClient, userId])
+  }, [handleMessage, onDeleted, queryClient, redirectTo, router, userId])
 
   return (
     <>

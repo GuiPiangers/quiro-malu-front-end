@@ -185,6 +185,7 @@ export default function ClinicUserForm({
           <Input.Root>
             <Input.Label>Serviços vinculados</Input.Label>
             <ClinicianServicesField
+              className="max-h-48"
               value={serviceIds}
               onChange={(ids) =>
                 setValue('serviceIds', ids, {

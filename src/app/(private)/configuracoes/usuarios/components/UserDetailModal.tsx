@@ -3,7 +3,10 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Table } from '@/components/table'
-import { ClinicUserListItem, getClinicUser } from '@/services/clinicUsers/clinicUsers'
+import {
+  ClinicUserListItem,
+  getClinicUser,
+} from '@/services/clinicUsers/clinicUsers'
 import { Validate } from '@/services/api/Validate'
 import { useQuery } from '@tanstack/react-query'
 import { useRef } from 'react'
@@ -142,8 +145,7 @@ export default function UserDetailModal({
                               style: 'currency',
                               currency: 'BRL',
                             }).format(service.value)}{' '}
-                            ·{' '}
-                            {new Time(service.duration).getHoursAndMinutes()}
+                            · {new Time(service.duration).getHoursAndMinutes()}
                           </span>
                         </li>
                       ))}

@@ -108,6 +108,12 @@ const routes: RouteTitleEntry[] = [
     previousLabel: 'Configurações',
   },
   {
+    name: 'Usuário',
+    path: '/configuracoes/usuarios/*',
+    previousPath: '/configuracoes/usuarios',
+    previousLabel: 'Usuários',
+  },
+  {
     name: 'Calendário',
     path: '/config/calendario',
     previousPath: '/configuracoes',

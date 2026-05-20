@@ -95,6 +95,32 @@ export async function createClinician(data: CreateClinicianInput) {
   })
 }
 
+export async function patchUserRole({
+  id,
+  roleId,
+}: {
+  id: string
+  roleId: string
+}) {
+  return api<void>(`/users/${id}/role`, {
+    method: 'PATCH',
+    body: JSON.stringify({ roleId }),
+  })
+}
+
+export async function setClinicianServices({
+  id,
+  services,
+}: {
+  id: string
+  services: Array<{ serviceId: string }>
+}) {
+  return api<ClinicianListItem>(`/clinicians/${id}/services`, {
+    method: 'PUT',
+    body: JSON.stringify({ services }),
+  })
+}
+
 export async function deleteClinicUser({ id }: { id: string }) {
   return api<void>(`/users/${id}`, { method: 'DELETE' })
 }

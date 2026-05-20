@@ -4,12 +4,14 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { listService } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { useQuery } from '@tanstack/react-query'
+import { twMerge } from 'tailwind-merge'
 
 type ClinicianServicesFieldProps = {
   value: string[]
   onChange(serviceIds: string[]): void
   disabled?: boolean
   error?: string
+  className?: string
 }
 
 export default function ClinicianServicesField({
@@ -17,6 +19,7 @@ export default function ClinicianServicesField({
   onChange,
   disabled,
   error,
+  className,
 }: ClinicianServicesFieldProps) {
   const { data } = useQuery({
     queryKey: ['listServices', { page: '1', search: '' }],
@@ -37,7 +40,7 @@ export default function ClinicianServicesField({
 
   if (!data?.services.length) {
     return (
-      <p className="text-sm text-slate-500">
+      <p className={twMerge('text-sm text-slate-500', className)}>
         Nenhum serviço cadastrado. Cadastre serviços antes de vincular a um
         clínico.
       </p>
@@ -45,8 +48,8 @@ export default function ClinicianServicesField({
   }
 
   return (
-    <div className="space-y-2">
-      <ul className="max-h-48 space-y-2 overflow-y-auto">
+    <div className={twMerge('flex min-h-0 flex-col space-y-2', className)}>
+      <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto">
         {data.services.map((service) => (
           <li
             key={service.id}
