@@ -4,24 +4,53 @@ import { Table } from '@/components/table'
 import { ClinicUserListItem } from '@/services/clinicUsers/clinicUsers'
 import { useRouter } from 'next/navigation'
 
-type UserListRowProps = {
+type UserListRowMobileProps = {
+  layout: 'mobile'
+  user: ClinicUserListItem
+}
+
+type UserListRowDesktopProps = {
+  layout: 'desktop'
   user: ClinicUserListItem
   roleName: string
   isClinician: boolean
 }
 
-export default function UserListRow({
-  user,
-  roleName,
-  isClinician,
-}: UserListRowProps) {
+type UserListRowProps = UserListRowMobileProps | UserListRowDesktopProps
+
+export default function UserListRow(props: UserListRowProps) {
+  const { user, layout } = props
   const router = useRouter()
+  const navigate = () => router.push(`/configuracoes/usuarios/${user.id}`)
+
+  if (layout === 'mobile') {
+    return (
+      <li>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={navigate}
+          onKeyDown={(e) => {
+            if (e.key === ' ' || e.key === 'Enter') navigate()
+          }}
+          className="cursor-pointer px-4 py-3 transition-colors hover:bg-slate-50"
+        >
+          <p className="font-medium text-slate-800">{user.name}</p>
+          <p className="mt-0.5 text-sm font-normal text-slate-600">
+            {user.email}
+          </p>
+        </div>
+      </li>
+    )
+  }
+
+  const { roleName, isClinician } = props
 
   return (
     <Table.Row
       clickable
       columns={['2fr', '2fr', '1.5fr', '1fr', '1fr']}
-      handleOnClick={() => router.push(`/configuracoes/usuarios/${user.id}`)}
+      handleOnClick={navigate}
     >
       <Table.Cell className="font-medium">{user.name}</Table.Cell>
       <Table.Cell className="text-slate-600">{user.email}</Table.Cell>

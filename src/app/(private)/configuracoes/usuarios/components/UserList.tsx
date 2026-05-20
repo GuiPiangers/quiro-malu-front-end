@@ -96,12 +96,8 @@ export default function UserList({
     <div className="flex w-full flex-col items-center gap-4">
       <Box className="w-full max-w-screen-lg">
         <div className="mb-6 flex flex-col gap-4">
-          <p className="text-sm text-slate-600">
-            Gerencie usuários e clínicos da clínica. Clique em um usuário para
-            ver detalhes ou excluir.
-          </p>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <SearchInput className="flex-1 text-base" searchParam="pesquisa" />
+          <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-[1fr_auto]">
+            <SearchInput className="min-w-0 text-base" searchParam="pesquisa" />
             <Button asChild color="green">
               <Link
                 href="/configuracoes/usuarios/criar"
@@ -114,27 +110,35 @@ export default function UserList({
         </div>
 
         {filteredUsers.length > 0 ? (
-          <Table.Root>
-            <Table.Row columns={['2fr', '2fr', '1.5fr', '1fr', '1fr']}>
-              <Table.Head>Nome</Table.Head>
-              <Table.Head>E-mail</Table.Head>
-              <Table.Head>Telefone</Table.Head>
-              <Table.Head>Função</Table.Head>
-              <Table.Head>Tipo</Table.Head>
-            </Table.Row>
-            {filteredUsers.map((user) => (
-              <UserListRow
-                key={user.id}
-                user={user}
-                isClinician={clinicianIdSet.has(user.id)}
-                roleName={
-                  user.roleId
-                    ? roleNameById.get(user.roleId) ?? '—'
-                    : 'Sem função'
-                }
-              />
-            ))}
-          </Table.Root>
+          <>
+            <ul className="divide-y divide-slate-200 border-y border-slate-200 md:hidden">
+              {filteredUsers.map((user) => (
+                <UserListRow key={user.id} layout="mobile" user={user} />
+              ))}
+            </ul>
+            <Table.Root className="hidden md:block">
+              <Table.Row columns={['2fr', '2fr', '1.5fr', '1fr', '1fr']}>
+                <Table.Head>Nome</Table.Head>
+                <Table.Head>E-mail</Table.Head>
+                <Table.Head>Telefone</Table.Head>
+                <Table.Head>Função</Table.Head>
+                <Table.Head>Tipo</Table.Head>
+              </Table.Row>
+              {filteredUsers.map((user) => (
+                <UserListRow
+                  key={user.id}
+                  layout="desktop"
+                  user={user}
+                  isClinician={clinicianIdSet.has(user.id)}
+                  roleName={
+                    user.roleId
+                      ? roleNameById.get(user.roleId) ?? '—'
+                      : 'Sem função'
+                  }
+                />
+              ))}
+            </Table.Root>
+          </>
         ) : (
           <p className="py-8 text-center text-sm text-slate-500">
             {search
