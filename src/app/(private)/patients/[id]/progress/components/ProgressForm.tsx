@@ -9,7 +9,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { ProgressResponse } from '@/services/patient/patient'
 import DateTime from '@/utils/Date'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ServiceResponse } from '@/services/service/Service'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
@@ -20,6 +20,12 @@ import PainScale from '@/components/painScale/PainScale'
 import { Trash } from 'lucide-react'
 import { AudioRecorder } from '@/components/AudioRecorder'
 import { useAudioTranscriber } from '@/hooks/useAudioTranscriber'
+import { useSearchParams } from 'next/navigation'
+import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import ClinicianSelectField, {
+  ClinicianOptionContent,
+} from '@/app/(private)/scheduling/components/ClinicianSelectField'
+import { useQuery } from '@tanstack/react-query'
 
 const painScaleSchema = z.object({
   description: z.string(),
@@ -27,6 +33,7 @@ const painScaleSchema = z.object({
 })
 
 export const setProgressSchema = z.object({
+  userId: z.string().min(1, { message: 'Selecione o profissional' }),
   actualProblem: z.string().optional(),
   procedures: z.string().optional(),
   service: z.string().min(1, { message: 'Campo obrigatório' }),
@@ -48,7 +55,10 @@ export default function ProgressForm({
   afterValidation,
   ...formProps
 }: ProgressFormProps) {
-  const { patientId, date, service, id } = formData
+  const { patientId, date, service, id, userId: formUserId } = formData
+  const searchParams = useSearchParams()
+  const defaultUserId = formUserId ?? searchParams.get('userId') ?? ''
+  const isEditing = !!id
   const [actualProblem, setActualProblem] = useState<string>(
     formData?.actualProblem ?? '',
   )
@@ -79,16 +89,18 @@ export default function ProgressForm({
 
   const { handleMessage } = useSnackbarContext()
 
-  const setProgressForm = useForm<ProgressResponse>({
+  const setProgressForm = useForm<setProgressData>({
     resolver: zodResolver(setProgressSchema),
     values: {
       actualProblem: formData.actualProblem ?? '',
       date: formData.date ?? '',
       procedures: formData.procedures ?? '',
       service: formData.service ?? '',
-      id: formData.id ?? '',
-      patientId: formData.patientId ?? '',
+      userId: defaultUserId,
       painScales: formData.painScales ?? [],
+    },
+    defaultValues: {
+      userId: defaultUserId,
     },
   })
 
@@ -98,7 +110,24 @@ export default function ProgressForm({
     register,
     setValue,
     control,
+    watch,
   } = setProgressForm
+
+  const userId = watch('userId')
+
+  const { data: clinicians } = useQuery({
+    queryKey: ['clinicians'],
+    queryFn: async () => {
+      const result = await listClinicians()
+      if (Validate.isError(result)) throw new Error(result.message)
+      return result
+    },
+  })
+
+  const clinicianName = useMemo(
+    () => clinicians?.find((c) => c.id === userId)?.name,
+    [clinicians, userId],
+  )
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -108,13 +137,14 @@ export default function ProgressForm({
   const setProgress = async (data: setProgressData) => {
     const hasDirtyFields = Object.keys(dirtyFields).length > 0
 
-    const res = hasDirtyFields
-      ? await formAction({
-          id: id!,
-          patientId: patientId!,
-          ...data,
-        })
-      : undefined
+    const res =
+      hasDirtyFields || !isEditing
+        ? await formAction({
+            id: id ?? '',
+            patientId: patientId!,
+            ...data,
+          })
+        : undefined
 
     if (res && Validate.isError(res)) {
       handleMessage({ title: 'Erro!', description: res.message, type: 'error' })
@@ -146,6 +176,11 @@ export default function ProgressForm({
     })
   }, [proceduresTranscription])
 
+  useEffect(() => {
+    if (isEditing || !clinicians?.length || userId) return
+    setValue('userId', clinicians[0].id, { shouldValidate: true })
+  }, [clinicians, isEditing, setValue, userId])
+
   return (
     <Form onSubmit={handleSubmit(setProgress)} {...formProps}>
       <section
@@ -154,6 +189,44 @@ export default function ProgressForm({
           className: 'max-h-[80lvh] overflow-y-auto',
         })}
       >
+        <Input.Root>
+          <Input.Label required={!isEditing} notSave={dirtyFields.userId}>
+            Profissional
+          </Input.Label>
+          {isEditing ? (
+            <>
+              <input type="hidden" {...register('userId')} />
+              <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                {clinicianName ? (
+                  <ClinicianOptionContent name={clinicianName} />
+                ) : (
+                  <span className="text-sm text-slate-500">
+                    Profissional não encontrado
+                  </span>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <ClinicianSelectField
+                clinicians={clinicians ?? []}
+                value={userId}
+                disabled={isSubmitting}
+                error={!!errors.userId}
+                onChange={(value) =>
+                  setValue('userId', value, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              />
+              {errors.userId && (
+                <Input.Message error>{errors.userId.message}</Input.Message>
+              )}
+            </>
+          )}
+        </Input.Root>
+
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data

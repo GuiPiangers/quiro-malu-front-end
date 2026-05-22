@@ -7,7 +7,9 @@ import Pagination from '@/components/pagination/Pagination'
 import NoDataFound from '@/components/notFound/NoDataFound'
 import { Validate } from '@/services/api/Validate'
 import { listProgress } from '@/services/patient/patient'
+import { listClinicians } from '@/services/clinicUsers/clinicUsers'
 import SafeHtml from '@/components/SafeHTML'
+import { ClinicianOptionContent } from '@/app/(private)/scheduling/components/ClinicianSelectField'
 
 export default async function Progress({
   params,
@@ -19,23 +21,40 @@ export default async function Progress({
   const patientId = params.id
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
-  const patientData = await listProgress({
-    patientId,
-    page,
-  }).then((res) => (Validate.isOk(res) ? res : undefined))
+  const [patientData, cliniciansRes] = await Promise.all([
+    listProgress({ patientId, page }),
+    listClinicians(),
+  ])
+
+  const progressList = Validate.isOk(patientData) ? patientData : undefined
+  const clinicians = Validate.isOk(cliniciansRes) ? cliniciansRes : []
+  const clinicianNameById = new Map(
+    clinicians.map((clinician) => [clinician.id, clinician.name]),
+  )
 
   const generateProgress = () => {
     return (
       <div className="relative flex w-full gap-5">
         <div className="w-1 rounded-full bg-purple-200"></div>
         <div className="w-full space-y-4">
-          {patientData?.progress.map((progress) => (
+          {progressList?.progress.map((progress) => (
             <Box key={progress.id} className="flex justify-between gap-4">
               <div className="flex flex-col gap-2">
                 <div className="absolute left-0.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-main"></div>
                 <h4 className="text-xl font-semibold text-main">
                   {DateTime.getLocaleDate(progress.date)}
                 </h4>
+                <div>
+                  <h4 className="font-semibold text-main">Profissional</h4>
+                  <div className="mt-1 inline-flex rounded-lg border border-slate-200 bg-slate-50 px-2 py-1">
+                    <ClinicianOptionContent
+                      name={
+                        clinicianNameById.get(progress.userId) ??
+                        'Profissional não encontrado'
+                      }
+                    />
+                  </div>
+                </div>
                 <div>
                   <h4 className="font-semibold text-main">Serviços</h4>
                   <p className="text-sm">{progress.service}</p>
@@ -84,7 +103,7 @@ export default async function Progress({
           Adicionar
         </ProgressModal>
       </Box>
-      {patientData && patientData.progress.length > 0 ? (
+      {progressList && progressList.progress.length > 0 ? (
         generateProgress()
       ) : (
         <NoDataFound
@@ -106,9 +125,9 @@ export default async function Progress({
       )}
       <div className="grid place-items-center pt-4">
         <Pagination
-          limit={patientData?.limit || 0}
+          limit={progressList?.limit || 0}
           page={+page}
-          total={patientData?.total || 0}
+          total={progressList?.total || 0}
         />
       </div>
     </div>

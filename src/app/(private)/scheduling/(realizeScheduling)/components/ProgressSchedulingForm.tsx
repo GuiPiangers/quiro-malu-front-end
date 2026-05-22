@@ -9,6 +9,7 @@ import { Validate } from '@/services/api/Validate'
 
 import { realizeScheduling } from '@/services/scheduling/scheduling'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useSearchParams } from 'next/navigation'
 
 type ProgressSchedulingFormProps = {
   goToNextPage(): void
@@ -27,6 +28,8 @@ export function ProgressSchedulingForm({
   schedulingData: { date, patientId, service, schedulingId },
 }: ProgressSchedulingFormProps) {
   const queryClient = useQueryClient()
+  const searchParams = useSearchParams()
+  const scheduleUserId = searchParams.get('userId') ?? ''
 
   const { data: progressData } = useQuery({
     queryKey: ['progress', { patientId, schedulingId }],
@@ -53,10 +56,10 @@ export function ProgressSchedulingForm({
         queryClient.invalidateQueries({ queryKey: ['listSchedules'] })
       }}
       formAction={async (data) => {
-        console.log(data)
         const progressRes = await setProgress({
           ...data,
           schedulingId,
+          userId: data.userId || scheduleUserId,
         })
         if (Validate.isOk(progressRes))
           await realizeScheduling({
@@ -68,6 +71,7 @@ export function ProgressSchedulingForm({
       formData={{
         id: progressData?.id,
         patientId,
+        userId: progressData?.userId ?? scheduleUserId,
         date,
         service: progressData?.service ?? service,
         actualProblem: progressData?.actualProblem,

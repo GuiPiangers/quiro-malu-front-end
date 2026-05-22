@@ -70,6 +70,7 @@ export type PainScale = {
 export type ProgressResponse = {
   id: string
   patientId: string
+  userId: string
   service: string
   actualProblem?: string
   procedures?: string
@@ -79,6 +80,8 @@ export type ProgressResponse = {
   updateAt?: string
   painScales?: PainScale[]
 }
+
+export type SetProgressInput = ProgressResponse
 export type ProgressListResponse = {
   progress: ProgressResponse[]
   total: number
@@ -152,7 +155,7 @@ export async function setDiagnostic(data: DiagnosticResponse) {
   return res
 }
 
-export async function setProgress(data: ProgressResponse) {
+export async function setProgress(data: SetProgressInput) {
   const res = await api<void>('/patients/progress', {
     method: 'PUT',
     body: JSON.stringify(data),
