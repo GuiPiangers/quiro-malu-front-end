@@ -22,6 +22,11 @@ export type SchedulingResponse = {
   duration: number
   status: SchedulingStatus
   date: string
+  userId?: string
+}
+
+export type CreateSchedulingInput = SchedulingResponse & {
+  userId: string
 }
 
 export type SchedulingWithPatient = SchedulingResponse & {
@@ -57,10 +62,18 @@ export async function createScheduling({
   patientId,
   service,
   status,
-}: SchedulingResponse) {
+  userId,
+}: CreateSchedulingInput) {
   const res = await api<SchedulingResponse>('/schedules', {
     method: 'POST',
-    body: JSON.stringify({ date, duration, patientId, service, status }),
+    body: JSON.stringify({
+      date,
+      duration,
+      patientId,
+      service,
+      status,
+      userId,
+    }),
   })
 
   return res
@@ -116,6 +129,21 @@ export async function listEvents({ date }: { date: string }) {
   const res = await api<EventsResponse>(`/events?date=${date}`, {
     method: 'GET',
   })
+  return res
+}
+
+export async function listEventsByUser({
+  userId,
+  date,
+}: {
+  userId: string
+  date: string
+}) {
+  const res = await api<EventsResponse>('/events/by-user', {
+    method: 'POST',
+    body: JSON.stringify({ userId, date }),
+  })
+
   return res
 }
 

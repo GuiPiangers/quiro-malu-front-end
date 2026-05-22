@@ -3,11 +3,17 @@ import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { Validate } from '@/services/api/Validate'
 import { Box } from '@/components/box/Box'
 import Link from 'next/link'
-import { listEvents } from '@/services/scheduling/scheduling'
+import { listEventsByUser } from '@/services/scheduling/scheduling'
+import { listClinicians } from '@/services/clinicUsers/clinicUsers'
 
 export default async function Home() {
   const date = DateTime.getIsoDate(new Date())
-  const schedulesResp = await listEvents({ date })
+  const cliniciansRes = await listClinicians()
+  const clinicians = Validate.isOk(cliniciansRes) ? cliniciansRes : []
+  const userId = clinicians[0]?.id
+  const schedulesResp = userId
+    ? await listEventsByUser({ date, userId })
+    : { data: [] }
 
   return (
     <section className="flex w-full justify-center">
@@ -17,9 +23,12 @@ export default async function Home() {
             Agendamentos de hoje -{' '}
             <strong>{DateTime.getLocaleDate(date)}</strong>
           </h2>
-          {Validate.isOk(schedulesResp) && schedulesResp.data.length > 0 ? (
+          {userId &&
+          Validate.isOk(schedulesResp) &&
+          schedulesResp.data.length > 0 ? (
             <SchedulingList
               date={date}
+              userId={userId}
               workHours={{
                 workTimeIncrementInMinutes: 30,
                 workSchedules: [{ start: '01:00', end: '00:00' }],

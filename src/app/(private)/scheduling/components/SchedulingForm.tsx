@@ -25,8 +25,12 @@ import DateTime from '@/utils/Date'
 
 import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'next/navigation'
+import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import ClinicianSelectField from './ClinicianSelectField'
 
 const setSchedulingSchema = z.object({
+  userId: z.string().min(1, { message: 'Selecione o profissional' }),
   date: z.string().min(1, { message: 'Campo obrigatório' }),
   service: z.string({ required_error: 'Campo obrigatório' }),
   duration: z.coerce
@@ -45,7 +49,7 @@ type SchedulingFormProps = {
     data: SchedulingResponse | (setSchedulingData & { id?: string }),
   ): Promise<SchedulingResponse | responseError>
   formData?: Partial<
-    SchedulingResponse & { patient: string; patientPhone: string }
+    SchedulingResponse & { patient: string; patientPhone: string; userId?: string }
   >
   afterValidation?(): void
 } & FormProps
@@ -67,6 +71,9 @@ export default function SchedulingForm({
     status,
   } = formData || {}
   const { handleMessage } = useSnackbarContext()
+  const searchParams = useSearchParams()
+  const defaultUserId =
+    formData?.userId ?? searchParams.get('userId') ?? ''
 
   const [selectedService, setSelectedService] = useState<ServiceResponse>()
 
@@ -78,6 +85,9 @@ export default function SchedulingForm({
 
   const setSchedulingForm = useForm<setSchedulingData>({
     resolver: zodResolver(setSchedulingSchema),
+    defaultValues: {
+      userId: defaultUserId,
+    },
   })
 
   const {
@@ -97,6 +107,18 @@ export default function SchedulingForm({
       ),
   })
 
+  const { data: clinicians } = useQuery({
+    queryKey: ['clinicians'],
+    queryFn: async () => {
+      const result = await listClinicians()
+      if (Validate.isError(result)) throw new Error(result.message)
+      return result
+    },
+  })
+
+  const userId = setSchedulingForm.watch('userId')
+  const isEditing = !!id
+
   const setScheduling = async (data: setSchedulingData) => {
     const patient = selectedPatient
       ? selectedPatient.id
@@ -111,6 +133,7 @@ export default function SchedulingForm({
         duration: data.duration || duration,
         status,
         patientId: selectedPatient?.id || patient,
+        userId: data.userId,
       })
 
       if (Validate.isError(res)) {
@@ -158,13 +181,41 @@ export default function SchedulingForm({
     })
   }, [patientId, setValue])
 
+  useEffect(() => {
+    if (isEditing || !clinicians?.length || userId) return
+    setValue('userId', clinicians[0].id, { shouldValidate: true })
+  }, [clinicians, isEditing, setValue, userId])
+
   return (
     <Form
       onSubmit={handleSubmit(setScheduling)}
       {...formProps}
       className="border-none"
     >
-      <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
+      <section aria-label="Dados do agendamento" className={sectionStyles()}>
+        {!isEditing && (
+          <Input.Root>
+            <Input.Label required notSave={dirtyFields.userId}>
+              Profissional
+            </Input.Label>
+            <ClinicianSelectField
+              clinicians={clinicians ?? []}
+              value={userId}
+              disabled={isSubmitting}
+              error={!!errors.userId}
+              onChange={(value) =>
+                setValue('userId', value, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+            />
+            {errors.userId && (
+              <Input.Message error>{errors.userId.message}</Input.Message>
+            )}
+          </Input.Root>
+        )}
+
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>
             Data

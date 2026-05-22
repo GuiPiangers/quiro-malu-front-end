@@ -67,8 +67,16 @@ export async function listClinicUsers() {
   return api<ClinicUserListItem[]>('/users', { method: 'GET' })
 }
 
+export type ListCliniciansResponse = {
+  result: ClinicianListItem[]
+}
+
 export async function listClinicians() {
-  return api<ClinicianListItem[]>('/clinicians', { method: 'GET' })
+  const res = await api<ListCliniciansResponse>('/clinicians', {
+    method: 'GET',
+  })
+  if (Validate.isError(res)) return res
+  return res.result
 }
 
 export async function getClinicUser(id: string) {

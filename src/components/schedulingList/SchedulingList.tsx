@@ -4,7 +4,7 @@ import {
   BlockScheduleResponse,
   EventsResponse,
   SchedulingWithPatient,
-  listEvents,
+  listEventsByUser,
 } from '@/services/scheduling/scheduling'
 import {
   GenerateWorkHours,
@@ -34,6 +34,7 @@ import useWindowSize from '@/hooks/useWindowSize'
 
 type SchedulingListProps = {
   date: string
+  userId: string
   workHours: GenerateWorkHoursProps
   schedules: EventsResponse
 }
@@ -49,6 +50,7 @@ const SCHEDULE_ROW_EXPAND_ICON_MIN_WIDTH = 768
 
 export default function SchedulingList({
   date,
+  userId,
   workHours,
   schedules,
 }: SchedulingListProps) {
@@ -57,11 +59,9 @@ export default function SchedulingList({
     windowWidth > 0 && windowWidth >= SCHEDULE_ROW_EXPAND_ICON_MIN_WIDTH
 
   const { data } = useQuery({
-    queryKey: ['listSchedules', date],
-    queryFn: async () =>
-      await listEvents({
-        date,
-      }),
+    queryKey: ['listSchedules', date, userId],
+    queryFn: async () => listEventsByUser({ date, userId }),
+    enabled: !!userId,
   })
 
   const modalRef = useRef<ModalHandles>(null)
@@ -109,7 +109,7 @@ export default function SchedulingList({
                 className="contents text-black"
                 onClick={() => {
                   openModal && openModal()
-                  setModalData({ date: `${date}T${hour}` })
+                  setModalData({ date: `${date}T${hour}`, userId })
                 }}
               >
                 <Table.Row

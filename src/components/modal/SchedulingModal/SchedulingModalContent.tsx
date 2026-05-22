@@ -57,7 +57,11 @@ export default forwardRef<ModalHandles, ModalProps>(
     }
 
     const formAction = async (
-      data: SchedulingResponse & { patient: string; phone: string },
+      data: SchedulingResponse & {
+        patient: string
+        phone: string
+        userId: string
+      },
     ): Promise<SchedulingResponse | responseError> => {
       if (formData?.id) return await updateScheduling.mutateAsync(data)
 

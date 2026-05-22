@@ -10,20 +10,20 @@ import { useSearchParams } from 'next/navigation'
 export function useCreateScheduling() {
   const searchParams = useSearchParams()
   const date = searchParams.get('date') || DateTime.getIsoDate(new Date())
+  const userId = searchParams.get('userId') ?? ''
   const queryClient = useQueryClient()
+  const listSchedulesKey = ['listSchedules', date, userId] as const
 
   const mutation = useMutation({
-    mutationFn: (newScheduling: SchedulingWithPatient) => {
+    mutationFn: (newScheduling: SchedulingWithPatient & { userId: string }) => {
       return createScheduling(newScheduling)
     },
     onMutate: async (scheduling) => {
-      const previousLaunches = queryClient.getQueryData<EventsResponse>([
-        'listSchedules',
-        date,
-      ])
+      const previousLaunches =
+        queryClient.getQueryData<EventsResponse>(listSchedulesKey)
 
       await queryClient.cancelQueries({
-        queryKey: ['listSchedules', date],
+        queryKey: listSchedulesKey,
       })
 
       const isLate =
@@ -44,26 +44,20 @@ export function useCreateScheduling() {
         status,
       }
 
-      queryClient.setQueryData<EventsResponse>(
-        ['listSchedules', date],
-        (oldQuery) => {
-          if (!oldQuery) return oldQuery
+      queryClient.setQueryData<EventsResponse>(listSchedulesKey, (oldQuery) => {
+        if (!oldQuery) return oldQuery
 
-          return {
-            ...oldQuery,
-            data: [...oldQuery.data, newScheduling],
-          }
-        },
-      )
+        return {
+          ...oldQuery,
+          data: [...oldQuery.data, newScheduling],
+        }
+      })
 
       return { previousLaunches }
     },
 
     onError: (_err, newTodo, context) => {
-      queryClient.setQueryData(
-        ['listSchedules', date],
-        context?.previousLaunches,
-      )
+      queryClient.setQueryData(listSchedulesKey, context?.previousLaunches)
     },
 
     onSettled: () => {
