@@ -100,7 +100,12 @@ export default function ProgressForm({
       painScales: formData.painScales ?? [],
     },
     defaultValues: {
+      actualProblem: formData.actualProblem ?? '',
+      date: formData.date ?? '',
+      procedures: formData.procedures ?? '',
+      service: formData.service ?? '',
       userId: defaultUserId,
+      painScales: formData.painScales ?? [],
     },
   })
 
@@ -129,10 +134,23 @@ export default function ProgressForm({
     [clinicians, userId],
   )
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'painScales',
   })
+
+  const painScalesFromProps = useMemo(
+    () => formData.painScales ?? [],
+    [formData.painScales],
+  )
+  const painScalesKey = useMemo(
+    () => JSON.stringify(painScalesFromProps),
+    [painScalesFromProps],
+  )
+
+  useEffect(() => {
+    replace(painScalesFromProps)
+  }, [painScalesKey, replace, painScalesFromProps])
 
   const setProgress = async (data: setProgressData) => {
     const hasDirtyFields = Object.keys(dirtyFields).length > 0
