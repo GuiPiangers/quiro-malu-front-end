@@ -11,8 +11,7 @@ import { SchedulingResponse } from '@/services/scheduling/scheduling'
 import { responseError } from '@/services/api/api'
 
 import Duration from '@/app/(private)/components/Duration'
-import { useCallback, useEffect, useState } from 'react'
-import { ServiceResponse } from '@/services/service/Service'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Validate } from '@/services/api/Validate'
 import {
   PatientResponse,
@@ -23,10 +22,12 @@ import {
 import Phone from '@/utils/Phone'
 import DateTime from '@/utils/Date'
 
-import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import {
+  ClinicianServiceItem,
+  listClinicians,
+} from '@/services/clinicUsers/clinicUsers'
 import ClinicianSelectField from './ClinicianSelectField'
 
 const setSchedulingSchema = z.object({
@@ -49,7 +50,11 @@ type SchedulingFormProps = {
     data: SchedulingResponse | (setSchedulingData & { id?: string }),
   ): Promise<SchedulingResponse | responseError>
   formData?: Partial<
-    SchedulingResponse & { patient: string; patientPhone: string; userId?: string }
+    SchedulingResponse & {
+      patient: string
+      patientPhone: string
+      userId?: string
+    }
   >
   afterValidation?(): void
 } & FormProps
@@ -72,10 +77,9 @@ export default function SchedulingForm({
   } = formData || {}
   const { handleMessage } = useSnackbarContext()
   const searchParams = useSearchParams()
-  const defaultUserId =
-    formData?.userId ?? searchParams.get('userId') ?? ''
+  const defaultUserId = formData?.userId ?? searchParams.get('userId') ?? ''
 
-  const [selectedService, setSelectedService] = useState<ServiceResponse>()
+  const [selectedService, setSelectedService] = useState<ClinicianServiceItem>()
 
   const [selectedPatient, setSelectedPatient] =
     useState<PatientResponse | null>(null)
@@ -87,6 +91,8 @@ export default function SchedulingForm({
     resolver: zodResolver(setSchedulingSchema),
     defaultValues: {
       userId: defaultUserId,
+      service: service ?? '',
+      duration: durationService ?? 0,
     },
   })
 
@@ -118,6 +124,12 @@ export default function SchedulingForm({
 
   const userId = setSchedulingForm.watch('userId')
   const isEditing = !!id
+
+  const clinicianServices = useMemo(
+    () =>
+      clinicians?.find((clinician) => clinician.id === userId)?.services ?? [],
+    [clinicians, userId],
+  )
 
   const setScheduling = async (data: setSchedulingData) => {
     const patient = selectedPatient
@@ -164,9 +176,16 @@ export default function SchedulingForm({
     setValue('patientPhone', value)
   }
   const setService = useCallback(
-    (value: ServiceResponse) => {
+    (value: ClinicianServiceItem) => {
       setSelectedService(value)
-      setValue('service', value.name)
+      setValue('service', value.name, {
+        shouldDirty: true,
+        shouldValidate: true,
+      })
+      setValue('duration', value.duration, {
+        shouldDirty: true,
+        shouldValidate: true,
+      })
       setDuration(value.duration)
     },
     [setValue],
@@ -186,6 +205,31 @@ export default function SchedulingForm({
     setValue('userId', clinicians[0].id, { shouldValidate: true })
   }, [clinicians, isEditing, setValue, userId])
 
+  useEffect(() => {
+    if (!service || !clinicianServices.length) return
+    const match = clinicianServices.find((item) => item.name === service)
+    if (match) setService(match)
+  }, [service, clinicianServices, setService])
+
+  useEffect(() => {
+    if (!selectedService) return
+    const stillAvailable = clinicianServices.some(
+      (item) => item.id === selectedService.id,
+    )
+    if (!stillAvailable) {
+      setSelectedService(undefined)
+      setValue('service', '', { shouldValidate: true })
+      setValue('duration', 0, { shouldValidate: true })
+      setDuration(0)
+    }
+  }, [clinicianServices, selectedService, setValue])
+
+  const serviceSelectPlaceholder = !userId
+    ? 'Selecione o profissional primeiro'
+    : clinicianServices.length === 0
+    ? 'Nenhum serviço vinculado a este profissional'
+    : 'Selecione o serviço'
+
   return (
     <Form
       onSubmit={handleSubmit(setScheduling)}
@@ -203,12 +247,16 @@ export default function SchedulingForm({
               value={userId}
               disabled={isSubmitting}
               error={!!errors.userId}
-              onChange={(value) =>
+              onChange={(value) => {
                 setValue('userId', value, {
                   shouldDirty: true,
                   shouldValidate: true,
                 })
-              }
+                setSelectedService(undefined)
+                setValue('service', '', { shouldValidate: true })
+                setValue('duration', 0, { shouldValidate: true })
+                setDuration(0)
+              }}
             />
             {errors.userId && (
               <Input.Message error>{errors.userId.message}</Input.Message>
@@ -239,17 +287,35 @@ export default function SchedulingForm({
             Serviço
           </Input.Label>
 
-          <ServiceSelect
+          <Input.Select
+            value={selectedService?.id ?? ''}
+            disabled={isSubmitting || !userId || clinicianServices.length === 0}
+            error={!!errors.service}
             notSave={dirtyFields.service}
-            defaultValue={service}
-            onInitialize={(value: ServiceResponse) => {
-              value && setService(value)
+            slotProps={{ popper: { className: 'z-40' } }}
+            onChange={(_, selected) => {
+              const clinicianService = clinicianServices.find(
+                (item) => item.id === selected,
+              )
+              if (clinicianService) setService(clinicianService)
             }}
-            value={selectedService}
-            onChange={(_, value) => {
-              value && setService(value as ServiceResponse)
-            }}
-          />
+            renderValue={() =>
+              selectedService?.name ?? (
+                <span className="text-slate-500">
+                  {serviceSelectPlaceholder}
+                </span>
+              )
+            }
+          >
+            {clinicianServices.map((clinicianService) => (
+              <Input.Option
+                key={clinicianService.id}
+                value={clinicianService.id}
+              >
+                {clinicianService.name}
+              </Input.Option>
+            ))}
+          </Input.Select>
           {errors.service && (
             <Input.Message error>{errors.service.message}</Input.Message>
           )}
