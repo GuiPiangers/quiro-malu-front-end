@@ -9,11 +9,9 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { ProgressResponse } from '@/services/patient/patient'
 import DateTime from '@/utils/Date'
-import { useEffect, useMemo, useState } from 'react'
-import { ServiceResponse } from '@/services/service/Service'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
-import ServiceSelect from '@/components/input/select/ServiceSelect'
 import { TextEditor } from '@/components/TextEditor'
 import Button from '@/components/Button'
 import PainScale from '@/components/painScale/PainScale'
@@ -21,7 +19,10 @@ import { Trash } from 'lucide-react'
 import { AudioRecorder } from '@/components/AudioRecorder'
 import { useAudioTranscriber } from '@/hooks/useAudioTranscriber'
 import { useSearchParams } from 'next/navigation'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import {
+  ClinicianServiceItem,
+  listClinicians,
+} from '@/services/clinicUsers/clinicUsers'
 import ClinicianSelectField, {
   ClinicianOptionContent,
 } from '@/app/(private)/scheduling/components/ClinicianSelectField'
@@ -66,7 +67,7 @@ export default function ProgressForm({
     formData?.procedures ?? '',
   )
 
-  const [serviceData, setService] = useState<ServiceResponse>()
+  const [selectedService, setSelectedService] = useState<ClinicianServiceItem>()
   const {
     isPending: isActualProblemTranscribing,
     data: actualProblemTranscription,
@@ -134,6 +135,23 @@ export default function ProgressForm({
     [clinicians, userId],
   )
 
+  const clinicianServices = useMemo(
+    () =>
+      clinicians?.find((clinician) => clinician.id === userId)?.services ?? [],
+    [clinicians, userId],
+  )
+
+  const selectService = useCallback(
+    (value: ClinicianServiceItem) => {
+      setSelectedService(value)
+      setValue('service', value.name, {
+        shouldDirty: true,
+        shouldValidate: true,
+      })
+    },
+    [setValue],
+  )
+
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'painScales',
@@ -199,6 +217,29 @@ export default function ProgressForm({
     setValue('userId', clinicians[0].id, { shouldValidate: true })
   }, [clinicians, isEditing, setValue, userId])
 
+  useEffect(() => {
+    if (!service || !clinicianServices.length) return
+    const match = clinicianServices.find((item) => item.name === service)
+    if (match) selectService(match)
+  }, [service, clinicianServices, selectService])
+
+  useEffect(() => {
+    if (!selectedService) return
+    const stillAvailable = clinicianServices.some(
+      (item) => item.id === selectedService.id,
+    )
+    if (!stillAvailable) {
+      setSelectedService(undefined)
+      setValue('service', '', { shouldValidate: true })
+    }
+  }, [clinicianServices, selectedService, setValue])
+
+  const serviceSelectPlaceholder = !userId
+    ? 'Selecione o profissional primeiro'
+    : clinicianServices.length === 0
+    ? 'Nenhum serviço vinculado a este profissional'
+    : 'Selecione o serviço'
+
   return (
     <Form onSubmit={handleSubmit(setProgress)} {...formProps}>
       <section
@@ -231,12 +272,14 @@ export default function ProgressForm({
                 value={userId}
                 disabled={isSubmitting}
                 error={!!errors.userId}
-                onChange={(value) =>
+                onChange={(value) => {
                   setValue('userId', value, {
                     shouldDirty: true,
                     shouldValidate: true,
                   })
-                }
+                  setSelectedService(undefined)
+                  setValue('service', '', { shouldValidate: true })
+                }}
               />
               {errors.userId && (
                 <Input.Message error>{errors.userId.message}</Input.Message>
@@ -267,26 +310,35 @@ export default function ProgressForm({
           <Input.Label required notSave={dirtyFields.service}>
             Serviço
           </Input.Label>
-          <ServiceSelect
-            disabled={isSubmitting}
-            defaultValue={service}
-            value={serviceData}
+          <Input.Select
+            value={selectedService?.id ?? ''}
+            disabled={isSubmitting || !userId || clinicianServices.length === 0}
             error={!!errors.service}
+            notSave={dirtyFields.service}
             slotProps={{ popper: { className: 'z-40' } }}
-            onChange={(_, newValue) => {
-              setValue('service', (newValue as ServiceResponse).name, {
-                shouldDirty: true,
-              })
-              setService(newValue as ServiceResponse)
+            onChange={(_, selected) => {
+              const clinicianService = clinicianServices.find(
+                (item) => item.id === selected,
+              )
+              if (clinicianService) selectService(clinicianService)
             }}
-            onInitialize={(service: ServiceResponse) => {
-              service &&
-                setValue('service', service.name, {
-                  shouldDirty: true,
-                })
-              setService(service)
-            }}
-          />
+            renderValue={() =>
+              selectedService?.name ?? (
+                <span className="text-slate-500">
+                  {serviceSelectPlaceholder}
+                </span>
+              )
+            }
+          >
+            {clinicianServices.map((clinicianService) => (
+              <Input.Option
+                key={clinicianService.id}
+                value={clinicianService.id}
+              >
+                {clinicianService.name}
+              </Input.Option>
+            ))}
+          </Input.Select>
 
           {errors.service && (
             <Input.Message error>{errors.service.message}</Input.Message>
