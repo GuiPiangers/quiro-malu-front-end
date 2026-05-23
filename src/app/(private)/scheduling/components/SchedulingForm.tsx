@@ -237,32 +237,30 @@ export default function SchedulingForm({
       className="border-none"
     >
       <section aria-label="Dados do agendamento" className={sectionStyles()}>
-        {!isEditing && (
-          <Input.Root>
-            <Input.Label required notSave={dirtyFields.userId}>
-              Profissional
-            </Input.Label>
-            <ClinicianSelectField
-              clinicians={clinicians ?? []}
-              value={userId}
-              disabled={isSubmitting}
-              error={!!errors.userId}
-              onChange={(value) => {
-                setValue('userId', value, {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                })
-                setSelectedService(undefined)
-                setValue('service', '', { shouldValidate: true })
-                setValue('duration', 0, { shouldValidate: true })
-                setDuration(0)
-              }}
-            />
-            {errors.userId && (
-              <Input.Message error>{errors.userId.message}</Input.Message>
-            )}
-          </Input.Root>
-        )}
+        <Input.Root>
+          <Input.Label required notSave={dirtyFields.userId}>
+            Profissional
+          </Input.Label>
+          <ClinicianSelectField
+            clinicians={clinicians ?? []}
+            value={userId}
+            disabled={isSubmitting}
+            error={!!errors.userId}
+            onChange={(value) => {
+              setValue('userId', value, {
+                shouldDirty: true,
+                shouldValidate: true,
+              })
+              setSelectedService(undefined)
+              setValue('service', '', { shouldValidate: true })
+              setValue('duration', 0, { shouldValidate: true })
+              setDuration(0)
+            }}
+          />
+          {errors.userId && (
+            <Input.Message error>{errors.userId.message}</Input.Message>
+          )}
+        </Input.Root>
 
         <Input.Root>
           <Input.Label required notSave={dirtyFields.date}>

@@ -9,12 +9,14 @@ import { isSchedulingStartInPast } from '@/utils/schedulingDisplayStatus'
 export default function StatusSelect({
   status,
   schedulingId,
+  userId,
   date,
   color,
   duration,
 }: {
   status: SchedulingStatus
   schedulingId: string
+  userId: string
   date: string
   color?: 'blue' | 'green' | 'red' | 'yellow'
   duration: number
@@ -35,6 +37,7 @@ export default function StatusSelect({
   }) => {
     updateScheduling.mutate({
       id: schedulingId,
+      userId,
       status,
       date,
       duration,

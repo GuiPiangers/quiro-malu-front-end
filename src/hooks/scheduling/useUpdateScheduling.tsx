@@ -1,7 +1,7 @@
 import {
   updateScheduling,
-  SchedulingResponse,
   EventsResponse,
+  UpdateSchedulingInput,
 } from '@/services/scheduling/scheduling'
 import { schedulesQtdQueryKey } from '@/services/scheduling/schedulingQueryKeys'
 import DateTime from '@/utils/Date'
@@ -18,7 +18,7 @@ export function useUpdateScheduling() {
   const date = searchParams.get('date') || DateTime.getIsoDate(new Date())
 
   const mutation = useMutation({
-    mutationFn: async (data: Partial<SchedulingResponse>) => {
+    mutationFn: async (data: UpdateSchedulingInput) => {
       return await updateScheduling(data)
     },
     onMutate: async (updateSchedulingData) => {

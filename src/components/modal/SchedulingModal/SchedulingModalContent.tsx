@@ -63,7 +63,12 @@ export default forwardRef<ModalHandles, ModalProps>(
         userId: string
       },
     ): Promise<SchedulingResponse | responseError> => {
-      if (formData?.id) return await updateScheduling.mutateAsync(data)
+      if (formData?.id) {
+        return await updateScheduling.mutateAsync({
+          ...data,
+          id: formData.id,
+        })
+      }
 
       const result = await createScheduling.mutateAsync(data)
       return result

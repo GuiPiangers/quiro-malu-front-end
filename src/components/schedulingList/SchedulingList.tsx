@@ -132,6 +132,7 @@ export default function SchedulingList({
                 scheduling={scheduling}
                 hour={hour}
                 key={scheduling.id}
+                userId={userId}
                 setModalData={setModalData}
                 openModal={openModal}
                 showExpandIcon={showScheduleRowExpandIcon}
@@ -204,12 +205,14 @@ export default function SchedulingList({
 function SchedulingTableItem({
   hour,
   scheduling,
+  userId,
   setModalData,
   openModal,
   showExpandIcon = true,
 }: {
   scheduling: SchedulingWithPatient
   hour: string
+  userId: string
   setModalData: Dispatch<
     SetStateAction<Partial<SchedulingWithPatient> | undefined>
   >
@@ -248,6 +251,7 @@ function SchedulingTableItem({
               duration={scheduling.duration}
               date={scheduling.date}
               schedulingId={scheduling.id || ''}
+              userId={userId}
               status={scheduling.status}
               color={rowColor}
             ></StatusSelect>
@@ -277,6 +281,7 @@ function SchedulingTableItem({
                 setModalData({
                   ...scheduling,
                   service: scheduling.service,
+                  userId,
                 })
               }}
             >

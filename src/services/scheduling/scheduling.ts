@@ -79,7 +79,12 @@ export async function createScheduling({
   return res
 }
 
-export async function updateScheduling(data: Partial<SchedulingResponse>) {
+export type UpdateSchedulingInput = Partial<SchedulingResponse> & {
+  id: string
+  userId: string
+}
+
+export async function updateScheduling(data: UpdateSchedulingInput) {
   const res = await api<SchedulingResponse>('/schedules', {
     method: 'PATCH',
     body: JSON.stringify(data),
