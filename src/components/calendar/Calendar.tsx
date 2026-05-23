@@ -9,16 +9,25 @@ import { CalendarProps } from './calendarTypes'
 import { useCalendar } from '@/hooks/useCalendar'
 import useWindowSize from '@/hooks/useWindowSize'
 import { useEffect } from 'react'
+import { generateSearchParams } from '@/utils/generateSearchParams'
+import { convertEntriesToObject } from '@/utils/convertEntriesToObject'
 
 export default function Calendar({ getAppointments }: CalendarProps) {
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
   const router = useRouter()
+  const searchParams = useSearchParams()
   const changeDate = (date: Date) => {
-    router.replace(`?date=${DateTime.getIsoDate(date)}`)
+    const params = convertEntriesToObject(Array.from(searchParams.entries()))
+    router.replace(
+      generateSearchParams({
+        ...params,
+        date: DateTime.getIsoDate(date),
+      }),
+    )
   }
   const selectedDate =
-    useSearchParams().get('date') || DateTime.getIsoDate(new Date())
+    searchParams.get('date') || DateTime.getIsoDate(new Date())
   const {
     appointments,
     isExpanded,
