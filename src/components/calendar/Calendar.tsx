@@ -12,7 +12,10 @@ import { useEffect } from 'react'
 import { generateSearchParams } from '@/utils/generateSearchParams'
 import { convertEntriesToObject } from '@/utils/convertEntriesToObject'
 
-export default function Calendar({ getAppointments }: CalendarProps) {
+export default function Calendar({
+  getAppointments,
+  schedulesQtdUserId,
+}: CalendarProps) {
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
   const router = useRouter()
@@ -42,7 +45,7 @@ export default function Calendar({ getAppointments }: CalendarProps) {
     nextMonth,
     prevMonth,
     setDate,
-  } = useCalendar({ getAppointments }, selectedDate)
+  } = useCalendar({ getAppointments, schedulesQtdUserId }, selectedDate)
 
   const { windowWidth } = useWindowSize()
 

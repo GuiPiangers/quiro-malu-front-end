@@ -6,6 +6,8 @@ export type appointments = {
 }
 
 export type CalendarProps = {
+  /** Quando definido, busca contagens via TanStack Query (invalidável após mutações). */
+  schedulesQtdUserId?: string
   getAppointments?({
     month,
     year,

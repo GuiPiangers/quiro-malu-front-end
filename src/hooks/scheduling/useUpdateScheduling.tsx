@@ -3,6 +3,7 @@ import {
   SchedulingResponse,
   EventsResponse,
 } from '@/services/scheduling/scheduling'
+import { schedulesQtdQueryKey } from '@/services/scheduling/schedulingQueryKeys'
 import DateTime from '@/utils/Date'
 import { isSchedulingEvent } from '@/utils/eventValidator'
 
@@ -81,6 +82,9 @@ export function useUpdateScheduling() {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['listSchedules'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: schedulesQtdQueryKey.all(),
       })
     },
   })

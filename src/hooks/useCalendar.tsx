@@ -1,24 +1,49 @@
 // useCalendar.tsx
 import { useState, useEffect, useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Validate } from '@/services/api/Validate'
 import {
   appointments,
   CalendarProps,
 } from '@/components/calendar/calendarTypes'
+import { getQtdSchedulesByDay } from '@/services/scheduling/scheduling'
+import { schedulesQtdQueryKey } from '@/services/scheduling/schedulingQueryKeys'
 import useWindowSize from './useWindowSize'
 
 export function useCalendar(
-  { getAppointments }: CalendarProps,
+  { getAppointments, schedulesQtdUserId }: CalendarProps,
   selectedDate: string,
 ) {
   const [date, setDate] = useState(new Date())
-  const [appointments, setAppointments] = useState<appointments[]>([])
+  const [legacyAppointments, setLegacyAppointments] = useState<appointments[]>(
+    [],
+  )
   const { windowWidth } = useWindowSize()
   const [isExpanded, setIsExpanded] = useState(windowWidth > 768)
   const toggleCalendarExpansion = () => setIsExpanded((prev) => !prev)
 
   const month = date.getMonth()
   const year = date.getFullYear()
+  const monthNumber = month + 1
+
+  const { data: qtdAppointments = [] } = useQuery({
+    queryKey: schedulesQtdQueryKey.month(
+      schedulesQtdUserId ?? '',
+      monthNumber,
+      year,
+    ),
+    queryFn: async () => {
+      const response = await getQtdSchedulesByDay({
+        userId: schedulesQtdUserId!,
+        month: monthNumber,
+        year,
+      })
+      return Validate.isOk(response) ? response : []
+    },
+    enabled: !!schedulesQtdUserId,
+  })
+
+  const appointments = schedulesQtdUserId ? qtdAppointments : legacyAppointments
 
   const nextMonth = () =>
     setDate(new Date(date.getFullYear(), date.getMonth() + 1))
@@ -26,16 +51,16 @@ export function useCalendar(
   const prevMonth = () =>
     setDate(new Date(date.getFullYear(), date.getMonth() - 1))
 
-  const fetchAppointments = async () => {
-    if (getAppointments) {
-      const response = await getAppointments({ month: month + 1, year })
-      if (response && Validate.isOk(response)) setAppointments(response)
-    }
-  }
-
   useEffect(() => {
+    if (schedulesQtdUserId || !getAppointments) return
+
+    const fetchAppointments = async () => {
+      const response = await getAppointments({ month: monthNumber, year })
+      if (response && Validate.isOk(response)) setLegacyAppointments(response)
+    }
+
     fetchAppointments()
-  }, [getAppointments, month, year])
+  }, [getAppointments, monthNumber, year, schedulesQtdUserId])
 
   useEffect(() => {
     const parsedDate = new Date(

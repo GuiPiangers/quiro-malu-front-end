@@ -1,7 +1,5 @@
-import {
-  EventsResponse,
-  deleteScheduling,
-} from '@/services/scheduling/scheduling'
+import { EventsResponse, deleteScheduling } from '@/services/scheduling/scheduling'
+import { schedulesQtdQueryKey } from '@/services/scheduling/schedulingQueryKeys'
 import DateTime from '@/utils/Date'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -55,6 +53,9 @@ export function useDeleteScheduling() {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['listSchedules', date],
+      })
+      queryClient.invalidateQueries({
+        queryKey: schedulesQtdQueryKey.all(),
       })
     },
   })

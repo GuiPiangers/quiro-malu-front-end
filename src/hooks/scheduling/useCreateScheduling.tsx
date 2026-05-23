@@ -3,6 +3,7 @@ import {
   EventsResponse,
   SchedulingWithPatient,
 } from '@/services/scheduling/scheduling'
+import { schedulesQtdQueryKey } from '@/services/scheduling/schedulingQueryKeys'
 import DateTime from '@/utils/Date'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
@@ -63,6 +64,9 @@ export function useCreateScheduling() {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['listSchedules'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: schedulesQtdQueryKey.all(),
       })
     },
   })

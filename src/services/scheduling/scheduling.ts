@@ -190,14 +190,16 @@ export async function deleteBlockEvent({ id }: { id: string }) {
 }
 
 export async function getQtdSchedulesByDay({
+  userId,
   month,
   year,
 }: {
+  userId: string
   month: number
   year: number
 }) {
   const res = await api<{ date: string; qtd: number }[]>(
-    `/Schedules/qtd?month=${month}&year=${year}`,
+    `/schedules/qtd/${userId}?month=${month}&year=${year}`,
     {
       method: 'GET',
     },
