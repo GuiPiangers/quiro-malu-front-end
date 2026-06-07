@@ -12,13 +12,17 @@ import DateTime from '@/utils/Date'
 import { responseError } from '@/services/api/api'
 import {
   listEventSuggestions,
-  SaveBlockEvent,
   EventsSuggestion,
 } from '@/services/scheduling/scheduling'
 import { Validate } from '@/services/api/Validate'
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import ClinicianSelectField from '@/app/(private)/scheduling/components/ClinicianSelectField'
 
 const setEventSchema = z.object({
+  userId: z.string().min(1, { message: 'Selecione o profissional' }),
   date: z.string().min(1, { message: 'Campo obrigatório' }),
   endDate: z.string().min(1, { message: 'Campo obrigatório' }),
   description: z.string(),
@@ -29,9 +33,7 @@ export type setEventData = z.infer<typeof setEventSchema>
 type EventFormProps = {
   formData?: Partial<setEventData & { id: string }>
   afterValidation?(): void
-  action(
-    data: SaveBlockEvent & { id?: string },
-  ): Promise<unknown | responseError>
+  action(data: setEventData & { id?: string }): Promise<unknown | responseError>
 } & FormProps
 
 export default function EventForm({
@@ -40,12 +42,15 @@ export default function EventForm({
   afterValidation,
   ...formProps
 }: EventFormProps) {
-  const { date, endDate } = formData || {}
+  const { date, endDate, id } = formData || {}
+  const searchParams = useSearchParams()
+  const defaultUserId = formData?.userId ?? searchParams.get('userId') ?? ''
   const { handleMessage } = useSnackbarContext()
 
   const setEventForm = useForm<setEventData>({
     resolver: zodResolver(setEventSchema),
     defaultValues: {
+      userId: defaultUserId,
       description: formData?.description || '',
     },
   })
@@ -59,6 +64,17 @@ export default function EventForm({
     watch,
     setValue,
   } = setEventForm
+
+  const userId = watch('userId')
+
+  const { data: clinicians } = useQuery({
+    queryKey: ['clinicians'],
+    queryFn: async () => {
+      const result = await listClinicians()
+      if (Validate.isError(result)) throw new Error(result.message)
+      return result
+    },
+  })
 
   const [selectedEvent, setSelectedEvent] = useState<{
     data: EventsSuggestion
@@ -78,6 +94,11 @@ export default function EventForm({
       setValue('endDate', DateTime.getIsoDateTime(newEndDate.toISOString()))
     }
   }, [dateValue, selectedEvent, setValue])
+
+  useEffect(() => {
+    if (!clinicians?.length || userId) return
+    setValue('userId', clinicians[0].id, { shouldValidate: true })
+  }, [clinicians, setValue, userId])
 
   const setEvent = async (data: setEventData) => {
     const res = await action({ ...data, id: formData?.id })
@@ -105,7 +126,28 @@ export default function EventForm({
       {...formProps}
       className="border-none"
     >
-      <section aria-label="Diagnóstico do paciente" className={sectionStyles()}>
+      <section aria-label="Evento de bloqueio" className={sectionStyles()}>
+        <Input.Root>
+          <Input.Label required notSave={dirtyFields.userId}>
+            Profissional
+          </Input.Label>
+          <ClinicianSelectField
+            clinicians={clinicians ?? []}
+            value={userId}
+            disabled={isSubmitting}
+            error={!!errors.userId}
+            onChange={(value) =>
+              setValue('userId', value, {
+                shouldDirty: true,
+                shouldValidate: true,
+              })
+            }
+          />
+          {errors.userId && (
+            <Input.Message error>{errors.userId.message}</Input.Message>
+          )}
+        </Input.Root>
+
         <Input.Root>
           <Input.Label notSave={dirtyFields.description}>Descrição</Input.Label>
           <Input.AsyncAutocomplete

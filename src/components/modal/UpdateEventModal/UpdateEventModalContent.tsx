@@ -91,7 +91,10 @@ export default forwardRef<ModalHandles, ModalProps>(
             if (!data.id) return
             const res = await updateBlockEvent.mutateAsync({
               id: data.id,
-              ...data,
+              userId: data.userId,
+              date: data.date,
+              endDate: data.endDate,
+              description: data.description,
             })
             return res
           }}

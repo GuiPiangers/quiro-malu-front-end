@@ -13,7 +13,7 @@ export function useCreateBlockEvent() {
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: (newEvent: SaveBlockEvent & { id?: string }) => {
+    mutationFn: (newEvent: SaveBlockEvent) => {
       return saveBlockEvent(newEvent)
     },
     onMutate: async (event) => {

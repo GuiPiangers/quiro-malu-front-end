@@ -136,6 +136,7 @@ export default async function Scheduling({
           color="black"
           className="w-full"
           variant="outline"
+          formData={selectedUserId ? { userId: selectedUserId } : undefined}
         >
           Bloquear Agenda
         </CreateEventModal>

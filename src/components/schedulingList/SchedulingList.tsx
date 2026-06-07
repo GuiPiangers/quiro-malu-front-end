@@ -146,7 +146,7 @@ export default function SchedulingList({
               className="contents text-slate-400"
               onClick={() => {
                 openUpdateEventModal && openUpdateEventModal()
-                setEventModalData(scheduling)
+                setEventModalData({ ...scheduling, userId })
               }}
             >
               <Table.Row

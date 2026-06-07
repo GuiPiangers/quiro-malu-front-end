@@ -10,6 +10,7 @@ export type SchedulingStatus =
 
 export type BlockScheduleResponse = {
   id?: string
+  userId?: string
   date: string
   endDate: string
   description?: string
@@ -42,8 +43,13 @@ export type EventsResponse = {
   data: (BlockScheduleResponse | SchedulingWithPatient)[]
 }
 
-export type SaveBlockEvent = Omit<BlockScheduleResponse, 'id'>
-export type UpdateBlockEvent = Partial<BlockScheduleResponse> & { id: string }
+export type SaveBlockEvent = Omit<BlockScheduleResponse, 'id'> & {
+  userId: string
+}
+export type UpdateBlockEvent = Partial<Omit<BlockScheduleResponse, 'id'>> & {
+  id: string
+  userId: string
+}
 
 export type EventsSuggestion = {
   id?: string
@@ -165,22 +171,27 @@ export async function listEventSuggestions({
 }
 
 export async function saveBlockEvent({
+  userId,
   date,
   endDate,
   description,
 }: SaveBlockEvent) {
   const res = await api<{ message: string }>('/blockSchedules', {
     method: 'POST',
-    body: JSON.stringify({ date, endDate, description }),
+    body: JSON.stringify({ userId, date, endDate, description }),
   })
 
   return res
 }
 
-export async function updateBlockEvent({ id, ...data }: UpdateBlockEvent) {
+export async function updateBlockEvent({
+  id,
+  userId,
+  ...data
+}: UpdateBlockEvent) {
   const res = await api<{ message: string }>(`/blockSchedules/${id}`, {
     method: 'PATCH',
-    body: JSON.stringify(data),
+    body: JSON.stringify({ userId, ...data }),
   })
 
   return res
