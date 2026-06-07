@@ -4,13 +4,17 @@ import { Validate } from '@/services/api/Validate'
 import { Box } from '@/components/box/Box'
 import Link from 'next/link'
 import { listEventsByUser } from '@/services/scheduling/scheduling'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import {
+  listEventClinicians,
+  resolveSelectedEventUserId,
+} from '@/lib/eventsClinicians'
+import { getSession } from '@/lib/session'
 
 export default async function Home() {
   const date = DateTime.getIsoDate(new Date())
-  const cliniciansRes = await listClinicians()
-  const clinicians = Validate.isOk(cliniciansRes) ? cliniciansRes : []
-  const userId = clinicians[0]?.id
+  const session = getSession()
+  const clinicians = await listEventClinicians()
+  const userId = resolveSelectedEventUserId(clinicians, session?.userId)
   const schedulesResp = userId
     ? await listEventsByUser({ date, userId })
     : { data: [] }

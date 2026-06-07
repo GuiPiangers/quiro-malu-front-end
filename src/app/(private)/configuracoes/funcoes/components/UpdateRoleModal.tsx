@@ -2,7 +2,7 @@
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { useRef, useState } from 'react'
-import RoleForm, { RoleFormData } from './RoleForm'
+import RoleForm, { permissionsToRoleEntries, RoleFormData } from './RoleForm'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Table } from '@/components/table'
 import Button from '@/components/Button'
@@ -50,7 +50,9 @@ export default function UpdateRoleModal({
     setFormDefaults({
       name: role.name,
       description: role.description,
-      permissionKeys: data?.map((entry) => entry.permissionKey) ?? [],
+      permissions: Object.fromEntries(
+        data?.map((entry) => [entry.permissionKey, entry.scope ?? null]) ?? [],
+      ),
     })
     modalRef.current?.openModal()
   }
@@ -74,10 +76,7 @@ export default function UpdateRoleModal({
 
     const permissionsRes = await replaceRolePermissions(
       role.id,
-      data.permissionKeys.map((permissionKey) => ({
-        permissionKey,
-        scope: null,
-      })),
+      permissionsToRoleEntries(data.permissions),
     )
     if (Validate.isError(permissionsRes)) return permissionsRes
 
@@ -122,7 +121,9 @@ export default function UpdateRoleModal({
           </p>
         ) : (
           <RoleForm
-            key={`${role.id}-${formDefaults?.permissionKeys?.join(',') ?? ''}`}
+            key={`${role.id}-${Object.keys(
+              formDefaults?.permissions ?? {},
+            ).join(',')}`}
             formData={formDefaults}
             permissionsCatalog={permissionsCatalog}
             buttons={

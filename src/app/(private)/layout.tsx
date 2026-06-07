@@ -8,6 +8,7 @@ import ScrollArea from '@/components/scrollArea/ScrollArea'
 import SubscribeNotification from '@/components/notification/SubscribeNotification'
 import { AppNotificationContextProvider } from '@/contexts/AppNotificationContext'
 import { PermissionsProvider } from '@/contexts/PermissionsContext'
+import { SessionProvider } from '@/contexts/SessionContext'
 import { getSession } from '@/lib/session'
 
 interface LayoutProps {
@@ -18,24 +19,26 @@ export default function Layout({ children }: LayoutProps) {
   const session = getSession()
 
   return (
-    <PermissionsProvider permissions={session?.permissions ?? []}>
-      <AppNotificationContextProvider>
-        <ToggleContextProvider>
-          <SubscribeNotification />
-          <div className="grid h-[100svh] grid-rows-[auto_1fr]">
-            <Header />
-            <div className="flex h-full w-full">
-              <Sidebar />
-              <ScrollArea className="h-[calc(100svh-3.25rem)]">
-                <SubHeader />
-                <div className="flex w-full items-center justify-center px-4 py-6">
-                  <Snackbar>{children}</Snackbar>
-                </div>
-              </ScrollArea>
+    <SessionProvider userId={session?.userId ?? ''}>
+      <PermissionsProvider permissions={session?.permissions ?? []}>
+        <AppNotificationContextProvider>
+          <ToggleContextProvider>
+            <SubscribeNotification />
+            <div className="grid h-[100svh] grid-rows-[auto_1fr]">
+              <Header />
+              <div className="flex h-full w-full">
+                <Sidebar />
+                <ScrollArea className="h-[calc(100svh-3.25rem)]">
+                  <SubHeader />
+                  <div className="flex w-full items-center justify-center px-4 py-6">
+                    <Snackbar>{children}</Snackbar>
+                  </div>
+                </ScrollArea>
+              </div>
             </div>
-          </div>
-        </ToggleContextProvider>
-      </AppNotificationContextProvider>
-    </PermissionsProvider>
+          </ToggleContextProvider>
+        </AppNotificationContextProvider>
+      </PermissionsProvider>
+    </SessionProvider>
   )
 }

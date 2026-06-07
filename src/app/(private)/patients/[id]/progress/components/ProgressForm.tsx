@@ -19,14 +19,14 @@ import { Trash } from 'lucide-react'
 import { AudioRecorder } from '@/components/AudioRecorder'
 import { useAudioTranscriber } from '@/hooks/useAudioTranscriber'
 import { useSearchParams } from 'next/navigation'
-import {
-  ClinicianServiceItem,
-  listClinicians,
-} from '@/services/clinicUsers/clinicUsers'
+import { ClinicianServiceItem } from '@/services/clinicUsers/clinicUsers'
 import ClinicianSelectField, {
   ClinicianOptionContent,
 } from '@/app/(private)/scheduling/components/ClinicianSelectField'
-import { useQuery } from '@tanstack/react-query'
+import { useEventClinicians } from '@/hooks/useEventClinicians'
+import { usePermissionScope } from '@/hooks/useAccess'
+import { isOwnEventsScope } from '@/lib/eventsClinicians'
+import { useOptionalSession } from '@/contexts/SessionContext'
 
 const painScaleSchema = z.object({
   description: z.string(),
@@ -121,14 +121,11 @@ export default function ProgressForm({
 
   const userId = watch('userId')
 
-  const { data: clinicians } = useQuery({
-    queryKey: ['clinicians'],
-    queryFn: async () => {
-      const result = await listClinicians()
-      if (Validate.isError(result)) throw new Error(result.message)
-      return result
-    },
-  })
+  const session = useOptionalSession()
+  const eventsScope = usePermissionScope('events:read')
+  const lockClinician = isOwnEventsScope(eventsScope)
+
+  const { data: clinicians } = useEventClinicians()
 
   const clinicianName = useMemo(
     () => clinicians?.find((c) => c.id === userId)?.name,
@@ -214,8 +211,10 @@ export default function ProgressForm({
 
   useEffect(() => {
     if (isEditing || !clinicians?.length || userId) return
-    setValue('userId', clinicians[0].id, { shouldValidate: true })
-  }, [clinicians, isEditing, setValue, userId])
+    const defaultId =
+      clinicians.find((c) => c.id === session?.userId)?.id ?? clinicians[0].id
+    setValue('userId', defaultId, { shouldValidate: true })
+  }, [clinicians, isEditing, session?.userId, setValue, userId])
 
   useEffect(() => {
     if (!service || !clinicianServices.length) return
@@ -270,6 +269,7 @@ export default function ProgressForm({
               <ClinicianSelectField
                 clinicians={clinicians ?? []}
                 value={userId}
+                readOnly={lockClinician && (clinicians?.length ?? 0) <= 1}
                 disabled={isSubmitting}
                 error={!!errors.userId}
                 onChange={(value) => {

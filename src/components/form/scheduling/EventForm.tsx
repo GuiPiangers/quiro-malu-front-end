@@ -17,8 +17,10 @@ import {
 import { Validate } from '@/services/api/Validate'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import { useEventClinicians } from '@/hooks/useEventClinicians'
+import { usePermissionScope } from '@/hooks/useAccess'
+import { isOwnEventsScope } from '@/lib/eventsClinicians'
+import { useOptionalSession } from '@/contexts/SessionContext'
 import ClinicianSelectField from '@/app/(private)/scheduling/components/ClinicianSelectField'
 
 const setEventSchema = z.object({
@@ -67,14 +69,11 @@ export default function EventForm({
 
   const userId = watch('userId')
 
-  const { data: clinicians } = useQuery({
-    queryKey: ['clinicians'],
-    queryFn: async () => {
-      const result = await listClinicians()
-      if (Validate.isError(result)) throw new Error(result.message)
-      return result
-    },
-  })
+  const session = useOptionalSession()
+  const eventsScope = usePermissionScope('events:read')
+  const lockClinician = isOwnEventsScope(eventsScope)
+
+  const { data: clinicians } = useEventClinicians()
 
   const [selectedEvent, setSelectedEvent] = useState<{
     data: EventsSuggestion
@@ -97,8 +96,10 @@ export default function EventForm({
 
   useEffect(() => {
     if (!clinicians?.length || userId) return
-    setValue('userId', clinicians[0].id, { shouldValidate: true })
-  }, [clinicians, setValue, userId])
+    const defaultId =
+      clinicians.find((c) => c.id === session?.userId)?.id ?? clinicians[0].id
+    setValue('userId', defaultId, { shouldValidate: true })
+  }, [clinicians, session?.userId, setValue, userId])
 
   const setEvent = async (data: setEventData) => {
     const res = await action({ ...data, id: formData?.id })
@@ -134,6 +135,7 @@ export default function EventForm({
           <ClinicianSelectField
             clinicians={clinicians ?? []}
             value={userId}
+            readOnly={lockClinician && (clinicians?.length ?? 0) <= 1}
             disabled={isSubmitting}
             error={!!errors.userId}
             onChange={(value) =>

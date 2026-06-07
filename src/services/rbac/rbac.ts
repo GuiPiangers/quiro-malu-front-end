@@ -1,6 +1,7 @@
 'use server'
 
 import { api } from '@/services/api/api'
+import { PermissionScope } from '@/types/permissions'
 
 export type Role = {
   id: string
@@ -20,7 +21,7 @@ export type PermissionCatalogItem = {
 
 export type RolePermissionEntry = {
   permissionKey: string
-  scope?: unknown | null
+  scope?: PermissionScope | null
 }
 
 export type CreateRoleInput = {

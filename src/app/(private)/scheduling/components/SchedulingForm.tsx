@@ -24,11 +24,12 @@ import DateTime from '@/utils/Date'
 
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
-import {
-  ClinicianServiceItem,
-  listClinicians,
-} from '@/services/clinicUsers/clinicUsers'
+import { ClinicianServiceItem } from '@/services/clinicUsers/clinicUsers'
 import ClinicianSelectField from './ClinicianSelectField'
+import { useEventClinicians } from '@/hooks/useEventClinicians'
+import { usePermissionScope } from '@/hooks/useAccess'
+import { isOwnEventsScope } from '@/lib/eventsClinicians'
+import { useOptionalSession } from '@/contexts/SessionContext'
 
 const setSchedulingSchema = z.object({
   userId: z.string().min(1, { message: 'Selecione o profissional' }),
@@ -113,14 +114,11 @@ export default function SchedulingForm({
       ),
   })
 
-  const { data: clinicians } = useQuery({
-    queryKey: ['clinicians'],
-    queryFn: async () => {
-      const result = await listClinicians()
-      if (Validate.isError(result)) throw new Error(result.message)
-      return result
-    },
-  })
+  const session = useOptionalSession()
+  const eventsScope = usePermissionScope('events:read')
+  const lockClinician = isOwnEventsScope(eventsScope)
+
+  const { data: clinicians } = useEventClinicians()
 
   const userId = setSchedulingForm.watch('userId')
   const isEditing = !!id
@@ -202,8 +200,10 @@ export default function SchedulingForm({
 
   useEffect(() => {
     if (isEditing || !clinicians?.length || userId) return
-    setValue('userId', clinicians[0].id, { shouldValidate: true })
-  }, [clinicians, isEditing, setValue, userId])
+    const defaultId =
+      clinicians.find((c) => c.id === session?.userId)?.id ?? clinicians[0].id
+    setValue('userId', defaultId, { shouldValidate: true })
+  }, [clinicians, isEditing, session?.userId, setValue, userId])
 
   useEffect(() => {
     if (!service || !clinicianServices.length) return
@@ -244,6 +244,7 @@ export default function SchedulingForm({
           <ClinicianSelectField
             clinicians={clinicians ?? []}
             value={userId}
+            readOnly={lockClinician && (clinicians?.length ?? 0) <= 1}
             disabled={isSubmitting}
             error={!!errors.userId}
             onChange={(value) => {

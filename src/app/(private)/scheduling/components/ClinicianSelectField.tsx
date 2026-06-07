@@ -24,6 +24,7 @@ type ClinicianSelectFieldProps = {
   value: string
   onChange(userId: string): void
   disabled?: boolean
+  readOnly?: boolean
   error?: boolean
 }
 
@@ -32,6 +33,7 @@ export default function ClinicianSelectField({
   value,
   onChange,
   disabled,
+  readOnly,
   error,
 }: ClinicianSelectFieldProps) {
   const selected = clinicians.find((c) => c.id === value)
@@ -41,6 +43,14 @@ export default function ClinicianSelectField({
       <p className="text-sm text-slate-500">
         Nenhum clínico disponível para agendamento.
       </p>
+    )
+  }
+
+  if (readOnly && selected) {
+    return (
+      <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+        <ClinicianOptionContent name={selected.name} />
+      </div>
     )
   }
 

@@ -7,7 +7,7 @@ import Pagination from '@/components/pagination/Pagination'
 import NoDataFound from '@/components/notFound/NoDataFound'
 import { Validate } from '@/services/api/Validate'
 import { listProgress } from '@/services/patient/patient'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import { listEventClinicians } from '@/lib/eventsClinicians'
 import SafeHtml from '@/components/SafeHTML'
 import { ClinicianOptionContent } from '@/app/(private)/scheduling/components/ClinicianSelectField'
 
@@ -21,13 +21,12 @@ export default async function Progress({
   const patientId = params.id
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
-  const [patientData, cliniciansRes] = await Promise.all([
+  const [patientData, clinicians] = await Promise.all([
     listProgress({ patientId, page }),
-    listClinicians(),
+    listEventClinicians(),
   ])
 
   const progressList = Validate.isOk(patientData) ? patientData : undefined
-  const clinicians = Validate.isOk(cliniciansRes) ? cliniciansRes : []
   const clinicianNameById = new Map(
     clinicians.map((clinician) => [clinician.id, clinician.name]),
   )

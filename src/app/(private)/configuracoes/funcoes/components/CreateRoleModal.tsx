@@ -2,7 +2,7 @@
 
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import { ReactNode, useRef } from 'react'
-import RoleForm, { RoleFormData } from './RoleForm'
+import RoleForm, { permissionsToRoleEntries, RoleFormData } from './RoleForm'
 import HeaderForm from '@/components/modal/HeaderModal'
 import Button, { ButtonPropsVariants } from '@/components/Button'
 import { useQueryClient } from '@tanstack/react-query'
@@ -46,13 +46,10 @@ export default function CreateRoleModal({
     })
     if (Validate.isError(created)) return created
 
-    if (data.permissionKeys.length > 0) {
+    if (Object.keys(data.permissions).length > 0) {
       const permissionsRes = await replaceRolePermissions(
         created.id,
-        data.permissionKeys.map((permissionKey) => ({
-          permissionKey,
-          scope: null,
-        })),
+        permissionsToRoleEntries(data.permissions),
       )
       if (Validate.isError(permissionsRes)) return permissionsRes
     }

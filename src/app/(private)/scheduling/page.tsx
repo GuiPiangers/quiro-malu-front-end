@@ -7,7 +7,11 @@ import { Validate } from '@/services/api/Validate'
 import SchedulingCalendar from '@/components/calendar/SchedulingCalendar'
 import SchedulingList from '@/components/schedulingList/SchedulingList'
 import { listEventsByUser } from '@/services/scheduling/scheduling'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import {
+  listEventClinicians,
+  resolveSelectedEventUserId,
+} from '@/lib/eventsClinicians'
+import { getSession } from '@/lib/session'
 import CreateEventModal from '@/components/modal/createEventModal/CreateEventModal'
 import { getCalendarConfiguration } from '@/services/config/calendar/calendarConfiguration'
 import { getWeekDayKey } from '@/services/config/calendar/calendarUtils'
@@ -25,13 +29,14 @@ export default async function Scheduling({
     ? searchParams.date
     : DateTime.getIsoDate(new Date())
 
-  const cliniciansRes = await listClinicians()
-  const clinicians = Validate.isOk(cliniciansRes) ? cliniciansRes : []
+  const session = getSession()
+  const clinicians = await listEventClinicians()
 
-  const selectedUserId =
-    searchParams.userId && clinicians.some((c) => c.id === searchParams.userId)
-      ? searchParams.userId
-      : clinicians[0]?.id
+  const selectedUserId = resolveSelectedEventUserId(
+    clinicians,
+    session?.userId,
+    searchParams.userId,
+  )
 
   if (selectedUserId && searchParams.userId !== selectedUserId) {
     redirect(
