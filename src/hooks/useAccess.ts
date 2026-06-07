@@ -2,13 +2,9 @@
 
 import { usePermissions } from '@/contexts/PermissionsContext'
 import { PermissionKey } from '@/types/permissions'
+import { hasModuleAccess, type PermissionModule } from '@/lib/permissions'
 
-export type PermissionModule =
-  | 'patients'
-  | 'events'
-  | 'services'
-  | 'finance'
-  | 'messages'
+export type { PermissionModule }
 
 export function useAccess(requiredKey: PermissionKey) {
   const permissions = usePermissions()
@@ -17,11 +13,7 @@ export function useAccess(requiredKey: PermissionKey) {
 
 export function useModuleAccess(module: PermissionModule) {
   const permissions = usePermissions()
-  return permissions.some(
-    (permission) =>
-      permission.key === `${module}:read` ||
-      permission.key === `${module}:write`,
-  )
+  return hasModuleAccess(permissions, module)
 }
 
 export function usePermissionScope(requiredKey: PermissionKey) {
