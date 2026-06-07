@@ -13,11 +13,17 @@ import { SidebarStyles } from './Style'
 import { NavItem } from './NavItem'
 import { NavMensagensGroup } from './NavMensagensGroup'
 import useToggleContext from '@/hooks/useToggleContext'
+import { useModuleAccess } from '@/hooks/useAccess'
 
 type SidebarProps = { className?: string }
 
 export default function Sidebar({ className }: SidebarProps) {
   const { collapsed, toggle } = useToggleContext()
+  const canAccessEvents = useModuleAccess('events')
+  const canAccessPatients = useModuleAccess('patients')
+  const canAccessServices = useModuleAccess('services')
+  const canAccessFinance = useModuleAccess('finance')
+  const canAccessMessages = useModuleAccess('messages')
   const { SidebarStyle, sideWrapperStyle } = SidebarStyles({
     collapsed,
   })
@@ -30,25 +36,33 @@ export default function Sidebar({ className }: SidebarProps) {
           <NavItem href="/" icon={CiHome}>
             Home
           </NavItem>
-          <NavItem href="/scheduling" icon={CiCalendar}>
-            Agenda
-          </NavItem>
-          <NavItem href="/patients" icon={CiUser}>
-            Pacientes
-          </NavItem>
-          <NavItem href="/services" icon={CiStethoscope}>
-            Serviços
-          </NavItem>
-          <NavItem href="/finance" icon={CiDollar}>
-            Financeiro
-          </NavItem>
+          {canAccessEvents && (
+            <NavItem href="/scheduling" icon={CiCalendar}>
+              Agenda
+            </NavItem>
+          )}
+          {canAccessPatients && (
+            <NavItem href="/patients" icon={CiUser}>
+              Pacientes
+            </NavItem>
+          )}
+          {canAccessServices && (
+            <NavItem href="/services" icon={CiStethoscope}>
+              Serviços
+            </NavItem>
+          )}
+          {canAccessFinance && (
+            <NavItem href="/finance" icon={CiDollar}>
+              Financeiro
+            </NavItem>
+          )}
           <NavItem href="/arquivos" icon={CiFileOn}>
             arquivos
           </NavItem>
           <NavItem href="/configuracoes" icon={CiSettings}>
             Configurações
           </NavItem>
-          <NavMensagensGroup />
+          {canAccessMessages && <NavMensagensGroup />}
         </li>
       </nav>
     </>
