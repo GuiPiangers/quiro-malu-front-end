@@ -121,7 +121,7 @@ const routes: RouteTitleEntry[] = [
   },
   {
     name: 'Calendário',
-    path: '/config/calendario',
+    path: '/configuracoes/calendario',
     previousPath: '/configuracoes',
     previousLabel: 'Configurações',
   },

@@ -15,10 +15,15 @@ const settingsLinks = [
       'Crie papéis personalizados e defina o que cada usuário pode acessar na clínica.',
   },
   {
-    href: '/config/calendario',
+    href: '/configuracoes/calendario',
     title: 'Horários da agenda',
     description:
       'Configure dias de atendimento, intervalos e incrementos do calendário.',
+  },
+  {
+    href: '/configuracoes/importar-pacientes',
+    title: 'Importar pacientes',
+    description: 'Importe pacientes da clínica.',
   },
 ]
 

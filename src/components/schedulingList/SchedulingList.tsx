@@ -92,7 +92,7 @@ export default function SchedulingList({
             Nenhum horário configurado para hoje
           </span>
           <Link
-            href={'/config/calendario'}
+            href={'/configuracoes/calendario'}
             className="rounded-md border border-dashed px-4 py-1 text-blue-600"
           >
             Alterar configurações de horário

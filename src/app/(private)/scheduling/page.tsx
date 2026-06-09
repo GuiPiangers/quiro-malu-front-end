@@ -146,7 +146,7 @@ export default async function Scheduling({
           Bloquear Agenda
         </CreateEventModal>
         <Link
-          href={'/config/calendario'}
+          href={'/configuracoes/calendario'}
           className="rounded-md border border-dashed px-4 py-1 text-center text-xs font-bold text-blue-600"
         >
           Alterar configurações de horário

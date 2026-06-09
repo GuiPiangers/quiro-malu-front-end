@@ -56,9 +56,6 @@ export default function Sidebar({ className }: SidebarProps) {
               Financeiro
             </NavItem>
           )}
-          <NavItem href="/arquivos" icon={CiFileOn}>
-            arquivos
-          </NavItem>
           <NavItem href="/configuracoes" icon={CiSettings}>
             Configurações
           </NavItem>
