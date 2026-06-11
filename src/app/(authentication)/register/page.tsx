@@ -11,9 +11,12 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { loginUser, registerUser } from '@/services/user/user'
+import { loginUser } from '@/services/user/user'
+import { createClinic } from '@/services/clinic/clinic'
+import { Validate } from '@/services/api/Validate'
 
 const createUserSchema = z.object({
+  clinicName: z.string(),
   name: z
     .string()
     .min(3, { message: 'O nome deve conter no mínimo 3 caracteres' })
@@ -69,25 +72,46 @@ export default function Register() {
   } = createUserForm
 
   const createUser = async (data: CreateUserData) => {
-    const user = await registerUser(data)
-    if (user.type) {
-      setError(user.type as keyof CreateUserData, { message: user.message })
+    const clinic = await createClinic({
+      name: data.clinicName,
+      owner: {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        password: data.password,
+      },
+    })
+
+    if (Validate.isError(clinic)) {
+      setError(clinic.type as keyof CreateUserData, { message: clinic.message })
     } else {
-      if (Object.hasOwn(user, 'email') && Object.hasOwn(user, 'password'))
-        await loginUser({ email: user.email, password: user.password })
-      else {
+      if (Object.hasOwn(clinic, 'id'))
+        await loginUser({ email: data.email, password: data.password })
+      else
         handleMessage({
           title: 'Erro!',
-          description: user.message,
+          description: 'Erro ao criar clínica',
           type: 'error',
         })
-      }
     }
   }
 
   return (
     <AuthForm title="Registrar" onSubmit={handleSubmit(createUser)}>
       <div className="flex flex-col gap-4">
+        <Input.Root>
+          <Input.Label>Nome</Input.Label>
+          <Input.Field
+            error={!!errors.clinicName}
+            {...register('clinicName')}
+            placeholder="Clínica"
+            disabled={isSubmitting}
+            type="text"
+          />
+          {errors.clinicName && (
+            <Input.Message error>{errors.clinicName.message}</Input.Message>
+          )}
+        </Input.Root>
         <Input.Root>
           <Input.Label>Nome</Input.Label>
           <Input.Field
