@@ -8,7 +8,7 @@ import { ChangeEvent, useState } from 'react'
 import { Input } from '@/components/input'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
-import { loginUser } from '@/services/user/user'
+import { loginUser } from '@/services/authentication/authentication'
 
 export default function Login() {
   const { handleMessage } = useSnackbarContext()

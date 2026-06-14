@@ -1,6 +1,6 @@
 import UserList from '@/app/(private)/configuracoes/usuarios/components/UserList'
 import { Validate } from '@/services/api/Validate'
-import { listClinicUsers, listClinicians } from '@/services/clinicUsers/clinicUsers'
+import { listClinicUsers, listClinicians } from '@/services/user/user'
 import { listRoles } from '@/services/rbac/rbac'
 
 export default async function UsuariosPage() {

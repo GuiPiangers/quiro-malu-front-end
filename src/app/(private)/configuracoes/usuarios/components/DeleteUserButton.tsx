@@ -6,7 +6,7 @@ import ConfirmationModal, {
 } from '@/components/modal/ConfirmationModal'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { Validate } from '@/services/api/Validate'
-import { deleteClinicUser } from '@/services/clinicUsers/clinicUsers'
+import { deleteClinicUser } from '@/services/user/user'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef, useState } from 'react'

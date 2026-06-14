@@ -19,7 +19,7 @@ import { Trash } from 'lucide-react'
 import { AudioRecorder } from '@/components/AudioRecorder'
 import { useAudioTranscriber } from '@/hooks/useAudioTranscriber'
 import { useSearchParams } from 'next/navigation'
-import { ClinicianServiceItem } from '@/services/clinicUsers/clinicUsers'
+import { ClinicianServiceItem } from '@/services/user/user'
 import ClinicianSelectField, {
   ClinicianOptionContent,
 } from '@/app/(private)/scheduling/components/ClinicianSelectField'

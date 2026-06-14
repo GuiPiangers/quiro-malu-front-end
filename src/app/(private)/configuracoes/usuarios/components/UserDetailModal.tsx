@@ -3,10 +3,7 @@
 import Modal, { ModalHandles } from '@/components/modal/Modal'
 import HeaderForm from '@/components/modal/HeaderModal'
 import { Table } from '@/components/table'
-import {
-  ClinicUserListItem,
-  getClinicUser,
-} from '@/services/clinicUsers/clinicUsers'
+import { ClinicUserListItem, getClinicUser } from '@/services/user/user'
 import { Validate } from '@/services/api/Validate'
 import { useQuery } from '@tanstack/react-query'
 import { useRef } from 'react'

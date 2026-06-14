@@ -24,7 +24,7 @@ import DateTime from '@/utils/Date'
 
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
-import { ClinicianServiceItem } from '@/services/clinicUsers/clinicUsers'
+import { ClinicianServiceItem } from '@/services/user/user'
 import ClinicianSelectField from './ClinicianSelectField'
 import { useEventClinicians } from '@/hooks/useEventClinicians'
 import { usePermissionScope } from '@/hooks/useAccess'

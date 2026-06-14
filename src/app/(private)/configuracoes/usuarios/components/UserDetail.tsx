@@ -8,7 +8,7 @@ import {
   patchUserRole,
   setClinicianServices,
   UserDetail as UserDetailType,
-} from '@/services/clinicUsers/clinicUsers'
+} from '@/services/user/user'
 import { Role } from '@/services/rbac/rbac'
 import { Validate } from '@/services/api/Validate'
 import { zodResolver } from '@hookform/resolvers/zod'

@@ -9,7 +9,7 @@ import {
   ClinicUserListItem,
   listClinicUsers,
   listClinicians,
-} from '@/services/clinicUsers/clinicUsers'
+} from '@/services/user/user'
 import { listRoles, Role } from '@/services/rbac/rbac'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'

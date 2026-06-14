@@ -1,7 +1,4 @@
-import {
-  ClinicianListItem,
-  listClinicians,
-} from '@/services/clinicUsers/clinicUsers'
+import { ClinicianListItem, listClinicians } from '@/services/user/user'
 import { Validate } from '@/services/api/Validate'
 import { PermissionScope, ResolvedPermission } from '@/types/permissions'
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import { listClinicians } from '@/services/user/user'
 import { Validate } from '@/services/api/Validate'
 
 export const eventCliniciansQueryKey = ['clinicians', 'events'] as const

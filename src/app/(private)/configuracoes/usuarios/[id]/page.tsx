@@ -1,6 +1,6 @@
 import UserDetail from '@/app/(private)/configuracoes/usuarios/components/UserDetail'
 import { Validate } from '@/services/api/Validate'
-import { getClinicUser } from '@/services/clinicUsers/clinicUsers'
+import { getClinicUser } from '@/services/user/user'
 import { listRoles } from '@/services/rbac/rbac'
 import { notFound } from 'next/navigation'
 

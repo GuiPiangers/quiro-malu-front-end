@@ -3,10 +3,7 @@
 import Button from '@/components/Button'
 import { Validate } from '@/services/api/Validate'
 import { responseError } from '@/services/api/api'
-import {
-  createClinician,
-  createStandardClinicUser,
-} from '@/services/clinicUsers/clinicUsers'
+import { createClinician, createStandardClinicUser } from '@/services/user/user'
 import { Role } from '@/services/rbac/rbac'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'

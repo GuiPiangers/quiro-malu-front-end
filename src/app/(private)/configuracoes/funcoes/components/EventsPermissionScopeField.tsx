@@ -3,7 +3,7 @@
 import { Input } from '@/components/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Validate } from '@/services/api/Validate'
-import { listClinicians } from '@/services/clinicUsers/clinicUsers'
+import { listClinicians } from '@/services/user/user'
 import { PermissionScope } from '@/types/permissions'
 import { ClinicianOptionContent } from '@/app/(private)/scheduling/components/ClinicianSelectField'
 import { useQuery } from '@tanstack/react-query'

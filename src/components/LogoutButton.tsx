@@ -1,6 +1,6 @@
 'use client'
 
-import { logoutUser } from '@/services/user/user'
+import { logoutUser } from '@/services/authentication/authentication'
 import Button, { ButtonProps } from './Button'
 
 export default function LogoutButton(props: ButtonProps) {

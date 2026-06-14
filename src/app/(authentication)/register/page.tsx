@@ -11,7 +11,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Phone from '@/utils/Phone'
 import useSnackbarContext from '@/hooks/useSnackbarContext'
-import { loginUser } from '@/services/user/user'
+import { loginUser } from '@/services/authentication/authentication'
 import { createClinic } from '@/services/clinic/clinic'
 import { Validate } from '@/services/api/Validate'
 

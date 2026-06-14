@@ -1,7 +1,7 @@
 'use client'
 
 import { Table } from '@/components/table'
-import { ClinicUserListItem } from '@/services/clinicUsers/clinicUsers'
+import { ClinicUserListItem } from '@/services/user/user'
 import { useRouter } from 'next/navigation'
 
 type UserListRowMobileProps = {

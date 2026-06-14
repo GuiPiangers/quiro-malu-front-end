@@ -1,7 +1,7 @@
 'use client'
 
 import { Input } from '@/components/input'
-import { ClinicianListItem } from '@/services/clinicUsers/clinicUsers'
+import { ClinicianListItem } from '@/services/user/user'
 import { getInitials } from '@/utils/getInitials'
 import { twMerge } from 'tailwind-merge'
 
