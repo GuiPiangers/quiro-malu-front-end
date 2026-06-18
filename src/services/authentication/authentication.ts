@@ -63,6 +63,19 @@ export async function loginUser(data: { email: string; password: string }) {
   return auth
 }
 
+export async function resetPassword(data: { token: string; password: string }) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+
+  if (res.ok) return null
+
+  const error: responseError = await res.json()
+  return error
+}
+
 export async function logoutUser(): Promise<void> {
   const refreshTokenId = cookies().get('quiro-refresh-token')?.value
   await api<UserResponse>('/logout', {
