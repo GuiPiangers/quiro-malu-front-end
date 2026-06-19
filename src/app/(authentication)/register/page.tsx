@@ -13,6 +13,7 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { loginUser } from '@/services/authentication/authentication'
 import { createClinic } from '@/services/clinic/clinic'
 import { Validate } from '@/services/api/Validate'
+import { useRouter } from 'next/navigation'
 
 const createUserSchema = z.object({
   clinicName: z.string(),
@@ -46,6 +47,7 @@ export type CreateUserData = z.infer<typeof createUserSchema>
 
 export default function Register() {
   const { handleMessage } = useSnackbarContext()
+  const router = useRouter()
 
   const createUserForm = useForm<CreateUserData>({
     resolver: zodResolver(createUserSchema),
@@ -71,15 +73,13 @@ export default function Register() {
 
     if (Validate.isError(clinic)) {
       setError(clinic.type as keyof CreateUserData, { message: clinic.message })
+      handleMessage({
+        title: 'Erro!',
+        description: 'Erro ao criar clínica',
+        type: 'error',
+      })
     } else {
-      // if (Object.hasOwn(clinic, 'id'))
-      //   await loginUser({ email: data.email, password: data.password })
-      // else
-      //   handleMessage({
-      //     title: 'Erro!',
-      //     description: 'Erro ao criar clínica',
-      //     type: 'error',
-      //   })
+      router.replace('/conta-criada')
     }
   }
 
