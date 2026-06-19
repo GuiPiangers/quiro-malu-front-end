@@ -51,7 +51,7 @@ export default function SolicitarRedefinicao() {
   }
 
   return (
-    <AuthForm title="Recuperar senha" onSubmit={handleSubmit(requestReset)}>
+    <AuthForm title="Redefinir senha" onSubmit={handleSubmit(requestReset)}>
       <div className="flex flex-col gap-4">
         <p className="text-sm text-slate-500">
           Informe seu e-mail cadastrado e enviaremos um link para você redefinir
@@ -72,7 +72,7 @@ export default function SolicitarRedefinicao() {
         </Input.Root>
 
         <Button color="blue" disabled={isSubmitting}>
-          Enviar link de recuperação
+          Enviar
         </Button>
 
         <p className="text-center text-sm">

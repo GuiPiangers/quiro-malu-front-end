@@ -52,19 +52,30 @@ export default function Login() {
           />
         </Input.Root>
 
-        <PasswordInput
-          value={fields.password}
-          onChange={(e) => handleChangeValue(e, 'password')}
-          disabled={isLoading}
-        />
+        <div>
+          <PasswordInput
+            value={fields.password}
+            onChange={(e) => handleChangeValue(e, 'password')}
+            disabled={isLoading}
+          />
+          <Link
+            className="mt-2 block text-xs text-blue-600 underline"
+            href={'/redefinir-senha/solicitar'}
+          >
+            Esqueci minha senha
+          </Link>
+        </div>
 
         <Button color="blue" onClick={handleSignIn} disabled={isLoading}>
           Entrar
         </Button>
         <p className="text-center text-sm">
-          Ainda não possui uma conta?{' '}
-          <Link className="text-blue-600 underline" href={'/register'}>
-            Registre-se
+          Primeiro acesso?{' '}
+          <Link
+            className="text-blue-600 underline"
+            href={'/redefinir-senha/solicitar'}
+          >
+            Defina sua senha
           </Link>
         </p>
       </div>
