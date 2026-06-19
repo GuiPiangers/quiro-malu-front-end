@@ -2,7 +2,6 @@
 
 import AuthForm from '../components/AuthForm'
 import Link from 'next/link'
-import PasswordInput from '../components/PasswordInput'
 import Button from '@/components/Button'
 
 import { Input } from '@/components/input'
@@ -41,17 +40,6 @@ const createUserSchema = z.object({
   phone: z.string().regex(/^[(][0-9]{2}[)][ ][0-9]{5}[ ][0-9]{4}$/, {
     message: 'Formato de telefone inválido - padrão (DDD) 99999 9999',
   }),
-  password: z
-    .string()
-    .min(5, {
-      message: 'A senha precisa ter no mínimo 5 caracteres',
-    })
-    .refine((value) => value.match(/[A-Z]/), {
-      message: 'A senha deve conter pelo menos uma letra maiúscula',
-    })
-    .refine((value) => value.match(/[0-9!"#$%&'(.)*+,/:;<=>?@[\]^_`{|}~-]/), {
-      message: 'A senha deve conter pelo menos um número ou carácter especial',
-    }),
 })
 
 export type CreateUserData = z.infer<typeof createUserSchema>
@@ -78,21 +66,20 @@ export default function Register() {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        password: data.password,
       },
     })
 
     if (Validate.isError(clinic)) {
       setError(clinic.type as keyof CreateUserData, { message: clinic.message })
     } else {
-      if (Object.hasOwn(clinic, 'id'))
-        await loginUser({ email: data.email, password: data.password })
-      else
-        handleMessage({
-          title: 'Erro!',
-          description: 'Erro ao criar clínica',
-          type: 'error',
-        })
+      // if (Object.hasOwn(clinic, 'id'))
+      //   await loginUser({ email: data.email, password: data.password })
+      // else
+      //   handleMessage({
+      //     title: 'Erro!',
+      //     description: 'Erro ao criar clínica',
+      //     type: 'error',
+      //   })
     }
   }
 
@@ -157,17 +144,6 @@ export default function Register() {
             <Input.Message error>{errors.email.message}</Input.Message>
           )}
         </Input.Root>
-
-        <PasswordInput
-          {...register('password')}
-          error={!!errors.password}
-          disabled={isSubmitting}
-        >
-          {errors.password && (
-            <Input.Message error>{errors.password.message}</Input.Message>
-          )}
-        </PasswordInput>
-
         <Button color="blue" disabled={isSubmitting}>
           Cadastrar
         </Button>

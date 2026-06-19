@@ -6,7 +6,6 @@ export type CreateClinicRequest = {
     name: string
     email: string
     phone: string
-    password: string
   }
 }
 
