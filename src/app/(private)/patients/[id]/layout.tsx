@@ -9,6 +9,8 @@ import Link from 'next/link'
 import { getPatient } from '@/services/patient/patient'
 import Phone from '@/utils/Phone'
 import CreatePatientPDFModal from '@/components/modal/CreatePatientPDFModal/CreatePatientPDFModal'
+import { getSession } from '@/lib/session'
+import { hasModuleAccess } from '@/lib/permissions'
 
 type LayoutProps = {
   children: ReactNode
@@ -19,6 +21,11 @@ type LayoutProps = {
 
 export default async function Layout({ children, params }: LayoutProps) {
   const id = params.id
+  const session = getSession()
+  const hasClinicalDataAccess =
+    session != null &&
+    hasModuleAccess(session.permissions, 'patients_clinical_data')
+
   const patientData = await getPatient(id).then((res) =>
     Validate.isOk(res) ? res : undefined,
   )
@@ -73,18 +80,26 @@ export default async function Layout({ children, params }: LayoutProps) {
         <Nav.item replace href={`/patients/${id}`}>
           Dados
         </Nav.item>
-        <Nav.item replace href={`/patients/${id}/progress`}>
-          Evolução
-        </Nav.item>
-        <Nav.item replace href={`/patients/${id}/anamnesis`}>
-          Anamnese
-        </Nav.item>
-        <Nav.item replace href={`/patients/${id}/exams`}>
-          Exames
-        </Nav.item>
-        <Nav.item replace href={`/patients/${id}/diagnostic`}>
-          Diagnóstico
-        </Nav.item>
+        {hasClinicalDataAccess && (
+          <Nav.item replace href={`/patients/${id}/progress`}>
+            Evolução
+          </Nav.item>
+        )}
+        {hasClinicalDataAccess && (
+          <Nav.item replace href={`/patients/${id}/anamnesis`}>
+            Anamnese
+          </Nav.item>
+        )}
+        {hasClinicalDataAccess && (
+          <Nav.item replace href={`/patients/${id}/exams`}>
+            Exames
+          </Nav.item>
+        )}
+        {hasClinicalDataAccess && (
+          <Nav.item replace href={`/patients/${id}/diagnostic`}>
+            Diagnóstico
+          </Nav.item>
+        )}
         <Nav.item replace href={`/patients/${id}/finance`}>
           Financeiro
         </Nav.item>

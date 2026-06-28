@@ -5,8 +5,10 @@ import { Box } from '@/components/box/Box'
 import ExamFileInput from '@/components/exam/ExamFileInput'
 import ExamsList from '@/components/exam/ExamsList'
 import { titleStyles } from '@/components/form/Styles'
+import { requireModuleAccess } from '@/lib/requireModuleAccess'
 
 export default async function Exams({ params }: { params: ParamsType }) {
+  requireModuleAccess('patients_clinical_data')
   const patientId = params.id
   const examsData = await listExams({ patientId, page: 1 })
 

@@ -1,5 +1,6 @@
 export const MODULE_LABELS: Record<string, string> = {
   patients: 'Pacientes',
+  patients_clinical_data: 'Dados clínicos',
   events: 'Agenda',
   services: 'Serviços',
   finance: 'Financeiro',

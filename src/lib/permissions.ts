@@ -1,26 +1,10 @@
-import { ResolvedPermission } from '@/types/permissions'
+import { PermissionKey, ResolvedPermission } from '@/types/permissions'
 
-export type PermissionModule =
-  | 'patients'
-  | 'patients:read'
-  | 'patients:write'
-  | 'events'
-  | 'events:read'
-  | 'events:write'
-  | 'services'
-  | 'services:read'
-  | 'services:write'
-  | 'finance'
-  | 'finance:read'
-  | 'finance:write'
-  | 'messages'
-  | 'messages:read'
-  | 'messages:write'
-  | 'message_logs:read'
-  | 'message_logs:write'
-  | 'users'
-  | 'users:read'
-  | 'users:write'
+type ExtractModule<T extends string> = T extends `${infer Module}:${string}`
+  ? Module
+  : never
+
+export type PermissionModule = PermissionKey | ExtractModule<PermissionKey>
 
 export function hasModuleAccess(
   permissions: ResolvedPermission[],

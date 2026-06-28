@@ -10,6 +10,7 @@ import { listProgress } from '@/services/patient/patient'
 import { listEventClinicians } from '@/lib/eventsClinicians'
 import SafeHtml from '@/components/SafeHTML'
 import { ClinicianOptionContent } from '@/app/(private)/scheduling/components/ClinicianSelectField'
+import { requireModuleAccess } from '@/lib/requireModuleAccess'
 
 export default async function Progress({
   params,
@@ -18,7 +19,9 @@ export default async function Progress({
   params: ParamsType
   searchParams: { [key: string]: string | undefined }
 }) {
+  requireModuleAccess('patients_clinical_data')
   const patientId = params.id
+
   const page =
     searchParams.page && +searchParams.page > 0 ? searchParams.page : '1'
   const [patientData, clinicians] = await Promise.all([

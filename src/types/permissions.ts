@@ -1,6 +1,8 @@
 export const PERMISSION_KEYS = [
   'patients:read',
   'patients:write',
+  'patients_clinical_data:read',
+  'patients_clinical_data:write',
   'events:read',
   'events:write',
   'services:read',
@@ -10,6 +12,7 @@ export const PERMISSION_KEYS = [
   'messages:read',
   'messages:write',
   'message_logs:read',
+  'message_logs:write',
   'users:read',
   'users:write',
 ] as const
