@@ -53,6 +53,33 @@ export default function UserDetail({ detail, defaultRoles }: UserDetailProps) {
     return defaultRoles.find((role) => role.id === detail.roleId)?.name ?? '—'
   }, [defaultRoles, detail.roleId])
 
+  const statusDetails = useMemo(() => {
+    const config = {
+      active: {
+        label: 'Ativo',
+        className:
+          'rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 inline-block',
+      },
+      inactive: {
+        label: 'Inativo',
+        className:
+          'rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 inline-block',
+      },
+      pending: {
+        label: 'Pendente',
+        className:
+          'rounded-full bg-yellow-50 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block',
+      },
+    }
+    return (
+      config[detail.status] || {
+        label: detail.status,
+        className:
+          'rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 inline-block',
+      }
+    )
+  }, [detail.status])
+
   const {
     handleSubmit,
     formState: { isSubmitting, errors, dirtyFields },
@@ -199,11 +226,21 @@ export default function UserDetail({ detail, defaultRoles }: UserDetailProps) {
               </dt>
               <dd className="mt-0.5">{detail.phone}</dd>
             </div>
-            <div className="sm:col-span-2">
+            <div>
               <dt className="text-xs font-semibold uppercase text-slate-500">
                 Função
               </dt>
               <dd className="mt-0.5">{roleName}</dd>
+            </div>
+            <div>
+              <dt className="text-xs font-semibold uppercase text-slate-500">
+                Status
+              </dt>
+              <dd className="mt-0.5">
+                <span className={statusDetails.className}>
+                  {statusDetails.label}
+                </span>
+              </dd>
             </div>
           </dl>
 
@@ -281,6 +318,16 @@ export default function UserDetail({ detail, defaultRoles }: UserDetailProps) {
                 Telefone
               </dt>
               <dd className="mt-0.5">{detail.phone}</dd>
+            </div>
+            <div>
+              <dt className="text-xs font-semibold uppercase text-slate-500">
+                Status
+              </dt>
+              <dd className="mt-0.5">
+                <span className={statusDetails.className}>
+                  {statusDetails.label}
+                </span>
+              </dd>
             </div>
           </dl>
 

@@ -11,6 +11,7 @@ export type ClinicUserListItem = {
   phone: string
   clinicId: string
   roleId: string | null
+  status: 'active' | 'inactive' | 'pending'
 }
 
 export type ClinicianServiceItem = {
