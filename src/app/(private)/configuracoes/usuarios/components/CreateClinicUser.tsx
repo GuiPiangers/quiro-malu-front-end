@@ -33,7 +33,6 @@ export default function CreateClinicUser({
       name: data.name,
       email: data.email,
       phone: data.phone,
-      password: data.password,
       roleId: data.roleId,
     }
 

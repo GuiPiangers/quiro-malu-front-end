@@ -41,7 +41,6 @@ export type CreateStandardUserInput = {
   name: string
   email: string
   phone: string
-  password: string
   roleId: string
 }
 
@@ -118,7 +117,6 @@ export async function createClinician(data: CreateClinicianInput) {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      password: data.password,
       clinicId: profile.clinicId,
       roleId: data.roleId,
     }),

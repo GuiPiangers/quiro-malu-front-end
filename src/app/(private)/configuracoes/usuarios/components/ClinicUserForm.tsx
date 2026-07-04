@@ -9,7 +9,6 @@ import useSnackbarContext from '@/hooks/useSnackbarContext'
 import { responseError } from '@/services/api/api'
 import { Validate } from '@/services/api/Validate'
 import Phone from '@/utils/Phone'
-import PasswordInput from '@/app/(authentication)/components/PasswordInput'
 import { Role } from '@/services/rbac/rbac'
 import { clinicUserFormSchema, ClinicUserFormData } from '../clinicUserSchemas'
 import RoleSelect from './RoleSelect'
@@ -37,7 +36,6 @@ export default function ClinicUserForm({
       name: '',
       email: '',
       phone: '',
-      password: '',
       roleId: '',
       serviceIds: [],
     },
@@ -148,16 +146,6 @@ export default function ClinicUserForm({
             <Input.Message error>{errors.phone.message}</Input.Message>
           )}
         </Input.Root>
-
-        <PasswordInput
-          {...register('password')}
-          error={!!errors.password}
-          disabled={isSubmitting}
-        >
-          {errors.password && (
-            <Input.Message error>{errors.password.message}</Input.Message>
-          )}
-        </PasswordInput>
 
         <Input.Root>
           <Input.Label required>Função</Input.Label>
