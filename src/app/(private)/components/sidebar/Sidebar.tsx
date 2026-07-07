@@ -56,9 +56,6 @@ export default function Sidebar({ className }: SidebarProps) {
               Financeiro
             </NavItem>
           )}
-          <NavItem href="/configuracoes" icon={CiSettings}>
-            Configurações
-          </NavItem>
           {canAccessMessages && <NavMensagensGroup />}
         </li>
       </nav>

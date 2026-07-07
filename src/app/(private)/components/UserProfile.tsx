@@ -10,6 +10,7 @@ import { getUser } from '@/services/user/user'
 import { Validate } from '@/services/api/Validate'
 import Image from 'next/image'
 import LogoutButton from '@/components/LogoutButton'
+import Link from 'next/link'
 
 const imageProfile = '/profile/profile1.svg'
 
@@ -36,7 +37,7 @@ export default async function UserProfile() {
             Perfil
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer hover:bg-slate-200">
-            Configurações
+            <Link href="/configuracoes">Configurações</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <LogoutButton asChild variant="ghost" className="rounded px-2 py-1.5">
