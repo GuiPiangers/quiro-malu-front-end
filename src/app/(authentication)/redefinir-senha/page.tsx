@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -34,7 +35,7 @@ const resetPasswordSchema = z
 
 type ResetPasswordData = z.infer<typeof resetPasswordSchema>
 
-export default function RedefinirSenha() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const token = searchParams.get('token') ?? ''
@@ -102,5 +103,13 @@ export default function RedefinirSenha() {
         </Button>
       </div>
     </AuthForm>
+  )
+}
+
+export default function RedefinirSenha() {
+  return (
+    <Suspense fallback={null}>
+      <ResetPasswordForm />
+    </Suspense>
   )
 }
