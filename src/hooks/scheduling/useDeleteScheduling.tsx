@@ -1,4 +1,7 @@
-import { EventsResponse, deleteScheduling } from '@/services/scheduling/scheduling'
+import {
+  EventsResponse,
+  deleteScheduling,
+} from '@/services/scheduling/scheduling'
 import { schedulesQtdQueryKey } from '@/services/scheduling/schedulingQueryKeys'
 import DateTime from '@/utils/Date'
 

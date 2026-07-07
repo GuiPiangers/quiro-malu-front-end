@@ -89,11 +89,14 @@ export async function logoutUser(): Promise<void> {
 }
 
 export async function sendResetPasswordToken(data: { email: string }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/send-reset-password-token`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_HOST}/send-reset-password-token`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    },
+  )
 
   if (res.ok) return null
 
