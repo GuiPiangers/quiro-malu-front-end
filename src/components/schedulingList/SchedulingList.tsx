@@ -31,6 +31,7 @@ import { isSchedulingEvent } from '@/utils/eventValidator'
 import { getDisplaySchedulingStatus } from '@/utils/schedulingDisplayStatus'
 import UpdateEventModalContent from '../modal/UpdateEventModal/UpdateEventModalContent'
 import useWindowSize from '@/hooks/useWindowSize'
+import { getUser } from '@/services/user/user'
 
 type SchedulingListProps = {
   date: string
@@ -62,6 +63,14 @@ export default function SchedulingList({
     queryKey: ['listSchedules', date, userId],
     queryFn: async () => listEventsByUser({ date, userId }),
     enabled: !!userId,
+  })
+
+  const { data: userProfile } = useQuery({
+    queryKey: ['userProfile'],
+    queryFn: async () => {
+      const res = await getUser()
+      return Validate.isOk(res) ? res : null
+    },
   })
 
   const modalRef = useRef<ModalHandles>(null)
@@ -136,6 +145,7 @@ export default function SchedulingList({
                 setModalData={setModalData}
                 openModal={openModal}
                 showExpandIcon={showScheduleRowExpandIcon}
+                isClinician={userProfile?.kind === 'clinician'}
               />
             )
           }
@@ -209,6 +219,7 @@ function SchedulingTableItem({
   setModalData,
   openModal,
   showExpandIcon = true,
+  isClinician = false,
 }: {
   scheduling: SchedulingWithPatient
   hour: string
@@ -218,6 +229,7 @@ function SchedulingTableItem({
   >
   openModal?: () => void
   showExpandIcon?: boolean
+  isClinician?: boolean
 }) {
   const durationString = new Time(scheduling.duration).getHoursAndMinutes()
   const rowStatus = getDisplaySchedulingStatus(
@@ -291,18 +303,20 @@ function SchedulingTableItem({
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <RealizeScheduling
-            size="small"
-            formData={{
-              date: scheduling.date,
-              patientId: scheduling.patientId,
-              schedulingId: scheduling.id!,
-              service: scheduling.service,
-              patient: scheduling.patient,
-            }}
-          >
-            Realizar consulta
-          </RealizeScheduling>
+          {isClinician && (
+            <RealizeScheduling
+              size="small"
+              formData={{
+                date: scheduling.date,
+                patientId: scheduling.patientId,
+                schedulingId: scheduling.id!,
+                service: scheduling.service,
+                patient: scheduling.patient,
+              }}
+            >
+              Realizar consulta
+            </RealizeScheduling>
+          )}
           <Button variant="outline" size="small">
             <Link
               href={`https://wa.me/55${Phone.unformat(scheduling.phone || '')}`}

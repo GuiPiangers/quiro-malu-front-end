@@ -48,17 +48,8 @@ export type CreateClinicianInput = CreateStandardUserInput & {
   services?: Array<{ serviceId: string }>
 }
 
-export type UserProfile = {
-  id?: string
-  name: string
-  email: string
-  phone: string
-  clinicId: string
-  roleId?: string
-}
-
 export async function getUser() {
-  return api<UserProfile>('/profile', {
+  return api<UserDetail>('/profile', {
     method: 'GET',
     cache: 'no-store',
   })
